@@ -32,3 +32,5 @@ app/view/.sass-cache
 app/view/node_modules
 /bolt.log
 
+
+app/config/config_local.yml
