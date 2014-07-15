@@ -1,189 +1,932 @@
-# This file defines the contenttypes on the website. See the documentation for
-# details: http://docs.bolt.cm/content#defining-contenttypes
+#################################################################
+#
+# Creatd by: Alexander Linn
+#
+# Version: 0.1
+# Creation date: 07.07.2014
+#
+# Modified by:
+# Modification date:
+#
+# Based upon:
+# ----------
+# Requirements:
+# https://docs.google.com/spreadsheets/d/1e89kisHaEK7tKjbD95VudnTXtekh889ScwQr4-dqCC0/edit#gid=773173311
+# 
+# Examples
+# http://demo.deanbirkett.name/ETHZZG/#p=location
+#
+# Issues:
+# - Integration of google drive to each contenttype not done yet
+# - Testing max characters
+# - Testing savin with required fields not filled out
+# 
+# ToDos:
+# - localize contenttypes
+#
+#
+#################################################################
 
+##################################################################
+#
+# The following contentypes are specified:
+#
+# - LOCATION
+# - STRUCTURE
+# - PAGE
+# - BLOG POST
+# - CAREER
+# - EVENT
+# - PERSON
+# - PUBLICATION
+# - HOMEPAGE
+#
+#################################################################
 
-# Entries can be used for things like 'news' or 'blogpostings'. They have a 'teaser',
-# which can be used for a short blurb on listing-pages, allowing visitors to
-# click-through to the rest of the entry. It also has fields for an image and an
-# optional video.
-# A relation is defined to the pages contenttype. This way you can refer to a page
-# from your news-item.
-# This contenttype defines 'categories' and 'tags' as taxonomies, allowing the
-# editor to use both to categorize a specific entry.
-# The 'sort' is set to "datepublish DESC", which means that newer entries will
-# show above older entries.
+#################################
+#
+# HOMEPAGE
+#
+# Notes: 
+#
+# Issues:
+# -  
+#
+# ToDos:
+# - make default content (prepopulatd) for intro text and callout
+#
+# Questions:
+# - Is there a max length for the banner text?
+# - What kind of links appear in the banner link? If only pages fine.
+#   If all kind of links could appear: Is it possible to select ALL contenttypes in a select field?
+# - Is the content from intro text and the callout prepopulated with the default values given from dean, or 
+#   what is the prepopulated content? 
+# - Is it correct to have two blog update fields?
+#
+#################################
+homepage:
+  name: Homepage
+  singular_name: Homepage
+  fields:
+    bannerimage:
+      type: image
+      attrib: title
+      extensions: [ gif, jpg, png ]
+      required: true
+      label: "Banner Image (required):"
+    bannertext:
+      type: html
+      required: true
+      label: "Banner Text (required):"
+      variant: inline 
+      class: wide
+    # This is the link that the "More" goes to.
+    bannerlink_select:
+      type: select
+      required: true
+      label: "Banner link:"             
+      values: page/id,title
+    bannerlink:
+      type: text
+      required: false
+      label: ".. or Banner link:"
+      variant: inline 
+      prefix: "<em>URL has to start with http:// or https://</em>" 
+      postfix: "(at least one of the above boxes is required)"  
+      pattern: url    
+      class: narrow    
+    subtitle:
+      type: html
+      required: true 
+      label: "Intro text (required):"            
+      height: 150px    
+    callout_1:
+      type: html
+      required: true 
+      label: "Callout 1 (required):"            
+      height: 150px 
+    callout_2:
+      type: html
+      required: true 
+      label: "Callout 2 (required):"            
+      height: 150px 
+    callout_3:
+      type: html
+      required: true 
+      label: "Callout 3 (required):"            
+      height: 150px 
+    # Used to call in the latest blog post, but can be overwritten if desired
+    blog_update_1:
+      type: select
+      required: true
+      label: "Blog update 1:"             
+      values: blog/id,title      
+    # Used to call in the latest blog post, but can be overwritten if desired
+    blog_update_2:
+      type: select
+      required: true
+      label: "Blog update 2:"             
+      values: blog/id,title                                   
+  record_template: homepage.twig      
 
-entries:
-    name: Entries
-    singular_name: Entry
-    fields:
-        title:
-            type: text
-            class: large
-        slug:
-            type: slug
-            uses: title
-        image:
-            type: image
-        teaser:
-            type: html
-            height: 150px
-        video:
-            type: video
-        body:
-            type: html
-            height: 300px
-    relations:
-        pages:
-          multiple: false
-          order: title
-          label: Select a page
-    taxonomy: [ categories, tags ]
-    record_template: entry.twig
-    listing_template: listing.twig
-    listing_records: 10
-    default_status: publish
-    sort: datepublish DESC
-    recordsperpage: 10
+#################################
+#
+# PUBLICATION
+#
+# Notes:
+# Image: The dimensions need to be specified. The image should appear as a thumbnail on all pages above, 
+# but on the individual publications page it may be larger?
+#
+# Issues: 
+# - Related Content?
+# - Integration google drive for attachments
+#
+# ToDos:
+# - Regex validation for isbn numbers
+# - Correct related content lists
+#
+# Questions:
+# - Where do the authors com from?
+# - What exactly should appear in the related content?
+#
+#################################
+publications:
+  name: Publications
+  singular_name: Publication
+  fields:
+    # Show on Publication list page, Publication page, Teasers, Individual staff members page
+    title:
+      type: text
+      required: true  
+      label: "Title (required):"
+      variant: inline  
+    slug:
+      type: slug
+      uses: title
+    subtitle:
+      type: html
+      required: false 
+      label: "Subtitle (120 chars MAX):"
+      pattern: "^.{1,120}$"             
+      height: 150px 
+    body:
+      type: html
+      required: false 
+      label: "Body:"             
+      height: 150px
+    authors:
+      type: select
+      required: false
+      label: "Authors:"             
+      values: person/id,last_name,first_name
+      multiple: true
+    isbn:
+      type: text
+      required: false 
+      label: "ISBN:"
+      variant: inline                                 
+    filelist:
+      type: filelist
+      required: true 
+      label: "Attachments:"  
+    image:
+      type: image
+      required: true  
+      label: "Image:"
+      attrib: title
+      extensions: [ gif, jpg, png ]              
+  taxonomy: [ tags ]    
+  relations:
+    blog:
+      multiple: false
+      label: Related content 1
+      order: -id
+      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+    event:
+      multiple: false
+      label: Related content 2
+      order: -id
+      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+    publication:
+      multiple: false
+      label: Related content 3
+      order: -id
+      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
 
-# Pages can be used for the more 'static' pages on your site. Things like
-# 'about us', 'contact' or a 'disclaimer'. This content-type has a 'templateselect'
-# field, which allows you to override the record_template setting for an
-# individual page.
-# The taxonomy for this contenttype is defined as 'chapters', which is a so-called
-# "grouping" taxonomy. This way you can easily group sets of pages that logically
-# belong together. If your site has a 'services' section, in which you'd like to
-# list the different types of services a company provides, you can group these
-# together.
+#################################
+#
+# PERSON
+#
+# Notes:
+# The permalink should be /people/{first name}-{last-name} eg. /people/dean-birkett
+#
+# Issues:
+# - Related content?
+#
+# ToDos:
+# - Set required fields if checkbox_europeana is marked (if possible)
+# - Integrate drive if images are also used from the dms
+# - Correct related content lists
+#
+# Questions:
+# - Again: possibilitie to make one field required based upon the values of another?
+# - Do Images com from the dms as well?
+# - What exactly should appear in the related content?
+#
+#################################
+person:
+  name: Persons
+  singular_name: Person
+  fields:
+    # Show on Staff list page, Staff page, Events page (speakers), Contact info block
+    first_name:
+      type: text
+      required: true  
+      label: "First name (required):"
+      variant: inline 
+      class: narrow
+    # Show on Staff list page, Staff page, Events page (speakers), Contact info block
+    last_name:
+      type: text
+      required: true
+      label: "Last name (required):" 
+      variant: inline               
+      class: narrow
+    slug:
+      type: slug
+      uses: [ first_name, last_name ]      
+    # If checked, then the following fields are set to 'required':
+    # Job Title, Team ,Email address
+    # If not checked, then all fields are optional.            
+    checkbox_europeana:
+      type: checkbox
+      required: false
+      label: "Europeana Staff:" 
+    # If checked, then the person will be listed on the Network Members page    
+    checkbox_network:
+      type: checkbox
+      required: false
+      label: "Network member:"               
+    company:
+      type: text
+      required: false
+      label: "Company:" 
+      postfix: (if not Europeana Foundation)
+      variant: inline
+      class: narrow    
+    company_url:
+      type: text
+      required: false
+      label: "Company URL:" 
+      postfix: (if not Europeana Foundation)
+      pattern: url
+      variant: inline
+      class: narrow                             
+    job_title:
+      type: text
+      required: false
+      label: "Job Title:"
+      variant: inline  
+      class: narrow                      
+    team:
+      type: select
+      required: false
+      label: "Team:"
+      values: [ "(not set)", "Aggregation", "Corporate Communication", "Distribution & Engagement", "Facilitation", "Management", "Network & Sustainability", "People & Business Support", "Product Development", "Technology" ]
+    introduction:
+      type: html
+      required: false
+      label: "Introduction (120 chars MAX):" 
+      pattern: "^.{1,120}$"             
+      height: 150px          
+    image:
+      type: image
+      required: false
+      label: "Image:"
+      attrib: title
+      extensions: [ gif, jpg, png ]
+    email:
+      type: text
+      required: false
+      label: "Email address:"
+      variant: inline 
+      pattern: email  
+      class: narrow  
+    # This is only used if the checkbox is checked on the page - it will override the email address and show the secondary email address instead
+    secondary_email:
+      type: text
+      required: false
+      label: "Secondary email address:"
+      variant: inline 
+      pattern: email  
+      class: narrow                             
+    telephone_number:
+      type: text
+      required: false
+      label: "Telephone number:"
+      variant: inline  
+      prefix: "<em>Allowed values are numbers, spaces, + and - </em>"
+      pattern: ^[0-9+ -]*$
+      class: narrow                   
+    other_number:
+      type: text
+      required: false
+      label: "Other number:"
+      variant: inline   
+      prefix: "<em>Allowed values are numbers, spaces, + and - </em>"
+      pattern: ^[0-9+ -]*$
+      class: narrow                                                    
+    linkedin:
+      type: text
+      required: false
+      label: "Linkedin URL:"
+      variant: inline 
+      prefix: "<em>URL has to start with http:// or https://</em>"  
+      pattern: url   
+      class: narrow                         
+    twitter:
+      type: text
+      required: false
+      label: "Twitter URL:"
+      variant: inline 
+      prefix: "<em>URL has to start with http:// or https://</em>"   
+      pattern: url    
+      class: narrow                       
+    skype:
+      type: text
+      required: false
+      label: "Skype ID:"
+      variant: inline  
+      class: narrow                            
+    other_links_1:
+      type: text
+      required: false
+      label: "Other link:"
+      variant: inline 
+      prefix: "<em>URL has to start with http:// or https://</em>" 
+      pattern: url 
+      class: narrow               
+    other_links_2:
+      type: text
+      required: false
+      label: "Other link:"
+      variant: inline             
+      prefix: "<em>URL has to start with http:// or https://</em>" 
+      pattern: url    
+      class: narrow                                                                                              
+    other_links_3:
+      type: text
+      required: false
+      label: "Other link:"
+      variant: inline            
+      prefix: "<em>URL has to start with http:// or https://</em>" 
+      pattern: url 
+      class: narrow  
+    # If this check box is selected, then this person will be listed as the Contact person on the blog list and individual blog pages
+    checkbox_chief:
+      type: checkbox
+      required: false
+      label: "Chief editor of the blog (will show as main contact in blog):"          
+  taxonomy: [ tags ]                       
+  relations:
+    blog:
+      multiple: false
+      label: Related content 1
+      order: -id
+      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+    event:
+      multiple: false
+      label: Related content 2
+      order: -id
+      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+    publication:
+      multiple: false
+      label: Related content 3
+      order: -id
+      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"                                   
 
+#################################
+#
+# EVENT
+#
+# Notes:
+# Requirement: On occasion we will not know the exact dates of events, but we would like to announce them. 
+# For the day / month fields, there should be a (not known) to allow the user control over this.
+# => Did not follow the date style with different text fields; If date fields are not filled out make them unknown
+# Documents folder: This is required, so that you can show the root folder where the event documentation is going to be 
+# stored. This will be created in the DMS first, and the user can then select this folder. 
+# The folder area will be shown on the single events page, and when files are uploaded into this area, 
+# then the website will update automatically.
+#
+# Issues: 
+# - Different setup for event start and end
+# - Make a seperation on location field
+# - Integration google drive folders
+#
+# ToDos:
+# - Validate regex for date/ time
+# - Integration google drive folders
+# - Maybe adapt contact values 
+#
+# Questions:
+# - Is it possible to put validation on the datetime field?
+# - Is it possible to structure type select while querying the db? Example: put a dash between value entries?
+# - Where do the entries for contact come from?  
+#
+#################################
+event:
+  name: Events
+  singular_name: Event
+  fields:
+    # Show on Events list page, Events page, Home page
+    title:
+      type: text
+      required: true  
+      label: "Title (required):"
+      variant: inline  
+      postfix: "<hr>"
+    slug:
+      type: slug
+      uses: title         
+    # Show on Events list page, Events page, Home page
+    start_event:
+      type: datetime
+      required: false
+      label: "Start:"                         
+    unconfirmed_start:
+      type: checkbox
+      required: false
+      label: "Unconfirmed:"
+    # If the end date and the start date are the same, then the end date will not show 
+    # Show on Events list page, Events page, Home page
+    end_event:
+      type: datetime
+      required: false
+      label: "End:"                              
+    unconfirmed_end:
+      type: checkbox
+      required: false
+      label: "Unconfirmed:" 
+    # Locations is populated and contains ALL locations that are in the Location content type - there should be some seperation between Europeana address and Other addresses
+    # Show on Events list page, Events page, Home page    
+    location:
+      type: select
+      required: true
+      label: "Location (required):"
+      values: location/title,title 
+    # Show on Events list page, Events page, Home page   
+    teaser:
+      type: html
+      required: true
+      label: "Teaser (required):"            
+      height: 150px   
+    # Show on Events list page, Events page, Home page              
+    body:
+      type: html
+      required: true
+      label: "Body (required):"            
+      height: 150px
+    # Show on Events page
+    # This section should be populated with the content of the Person content type
+    speakers:
+      type: select
+      required: false
+      label: "Choose speakers:"             
+      values: person/id,last_name,first_name
+      multiple: true  
+    # Show on Events page
+    file:
+      type: file 
+      required: true
+      label: "Documents folder (required):"  
+    # Show on Events page     
+    contact:
+      type: select
+      required: false
+      label: "Contact person:"             
+      values: person/id,last_name,first_name
+      multiple: true      
+    # If this is checked, then the contact persons secondary email will be shown instead of their primary email in the contact block   
+    secondary_mail:
+      type: checkbox
+      required: false
+      label: "Show secondary email instead:"             
+  taxonomy: [ tags ]     
+
+#################################
+#
+# CAREER
+#
+# Notes: 
+# Type Location will show the Locations content types, that have the ʺThis is a Europeana place of workʺ checked
+# NOTE: All job posts will be appended with the following:
+# How to apply? 
+# Send us your CV (in English) with a covering letter outlining what interests you about this position to: jobs@europeana.eu 
+# Should you have any additional questions or require more information before deciding to apply, please send us an email. 
+# You should respond before (depublication date)
+# More about us 
+# For more information see: (Europeana Foundation about link)
+# The depublication date will be the last day that you should respond by, so if the depublication date was set to ʺFebruary 10, 2014ʺ 
+# - then the job ad would be removed from the list, and the job page will be depublished. Before this date, there should 
+# be text saying ʺYou should respond by February 10, 2014ʺ on the job page.
+# 
+# Issues: 
+# - How to make either salary field (eur/ gbp) required?
+# - Show only locations wehre europeana_place is checked  
+# - Attachments should probably come from google drive?
+#
+# ToDos:
+# - Integrate google drive
+# - Finalize select lists based upon answers
+#
+# Questions:
+# - What exactly is the name of the contenttype? Career or Job? 
+# - Is it possible to show only values in type select which match a certain criteria. 
+#   Example: show only locations where in the contenttype location the checkbox europeana_place is checked
+# - What exactly is the scale for?
+# - Is it possible to make one at least one salary required. Example: one has to select fields and one of it at least must be required
+#
+#################################
+career:
+  name: Careers
+  singular_name: Career
+  fields:
+    # Show on Job list page, Job page
+    position:
+      type: text
+      required: true  
+      label: "Position (required):"
+      variant: inline  
+      class: wide  
+    slug:
+      type: slug
+      uses: position
+    # Show on Job list page, Job page                 
+    location:
+      type: select
+      required: true
+      label: "Location (required):"
+      # show only locations where europeana_place is checked
+      values: location/europeana_place,title
+      multiple: true
+    # Show on Job list page, Job page  
+    postion_team:
+      type: select
+      required: false
+      label: "Position will be in this team:"
+      values: [ "(not set)", "Aggregation", "Corporate Communication", "Distribution & Engagement", "Facilitation", "Managment", "Network & Sustainability", "People & Business Support", "Product Development", "Technology" ]
+    # Show on Job list page, Job page 
+    postion_type:
+      type: select
+      required: false
+      label: "Position will be in this team:"
+      values: [ "Full time", "Part time", "Internship", "Full time (Maternity cover)", "Full time (Temp)", "Part time (Temp)" ]  
+    # Show on Job list page, Job page 
+    teaser:
+      type: html
+      required: true
+      label: "Teaser (required):"           
+      height: 150px 
+    # Show on Job page 
+    body:
+      type: html
+      required: true
+      label: "Body (required):"           
+      height: 150px 
+      postfix: "<hr>"            
+    # Show on Job page 
+    salary_eur:
+      type: integer
+      required: false
+      label: "Monthly salary (EUR):"
+      index: true
+    # Show on Job page 
+    scale_eur:
+      type: integer
+      required: false
+      label: "Scale (EUR):"
+      index: true   
+      postfix: "<hr>"   
+    # Show on Job page 
+    salary_gbp:
+      type: integer
+      required: false
+      label: "Monthly salary (GBP):"
+      index: true     
+    # Show on Job page 
+    scale_gbp:
+      type: integer
+      required: false
+      label: "Scale (GBP):"
+      index: true   
+    filelist:
+      type: filelist
+      required: false 
+      label: "Attachments:"    
+
+#################################
+#
+# BLOG POST
+#
+# Notes: 
+# If this is type authors is populated, then instead of showing [By Owner] eg, "By Dean Birkett" in the byline, it will show "By [Written by]"
+# Type Attachments should link directly with our DMS. This should allow for multiple files to be added, and not just one file
+# Type owner is not shown at all if the Written by section is populated; I think dependet choice list are not possible?
+#
+# Issues:
+# - Modify type attachment to link directly to the dms
+# - Related content_N should include all content types....
+#
+# ToDos:
+# - Clarify integration with dms
+# - Probably add ALL contenttypes to the relation section (see Questions)
+# - Implent answers to questions if possible
+#
+# Questions:
+# - Is there a limit the length of element teaser to "show that the intro is brief, short and sweet"
+# - Is it possible to add a new button (control) to the editcontent dialogue to directly call the dms in a popup? 
+# - Is it possible to use the type filelist for integration with dms? For mulitple upload.
+# - Is it possible to show in one relation ALL other contentypes or is this a single relation each time? 
+# - Is it possible to build up dependend choice lists? E.g. disable the field owner if field written by ist populated
+#
+#################################
+blog:
+  name: Blogs
+  singular_name: Blog
+  fields:
+    # Show on Blog list page, Blog page, Related items snippet, Home page
+    title:
+      type: text
+      required: true  
+      label: "Title (required):"
+      variant: inline  
+    # This is a drop down box that is populated with the content of the Person content type
+    # Show on Blog list page, Blog page
+    authors:
+      type: select
+      required: false
+      label: "Written by:"            
+      values: person/id,last_name,first_name
+    # Show on Blog list page, Blog page, Home page
+    teaser:
+      type: html
+      required: false
+      label: "Teaser (required):"           
+      height: 150px
+    # Shown on Blog page
+    body:
+      type: html
+      required: false
+      label: "Body (required):"           
+      height: 150px
+    # multiselect from dms
+    # Show on Blog page
+    attachments:
+      type: filelist
+      required: false 
+      label: "Attachments:" 
+    # Show on Blog list page, Related items snippet, Home page       
+    teaser_image:
+      type: image
+      required: false
+      label: "Teaser image:" 
+      attrib: title
+      extensions: [ gif, jpg, png ]
+  # Show on Blog page
+  taxonomy: [ tags ]            
+  relations:
+    pages:
+      multiple: false
+      label: Related content 1
+      order: -id
+      format: "{{ item.title|escape }}"    
+    blog:
+      multiple: false
+      label: Related content 2
+      order: -id
+      format: "{{ item.title|escape }}"    
+    job:
+      multiple: false
+      label: Related content 3
+      order: -id
+      format: "{{ item.title|escape }}"       
+
+#################################
+#
+# PAGE
+#
+# Notes:
+# Type position: If 2 blocks of content share the same value (eg both set to be first), then the latest should take precedence
+# Type checkbox: This checkbox should control whether the page is shown in the overview/list page, or is a page that is reachable 
+# via a top level link. If this is not checked, then the page will still be published, still be searchable, but will only be reached 
+# via a link that has been placed in some body text.
+#
+# Issues:
+# - Not defined how to build up the selectfield for parent to build a structure; using suggestion from bob with taxonomies
+# - Restrict the mulitiple: true select to MAX: 2
+#
+# ToDos:
+# - Clarify behavior of type parent
+# - Implement answers to questions if possible
+#
+# Questions:
+# - How does the permalink looks like? Solution with routing or should it stay with page/title?
+# - Where do the contact persons come from? From contenttype person?
+# - Is it possible to define the max amount of choosen entries from the contenttype select, multiple: true? Example: max choose two entries
+# - How will be the exact handling of type support_navigation?
+# - Should related content be shown on the contenttype (shown in prototype demo.deanbirkett but not in excel docs.google.com)?
+# 
+#################################
 pages:
-    name: Pages
-    singular_name: Page
-    fields:
-        title:
-            type: text
-            class: large
-        slug:
-            type: slug
-            uses: title
-        image:
-            type: image
-        teaser:
-            type: html
-            height: 150px
-        body:
-            type: html
-            height: 300px
-        template:
-            type: templateselect
-            filter: '*.twig'
-    taxonomy: [ chapters ]
-    recordsperpage: 100
+  name: Pages
+  singular_name: Page
+  fields: 
+    # Shown on Individual pages, Lists, Overviews, Teasers 
+    title:
+      type: text
+      required: true  
+      label: "Title (required):"
+      variant: inline  
+    parent:
+      type: select
+      required: true
+      label: "Parent (required):"             
+      values: ["a", "b"]
+    slug:
+      type: slug
+      uses: title
+    # This is used to manually select the position the content should be shown on a list or overview page - default value is automatic
+    position:
+      type: select
+      required: true
+      label: "Position on overview or list page:"             
+      values: ["(automatic)", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]  
+    # Shown on Individual pages, Lists
+    contact_person:
+      type: select
+      required: false
+      label: "Contact person:"             
+      values: person/id,last_name,first_name
+      multiple: true 
+    # Shown on Individual pages, Lists, Overviews 
+    secondary_mail:
+      type: checkbox
+      required: false
+      label: "Show secondary email instead:"  
+    # Shown on Individual pages, Lists            
+    teaser:
+      type: html
+      required: true
+      label: "Teaser (required):"
+      height: 150px  
+    # Shown on Individual pages        
+    body:
+      type: html
+      required: true
+      label: "Body (required):"
+      height: 300px
+    # Shown on Individual pages, Lists, Overviews, Teasers
+    teaser_image:
+      type: image
+      required: false
+      label: "Teaser image:"  
+    show_page:
+      type: checkbox
+      required: false
+      label: "This page should be shown on the site, and is not an internal page:"  
+    # These links & titles will show in the right bar if populated - external links should have the external link icon 
+    # appended, documents on the DMS should have another visual representation present.  
+    support_navigation:
+      type: markdown
+      required: false
+      label: "Support navigation:"                      
+  taxonomy: [ main, events ]
 
-# The 'Kitchensink' is not particularly useful in most cases, but it does a good
-# job of showcasing most of the available fieldtypes. Feel free to delete it, or
-# copy some fields to your own contenttypes.
-# Since no templates are defined for this contenttype, the default record_template,
-# listing_template, and related settings are used from config.yml
+#################################
+#
+# STRUCTURE
+#
+# Notes: 
+# Some of these list pages (eg - the publications list page), will not need creating here, 
+# they should be dynamic lists that show anything that was created as a publication, likewise the staff list page 
+# should show any person that has been created
+#
+# Comment Bob for parent issue:
+# There's no real support for hierarchical content in Bolt, but you can use grouping to structure it somewhat better
+# What we often do, is that we use the "behaves_like: grouping" taxonomy for this. We make one group called 'main' or 'top', 
+# with a bunch of pages, and then as much groups as we have top level pages.
+#
+# Issues: 
+# - Not defined how to build up the selectfield for parent to build a structure; using suggestion from bob with taxonomies
+# - The slug contenttype does not fit the requirement
+#
+# ToDos:
+# - Define the templates for visualization in type templateselect
+# - Define top level pages in taxonomy.yml and delete selectfield for parent if taxonomy is choosen as the prefferd way
+#
+# Questions:
+# - Is it possible to build up contenttype slug with a slash in it? Example: /parent/title
+# - Can one use choosen taxonomies for the value of a slug type? Example: value: taxonomy['main']
+# - How exactly will be the handling for taxonomy tags? Are there prefilled tags?
+#
+#################################
+structure:
+  name: Structures
+  singular_name: Structure
+  fields:
+  # Shown on Overview pages, List pages, Teasers
+    title:
+      type: text
+      required: true  
+      label: "Title (required):"
+      variant: inline 
+    # The permalink should be /parent URL/title - eg pro.europeana.eu/share-your-data/getting-started.html 
+    slug:
+      type: slug
+      values: title
+    selectfield:
+      type: select
+      label: "Parent (required):"
+      values: [ none, foo, bar ]
+    # Shown on Overview pages
+    contacts:
+      type: select
+      required: false
+      label: "Contact person:"             
+      values: person/id,last_name,first_name
+      multiple: true 
+    # Shown on Lists, Overviews  
+    secondary_mail:
+      type: checkbox
+      required: false
+      label: "Show secondary email instead:" 
+    ## Shown on Overview pages, List pages                 
+    intro:
+      type: html
+      required: false 
+      label: "Intro text:"             
+      height: 150px 
+    # Shown on Overview pages, List pages, Teasers    
+    image:
+      type: image
+      required: true  
+      label: "Image:"
+      attrib: title
+      extensions: [ gif, jpg, png ] 
+    # This is to be used to define the layout - it should either be a overview page, which has the various boxes. Or a list page, that contains pages. 
+    template:
+      type: templateselect
+      filter: '*.twig' 
+  # These tags are to be used to link together boxes that have been set to (automatic recommendation)                       
+  taxonomy: [ main, events, tags ]      
 
-kitchensink:
-    name: Kitchensinks
-    singular_name: Kitchensink
-    fields:
-        title:
-            type: text
-            class: large
-            required: true
-            pattern: "*{2,255}" # see: http://html5pattern.com/
-        slug:
-            type: slug
-            uses: [ selectfield, title ]
-        video:
-            type: video
-        html:
-            type: html
-            height: 150px
-        geolocation:
-            type: geolocation
-        image:
-            type: image
-            attrib: title
-            extensions: [ gif, jpg, png ]
-        imagelist:
-            type: imagelist
-        file:
-            type: file
-        filelist:
-            type: filelist
-        checkbox:
-            type: checkbox
-            label: "This is a checkbox"
-        markdown:
-            prefix: "<em>This short text comes before the actual field.</em>"
-            type: markdown
-            postfix: "<hr>"
-        textarea:
-            type: textarea
-        template:
-            type: templateselect
-            filter: '*.twig'
-        datetime:
-            type: datetime
-            default: "2000-01-01"
-        date:
-            type: date
-            default: "first day of last month"
-        integerfield:
-            type: integer
-            index: true
-        floatfield:
-            type: float
-        selectfield:
-            type: select
-            values: [ none, foo, bar ]
-        multiselect:
-            type: select
-            values: [ A-tuin, Donatello, Rafael, Leonardo, Michelangelo, Koopa, Squirtle ]
-            multiple: true
-            postfix: "Select your favourite turtle(s)."
-        selectentry:
-            type: select
-            values: entries/id,title
-            postfix: "Select an entry"
-    relations:
-        entries:
-            multiple: false
-            label: Choose an entry
-            order: -id
-            format: "{{ item.title|escape }} <span>(№ {{ item.id }})</span>"
-        pages:
-            multiple: true
-            order: title
-            label: Select zero or more pages
-    taxonomy: [ categories, tags, chapters ]
-    show_on_dashboard: true
-    default_status: publish
-    searchable: false
-
-
-# possible field types:
-# text - varchar(256) - input type text.
-# integer - integer - Input field for integer numbers.
-# float - double - Input field for floating numbers, stored as 'Double'.
-# geolocation - text (65kb) - Input field for geolocation. Enter an address, and the location is geocoded to latitude/longitude coordinates
-# imagelist - text (65kb) - Input type for imagelists. Add multiple images with a description. Useful for image sliders, galleries, etcetera.
-# image - varchar(256) - image select/upload widget, stored as filename.
-# file - varchar(256) - file select/upload widget, stored as filename.
-# filelist - text (65kb) - Input type for a list of files. Including a description.
-# video - varchar(256) - Video embed widget, stored as filename.
-# html - text (65kb) - wysiwyg element.
-# textarea - varchar(32768) - Simple, plain < textarea > field.
-# markdown - varchar(32768) - Simple, plain < textarea > field, which is parsed as Markdown text.
-# datetime - datetime - date and time selector widget.
-# date - datetime - date selector widget.
-# select - varchar(256) - select with predefined values
-# templateselect - varchar(256) - select with template filenames
-# checkbox - integer - checkbox-field which is 1 (checked) or 0 (unchecked)
-
-
-# number (deprecated) - input type decimal(18,9), useful for storing number that need to be sortable
+#################################
+#
+# LOCATION
+#
+# Notes: 
+# This content type should NOT be crawled, 
+# it is used to enter data into the other areas where it is required 
+# so the /permalink/locations area should not be in the sitemap, and should be ignored by robots.
+#
+# Issues:
+# - Not prooven that one can get marked entries from europeana_place in the job contenttype. See ToDos.
+#
+# ToDos: 
+# - make content type not crawable
+#
+# Questions:
+# - Is it possible  in the contenttypes to choose values in type: select based upon a certain value in another contenttype?
+#   Example: Conenttype location with checkobox marked. Contenttype Job will only get location values which are marked.
+#
+#################################
+location:
+  name: Locations
+  singular_name: Location
+  fields: 
+    # Shown on Job list page, Job page, Events list page, Events page, Home page 
+    title:
+      type: text
+      required: true  
+      label: "Title (required):"
+      variant: inline  
+    slug:
+      type: slug
+      uses: title
+    # Shown on Jobs page, Events page, Home page       
+    geolocation:
+      type: geolocation  
+      required: true  
+      label: "Location (required):"
+    # If checked, then it will make the content type appear in the drop down Location box in the "Job" content type.    
+    europeana_place:
+      type: checkbox
+      prefix: "<hr>"
+      required: false
+      label: "This is a Europeana place of work:" 
+    # If checked, then this will be the official office address used in the footer
+    europeana_office:
+      type: checkbox
+      required: false
+      label: "This is the main Europeana office (appear in footer):"     
+  
