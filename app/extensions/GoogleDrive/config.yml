@@ -1,0 +1,14 @@
+##################################################
+# 
+# Define google parameters
+#
+##################################################
+client_id : XXX
+client_secret : XXX
+redirect_uri : http://localhost/bolt/googledrive
+scope : https://www.googleapis.com/auth/drive
+
+# 
+# path from $_SERVER['DOCUMENT_ROOT'] with file name
+#
+log_dir : /logs/gdrive.log
