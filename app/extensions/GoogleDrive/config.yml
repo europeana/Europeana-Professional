@@ -3,6 +3,8 @@
 # Define google parameters
 #
 ##################################################
+
+# see: https://developers.google.com/drive/web/enable-sdk
 client_id : XXX
 client_secret : XXX
 redirect_uri : http://localhost/bolt/googledrive
