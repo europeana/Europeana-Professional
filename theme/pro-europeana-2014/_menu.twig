@@ -1,0 +1,16 @@
+<!-- start .nav-->
+<nav id="nav" class="nav_primary nav">
+	<ul class="nav-list">
+		{% for item in menu %}
+    	<li>
+    		{# add class="current" to active menu item #}
+    		{% if item|current %}
+    			<a class="current" href="{{ item.link }}">{{item.label}}</a>
+    		{% else %}
+    			<a href="{{ item.link }}">{{item.label}}</a>
+    		{% endif %}
+    	</li>
+		{% endfor %}
+	</ul>
+</nav>
+<!-- end .nav-->

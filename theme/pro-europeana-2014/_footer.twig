@@ -1,0 +1,81 @@
+<!-- Start Footer -->
+
+{% setcontent footer = 'Footer' where { status: 'published' } returnsingle %}
+
+<footer class="footer" role="contentinfo">
+    <div class="lc">
+        <div class="grid">
+            <div class="l-contact">
+                <div>
+                	<a href="{{ paths.root }}">
+	                	{% if footer.image != "" %}
+	                		<img src="{{ footer.image|image }}" title="{{ footer.values['image'].title }}" alt="{{ footer.values['image'].title }}">
+	                	{% else %}
+	                		<img src="{{ app.config.get('general/sitelogo') }}" alt="app.config.get('general/sitename')" title="{{ footer.values['image'].title }}" alt="{{ footer.values['image'].title }}" />
+	                	{% endif %}
+                	</a>
+                </div>
+                
+                <div class="address">
+                   {{ footer.address }}
+                </div>
+
+            </div><!--
+
+        --><div class="l-content">
+
+                <div class="l-sitemap grid">
+                <div class="l-linklist">
+                		{{ footer.linklist_left}}
+                	</div><!--
+             --><div class="l-linklist">
+                		{{ footer.linklist_right}}
+                	</div>
+                </div>
+
+                <div class="grid">
+                    <div class="l-mission">
+                        {{ footer.mission}}
+                    </div><!--
+
+                 --><div class="l-othersites">
+						{{ footer.linklist_other }}
+                    </div>
+                </div>
+            </div><!--
+
+        --><div class="l-nextsteps">
+
+                <div class="signup">
+                    {{ footer.signup}}
+                    <<< TODO sign up form here >>>
+                </div>
+                
+                <div class="social-links">
+                	{{ footer.socialmedia}}
+                </div>
+            </div
+        </div>
+
+    </div>
+
+    <div class="sub-footer">
+
+        {{ menu('footer', '_submenu.twig') }}  
+
+        <p class="copyright">Co-funded by the European Union. (hardcoded)</p>
+
+        <a class="licensehr" rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+            <img alt="Creative Commons License" src="/images/cc.png"> (hardcoded)
+        </a>
+        
+    </div>
+
+
+</div>
+</footer>
+
+
+</body>
+</html>
+<!-- End Footer -->

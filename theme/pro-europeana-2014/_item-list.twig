@@ -1,0 +1,87 @@
+{#
+  used in:
+  	- listing.twig
+	
+#}
+
+{% if (record) %}
+
+{% set listItem = record %}
+{% set contenttype = record.contenttype.name %}
+{% set author = listItem.related('persons')|first %}
+{% set location = record.related('locations')|first %}
+	
+	<li class="list-item">
+	
+		<div class="item-supplementary">
+		
+		{% if contenttype == "Publications" %}
+			<div class="item-image">
+				<a href="{{ listItem.link }}"><img src="{{ listItem.image|image }}" alt="{{ listItem.image|title }}" /></a>
+			</div>
+		{% elseif contenttype == "BlogPosts" %}
+			<div class="item-image">
+				<a href="{{ listItem.link }}"><img src="{{ listItem.image|image }}" alt="{{ listItem.image|title }}" /></a>
+			</div>
+		{% elseif contenttype == "Events" %}
+			<div class="item-bigdate">
+				{% include '_item-date-event.twig' with {record : listItem} %}
+			</div>
+		{% endif %}
+			
+		</div><!--
+	
+	 --><div class="item-details">
+			
+			<h2 class="title"><a href="{{ listItem.link }}">{{ listItem.title }}</a></h2>
+	
+			{% if contenttype == "Publications" %}
+				{# set author #}
+				{% include '_item-author.twig' with {record : author} %}
+			{% elseif contenttype == "BlogPosts" %}
+				{# set author #}
+				{% include '_item-author.twig' with {record : author} %}
+				
+				{# set readtime #}
+				{#  todo: where did that came from? -> update contenttype "blogpost" #}
+				{% include '_item-readtime.twig' %}
+			{% endif %}
+			
+			<div class="item-meta-secondary">
+			
+			{% if contenttype == "Publications" %}
+				{# set date #}
+				{% include '_item-date.twig' %}
+				{# set tags#}
+				{% include '_item-tags.twig' %}
+			{% elseif contenttype == "BlogPosts" %}
+				{# set date #}
+				{% include '_item-date.twig' %}
+				{# set tags #}
+				{% include '_item-tags.twig' %}
+				{ molecules-item-comments }
+			{% elseif contenttype == "Events" %}
+				{# set location #}
+				{% include '_item-location.twig' with {record: location} %}
+				{# set tags #}
+				{% include '_item-tags.twig' %}
+			{% elseif contenttype == "Jobs" %}
+				{# set date #}
+				{% include '_item-date.twig' %}
+				{# set location #}
+				{% include '_item-location.twig' %}
+				{# set department #}
+				{% include '_item-department.twig' %}
+			{% endif %}
+	
+			</div>
+	
+			<div class="item-preview">
+				{{ blogpost.teaser }}
+			</div>
+	
+		</div>
+	
+	</li>
+{% endif %}
+

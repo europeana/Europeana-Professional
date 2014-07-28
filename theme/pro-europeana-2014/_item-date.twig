@@ -1,0 +1,18 @@
+{# 
+  used in:
+	- record_blogpost
+	- record_job
+	- listing_list
+#}
+
+{% if record.datepublish %}
+<span class="item-date">
+	<svg class="icon icon-calendar">
+		<use xlink:href="#icon-calendar"></use>
+	</svg>
+	<span class="item-day">{{ record.datepublish|localdate("%e") }}</span>
+	<span class="item-month">{{ record.datepublish|localdate("%B") }}</span>
+	<span class="item-year">{{ record.datepublish|localdate("%Y") }}</span>
+</span>
+{% endif %}
+

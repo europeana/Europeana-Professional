@@ -1,0 +1,31 @@
+{# 
+  used in:
+	- record_blogpost
+	- record_event
+	- record_job
+	- record_person
+	- listing_list
+	- gerneric
+	- overview
+#}
+
+{% if record %}
+
+<div class="help-contact">
+
+	<h4>About the Author (hardcoded)</h4>
+
+	<img src="{{ record.image|image }}" alt="{{ record.image|title }}" />
+
+	<h5>Contact: (hardcoded)</h5>
+
+	<div class="vcard">
+		<div class="fn">{{ record.first_name }} {{ record.last_name }}</div>
+		<div class="tel">{{ record.telephone_number }}</div>
+		<a class="email" href="mailto:{{ record.email }}">{{ record.email }}</a>
+	</div>
+
+</div>
+
+{% endif %}
+

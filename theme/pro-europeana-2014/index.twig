@@ -1,0 +1,206 @@
+{% include '_header.twig' %}
+
+{% set home = record %}
+
+<div class="pro-hero cf" >
+<div class="lc">
+
+	<div class="hero-text">
+
+		<h1 class="title">Home page hero contents here</h1>
+		<p>This stuff will vary but the at-launch content really needs to be specified</p>
+
+	</div>
+
+</div>
+</div>
+
+<!-- Start Main page content -->
+<main role="main" class="pro-home">
+
+
+<div class="promo-abouteuropeana section">
+<div class="lc">
+
+	The <a href="linky">Europeana Foundation</a> and its Network create new ways for people to engage with European cultural history for work, learning or pleasure.
+
+</div>
+</div>
+
+<div class="pro-info section">
+<div class="lc">
+	
+<div class="grid">
+
+	<div class="l-primaryaction">
+
+		<div class="jointhenetwork">
+			{{ home.callout_1|raw  }}
+			<a class="button button-join cta" href="join">Join now cod</a>
+		</div>
+		
+	</div><!--
+ --><div class="l-usefulinfo">
+ 	<div class="usefulinfo">
+
+ 	<h2>Useful Information (hardcoded)</h2>
+
+	<div class="grid">
+		<div class="l-usefulinfo-item">
+
+			<div class="usefulinfo-item">
+				{{ home.callout_2|raw  }}
+			</div>
+
+		</div><!--
+	 --><div class="l-usefulinfo-item">
+
+			<div class="usefulinfo-item">
+				{{ home.callout_3|raw  }}
+			</div>
+
+		</div><!--
+	 --><div class="usefulinfo-secondary">
+	 
+			<div class="l-usefulinfo-item">
+
+				<div class="usefulinfo-item">
+					{{ home.callout_4|raw  }}
+					
+				</div>
+
+
+			</div><!--
+		 --><div class="l-usefulinfo-item">
+
+				<div class="usefulinfo-item">
+					<a href="labs.europeana.eu" class="block-link labs-link">
+						{{ home.callout_5|raw  }}
+					</a>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	</div>
+	</div>
+
+</div>
+
+	
+</div>
+</div>
+
+<div class="section home-news">
+	<div class="lc">
+
+	{{ home.callout_6|raw  }}
+
+	<div class="grid cf">
+
+		<div class="l-news">
+			<div class="grid">
+			
+				{# 
+					START - related/latest blogposts.
+					if related blogposts are not defined, latest blogposts were used
+				#}
+				
+				{# get related blogposts #}
+				{% set blogposts = home.related('blogpost') %}
+				
+				{# get latest items when related are not defined #}
+				{% if blogposts is empty %}
+					{% setcontent blogposts = "blog/latest/2" %}
+				
+				{# merge related and latest items by id when only one related item available #}
+				{% elseif blogposts|length < 2 %}
+					{% setcontent latestBlogPosts = "blog/latest/2" %}
+					{% for k,v in latestBlogPosts %}
+						{% if (v.id != blogposts[0].id and loop.index0 < 2) %}
+							{% set blogposts = blogposts|merge({k : v}) %}
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+				
+				{# render blogposts #}
+				{% for post in blogposts %}
+				<div class="l-post">
+					<div class="block block-inset">
+					    <a href="{{ post.link }}" class="inner" title="{{ post.title }}">
+							<div class="b-thumb">
+								<img src="{{ post.teaser_image|image }}" alt="{{ post.teaser_image }}" />
+								<div class="b-text">
+									<h2 class="headline">{{ post.title }}</h2>
+								</div>
+							</div>
+							<div class="excerpt">
+								<p>{{ post.excerpt }}</p>
+							</div>
+						</a>
+					</div>
+				</div><!--
+			 -->
+				{% endfor %}
+				{# END - related/latest blogposts #}
+				
+			</div>
+
+			<a class="link-more" href="{{ paths.root }}blogposts">More from the Europeana professional Blog</a>
+		</div><!--
+
+	 --><div class="l-newsfeed">
+
+			<div class="tweets">
+				{# start - twitter feed #}
+		 		{# todo: set pro.europeana twitter settings #}
+				{{ twitterfeed() }}
+				{# end - twitter feed #}
+			</div>
+
+		</div>
+
+	</div>
+	</div>
+</div>
+
+
+{% setcontent events = 'Events' limit 2 orderby 'start_event' %}
+{% if events is defined %}
+
+<div class="section events-upcoming">
+	<div class="lc">
+
+		<h2>Upcoming Events (hardcoded)</h2>
+
+		<div class="grid">
+			{% for event in events %}
+			
+				<div class="event">
+					
+					{% include '_item-date-event.twig' with {record : event} %}
+	
+					<div class="event-details">
+						<h2 class="event-title">{{ event.title }}</h2>
+						{{ event.teaser }}
+						
+					</div>
+				</div><!--
+
+	     -->
+			{% endfor %}
+
+		</div>
+
+		<a class="link-more" href="{{ paths.root }}events">More Events</a>
+
+	</div>
+</div>
+{% endif %}
+
+<!-- End main content -->
+</main>
+
+
+{% include '_footer.twig' %}
+

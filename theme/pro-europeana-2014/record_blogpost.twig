@@ -1,0 +1,95 @@
+{% include '_header.twig' %}
+
+{% set blogpost = record %}
+{% set author = blogpost.related('persons')|first %} {# "|first" to get as single record #}
+{% set related = blogpost.related() %}
+
+<!-- Start content -->
+<main role="main" class="l-page">
+<div class="lc">
+	<!-- Start grid -->
+	<div class="grid-main">
+
+		<div class="l-content">
+		
+		<div class="l-breadcrumbs">
+			{% include '_item-breadcrumb.twig' %}
+		</div>
+		
+		<article class="maincontent">
+			<div class="textcontent">
+
+				<div class="articleheader">
+
+					<h1 class="title">{{ blogpost.title }}</h1>
+
+					
+					<div class="item-meta-primary">
+					
+						{# set author #}
+						{% if author %}
+						{% include '_item-author.twig' with {record : author} %}
+						{% endif %}
+						
+						{# set readtime #}
+						{#  todo: where did that came from? -> update contenttype "blogpost" #}
+						{% include '_item-readtime.twig' %}
+						
+					</div>
+					
+					<div class="item-meta-secondary">
+						{# set date #}
+						{% include '_item-date.twig' %}
+						
+						{# set tags #}
+						{% include '_item-tags.twig' %}
+						
+						{# set comments #}
+						{# todo: social media #}
+						{ molecules-item-comments }
+					</div>
+
+				</div>
+
+				<div class="prose">
+					{{ blogpost.body|raw }}
+				</div>
+			</div>
+
+			{# related content #}
+			{% include '_item-related.twig' with {record : related} %}
+			
+			<aside>
+				<<<<< TODO Disqus Comments go here >>>>>
+			</aside>
+
+
+		</article>
+		</div><!--
+
+	 --><div class="l-sidebar">
+	 		<div class="inner">
+
+	 			{# set date #}
+				{% include '_item-contact.twig' with {record : author} %}
+
+				{# set Downloads #}
+				{% if blogpost.attachments %}
+				<div class="downloads">
+					<h4>{{ blogpost.contenttype['fields']['attachments'].label }}</h4>
+					{% include '_item-filelist.twig' with {record : blogpost.attachments} %}
+				</div>
+				{% endif %}
+				
+			</div>
+
+		</div>
+	</div>
+	<!-- End grid -->
+</div>
+</main>
+<!-- End Content -->
+
+
+{% include '_footer.twig' %}
+

@@ -1,0 +1,82 @@
+{% include '_header.twig' %}
+
+{% set publication = record %}
+{% set author = record.related('persons')|first %}
+
+
+<!-- Start content -->
+<main role="main" class="l-page">
+<div class="lc">
+	<!-- Start grid -->
+	<div class="grid-main">
+
+		<div class="l-content">
+
+		<div class="l-breadcrumbs">
+			{% include '_item-breadcrumb.twig' %}
+		</div>
+
+		<div class="maincontent">
+
+			<div class="l-publication">
+
+			 	<div class="l-photo">
+					<img src="{{ publication.image|image }}" alt="{{ publication.values['image'].title }}"/>
+				</div><!--
+
+			 --><div class="l-detail textcontent">
+
+			 		<h1 class="title">{{ publication.title }}</h1>
+
+					<div class="item-meta-primary">
+						
+						{# set author #}
+						{% if author %}
+						{% include '_item-author.twig' with {record : author} %}
+						{% endif %}
+						
+					</div>
+
+					<div class="item-meta-secondary">
+						{# set date #}
+						{% include '_item-date.twig' %}
+						{# set tags #}
+						{% include '_item-tags.twig' %}
+					</div>
+
+
+					<div class="prose">
+					{{ publication.body|raw }}
+					</div>
+
+				</div>
+			</div>
+
+			<div class="section files">
+				<h2>Files (hardcoded)</h2>
+				{% include '_item-filelist-detail.twig' with { filelist: publication.filelist } %}
+			</div>
+
+			{  molecules-related-images title: "You might also like:" }
+
+		</div>
+		</div><!--
+
+	 --><div class="l-sidebar">
+			<div class="inner">
+
+			{# todo: change author to contact #}
+			{% include '_item-help.twig' with { record: author } %}
+				
+			</div>
+
+		</div>
+	</div>
+	<!-- End grid -->
+</div>
+</main>
+<!-- End Content -->
+
+
+{% include '_footer.twig' %}
+

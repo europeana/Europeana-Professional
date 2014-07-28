@@ -1,0 +1,53 @@
+{% include '_header.twig' %}
+
+{% set listItems = records %}
+
+<!-- Start content -->
+<main role="main" class="l-page">
+<div class="lc">
+	<!-- Start grid -->
+	<div class="grid-main">
+
+		<div class="l-content">
+
+			<div class="l-breadcrumbs">
+				{% include '_item-breadcrumb.twig' %}
+				{ molecules-sortby }
+			</div>
+
+		<div class="maincontent">
+
+			<div class="results">
+
+				<ul class="results-list">
+					{% for listItem in listItems %}
+						{% include '_item-list.twig' with { record: listItem } %}
+					{% endfor %}
+				</ul>
+
+				{{ pager() }}
+				
+
+			</div>
+
+			{ molecules-related-noimages(title: "Related") }
+
+		</div>
+		</div><!--
+
+	 --><div class="l-sidebar">
+	 		<div class="inner">
+
+				{ molecules-help-contact(title:"Need help?") }
+				
+			</div>
+
+		</div>
+	</div>
+	<!-- End grid -->
+</div>
+</main>
+<!-- End Content -->
+
+{% include '_footer.twig' %}
+

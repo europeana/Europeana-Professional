@@ -1,0 +1,37 @@
+{# 
+  used in:
+	- every contenttype
+#}
+
+{% if record %}
+{% set person = record %}
+
+<div class="help-contact">
+
+	<h4>Need help? (hardcoded)</h4>
+	
+	<img src="{{ person.image|image }}" alt="{{ person.values['image'].title }}" />
+
+	<h5>Contact: (hardcoded)</h5>
+
+	<div class="vcard">
+		<div class="fn">{{ person.first_name }} {{ person.last_name }}</div>
+	
+		{% if person.telephone_number != "" %}
+		<div class="tel">{{ person.telephone_number }}</div>
+		{% endif %}
+
+		{# show person.secondary_mail if event.secondary_mail is checked #}
+		{% if (use_secondary_mail != NULL and person.secondary_mail != "") %}
+		<a class="email" href="mailto:{{ person.secondary_mail }}">{{ person.secondary_mail }}</a>
+		{% endif %}
+		{# show person.email as default #}
+		{% if (use_secondary_mail == NULL and person.email != "") %}
+		<a class="email" href="mailto:{{ person.email }}">{{ person.email }}</a>
+		{% endif %}
+		
+	</div>
+
+</div>
+
+{% endif %}

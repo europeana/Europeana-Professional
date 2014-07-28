@@ -1,0 +1,42 @@
+{# 
+  used in:
+	- record_blogpost
+	- record_event
+#}
+
+{% if (record) %}
+
+<div class="related-items">
+
+	<h4>You might also like: (hardcoded)</h4>
+
+	<ul class="l-relatedlinks">
+		
+		{% for related in record %}
+		{# 
+			loop for each related contenttye except PERSONS
+			todo: define excluded contenttypes
+		#}
+		{% if related.contenttype.name != 'Persons' %}
+		<li class="related-item">
+			<div class="link-block block">
+			    <a href="{{ related.link }}" class="b-inner">
+					<div class="b-thumb">
+						<img src="{{ related.image|image }}" alt="{{ related.image|title }}" />
+					</div>
+					<div class="b-text">
+						<h2 class="item-title">{{ related.title }}</h2>
+						<p>{{ related.teaser }}</p>
+					</div>
+				</a>
+			</div>
+		</li>
+		{% endif %}
+		{% endfor %}
+		
+	</ul>
+	
+</div>
+
+{% endif %}
+

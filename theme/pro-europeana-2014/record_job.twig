@@ -1,0 +1,82 @@
+{% include '_header.twig' %}
+
+{% set job = record %}
+{% set location = job.related('locations')|first %}
+
+<!-- Start content -->
+<main role="main" class="l-page">
+<div class="lc">
+	<!-- Start grid -->
+	<div class="grid-main">
+
+		<div class="l-content">
+
+		<div class="l-breadcrumbs">
+			{% include '_item-breadcrumb.twig' %}
+		</div>
+		
+		<article class="maincontent">
+			<div class="textcontent">
+
+				<div class="articleheader">
+
+					<h1 class="title">{{ job.position }}</h1>
+
+					<div class="item-meta-primary">
+						<span class="item-payscale">
+						{% if job.salary_eur != "0" %}	
+							&euro;{{ job.salary_eur }} p/m 
+						{% endif %}
+						{% if job.scale_eur != "0" %}
+							{{ job.scale_eur }}
+						{% endif %}	
+						</span>
+						{# set location #}
+						{% include '_item-location.twig' with {record : location } %}
+						
+					</div>
+
+					<div class="item-meta-secondary">
+						{# set date #}
+						{% include '_item-date.twig' %}
+						{# set department #}
+						{% include '_item-department.twig' %}
+					</div>
+
+					{# set deadline #}
+					{% include '_item-deadline.twig' %}
+					
+				</div>
+
+				<div class="prose">
+					{{ job.body|raw }}
+				</div>
+			</div>
+
+		</article>
+		</div><!--
+
+	 --><div class="l-sidebar">
+	 		<div class="inner">
+
+				{ ?? molecules-help-contact title: "Need Help?" ?? }
+				{ currently no relation between "job" and "person" }
+				
+				{% include '_item-deadline.twig' %}
+
+				<div class="downloads">
+					<h4>Downloads (hardcoded)</h4>
+					{# set filelist #}
+					{% include '_item-filelist.twig' with {record : job.filelist } %}
+				</div>
+				
+			</div>
+
+		</div>
+	</div>
+	<!-- End grid -->
+</div>
+</main>
+<!-- End Content -->
+
+{% include '_footer.twig' %}

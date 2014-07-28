@@ -1,0 +1,97 @@
+{% include '_header.twig' %}
+
+{% set event = record %}
+{% set location = record.related('locations')|first %}
+{% set speakers =  record.related('persons') %}
+{% setcontent contact = 'persons' where { id: event.contact } %}
+
+
+<!-- Start content -->
+<main role="main" class="l-page event-detail">
+
+
+<div class="lc">
+	<!-- Start grid -->
+	<div class="grid-main">
+		
+
+		<div class="l-content">
+
+		<div class="l-breadcrumbs">
+			{% include '_item-breadcrumb.twig' %}
+		</div>
+
+		{# google map - event #}
+		<div>
+			<img src="http://maps.googleapis.com/maps/api/staticmap?center={{ location.geolocation.latitude }},{{ location.geolocation.longitude }}&zoom=14&size=617x300&sensor=false&markers={{ location.geolocation.latitude }},{{ location.geolocation.longitude }}">
+		</div>
+		
+		<div class="maincontent">
+			<div class="textcontent">
+
+				<div class="articleheader">
+					<div class="cf">
+						{% include '_item-date-event.twig' %}
+						<h1 class="title">{{ event.title }}</h1>
+					</div>
+					
+					{% include '_item-address.twig' with {location: location, contact: contact} %}
+
+				</div>
+
+				<div class="prose">
+					<!-- cms wysiwyg page content starts -->
+					{{ event.body|raw }}
+					<!-- cms wysiwyg page content ends -->
+				</div>
+
+
+			</div>
+
+			{% if speakers %}
+			<div class="section speakers">
+				<h2>Speakers</h2>
+
+				<ul class="people-list">
+					{% for speaker in speakers %}
+						<li>{% include '_item-person.twig' with { person: speaker } %}</li>
+					{% endfor %}
+				</ul>
+			</div>
+			{% endif %}
+
+			<div class="section files">
+				<h2>Files (hardcoded)</h2>
+				{% include '_item-filelist-detail.twig' with { filelist: event.file } %}
+			</div>
+
+
+
+			{ ?? molecules-related-images title: "You might also like:" ?? }
+
+
+
+		</div>
+		</div><!--
+
+	 --><div class="l-sidebar">
+	 		<div class="inner">
+			
+				{% include '_item-help.twig' with { record: contact, use_secondary_mail: event.secondary_mail } %}
+			
+			</div>
+
+		</div>
+	</div>
+	<!-- End grid -->
+</div>
+
+
+
+
+</main>
+<!-- End Content -->
+
+
+{% include '_footer.twig' %}
+

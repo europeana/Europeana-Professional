@@ -1,0 +1,34 @@
+{# 
+  used in:
+	- record_event
+	
+	todo:
+	- extend bold geolocation with "region", "country code"
+#}
+
+{% if location %}
+
+{# 
+	address:
+	    0 str() => street number
+	    1 str() => postalcode city
+	    2 str() => country
+#}
+{% set address = location.geolocation.formatted_address|split(',') %}
+{% set postalcode_city = address[1]|split(' ') %}
+{% set country = address[2] %}
+
+<div class="vcard">
+	<div class="org">{{ location.title }}</div>
+	<div class="adr">
+		<div class="street-address">{{ location.geolocation.address }}</div>
+		<span class="locality">'locality' -> not a location property</span>,
+		<span class="postal-code">{{ postalcode_city[1] }}</span>,
+		<abbr class="region" title="{{ postalcode_city[2] }}">{{ postalcode_city[2] }}</abbr>
+		<div class="country-name">{{ country }}</div>
+	</div>
+	<div class="tel">{{ contact.telephone_number }}</div>
+</div>
+
+{% endif %}
+

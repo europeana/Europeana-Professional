@@ -1,0 +1,62 @@
+{# 
+  used in:
+	- record_event
+	- listing_people
+#}
+
+{% if record %}
+
+<div class="l-person block block-thumb">
+    <div class="b-inner">
+		<div class="b-thumb">
+			<a href="{{ person.link }}" title="{{ person.values['image'].title }}">
+				<img src="{{ person.image|image }}" alt="{{ person.values['image'].title }}" />
+			</a>
+		</div>
+		<div class="b-text">
+			<h2 class="person-name"><a href="{{ person.link }}">{{ person.first_name }} {{ person.last_name }}</a></h2>
+			
+			{% if person.job_title != "" %}
+			<div class="jobdetails">
+				<div class="job-title">{{ person.job_title }}</div>
+			</div>
+			{% endif %}
+			
+			
+			{% if person.email != "" %}
+			<div class="item-sendemail">
+				<a class="email" href="mailto:{{ person.email }}">
+					<svg class="icon icon-sendemail"><use xlink:href="#icon-sendemail"></use></svg> 
+					{{ person.email }}
+				</a>
+			</div>
+			{% endif %}
+			
+			{% if person.telephone_number != "" %}
+			<div class="item-phone-work">
+				<svg class="icon icon-phone-work">
+					<use xlink:href="#icon-phone-work"></use>
+				</svg>
+				<span class="tel">{{ person.telephone_number }}</span>
+			</div>
+			{% endif %}
+
+			
+			{# 
+				Twitter URL
+				https://twitter.com/Europeanaeu
+			#}
+			{% if person.twitter != "" %}
+			{% set twittername = person.twitter|split('/')|last %}
+			<div class="item-twitter">
+				<a href="{{ person.twitter }}"><svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>@{{ twittername }}</a>
+			</div>
+			{% endif %}
+			
+		</div>
+	</div>
+</div>
+		
+
+{% endif %}
+
