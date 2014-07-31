@@ -3,7 +3,7 @@
 	- record_event
 	
 	todo:
-	- extend bold geolocation with "region", "country code"
+	- extend bold geolocation with "region", "country code"?
 #}
 
 {% if location %}
@@ -19,7 +19,9 @@
 {% set country = address[2] %}
 
 <div class="vcard">
+	{% if location.title != "" %}
 	<div class="org">{{ location.title }}</div>
+	{% endif %}
 	<div class="adr">
 		<div class="street-address">{{ location.geolocation.address }}</div>
 		<span class="locality">'locality' -> not a location property</span>,
@@ -27,7 +29,9 @@
 		<abbr class="region" title="{{ postalcode_city[2] }}">{{ postalcode_city[2] }}</abbr>
 		<div class="country-name">{{ country }}</div>
 	</div>
+	{% if contact.telephone_number != "" %}
 	<div class="tel">{{ contact.telephone_number }}</div>
+	{% endif %}
 </div>
 
 {% endif %}

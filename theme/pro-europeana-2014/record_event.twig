@@ -3,8 +3,11 @@
 {% set event = record %}
 {% set location = record.related('locations')|first %}
 {% set speakers =  record.related('persons') %}
-{% setcontent contact = 'persons' where { id: event.contact } %}
 
+
+{% if event.contact %}
+{% setcontent contact = 'persons' where { id: event.contact } %}
+{% endif %}
 
 <!-- Start content -->
 <main role="main" class="l-page event-detail">
@@ -18,25 +21,27 @@
 		<div class="l-content">
 
 		<div class="l-breadcrumbs">
-			{% include '_item-breadcrumb.twig' %}
+			{% include 'items/_item-breadcrumb.twig' %}
 		</div>
 
 		{# google map - event #}
+		{% if location %}
 		<div>
 			<img src="http://maps.googleapis.com/maps/api/staticmap?center={{ location.geolocation.latitude }},{{ location.geolocation.longitude }}&zoom=14&size=617x300&sensor=false&markers={{ location.geolocation.latitude }},{{ location.geolocation.longitude }}">
 		</div>
+		{% endif %}
 		
 		<div class="maincontent">
 			<div class="textcontent">
 
 				<div class="articleheader">
 					<div class="cf">
-						{% include '_item-date-event.twig' %}
+						{% include 'items/_item-date-event.twig' %}
 						<h1 class="title">{{ event.title }}</h1>
 					</div>
-					
-					{% include '_item-address.twig' with {location: location, contact: contact} %}
-
+					{% if location %}
+					{% include 'items/_item-address.twig' with {location: location, contact: contact} %}
+					{% endif %}
 				</div>
 
 				<div class="prose">
@@ -51,24 +56,20 @@
 			{% if speakers %}
 			<div class="section speakers">
 				<h2>Speakers</h2>
-
 				<ul class="people-list">
 					{% for speaker in speakers %}
-						<li>{% include '_item-person.twig' with { person: speaker } %}</li>
+						<li>{% include 'items/_item-person.twig' with { person: speaker } %}</li>
 					{% endfor %}
 				</ul>
 			</div>
 			{% endif %}
 
+			{% if event.filelist %}
 			<div class="section files">
-				<h2>Files (hardcoded)</h2>
-				{% include '_item-filelist-detail.twig' with { filelist: event.file } %}
+				<h2>{{ event.contenttype.fields.filelist.label }}</h2>
+				{% include 'items/_item-filelist-detail.twig' with { filelist: event.filelist } %}
 			</div>
-
-
-
-			{ ?? molecules-related-images title: "You might also like:" ?? }
-
+			{% endif %}
 
 
 		</div>
@@ -76,9 +77,9 @@
 
 	 --><div class="l-sidebar">
 	 		<div class="inner">
-			
-				{% include '_item-help.twig' with { record: contact, use_secondary_mail: event.secondary_mail } %}
-			
+	 			{% if event.contact %}
+				{% include 'items/_item-help.twig' with { record: contact, use_secondary_mail: event.secondary_mail } %}
+				{% endif %}
 			</div>
 
 		</div>

@@ -1,0 +1,26 @@
+{% include '_header.twig' %}
+
+<br><br><br><br>
+<h1>person LIST</h1>
+
+{% for record in records %}
+<article>
+    {% if record.image!="" %}
+        <div class='imageholder'><img src="{{ record.image|thumbnail(120, 120) }}">
+        </div>
+    {% endif %}
+
+    <h2><a href="{{ record.link }}">{{ record.title }}</a></h2>
+
+    {{ record.excerpt(300) }}
+
+    {% include '_recordfooter.twig' with {record: record} %}
+
+</article>
+{% endfor %}
+
+{{ pager() }}
+
+
+{% include '_footer.twig' %}
+

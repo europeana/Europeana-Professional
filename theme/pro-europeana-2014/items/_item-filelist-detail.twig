@@ -9,7 +9,7 @@
 	{% for file in filelist %}
 	<li>
 		<span class="file-name">
-			<a href="#">{{ file.filename }}</a>
+			<a href="{{ paths.root }}files/{{ file.filename }}">{{ file.title }}</a>
 			<span class="file-info">{ file.type } { file.size }</span>
 		</span>
 		

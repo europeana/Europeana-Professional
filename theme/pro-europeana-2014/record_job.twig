@@ -12,7 +12,7 @@
 		<div class="l-content">
 
 		<div class="l-breadcrumbs">
-			{% include '_item-breadcrumb.twig' %}
+			{% include 'items/_item-breadcrumb.twig' %}
 		</div>
 		
 		<article class="maincontent">
@@ -24,27 +24,27 @@
 
 					<div class="item-meta-primary">
 						<span class="item-payscale">
-						{% if job.salary_eur != "0" %}	
+						{% if job.salary_eur != "" %}	
 							&euro;{{ job.salary_eur }} p/m 
 						{% endif %}
-						{% if job.scale_eur != "0" %}
+						{% if job.scale_eur != "" %}
 							{{ job.scale_eur }}
 						{% endif %}	
 						</span>
 						{# set location #}
-						{% include '_item-location.twig' with {record : location } %}
+						{% include 'items/_item-location.twig' with {record : location } %}
 						
 					</div>
 
 					<div class="item-meta-secondary">
 						{# set date #}
-						{% include '_item-date.twig' %}
+						{% include 'items/_item-date.twig' %}
 						{# set department #}
-						{% include '_item-department.twig' %}
+						{% include 'items/_item-department.twig' %}
 					</div>
 
 					{# set deadline #}
-					{% include '_item-deadline.twig' %}
+					{% include 'items/_item-deadline.twig' %}
 					
 				</div>
 
@@ -60,15 +60,17 @@
 	 		<div class="inner">
 
 				{ ?? molecules-help-contact title: "Need Help?" ?? }
-				{ currently no relation between "job" and "person" }
+				(currently no relation between "job" and "person")
 				
-				{% include '_item-deadline.twig' %}
+				{% include 'items/_item-deadline.twig' %}
 
+				{% if job.filelist %}
 				<div class="downloads">
-					<h4>Downloads (hardcoded)</h4>
+					<h4>{{ job.contenttype.fields.filelist.label }}</h4>
 					{# set filelist #}
-					{% include '_item-filelist.twig' with {record : job.filelist } %}
+					{% include 'items/_item-filelist.twig' with {records : job.filelist } %}
 				</div>
+				{% endif %}
 				
 			</div>
 

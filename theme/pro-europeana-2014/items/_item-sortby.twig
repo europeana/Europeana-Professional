@@ -1,0 +1,38 @@
+{#
+	sortby - order list view for 
+		- 'blogposts'
+		- 'jobs'
+		- 'publications'
+		- 'events'
+#}
+
+
+{% set currentsort = app.request.get('sort') %}
+{% set contenttype = records|first.contenttype.slug %} {# this works only for records with the same contenttype #}
+{% set sortoptions = ['datepublish', 'title'] %}
+
+{# apply filter for each contenttype #}
+{# 
+{% if contenttype == 'blogposts' %}
+	
+{% endif %}
+#}
+
+
+<div class="sortby">
+	<form method="get">
+	    <label for="list_sortby">Sort by:</label>
+	    <select id="list_sortby" name="sort" javascript: onchange="this.form.submit()">
+	    	{% for option in sortoptions %}
+	    		{% if option == currentsort %}
+	    			<option value="{{ option }}" selected>{{ option|capitalize }}</option>
+	    		{% else %}
+	    			<option value="{{ option }}">{{ option|capitalize }}</option>
+	    		{% endif %}
+	        {% endfor %}
+	    </select>
+    </form>
+</div>
+
+
+	

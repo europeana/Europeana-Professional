@@ -11,10 +11,18 @@
     {% set order = "" %}
 {% endif %}
 
+
+{% if "sort" in app.request.query.all|keys %}
+	{% set sort = "sort=" ~ app.request.query.all.sort ~ "&" %}
+{% else %}
+    {% set sort = "" %}
+{% endif %}
+
+
 {% if pager.link is defined %}
     {% set link = pager.link %}
 {% else %}
-    {% set link = "?" ~ filter ~ order ~ "page=" %}
+    {% set link = "?" ~ filter ~ order ~ sortby ~ "page=" %}
 {% endif %}
 
 {% if pager.totalpages > 1 %}

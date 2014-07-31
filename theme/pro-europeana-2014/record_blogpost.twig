@@ -1,8 +1,9 @@
 {% include '_header.twig' %}
 
 {% set blogpost = record %}
-{% set author = blogpost.related('persons')|first %} {# "|first" to get as single record #}
+{% set authors = blogpost.related('persons') %}
 {% set related = blogpost.related() %}
+
 
 <!-- Start content -->
 <main role="main" class="l-page">
@@ -13,7 +14,7 @@
 		<div class="l-content">
 		
 		<div class="l-breadcrumbs">
-			{% include '_item-breadcrumb.twig' %}
+			{% include 'items/_item-breadcrumb.twig' %}
 		</div>
 		
 		<article class="maincontent">
@@ -26,23 +27,23 @@
 					
 					<div class="item-meta-primary">
 					
-						{# set author #}
-						{% if author %}
-						{% include '_item-author.twig' with {record : author} %}
+						{# set authors #}
+						{% if authors %}
+							{% include 'items/_item-author.twig' with {records : authors} %}
 						{% endif %}
 						
 						{# set readtime #}
 						{#  todo: where did that came from? -> update contenttype "blogpost" #}
-						{% include '_item-readtime.twig' %}
+						{% include 'items/_item-readtime.twig' %}
 						
 					</div>
 					
 					<div class="item-meta-secondary">
 						{# set date #}
-						{% include '_item-date.twig' %}
+						{% include 'items/_item-date.twig' %}
 						
 						{# set tags #}
-						{% include '_item-tags.twig' %}
+						{% include 'items/_item-tags.twig' %}
 						
 						{# set comments #}
 						{# todo: social media #}
@@ -57,7 +58,7 @@
 			</div>
 
 			{# related content #}
-			{% include '_item-related.twig' with {record : related} %}
+			{% include 'items/_item-related.twig' with {records : related} %}
 			
 			<aside>
 				<<<<< TODO Disqus Comments go here >>>>>
@@ -71,13 +72,13 @@
 	 		<div class="inner">
 
 	 			{# set date #}
-				{% include '_item-contact.twig' with {record : author} %}
+				{% include 'items/_item-contact.twig' with {record : author} %}
 
 				{# set Downloads #}
 				{% if blogpost.attachments %}
 				<div class="downloads">
 					<h4>{{ blogpost.contenttype['fields']['attachments'].label }}</h4>
-					{% include '_item-filelist.twig' with {record : blogpost.attachments} %}
+					{% include 'items/_item-filelist.twig' with {record : blogpost.attachments} %}
 				</div>
 				{% endif %}
 				

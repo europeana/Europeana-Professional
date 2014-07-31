@@ -4,14 +4,14 @@
 #}
 <ul class="breadcrumbs">
 	<li><a href="{{ paths.root }}"><svg class="icon icon-home"><use xlink:href="#icon-home"></use></svg>Europeana Professional</a></li>
-	
 	{# listing #}
 	{% if records %}
-	<li><span class="lastitem">{{ records|first.contenttype.slug }}</span></li>
+	<li><span class="lastitem">{{ records|first.contenttype.slug|capitalize }}</span></li>
 	{# listing -> record #}
 	{% elseif record %}
-	<li><a href="{{ paths.root }}{{ record.contenttype.slug }}">{{ record.contenttype.slug }}</a></li>
+	<li><a href="{{ paths.root }}{{ record.contenttype.slug }}">{{ record.contenttype.slug|capitalize }}</a></li>
 	<li><span class="lastitem">{{ record.title }}</span></li>
 	{% endif %}
 	
+	{# { print(app['request'].requestUri ) } #}
 </ul>

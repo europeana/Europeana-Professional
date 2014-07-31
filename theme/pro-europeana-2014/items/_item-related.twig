@@ -1,24 +1,35 @@
-{# 
+{#
+
+  related items view. if "short" is true, render a short version without image
+
   used in:
 	- record_blogpost
 	- record_event
+	- record_publication
 #}
 
-{% if (record) %}
+{% if (records) %}
 
+
+{% if short %}
+<div class="related-items noimages">
+{% else %}
 <div class="related-items">
+{% endif %}
 
 	<h4>You might also like: (hardcoded)</h4>
 
 	<ul class="l-relatedlinks">
-		
-		{% for related in record %}
+	
+		{% for related in records %}
 		{# 
-			loop for each related contenttye except PERSONS
-			todo: define excluded contenttypes
+			loop for each related contenttye except PERSONS, JOBS
 		#}
-		{% if related.contenttype.name != 'Persons' %}
+		{% if (related.contenttype.name != 'Persons' and related.contenttype.name != 'Jobs') %}
 		<li class="related-item">
+			{% if short %}
+			<a href="{{ related.link }}">{{ related.title }}</a>
+			{% else %}
 			<div class="link-block block">
 			    <a href="{{ related.link }}" class="b-inner">
 					<div class="b-thumb">
@@ -30,6 +41,7 @@
 					</div>
 				</a>
 			</div>
+			{% endif %}
 		</li>
 		{% endif %}
 		{% endfor %}

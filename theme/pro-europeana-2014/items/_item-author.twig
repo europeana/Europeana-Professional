@@ -1,0 +1,14 @@
+{#
+  used in:
+  	- record_blogpost
+  	- record_publication
+  	- listing_listing
+#}
+
+{% if records %}
+<span class="author-name">By: 
+{% for record in records %}
+	<a href="{{ record.link }}">{{record.first_name}} {{record.last_name}}</a>{% if (authors|length > 1 and not loop.last) %},{% endif %}
+{% endfor%}
+</span>
+{% endif %}

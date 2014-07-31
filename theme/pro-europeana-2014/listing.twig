@@ -11,8 +11,9 @@
 		<div class="l-content">
 
 			<div class="l-breadcrumbs">
-				{% include '_item-breadcrumb.twig' %}
-				{ molecules-sortby }
+				{% include 'items/_item-breadcrumb.twig' %}
+				{% include 'items/_item-sortby.twig' %}
+
 			</div>
 
 		<div class="maincontent">
@@ -21,25 +22,21 @@
 
 				<ul class="results-list">
 					{% for listItem in listItems %}
-						{% include '_item-list.twig' with { record: listItem } %}
+						{% include 'items/_item-list.twig' with { record: listItem } %}
 					{% endfor %}
 				</ul>
 
 				{{ pager() }}
-				
 
 			</div>
-
-			{ molecules-related-noimages(title: "Related") }
 
 		</div>
 		</div><!--
 
 	 --><div class="l-sidebar">
 	 		<div class="inner">
-
-				{ molecules-help-contact(title:"Need help?") }
-				
+	 			{# contact person has to be defined, this is only for testing #}
+				{% include 'items/_item-help.twig' with { record: listItems|first.related('persons')|first } %}
 			</div>
 
 		</div>
