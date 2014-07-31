@@ -143,7 +143,7 @@ homepage:
     #  values: blog/id,title
   relations:
     # Used to call in the latest blog post, but can be overwritten if desired
-    blogpost:
+    blogposts:
       multiple: true
       label: Select blog posts (two are shown)
       order: -id
@@ -210,7 +210,7 @@ publications:
     filelist:
       type: filelist
       required: true 
-      label: "Attachments:"  
+      label: "Attachments:"
     image:
       type: image
       required: true  
@@ -220,25 +220,31 @@ publications:
   taxonomy: [ tags ]    
   relations:
     persons:
-      label: "Author"
-      multiple: false
+      label: "Author(s)"
+      multiple: true
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
-    blogpost:
-      multiple: false
-      label: Related content 1
+    pages:
+      multiple: true
+      label: "Pages"
       order: -id
       format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
-    event:
-      multiple: false
-      label: Related content 2
+    blogposts:
+      multiple: true
+      label: "Blog Posts"
       order: -id
       format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
-    publication:
-      multiple: false
-      label: Related content 3
+    events:
+      multiple: true
+      label: "Events"
+      order: -id
+      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+    publications:
+      multiple: true
+      label: "Publications"
       order: -id
       format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
+  sort: datepublish DESC
   record_template : record_publication.twig
 
 #################################
@@ -527,16 +533,16 @@ events:
     #  values: person/id,last_name,first_name
     #  multiple: true  
     # Show on Events page
-    file:
-      type: file 
+    filelist:
+      type: filelist
       required: true
-      label: "Documents folder (required):"
+      label: "Files:"
     # Show on Events page   
     contact:
       type: select
       multiple: false
       required: false
-      label: "Contact person:"          
+      label: "Contact:"          
       values: persons/id,last_name,first_name,job_title
       order: "{{ last_name }}"
       format: "{{ last_name }} {{ first_name }} {{ job_title }}" 
@@ -555,8 +561,11 @@ events:
       multiple: true
       label: "Speakers"
       order: last_name
-      format: "{{ item.last_name }}, {{ item.first_name }} "
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+        
+      
   taxonomy: [ tags ]
+  sort: start_event ASC
   record_template : record_event.twig
 
 #################################
@@ -642,27 +651,31 @@ Jobs:
       postfix: "<hr>"            
     # Show on Job page 
     salary_eur:
-      type: integer
+      type: text
       required: false
+      variant: inline
       label: "Monthly salary (EUR):"
       index: true
     # Show on Job page 
     scale_eur:
-      type: integer
+      type: text
       required: false
+      variant: inline
       label: "Scale (EUR):"
       index: true   
       postfix: "<hr>"   
     # Show on Job page 
     salary_gbp:
-      type: integer
+      type: text
       required: false
+      variant: inline
       label: "Monthly salary (GBP):"
-      index: true     
+      index: true
     # Show on Job page 
     scale_gbp:
-      type: integer
+      type: text
       required: false
+      variant: inline
       label: "Scale (GBP):"
       index: true
     deadline:
@@ -682,6 +695,7 @@ Jobs:
     locations:
       label: "Locations"
       multiple: false
+  sort: datepublish DESC
   record_template: record_job.twig
 
 #################################
@@ -766,19 +780,25 @@ blogposts:
       format: "{{ item.first_name|escape }} {{ item.last_name|escape }}"
     pages:
       multiple: false
-      label: Pages
+      label: "Pages"
       order: -id
       format: "{{ item.title|escape }}"
     blogposts:
       multiple: true
-      label: Blog post
+      label: "Blog posts"
       order: -id
       format: "{{ item.title|escape }}"
-    jobs:
-      multiple: false
-      label: job
+    events:
+      multiple: true
+      label: "Events"
       order: -id
       format: "{{ item.title|escape }}"
+    #jobs:
+    #  multiple: false
+    #  label: job
+    #  order: -id
+    #  format: "{{ item.title|escape }}"
+  sort: datepublish DESC
   record_template: record_blogpost.twig
 
 #################################
@@ -821,7 +841,7 @@ pages:
       type: select
       required: true
       label: "Parent (required):"             
-      values: ["a", "b"]
+      values: structure/id,title #["a", "b"]
     slug:
       type: slug
       uses: title
@@ -869,7 +889,11 @@ pages:
     support_navigation:
       type: markdown
       required: false
-      label: "Support navigation:"                      
+      label: "Support navigation:"    
+  relations:
+    structures:
+      label: "Parent"
+      multiple: false                  
   taxonomy: [ main, events ]
 
 #################################
@@ -911,13 +935,14 @@ structures:
       label: "Title (required):"
       variant: inline 
     # The permalink should be /parent URL/title - eg pro.europeana.eu/share-your-data/getting-started.html 
+    # must be solved with routing
     slug:
       type: slug
       values: title
     selectfield:
       type: select
       label: "Parent (required):"
-      values: [ none, foo, bar ]
+      values: structure/id,title #[ none, foo, bar ]
     # Shown on Overview pages
     contacts:
       type: select
@@ -946,9 +971,16 @@ structures:
     # This is to be used to define the layout - it should either be a overview page, which has the various boxes. Or a list page, that contains pages. 
     template:
       type: templateselect
-      filter: '*.twig' 
+      filter: 'page_*.twig' 
+  relations:
+    structures:
+      label: "Parent"
+      multiple: false
+    pages: 
+      label: "Childs"
+      multiple: true
   # These tags are to be used to link together boxes that have been set to (automatic recommendation)                       
-  taxonomy: [ main, events, tags ]      
+  taxonomy: [ main ]      
 
 #################################
 #
@@ -1009,7 +1041,7 @@ locations:
 # FOOTER
 #
 # Notes: 
-# Only first footer with status "published" is used. 
+# Only the first footer with status "published" is used. 
 #
 #################################
 footer:
