@@ -4,7 +4,10 @@
 require 'yaml'
 
 # Load database configuration
-ey_db_configs = YAML.load("#{config.shared_path}/config/database.yml")
+ey_db_configs = nil
+File.open("#{config.shared_path}/config/database.yml", "r") do |f|
+    ey_db_configs = YAML.load(f)
+end
 if ey_db_configs === nil then
     warning("Database configuration file '#{config.shared_path}/config/database.yml' not found or invalid!")
 end
