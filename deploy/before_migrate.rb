@@ -9,7 +9,7 @@ config_local = {
         'databasename' => ENV['DB_NAME'],
         'username' => ENV['DB_USER'],
         'password' => ENV['DB_PASS'],
-        'pompidom' => ENV
+        'pompidom' => ENV['HOME']
     }
 }
 
