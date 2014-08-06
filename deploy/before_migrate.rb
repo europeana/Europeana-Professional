@@ -4,10 +4,17 @@
 require 'yaml'
 
 # Load database configuration
-ey_db_configs = YAML.load("#{config.shared_path}/config/database.yml")
-ey_db_config = ey_db_config[config.environment_name]
-if ey_db_config === Nil then
-    warning("Database configuration for '#{config.environment_name}' not found!")
+ey_db_configs = nil
+File.open("#{config.shared_path}/config/database.yml", "r") do |f|
+    ey_db_configs = YAML.load(f)
+end
+if ey_db_configs === nil then
+    warning("Database configuration file '#{config.shared_path}/config/database.yml' not found or invalid!")
+end
+info(YAML.dump(ey_db_configs))
+ey_db_config = ey_db_configs['production']
+if ey_db_config === nil then
+    warning("Database configuration for 'production' not found!")
 end
 
 # Build Bolt config_local data structure
@@ -24,6 +31,10 @@ my_db_config = {
 # Write Bolt config_local YAML file
 config_filename = "#{config.release_path}/app/config/config_local.yml"
 File.open(config_filename, "w") do |f|
-    f.write(yaml_source)
+    f.write(YAML.dump(my_db_config))
 end
 
+# Make app/cache
+run!("mkdir app/cache")
+run!("chmod 777 app/cache")
+run!("ln -s ~/Dropbox ./files")
