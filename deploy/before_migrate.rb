@@ -8,7 +8,8 @@ config_local = {
         'driver' => 'mysql',
         'databasename' => ENV['DB_NAME'],
         'username' => ENV['DB_USER'],
-        'password' => ENV['DB_PASS']
+        'password' => ENV['DB_PASS'],
+        'pompidom' => ENV
     }
 }
 
