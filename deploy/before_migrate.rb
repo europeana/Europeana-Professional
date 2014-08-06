@@ -31,6 +31,6 @@ my_db_config = {
 # Write Bolt config_local YAML file
 config_filename = "#{config.release_path}/app/config/config_local.yml"
 File.open(config_filename, "w") do |f|
-    f.write(yaml_source)
+    f.write(YAML.dump(my_db_config))
 end
 
