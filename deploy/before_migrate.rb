@@ -8,9 +8,9 @@ ey_db_configs = YAML.load("#{config.shared_path}/config/database.yml")
 if ey_db_configs === nil then
     warning("Database configuration file '#{config.shared_path}/config/database.yml' not found or invalid!")
 end
-ey_db_config = ey_db_configs[config.environment_name]
+ey_db_config = ey_db_configs['production']
 if ey_db_config === nil then
-    warning("Database configuration for '#{config.environment_name}' not found!")
+    warning("Database configuration for 'production' not found!")
 end
 
 # Build Bolt config_local data structure
