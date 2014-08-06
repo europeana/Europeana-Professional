@@ -5,7 +5,10 @@ require 'yaml'
 
 # Load database configuration
 ey_db_configs = YAML.load("#{config.shared_path}/config/database.yml")
-ey_db_config = ey_db_config[config.environment_name]
+if ey_db_configs === Nil then
+    warning("Database configuration file '#{config.shared_path}/config/database.yml' not found or invalid!")
+end
+ey_db_config = ey_db_configs[config.environment_name]
 if ey_db_config === Nil then
     warning("Database configuration for '#{config.environment_name}' not found!")
 end
