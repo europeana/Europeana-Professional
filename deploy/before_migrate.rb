@@ -34,3 +34,7 @@ File.open(config_filename, "w") do |f|
     f.write(YAML.dump(my_db_config))
 end
 
+# Make app/cache
+run!("mkdir app/cache")
+run!("chmod 777 app/cache")
+run!("ln -s ~/Dropbox app/files")
