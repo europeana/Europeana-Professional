@@ -798,7 +798,7 @@ blogposts:
       label: "Events"
       order: -id
       format: "{{ item.title|escape }}"
-    #jobs:
+    # jobs:
     #  multiple: false
     #  label: job
     #  order: -id
