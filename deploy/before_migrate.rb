@@ -4,11 +4,11 @@
 require 'yaml'
 
 config_local = {
-    database: {
-        driver: 'mysql',
-        databasename: ENV['DB_NAME'],
-        username: ENV['DB_USER'],
-        password: ENV['DB_PASS']
+    'database' => {
+        'driver' => 'mysql',
+        'databasename' => ENV['DB_NAME'],
+        'username' => ENV['DB_USER'],
+        'password' => ENV['DB_PASS']
     }
 }
 
