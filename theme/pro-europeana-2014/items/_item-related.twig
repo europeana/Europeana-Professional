@@ -31,7 +31,6 @@
 	if less than three related content objects, get more objects by tags
 #}
 {% set relatedTags = '' %}
-
 {% if records|length < 3 %}
 	
 	{# build tag query #}
@@ -61,7 +60,6 @@
 	{% endif %}
 	
 {% endif %}
-
 
 {% if (records) %}
 

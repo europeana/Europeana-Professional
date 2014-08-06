@@ -806,6 +806,7 @@ blogposts:
   sort: datepublish DESC
   record_template: record_blogpost.twig
 
+
 #################################
 #
 # PAGE
