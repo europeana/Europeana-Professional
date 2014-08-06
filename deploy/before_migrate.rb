@@ -37,4 +37,4 @@ end
 # Make app/cache
 run!("mkdir app/cache")
 run!("chmod 777 app/cache")
-run!("ln -s ~/Dropbox app/files")
+run!("ln -s ~/Dropbox ./files")
