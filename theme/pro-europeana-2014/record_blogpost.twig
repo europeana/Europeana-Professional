@@ -2,8 +2,6 @@
 
 {% set blogpost = record %}
 {% set authors = blogpost.related('persons') %}
-{% set related = blogpost.related() %}
-
 
 <!-- Start content -->
 <main role="main" class="l-page">
@@ -58,7 +56,9 @@
 			</div>
 
 			{# related content #}
-			{% include 'items/_item-related.twig' with {records : related} %}
+			
+			
+			{% include 'items/_item-related.twig' with {short: false} %}
 			
 			<aside>
 				<<<<< TODO Disqus Comments go here >>>>>

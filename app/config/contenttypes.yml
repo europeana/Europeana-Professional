@@ -423,21 +423,21 @@ persons:
       label: "Chief editor of the blog (will show as main contact in blog):"          
   taxonomy: [ tags ]                       
   relations:
-    blogposts:
-      multiple: true
-      label: Blog posts
-      order: -id
-      #format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+    #blogposts:
+    #  multiple: true
+    #  label: Blog posts
+    #  order: -id
+    #  #format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
     events:
       multiple: false
       label: events
       order: -id
       format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
-    publications:
-      multiple: false
-      label: publications
-      order: -id
-      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
+    #publications:
+    #  multiple: false
+    #  label: publications
+    #  order: -id
+    #  format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
   record_template: record_person.twig
   listing_template : listing_person.twig
 
@@ -779,13 +779,18 @@ blogposts:
       order: -id
       format: "{{ item.first_name|escape }} {{ item.last_name|escape }}"
     pages:
-      multiple: false
+      multiple: true
       label: "Pages"
       order: -id
       format: "{{ item.title|escape }}"
     blogposts:
       multiple: true
       label: "Blog posts"
+      order: -id
+      format: "{{ item.title|escape }}"
+    publications:
+      multiple: true
+      label: "Publications"
       order: -id
       format: "{{ item.title|escape }}"
     events:
@@ -894,7 +899,7 @@ pages:
     structures:
       label: "Parent"
       multiple: false                  
-  taxonomy: [ main, events ]
+  taxonomy: [ main, tags, structures ]
 
 #################################
 #
@@ -1041,22 +1046,13 @@ locations:
 # FOOTER
 #
 # Notes: 
-# Only the first footer with status "published" is used. 
+# Only the first footer is used. 
 #
 #################################
 footer:
   name : Footer
   singular_name: Footer
   fields:
-    # is not visible
-    title:
-      type: text
-      required: true  
-      label: "Title (required):"
-      variant: inline
-    slug:
-      type: slug
-      uses: title
     # footer logo image 
     image:
       type: image
