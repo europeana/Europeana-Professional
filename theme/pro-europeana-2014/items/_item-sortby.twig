@@ -22,7 +22,7 @@
 <div class="sortby">
 	<form method="get">
 	    <label for="list_sortby">Sort by:</label>
-	    <select id="list_sortby" name="sort" javascript: onchange="this.form.submit()">
+	    <select id="list_sortby" name="order" javascript: onchange="this.form.submit()">
 	    	{% for option in sortoptions %}
 	    		{% if option == currentsort %}
 	    			<option value="{{ option }}" selected>{{ option|capitalize }}</option>
