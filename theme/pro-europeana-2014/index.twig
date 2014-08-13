@@ -117,7 +117,7 @@
 					{% setcontent latestBlogPosts = "blogposts/latest/2" %}
 					{% for k,v in latestBlogPosts %}
 						{% if (v.id != blogposts[0].id and loop.index0 < 2) %}
-							{% set blogposts = blogposts|merge({k : v}) %}
+							{% set blogposts = blogposts|merge({(k) : v}) %}
 						{% endif %}
 					{% endfor %}
 				{% endif %}

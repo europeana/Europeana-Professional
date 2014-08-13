@@ -562,10 +562,8 @@ events:
       label: "Speakers"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-        
-      
   taxonomy: [ tags ]
-  sort: start_event ASC
+  #sort: start_event ASC
   record_template : record_event.twig
 
 #################################
@@ -798,14 +796,13 @@ blogposts:
       label: "Events"
       order: -id
       format: "{{ item.title|escape }}"
-    # jobs:
+    #jobs:
     #  multiple: false
     #  label: job
     #  order: -id
     #  format: "{{ item.title|escape }}"
   sort: datepublish DESC
   record_template: record_blogpost.twig
-
 
 #################################
 #
@@ -858,7 +855,7 @@ pages:
       label: "Position on overview or list page:"             
       values: ["(automatic)", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]  
     # Shown on Individual pages, Lists
-    contact_person:
+    contacts:
       type: select
       required: false
       label: "Contact person:"             
@@ -885,7 +882,13 @@ pages:
     teaser_image:
       type: image
       required: false
-      label: "Teaser image:"  
+      label: "Teaser image:"
+    filelist_files:
+      type: filelist
+      label: "Files:"
+    filelist_downloads:
+      type: filelist
+      label: "Downloads:"
     show_page:
       type: checkbox
       required: false
@@ -895,12 +898,34 @@ pages:
     support_navigation:
       type: markdown
       required: false
-      label: "Support navigation:"    
+      label: "Support navigation:"
   relations:
-    structures:
-      label: "Parent"
-      multiple: false                  
-  taxonomy: [ main, tags, structures ]
+    pages:
+      multiple: true
+      label: "Pages"
+      order: -id
+      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+    blogposts:
+      multiple: true
+      label: "Blog Posts"
+      order: -id
+      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+    events:
+      multiple: true
+      label: "Events"
+      order: -id
+      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+    publications:
+      multiple: true
+      label: "Publications"
+      order: -id
+      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
+  #relations:
+  #  structures:
+  #    label: "Parent"
+  #    multiple: false                  
+  taxonomy: [ tags, structures ]
+  record_template: record_page.twig
 
 #################################
 #
@@ -944,7 +969,7 @@ structures:
     # must be solved with routing
     slug:
       type: slug
-      values: title
+      uses: title
     selectfield:
       type: select
       label: "Parent (required):"
@@ -977,16 +1002,18 @@ structures:
     # This is to be used to define the layout - it should either be a overview page, which has the various boxes. Or a list page, that contains pages. 
     template:
       type: templateselect
-      filter: 'page_*.twig' 
-  relations:
-    structures:
-      label: "Parent"
-      multiple: false
-    pages: 
-      label: "Childs"
-      multiple: true
+      filter: '*structure.twig' 
+  #relations:
+  #  structures:
+  #    label: "Parent"
+  #    multiple: false
+  #  pages: 
+  #    label: "Childs"
+  #    multiple: true
   # These tags are to be used to link together boxes that have been set to (automatic recommendation)                       
-  taxonomy: [ main ]      
+  taxonomy: [ tags, structures ]
+  #record_template: record_structure.twig
+  #listing_template : record_structure.twig
 
 #################################
 #

@@ -4,10 +4,11 @@
 		- 'jobs'
 		- 'publications'
 		- 'events'
+		- tags
 #}
 
 
-{% set currentsort = app.request.get('sort') %}
+{% set currentsort = app.request.get('order') %}
 {% set contenttype = records|first.contenttype.slug %} {# this works only for records with the same contenttype #}
 {% set sortoptions = ['datepublish', 'title'] %}
 

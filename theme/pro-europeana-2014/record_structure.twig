@@ -1,0 +1,82 @@
+{% include '_header.twig' %}
+
+{% setcontent contacts = 'persons' where { id: record.contacts|join(' || ') } %}
+
+<!-- Start content -->
+<main role="main" class="l-page">
+<div class="lc">
+    <!-- Start grid -->
+    <div class="grid-main">
+
+        <div class="l-content">
+
+            <div class="l-breadcrumbs">
+				{% include 'items/_item-breadcrumb.twig' %}
+			</div>
+
+            <div class="maincontent">
+
+                <div class="page-intro">
+                    <h1 class="title">{{ record.title }}</h1>
+                    <p>{{ record.intro|raw }}</p>
+                </div>
+                
+                {#
+                	todo: add structures
+                #}
+                {% set taxonomySlug = record.group.slug %}
+                {% setcontent childs = 'pages' where { structures: taxonomySlug } %}
+                
+                <ul class="l-next_options">
+				{% for child in childs %}
+                	<li>
+                		<div class="link-block block">
+                			{#
+                				link construction
+                				child.link is not optimal 		-> /page/page-slug
+                				therefore build structure link	-> /structure-slug/page-slug
+                			#}
+						    <a href="{{ paths.root }}{{ child.group.slug }}/{{ child.slug }}" title="{{ child.title }}" class="b-inner">
+								<div class="b-thumb">
+									<img src="{{ child.image|image }}" alt="{{ child.values['image'].title }}" />
+								</div>
+								<div class="b-text">
+									<h2 class="item-title">{{ child.title }}</h2>
+									<p>{{ child.teaser }}</p>
+								</div>
+							</a>
+						</div>
+					</li>
+					{% endfor %}
+                </ul>
+                
+                <div class="section-sitemap">
+                <div class="l-section-sitemap">
+                	{% include 'items/_item-linklist.twig' with {record : "Join the Network"} %}<!--
+                 -->{% include 'items/_item-linklist.twig' with {record : "Provide data"} %}<!--
+                 -->{% include 'items/_item-linklist.twig' with {record : "Re-use data"} %}
+                </div>
+                </div>
+
+            </div>
+        </div><!--
+
+     --><div class="l-sidebar">
+            <div class="inner">
+            	{#
+            		contact "need help" - draft
+            		todo: mutliple contact issue. currently the first contact is displayed 
+            	#}
+                {% if contacts %}
+					{% include 'items/_item-help.twig' with { record: contacts|first, use_secondary_mail: record.secondary_mail } %}
+				{% endif %}
+            </div>
+
+        </div>
+    </div>
+    <!-- End grid -->
+</div>
+</main>
+<!-- End Content -->
+
+{% include '_footer.twig' %}

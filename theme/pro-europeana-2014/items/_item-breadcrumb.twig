@@ -1,11 +1,26 @@
 {#
 	breadcrumb
-	todo: - only working for simple listing -> record relation
+	todo: 
+		- only working for two levels
+		- parent integration
 #}
 <ul class="breadcrumbs">
+	{# home #}
 	<li><a href="{{ paths.root }}"><svg class="icon icon-home"><use xlink:href="#icon-home"></use></svg>Europeana Professional</a></li>
+	
+	{# groups #}
+	{% if record.group %}
+		{# structure #}
+		{% if record.contenttype.name == "Structures" %}
+			<li><span class="lastitem">{{ record.title }}</span></li>
+		{# structure -> page #}
+		{% else %}
+			<li><a href="{{ paths.root }}{{ record.group.slug }}">{{ record.group.name|capitalize }}</a></li>
+			<li><span class="lastitem">{{ record.title }}</span></li>
+		{% endif %}
+		
 	{# listing #}
-	{% if records %}
+	{% elseif records %}
 	<li><span class="lastitem">{{ records|first.contenttype.slug|capitalize }}</span></li>
 	{# listing -> record #}
 	{% elseif record %}

@@ -1,6 +1,7 @@
 <!-- Start Footer -->
 
-{% setcontent footer = 'Footer' where { status: 'published' } returnsingle %}
+
+{% setcontent footer = 'Footer' returnsingle %}
 
 <footer class="footer" role="contentinfo">
     <div class="lc">
@@ -8,11 +9,7 @@
             <div class="l-contact">
                 <div>
                 	<a href="{{ paths.root }}">
-	                	{% if footer.image != "" %}
-	                		<img src="{{ footer.image|image }}" title="{{ footer.values['image'].title }}" alt="{{ footer.values['image'].title }}">
-	                	{% else %}
-	                		<img src="{{ app.config.get('general/sitelogo') }}" alt="app.config.get('general/sitename')" title="{{ footer.values['image'].title }}" alt="{{ footer.values['image'].title }}" />
-	                	{% endif %}
+	                	<img src="{{ footer.image|image }}" title="{{ footer.values['image'].title }}" alt="{{ footer.values['image'].title }}">
                 	</a>
                 </div>
                 

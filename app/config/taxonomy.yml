@@ -1,11 +1,27 @@
 # This file defines the different types of taxonomies in Bolt. See the 
 # documentation for details: http://docs.bolt.cm/taxonomies#taxonomies
 
+    
+    
+main: 
+    slug: main
+    singular_slug: main
+    behaves_like: grouping
+    options: [ toplevel1, toplevel2, toplevel3, toplevel4 ]
+    has_sortorder: false
+
 tags:
     slug: tags
     singular_slug: tag
     behaves_like: tags
-    #listing_template: tag-listing.twig #custom template
+
+structures:
+    slug: structures
+    singular_slug: structures
+    behaves_like: grouping
+    options: { get-involved: "Get involved", share-your-data: "Share your data", use-our-data: "Use our data", about-us: "About us" }
+    has_sortorder: true
+
 
 chapters:
     slug: chapters

@@ -47,6 +47,17 @@ contentlisting:
 # ------------------------------------------------------------------------------
 # Place your own routes here, that have a LOWER priority than the default routes.
 
+structurebinding:
+  path: /{slug}
+  defaults:           { _controller: 'Bolt\Controllers\Frontend::record', 'contenttypeslug': 'structures' }
+  requirements:
+    contenttypeslug:  'Bolt\Controllers\Routing::getAnyContentTypeRequirement'
+    taxonomytype:     'Bolt\Controllers\Routing::getAnyTaxonomyTypeRequirement'
+
+pagebinding:
+  path: /{structures}/{slug}
+  defaults: { _controller: 'Bolt\Controllers\Frontend::record', 'contenttypeslug': 'pages' }
+
 
 
 # ------------------------------------------------------------------------------

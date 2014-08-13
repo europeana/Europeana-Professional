@@ -75,9 +75,9 @@ templates. 'entry.twig' is much more straightforward.
         </ul>
     {% endif %}
 
-
+{#
     {% include '_recordfooter.twig' with {record: record} %}
-
+#}
     <p class="meta">
         {% set previous = record.previous() %}
         {% if previous %}

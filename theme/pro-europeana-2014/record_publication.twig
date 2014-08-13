@@ -45,6 +45,7 @@
 						{% include 'items/_item-tags.twig' %}
 					</div>
 
+
 					<div class="prose">
 					{{ publication.body|raw }}
 					</div>
@@ -56,10 +57,8 @@
 				<h2>{{ record.contenttype.fields.filelist.label }}</h2>
 				{% include 'items/_item-filelist-detail.twig' with { filelist: publication.filelist } %}
 			</div>
-	
-			{# related content #}
+
 			{% include 'items/_item-related.twig' with {short: true} %}
-			
 		</div>
 		</div><!--
 

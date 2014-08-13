@@ -1,0 +1,27 @@
+{#
+  used in:
+  	- record_structure (overview)
+  	- listing_structure
+  	
+#}
+
+{#
+	draft
+	- are the links hardcoded? maybe a menu is a good idea
+#}
+{% if record %}
+<div class="l-linklist">
+<div class="inner">
+    <h4 class="title">{{ record }}</h4>
+
+    <ul>
+		<li><a href="#">Link one here</a></li>
+		<li><a href="#">Link two here</a></li>
+		<li><a href="#">Link three here</a></li>
+		<li><a href="#">Link four here</a></li>
+		<li><a href="#">Link five here</a></li>
+		<li><a href="#">Link six here</a></li>
+	</ul>
+</div>
+</div>
+{% endif %}

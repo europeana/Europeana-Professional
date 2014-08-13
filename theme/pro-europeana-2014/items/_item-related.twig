@@ -7,8 +7,10 @@
 	- record_blogpost
 	- record_event
 	- record_publication
+	- record_page
 	
 #}
+
 
 {# 
 	get all related content objects
@@ -31,7 +33,9 @@
 	if less than three related content objects, get more objects by tags
 #}
 {% set relatedTags = '' %}
+
 {% if records|length < 3 %}
+	
 	
 	{# build tag query #}
 	{% if record.taxonomy.tags is defined %}
@@ -42,8 +46,8 @@
 			{% endif %}
     	{% endfor %}
 	{% endif %}
-	
-	{# get content objects by tag query #}
+
+	{# get content objects by tag query for the same contenttype#}
 	{% setcontent relatedContentsByTag = record.contenttype.name  where { tags: relatedTags, id: '!' ~ record.id } orderby 'datepublish DESC' limit 3 %}
 	
 	{% if records is empty %}
@@ -60,6 +64,7 @@
 	{% endif %}
 	
 {% endif %}
+
 
 {% if (records) %}
 
