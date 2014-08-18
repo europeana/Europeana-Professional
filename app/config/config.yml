@@ -15,6 +15,10 @@ theme: pro-europeana-2014
 locale: en_GB
 #timezone: UTC
 
+# Sort options definition
+sort_options: { datepublish: 'Sort by Date (ASC)', title: 'Sort by Title (ASC)', -datepublish: 'Sort by Date (DESC)', -title: 'Sort by title (DESC)' }
+
+
 # Set maintenance mode true or false
 # While in maintenance mode, only users of level editor or higher can access the site.
 # All other visitors are presented with a notice that the site is currently offline.
