@@ -13,7 +13,6 @@
 	<li class="list-item">
 	
 		<div class="item-supplementary">
-		
 		{% if (contenttype == "Publications" or contenttype == "BlogPosts") %}
 			<div class="item-image">
 				<a href="{{ listItem.link }}"><img src="{{ listItem.image|image }}" alt="{{ listItem.values['image'].title }}" /></a>
@@ -27,20 +26,25 @@
 		</div><!--
 	
 	 --><div class="item-details">
-			
+		{% if contenttype == 'Structures' %}
+			<h2 class="title"><a href="{{path.root}}{{ listItem.slug }}">{{ listItem.title }}</a></h2>
+		{% elseif contenttype == 'Pages' %}
+			<h2 class="title"><a href="{{path.root}}{{ listItem.group.slug }}/{{ listItem.slug }}">{{ listItem.title }}</a></h2>
+		{% else %}
 			<h2 class="title"><a href="{{ listItem.link }}">{{ listItem.title }}</a></h2>
-	
-			{% if contenttype == "Publications" %}
-				{# set authors #}
-				{% include 'items/_item-author.twig' with {records : authors} %}
-			{% elseif contenttype == "BlogPosts" %}
-				{# set author #}
-				{% include 'items/_item-author.twig' with {records : authors} %}
-				
-				{# set readtime #}
-				{#  todo: where did that came from? -> update contenttype "blogpost" #}
-				{% include 'items/_item-readtime.twig' %}
-			{% endif %}
+		{% endif %}
+			
+		{% if contenttype == "Publications" %}
+			{# set authors #}
+			{% include 'items/_item-author.twig' with {records : authors} %}
+		{% elseif contenttype == "BlogPosts" %}
+			{# set author #}
+			{% include 'items/_item-author.twig' with {records : authors} %}
+			
+			{# set readtime #}
+			{#  todo: where did that came from? -> update contenttype "blogpost" #}
+			{% include 'items/_item-readtime.twig' %}
+		{% endif %}
 			
 			<div class="item-meta-secondary">
 			

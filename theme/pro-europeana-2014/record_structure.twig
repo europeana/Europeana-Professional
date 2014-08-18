@@ -21,22 +21,41 @@
                     <p>{{ record.intro|raw }}</p>
                 </div>
                 
-                {#
-                	todo: add structures
-                #}
                 {% set taxonomySlug = record.group.slug %}
+                {# get pages #}
                 {% setcontent childs = 'pages' where { structures: taxonomySlug } %}
-                
+                {# get sub structures #}
+                {% setcontent structures = 'structures' where { parent: record.id } %}
+                {# merge pages and structures #}
+                {# % set childs = childs|merge(structures)  % #}
+
                 <ul class="l-next_options">
-				{% for child in childs %}
+                
+                
+				{# render pages #}
+                {% for child in childs %}
+                
+                {#
+					todo: move parent functionality into a macro
+				#}
+                {% set parents = [] %}
+                {% setcontent parent = 'structures' where {slug: record.group.slug } %}
+				{% set parentId = parent|first.id %}
+				{% for i in 0..3 %}
+					{% setcontent curParent = 'structures' where {id: parentId} %}
+					{% if curParent %}
+						{% set parents = parents|merge([curParent]) %}
+						{% set parentId = curParent.parent %}
+					{% endif %}
+				{% endfor %}
+				
                 	<li>
                 		<div class="link-block block">
-                			{#
-                				link construction
-                				child.link is not optimal 		-> /page/page-slug
-                				therefore build structure link	-> /structure-slug/page-slug
-                			#}
-						    <a href="{{ paths.root }}{{ child.group.slug }}/{{ child.slug }}" title="{{ child.title }}" class="b-inner">
+						    {% for parent in parents|reverse %}
+								{% set parentRoot = parentRoot~parent.group.slug~"/" %}
+								<a href="{{ paths.root }}{{parentRoot}}{{ child.slug }}" title="{{ child.title }}" class="b-inner">
+							{% endfor %}
+							
 								<div class="b-thumb">
 									<img src="{{ child.image|image }}" alt="{{ child.values['image'].title }}" />
 								</div>
@@ -47,7 +66,41 @@
 							</a>
 						</div>
 					</li>
-					{% endfor %}
+				{% endfor %}
+				
+				
+				{# render sub structures #}
+                {% for child in structures %}
+				{#
+					todo: move parent functionality into a macro
+				#}
+                {% set parents = [] %}
+				{% set parentId = child.parent %}
+				{% for i in 0..3 %}
+					{% setcontent curParent = 'structures' where {id: parentId} %}
+					{% if curParent %}
+						{% set parents = parents|merge([curParent]) %}
+						{% set parentId = curParent.parent %}
+					{% endif %}
+				{% endfor %}
+				
+                	<li>
+                		<div class="link-block block">
+						    {% for parent in parents|reverse %}
+								{% set parentRoot = parentRoot~parent.group.slug~"/" %}
+								<a href="{{ paths.root }}{{parentRoot}}{{ child.slug }}" title="{{ child.title }}" class="b-inner">
+							{% endfor %}
+								<div class="b-thumb">
+									<img src="{{ child.image|image }}" alt="{{ child.values['image'].title }}" />
+								</div>
+								<div class="b-text">
+									<h2 class="item-title">{{ child.title }}</h2>
+									<p>{{ child.teaser }}</p>
+								</div>
+							</a>
+						</div>
+					</li>
+				{% endfor %}
                 </ul>
                 
                 <div class="section-sitemap">

@@ -1,0 +1,11 @@
+{#
+	structures list template
+	use listing.twig with structureset (contains pages and sub structures)
+#}
+
+{% set taxonomySlug = record.group.slug %}
+{% setcontent pages = 'pages' where { structures: taxonomySlug }  %}
+{% setcontent structures = 'structures' where { parent: record.id }  %}
+{% set structureset = pages|merge(structures) %}
+
+{% include 'listing.twig' with {structureset: structureset} %}

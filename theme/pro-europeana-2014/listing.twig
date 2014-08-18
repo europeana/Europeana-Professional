@@ -1,7 +1,21 @@
 {% include '_header.twig' %}
 
 
-{% set listItems = records %}
+{# set records by structureset #}
+{% if structureset %}
+	{% set records = structureset %}
+{# set records by tags #}
+{% elseif ('/tags/' in app.request.pathInfo) %}
+	{# % set sortoption = app.request.get('order') % #}
+	{% setcontent records = '(blogposts, events, publications, pages)' where { tags: slug } limit app.config.get('general/listing_records') allowpaging %}
+{# set records by contenttype #}
+{% else %}
+	{# get records for contenttype. limit must be definied to enable pagination #}
+	{% setcontent records = records|first.contenttype.slug limit app.config.get('general/listing_records') allowpaging %}
+	{% set showsortby = true %}
+{% endif %}
+
+
 
 <!-- Start content -->
 <main role="main" class="l-page">
@@ -13,7 +27,11 @@
 
 			<div class="l-breadcrumbs">
 				{% include 'items/_item-breadcrumb.twig' %}
-				{% include 'items/_item-sortby.twig' %}
+				
+				{# hide sortby template for tag- and structure listing #}
+				{% if showsortby %}
+					{% include 'items/_item-sortby.twig' %}
+				{% endif %}
 			</div>
 
 		<div class="maincontent">
@@ -21,11 +39,11 @@
 			<div class="results">
 
 				<ul class="results-list">
-					{% for listItem in listItems %}
+					{% for listItem in records %}
 						{% include 'items/_item-list.twig' with { record: listItem } %}
 					{% endfor %}
 				</ul>
-
+				
 				{{ pager() }}
 
 			</div>
