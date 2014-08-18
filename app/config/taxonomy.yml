@@ -17,17 +17,17 @@ tags:
 
 structures:
     slug: structures
-    singular_slug: structures
+    singular_slug: structure
     behaves_like: grouping
-    options: { get-involved: "Get involved", share-your-data: "Share your data", use-our-data: "Use our data", about-us: "About us" }
+    options: { get-involved: "Get involved", share-your-data: "Share your data", use-our-data: "Use our data", about-us: "About us", join-the-network: "Join the Network", task-forces: "Task Forces" }
     has_sortorder: true
-
-
+    
+    
 chapters:
     slug: chapters
     singular_slug: chapter
     behaves_like: grouping
-    options: { main: "The main chapter", meta: "Meta Chapter", other: "The other stuff" }
+    options: { main: "The main chapter", sub: "Meta Chapter", subsub: "The other stuff" }
     has_sortorder: true
 
 categories:
