@@ -1,27 +1,50 @@
 {#
 	breadcrumb
-	todo: 
-		- only working for two levels
-		- parent integration
 #}
 <ul class="breadcrumbs">
+
 	{# home #}
 	<li><a href="{{ paths.root }}"><svg class="icon icon-home"><use xlink:href="#icon-home"></use></svg>Europeana Professional</a></li>
 	
 	{# groups #}
 	{% if record.group %}
-		{# structure #}
-		{% if record.contenttype.name == "Structures" %}
-			<li><span class="lastitem">{{ record.title }}</span></li>
-		{# structure -> page #}
-		{% else %}
-			<li><a href="{{ paths.root }}{{ record.group.slug }}">{{ record.group.name|capitalize }}</a></li>
-			<li><span class="lastitem">{{ record.title }}</span></li>
+	{#
+		todo: move parent functionality into a macro
+	#}
+		{% set parents = [] %}
+		
+		{# parentId structure #}
+		{% set parentId = record.parent %}
+		
+		{# parentId page #}
+		{% if record.contenttype.name == "Pages" %}
+			{% setcontent parent = 'structures' where {slug: record.group.slug } %}
+			{% set parentId = parent|first.id %}
 		{% endif %}
 		
+		{% for i in 0..3 %}
+			{% setcontent curParent = 'structures' where {id: parentId} %}
+			{% if curParent %}
+				{% set parents = parents|merge([curParent]) %}
+				{% set parentId = curParent.parent %}
+			{% endif %}
+		{% endfor %}
+		
+		{% for parent in parents|reverse %}
+			{% set parentRoot = parentRoot~parent.group.slug~"/" %}
+			<li><a href="{{ paths.root }}{{parentRoot}}">{{ parent.group.name|capitalize }}</a></li>
+		{% endfor %}
+		
+		<li><span class="lastitem">{{ record.title }}</span></li>
+		
+	{# tags listing #}
+	{% elseif ('/tags/' in app.request.pathInfo) %}
+	<li><span class="lastitem">{{ slug|capitalize }}</span></li>
+	
 	{# listing #}
 	{% elseif records %}
 	<li><span class="lastitem">{{ records|first.contenttype.slug|capitalize }}</span></li>
+	
 	{# listing -> record #}
 	{% elseif record %}
 	<li><a href="{{ paths.root }}{{ record.contenttype.slug }}">{{ record.contenttype.slug|capitalize }}</a></li>
