@@ -6,7 +6,6 @@
 # Place your own routes here, that have a HIGHER priority than the default routes.
 
 
-
 # ------------------------------------------------------------------------------
 # These are the routes defining the default behaviour of Bolt's frontend. 
 # Changing these might give unexpected results or even break your website. If 
@@ -47,17 +46,29 @@ contentlisting:
 # ------------------------------------------------------------------------------
 # Place your own routes here, that have a LOWER priority than the default routes.
 
-structurebinding:
+
+# pseudo hierarchy routing for structures and pages
+structurelevel1binding:
   path: /{slug}
   defaults:           { _controller: 'Bolt\Controllers\Frontend::record', 'contenttypeslug': 'structures' }
+
+structurelevel2binding:
+  path: /{structure}/{slug}
+  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages'] }
   requirements:
-    contenttypeslug:  'Bolt\Controllers\Routing::getAnyContentTypeRequirement'
-    taxonomytype:     'Bolt\Controllers\Routing::getAnyTaxonomyTypeRequirement'
+    structure:     [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
 
-pagebinding:
-  path: /{structures}/{slug}
-  defaults: { _controller: 'Bolt\Controllers\Frontend::record', 'contenttypeslug': 'pages' }
-
+structurelevel3binding:
+  path: /{structure}/{structurelevel2}/{slug}
+  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages'] }
+  requirements:
+    structure:     [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
+    
+structurelevel4binding:
+  path: /{structure}/{structurelevel2}/{structurelevel3}/{slug}
+  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages'] }
+  requirements:
+    structure:     [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
 
 
 # ------------------------------------------------------------------------------
