@@ -244,7 +244,7 @@ publications:
       label: "Publications"
       order: -id
       format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
-  sort: datepublish DESC
+    sort: datepublish
   record_template : record_publication.twig
 
 #################################
@@ -693,7 +693,7 @@ Jobs:
     locations:
       label: "Locations"
       multiple: false
-  sort: datepublish DESC
+  # sort: datepublish DESC
   record_template: record_job.twig
 
 #################################
@@ -801,9 +801,10 @@ blogposts:
     #  label: job
     #  order: -id
     #  format: "{{ item.title|escape }}"
-  sort: datepublish DESC
+  sort: -datepublish
   record_template: record_blogpost.twig
-
+  listing_records: 2
+  recordsperpage: 2
 #################################
 #
 # PAGE
@@ -840,11 +841,11 @@ pages:
       required: true  
       label: "Title (required):"
       variant: inline  
-    parent:
-      type: select
-      required: true
-      label: "Parent (required):"             
-      values: structure/id,title #["a", "b"]
+    #parent:
+    #  type: select
+    #  required: true
+    #  label: "Parent (required):"             
+    #  values: structure/id,title
     slug:
       type: slug
       uses: title
@@ -924,7 +925,7 @@ pages:
   #  structures:
   #    label: "Parent"
   #    multiple: false                  
-  taxonomy: [ tags, structures ]
+  taxonomy: [ tags, structures, testi ]
   record_template: record_page.twig
 
 #################################
@@ -970,7 +971,7 @@ structures:
     slug:
       type: slug
       uses: title
-    selectfield:
+    parent:
       type: select
       label: "Parent (required):"
       values: structure/id,title #[ none, foo, bar ]
@@ -987,7 +988,7 @@ structures:
       required: false
       label: "Show secondary email instead:" 
     ## Shown on Overview pages, List pages                 
-    intro:
+    teaser:
       type: html
       required: false 
       label: "Intro text:"             
@@ -1002,7 +1003,7 @@ structures:
     # This is to be used to define the layout - it should either be a overview page, which has the various boxes. Or a list page, that contains pages. 
     template:
       type: templateselect
-      filter: '*structure.twig' 
+      filter: 'listing_structure.twig' 
   #relations:
   #  structures:
   #    label: "Parent"
@@ -1012,7 +1013,7 @@ structures:
   #    multiple: true
   # These tags are to be used to link together boxes that have been set to (automatic recommendation)                       
   taxonomy: [ tags, structures ]
-  #record_template: record_structure.twig
+  record_template: record_structure.twig
   #listing_template : record_structure.twig
 
 #################################
