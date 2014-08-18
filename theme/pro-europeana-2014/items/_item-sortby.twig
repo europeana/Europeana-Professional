@@ -8,29 +8,20 @@
 #}
 
 
-{% set currentsort = app.request.get('order') %}
-{% set contenttype = records|first.contenttype.slug %} {# this works only for records with the same contenttype #}
-{% set sortoptions = ['datepublish', 'title'] %}
-
-{# apply filter for each contenttype #}
-{# 
-{% if contenttype == 'blogposts' %}
-	
-{% endif %}
-#}
-
+{% set currentsortoption = app.request.get('order') %}
+{% set sortoptions = app.config.get('general/sort_options') %}
 
 <div class="sortby">
 	<form method="get">
 	    <label for="list_sortby">Sort by:</label>
 	    <select id="list_sortby" name="order" javascript: onchange="this.form.submit()">
-	    	{% for option in sortoptions %}
-	    		{% if option == currentsort %}
-	    			<option value="{{ option }}" selected>{{ option|capitalize }}</option>
+	    	{% for key, value in sortoptions %}
+	    		{% if key == currentsortoption %}
+	    			<option value="{{ key }}" selected>{{ value }}</option>
 	    		{% else %}
-	    			<option value="{{ option }}">{{ option|capitalize }}</option>
+	    			<option value="{{ key}}">{{ value }}</option>
 	    		{% endif %}
-	        {% endfor %}
+	    	{% endfor %}
 	    </select>
     </form>
 </div>
