@@ -47,28 +47,34 @@ contentlisting:
 # Place your own routes here, that have a LOWER priority than the default routes.
 
 
+
 # pseudo hierarchy routing for structures and pages
 structurelevel1binding:
   path: /{slug}
-  defaults:           { _controller: 'Bolt\Controllers\Frontend::record', 'contenttypeslug': 'structures' }
+  defaults:           { _controller: 'Bolt\Controllers\Frontend::record', 'contenttypeslug': structure }
 
 structurelevel2binding:
-  path: /{structure}/{slug}
+  path: /{parentslug}/{slug}
   defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages'] }
   requirements:
-    structure:     [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
+    parentslug:    [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
 
 structurelevel3binding:
-  path: /{structure}/{structurelevel2}/{slug}
+  path: /{parentslug}/{parentsluglevel2}/{slug}
   defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages'] }
   requirements:
-    structure:     [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
+    parentslug:     [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
+    parentsluglevel2: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
     
 structurelevel4binding:
-  path: /{structure}/{structurelevel2}/{structurelevel3}/{slug}
+  path: /{parentslug}/{parentsluglevel2}/{parentsluglevel3}/{slug}
   defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages'] }
   requirements:
-    structure:     [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
+    parentslug:     [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
+    parentsluglevel2: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
+    parentsluglevel2: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
+
+
 
 
 # ------------------------------------------------------------------------------
