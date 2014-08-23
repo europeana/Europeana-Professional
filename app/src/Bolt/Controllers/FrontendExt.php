@@ -7,10 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Standard Frontend actions
+ * Experimental Frontend actions
  *
- * Strictly speaking this is no longer a controller, but logically
- * it still is.
  */
 class FrontendExt
 {
