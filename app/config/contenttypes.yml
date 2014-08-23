@@ -196,6 +196,7 @@ publications:
       required: false 
       label: "Body:"             
       height: 150px
+    # -> moved to relations
     #authors:
     #  type: select
     #  required: false
@@ -224,27 +225,38 @@ publications:
       multiple: true
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
+    person:
+      multiple: true
+      label: "Contact(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
     pages:
       multiple: true
       label: "Pages"
       order: -id
-      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+      format: "{{ item.title|escape }}"
     blogposts:
       multiple: true
-      label: "Blog Posts"
+      label: "Blog posts"
       order: -id
-      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
-    events:
-      multiple: true
-      label: "Events"
-      order: -id
-      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+      format: "{{ item.title|escape }}"
     publications:
       multiple: true
       label: "Publications"
       order: -id
-      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
-    sort: datepublish
+      format: "{{ item.title|escape }}"
+    events:
+      multiple: true
+      label: "Events"
+      order: -id
+      format: "{{ item.title|escape }}"
+    jobs:
+      multiple: true
+      label: "Jobs"
+      order: -id
+      format: "{{ item.title|escape }}"
+  sort: -datepublish
   record_template : record_publication.twig
 
 #################################
@@ -297,10 +309,10 @@ persons:
       required: false
       label: "Europeana Staff:" 
     # If checked, then the person will be listed on the Network Members page    
-    checkbox_network:
-      type: checkbox
-      required: false
-      label: "Network member:"               
+    #checkbox_network:
+    #  type: checkbox
+    #  required: false
+    #  label: "Network member:"               
     company:
       type: text
       required: false
@@ -332,7 +344,7 @@ persons:
       required: false
       label: "Introduction (120 chars MAX):" 
       pattern: "^.{1,120}$"             
-      height: 150px          
+      height: 150px
     image:
       type: image
       required: false
@@ -415,29 +427,41 @@ persons:
       variant: inline            
       prefix: "<em>URL has to start with http:// or https://</em>" 
       pattern: url 
-      class: narrow  
-    # If this check box is selected, then this person will be listed as the Contact person on the blog list and individual blog pages
-    checkbox_chief:
+      class: narrow
+    contact_blog:
       type: checkbox
-      required: false
-      label: "Chief editor of the blog (will show as main contact in blog):"          
+      label: "Main contact of the blog"
+    contact_event:
+      type: checkbox
+      label: "Main contact of events"
+    contact_job:
+      type: checkbox
+      label: "Main contact of the jobs page"
+    contact_staff:
+      type: checkbox
+      label: "Main contact of the staff page"
+    contact_publication:
+      type: checkbox
+      label: "Main contact of the publications page"
+    contact_aggregator:
+      type: checkbox
+      label: "Main contact of the Aggregator events page"
+    contact_tech:
+      type: checkbox
+      label: "Main contact of the Europeana Tech events page"
+    contact_network:
+      type: checkbox
+      label: "Main contact of the Network events page"
+    contact_member:
+      type: checkbox
+      label: "Main contact of the Network members page"
+      class: inline
+    # If this check box is selected, then this person will be listed as the Contact person on the blog list and individual blog pages
+    #checkbox_chief:
+    #  type: checkbox
+    #  required: false
+    #  label: "Chief editor of the blog (will show as main contact in blog):"          
   taxonomy: [ tags ]                       
-  relations:
-    #blogposts:
-    #  multiple: true
-    #  label: Blog posts
-    #  order: -id
-    #  #format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
-    events:
-      multiple: false
-      label: events
-      order: -id
-      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
-    #publications:
-    #  multiple: false
-    #  label: publications
-    #  order: -id
-    #  format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
   record_template: record_person.twig
   listing_template : listing_person.twig
 
@@ -536,16 +560,16 @@ events:
     filelist:
       type: filelist
       required: true
-      label: "Files:"
+      label: "Attachments:"
     # Show on Events page   
-    contact:
-      type: select
-      multiple: false
-      required: false
-      label: "Contact:"          
-      values: persons/id,last_name,first_name,job_title
-      order: "{{ last_name }}"
-      format: "{{ last_name }} {{ first_name }} {{ job_title }}" 
+    #contact:
+    #  type: select
+    #  multiple: false
+    #  required: false
+    #  label: "Contact:"          
+    #  values: persons/id,last_name,first_name,job_title
+    #  order: "{{ last_name }}"
+    #  format: "{{ last_name }} {{ first_name }} {{ job_title }}" 
     # If this is checked, then the contact persons secondary email will be shown instead of their primary email in the contact block   
     secondary_mail:
       type: checkbox
@@ -562,8 +586,13 @@ events:
       label: "Speakers"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
+    person:
+      multiple: true
+      label: "Contact(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
   taxonomy: [ tags ]
-  #sort: start_event ASC
+  sort: -datepublish
   record_template : record_event.twig
 
 #################################
@@ -623,6 +652,13 @@ Jobs:
     #  values: location/europeana_place,title,europeana_place
     #  multiple: true
     # Show on Job list page, Job page  
+    # -> moved to relations
+    #contacts:
+    #  type: select
+    #  required: false
+    #  label: "Contact person:"             
+    #  values: person/id,last_name,first_name
+    #  multiple: true 
     department:
       type: select
       required: false
@@ -682,7 +718,7 @@ Jobs:
       label: "Deadline"
     deadlinelabel:
       type: text
-      required: false;
+      required: true;
       label: "Deadline label"
       default: "Deadline for applications"
     filelist:
@@ -690,11 +726,17 @@ Jobs:
       required: false 
       label: "Attachments:"
   relations:
+    persons:
+      multiple: true
+      label: "Contact(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
     locations:
       label: "Locations"
       multiple: false
-  # sort: datepublish DESC
+  sort: -datepublish
   record_template: record_job.twig
+  
 
 #################################
 #
@@ -759,7 +801,7 @@ blogposts:
     attachments:
       type: filelist
       required: false 
-      label: "Downloads:"
+      label: "Attachments:"
     # Show on Blog list page, Related items snippet, Home page       
     teaser_image:
       type: image
@@ -775,7 +817,7 @@ blogposts:
       multiple: false
       label: "Written by"
       order: -id
-      format: "{{ item.first_name|escape }} {{ item.last_name|escape }}"
+      prefix: "<em>URL has to start with http:// or https://</em>" 
     pages:
       multiple: true
       label: "Pages"
@@ -796,15 +838,14 @@ blogposts:
       label: "Events"
       order: -id
       format: "{{ item.title|escape }}"
-    #jobs:
-    #  multiple: false
-    #  label: job
-    #  order: -id
-    #  format: "{{ item.title|escape }}"
+    jobs:
+      multiple: true
+      label: "Jobs"
+      order: -id
+      format: "{{ item.title|escape }}"
   sort: -datepublish
   record_template: record_blogpost.twig
-  listing_records: 2
-  recordsperpage: 2
+
 #################################
 #
 # PAGE
@@ -841,42 +882,35 @@ pages:
       required: true  
       label: "Title (required):"
       variant: inline  
-    #parent:
-    #  type: select
-    #  required: true
-    #  label: "Parent (required):"             
-    #  values: structure/id,title
     slug:
       type: slug
       uses: title
     # This is used to manually select the position the content should be shown on a list or overview page - default value is automatic
-    position:
-      type: select
-      required: true
-      label: "Position on overview or list page:"             
-      values: ["(automatic)", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]  
+    #position:
+    #  type: select
+    #  required: true
+    #  label: "Position on overview or list page:"             
+    #  values: ["(automatic)", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]  
     # Shown on Individual pages, Lists
-    contacts:
-      type: select
-      required: false
-      label: "Contact person:"             
-      values: person/id,last_name,first_name
-      multiple: true 
-    # Shown on Individual pages, Lists, Overviews 
-    secondary_mail:
-      type: checkbox
-      required: false
-      label: "Show secondary email instead:"  
+    # -> contacts moved to relationships
+    #contacts:
+    #  type: select
+    #  required: false
+    #  label: "Contact person:"             
+    #  values: person/id,last_name,first_name
+    #  multiple: true 
+    intro:
+      type: html
+      label: "Snippet:"
+      height: 150px
     # Shown on Individual pages, Lists            
     teaser:
       type: html
-      required: true
       label: "Teaser (required):"
       height: 150px  
     # Shown on Individual pages        
     body:
       type: html
-      required: true
       label: "Body (required):"
       height: 300px
     # Shown on Individual pages, Lists, Overviews, Teasers
@@ -886,10 +920,10 @@ pages:
       label: "Teaser image:"
     filelist_files:
       type: filelist
-      label: "Files:"
+      label: "Attachments:"
     filelist_downloads:
       type: filelist
-      label: "Downloads:"
+      label: "Document folder:"
     show_page:
       type: checkbox
       required: false
@@ -898,34 +932,50 @@ pages:
     # appended, documents on the DMS should have another visual representation present.  
     support_navigation:
       type: markdown
-      required: false
       label: "Support navigation:"
+    secondary_mail:
+      type: checkbox
+      label: "Show secondary email instead:"
+      prefix: "<label><b>Contact(s)</b></label>"
+    show_info:
+      type: checkbox
+      label: "Show info icon:" 
   relations:
+    persons:
+      label: "Contact(s)"
+      multiple: true
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
     pages:
       multiple: true
       label: "Pages"
       order: -id
-      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+      format: "{{ item.title|escape }}"
     blogposts:
       multiple: true
-      label: "Blog Posts"
+      label: "Blog posts"
       order: -id
-      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
-    events:
-      multiple: true
-      label: "Events"
-      order: -id
-      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"    
+      format: "{{ item.title|escape }}"
     publications:
       multiple: true
       label: "Publications"
       order: -id
-      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
+      format: "{{ item.title|escape }}"
+    events:
+      multiple: true
+      label: "Events"
+      order: -id
+      format: "{{ item.title|escape }}"
+    jobs:
+      multiple: true
+      label: "Jobs"
+      order: -id
+      format: "{{ item.title|escape }}"
   #relations:
   #  structures:
   #    label: "Parent"
   #    multiple: false                  
-  taxonomy: [ tags, structures, testi ]
+  taxonomy: [ tags, structures ]
   record_template: record_page.twig
 
 #################################
@@ -967,21 +1017,25 @@ structures:
       label: "Title (required):"
       variant: inline 
     # The permalink should be /parent URL/title - eg pro.europeana.eu/share-your-data/getting-started.html 
-    # must be solved with routing
-    slug:
-      type: slug
-      uses: title
+    #slug:
+    #  type: slug
+    #  uses: title
     parent:
       type: select
       label: "Parent (required):"
-      values: structure/id,title #[ none, foo, bar ]
-    # Shown on Overview pages
-    contacts:
+      values: structure/id,title
+    position:
       type: select
-      required: false
-      label: "Contact person:"             
-      values: person/id,last_name,first_name
-      multiple: true 
+      label: "Postition Parent"
+      values: ["(automatic)", "1", "2", "3", "4", "5", "6"]  
+    # Shown on Overview pages
+    # -> moved to relationssss
+    #contacts:
+    #  type: select
+    #  required: false
+    #  label: "Contact person:"             
+    #  values: person/id,last_name,first_name
+    #  multiple: true 
     # Shown on Lists, Overviews  
     secondary_mail:
       type: checkbox
@@ -1003,18 +1057,17 @@ structures:
     # This is to be used to define the layout - it should either be a overview page, which has the various boxes. Or a list page, that contains pages. 
     template:
       type: templateselect
-      filter: 'listing_structure.twig' 
-  #relations:
-  #  structures:
-  #    label: "Parent"
-  #    multiple: false
-  #  pages: 
-  #    label: "Childs"
-  #    multiple: true
+      filter: 'listing_structure.twig'
+      postfix: 'Use "default template" for overview.'
+  relations:
+    persons:
+      label: "Contact(s)"
+      multiple: true
+      format: "{{ item.last_name }}, {{ item.first_name }}"
   # These tags are to be used to link together boxes that have been set to (automatic recommendation)                       
   taxonomy: [ tags, structures ]
   record_template: record_structure.twig
-  #listing_template : record_structure.twig
+
 
 #################################
 #
@@ -1093,11 +1146,6 @@ footer:
       type: html
       required: true
       label: "Address (required):"
-      height: 300px
-    signup:
-      type: html
-      required: true
-      label: "Sign up (required):"
       height: 300px
     socialmedia:
       type: html
