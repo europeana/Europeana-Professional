@@ -1,9 +1,0 @@
-{#
-	structures list template
-	use listing.twig with group pages	
-#}
-
-{% set taxonomySlug = record.group.slug %}
-{% setcontent childs = 'pages' where { structures: taxonomySlug } %}
-
-{% include 'listing.twig' with {records: childs} %}
