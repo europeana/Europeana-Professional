@@ -15,8 +15,12 @@ theme: pro-europeana-2014
 locale: en_GB
 #timezone: UTC
 
-# Sort options definition
-sort_options: { datepublish: 'Sort by Date (ASC)', title: 'Sort by Title (ASC)', -datepublish: 'Sort by Date (DESC)', -title: 'Sort by title (DESC)' }
+# Sort options for contenttype list view
+# params can be all contenttype properties
+sort_options_blogposts: { datepublish: 'Date (ASC)', title: 'Title (ASC)', -datepublish: 'Date (DESC)', -title: 'Title (DESC)'}
+sort_options_events: { datepublish: 'Date (ASC)', title: 'Title (ASC)', -datepublish: 'Date (DESC)', -title: 'Title (DESC)'}
+sort_options_jobs: { datepublish: 'Date (ASC)', position: 'Position (ASC)', -datepublish: 'Date (DESC)', -position: 'Position (DESC)'}
+sort_options_publications: { datepublish: 'Date (ASC)', title: 'Title (ASC)', -datepublish: 'Date (DESC)', -title: 'Title (DESC)'}
 
 
 # Set maintenance mode true or false
@@ -73,7 +77,7 @@ search_results_records: 10
 # The list of enabled extensions. For Example:
 # GoogleAnalytics, FacebookLike, TwitterButton, FacebookComments, Disqus, RSSFeed, SimpleForms.
 # Read each 'readme.md' from the Bolt Extensions screen, to see what they do.
-enabled_extensions: [ TwitterFeed ]
+enabled_extensions: [ MenuEditor, TwitterFeed, Disqus, Sitemap, FileInfo ]
 
 # Add jQuery to the rendered HTML, whether or not it's added by an extension.
 add_jquery: false
@@ -112,14 +116,14 @@ changelog:
 # allow_upscale determines whether small images will be enlarged to fit the requested dimensions.
 # Note: if you change these values, you might need to clear the cache before they show up.
 thumbnails:
-  default_thumbnail: [ 160, 120 ]
+  default_thumbnail: [ 400, 300 ]
   default_image: [ 1000, 750 ]
   quality: 80
   cropping: crop
   notfound_image: view/img/default_notfound.png
   error_image: view/img/default_error.png
   save_files: false
-  allow_upscale: false
+  allow_upscale: true
 
 # File types that are acceptable for upload in either 'file' fields or through the 'files' screen.
 
