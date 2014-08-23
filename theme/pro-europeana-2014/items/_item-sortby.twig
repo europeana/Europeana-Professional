@@ -1,15 +1,18 @@
 {#
-	sortby - order list view for 
-		- 'blogposts'
-		- 'jobs'
-		- 'publications'
-		- 'events'
-		- tags
+	sort list view by url param 'url' or default contenttype sort setting 
+	-> works only for records with the same contenttype
 #}
 
-
+{# get current sort option by url param 'order' #}
 {% set currentsortoption = app.request.get('order') %}
-{% set sortoptions = app.config.get('general/sort_options') %}
+
+{# otherwise get default sort option of the contenttype #}
+{% if currentsortoption is empty %}
+	{% set currentsortoption = records|first.contenttype.sort %}
+{% endif %}
+
+{# get default sort options from the config file by contenttypeslug #}
+{% set sortoptions = app.config.get('general/sort_options_'~records|first.contenttype.slug ) %}
 
 <div class="sortby">
 	<form method="get">

@@ -1,8 +1,8 @@
-{#
-
-  related content view. 
-  if "short" is true, render a short version without image
-
+{#  related content view
+	params:
+		- short :  is true, render a short version without image
+		- title
+		
   used in:
 	- record_blogpost
 	- record_event
@@ -14,10 +14,10 @@
 
 {# 
 	get all related content objects
-	excepts PERSONS, JOBS
+	excepts PERSONS
 #}
 {% set allRelatedContent = record.related() %}
-{% set relatedExceptions = ['persons','jobs'] %}
+{% set relatedExceptions = ['persons'] %}
 {% set relatedContents = [] %}
 
 {# collect all related content objects #}
@@ -74,20 +74,18 @@
 	<div class="related-items">
 	{% endif %}
 	
-		<h4>You might also like: (hardcoded)</h4>
+		<h4>{{ title }}</h4>
 	
 		<ul class="l-relatedlinks">
-		
-			{% for related in records|slice(0,3) %}
-			
-			<li class="related-item">
+		{% for related in records|slice(0,3) %}<!--
+		--><li class="related-item">
 				{% if short %}
 				<a href="{{ related.link }}">{{ related.title }}</a>
 				{% else %}
 				<div class="link-block block">
 				    <a href="{{ related.link }}" class="b-inner">
 						<div class="b-thumb">
-							<img src="{{ related.image|image }}" alt="{{ related.image|title }}" />
+							<img src="{{ related.image|thumbnail() }}" alt="{{ related.image|title }}" />
 						</div>
 						<div class="b-text">
 							<h2 class="item-title">{{ related.title }}</h2>
@@ -96,9 +94,8 @@
 					</a>
 				</div>
 				{% endif %}
-			</li>
-			{% endfor %}
-			
+			</li><!--
+		-->{% endfor %}
 		</ul>
 		
 	</div>

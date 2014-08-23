@@ -1,6 +1,6 @@
 {% include '_header.twig' %}
 
-{% setcontent contact = 'persons' where { id: record.contacts|join(' || ') } %}
+{% set contacts = record.related('persons') %}
 
 <!-- Start content -->
 <main role="main" class="l-page">
@@ -30,21 +30,20 @@
 				</div>
 				{% endif %}
 				
-				{% include 'items/_item-related.twig' with {short: true} %}
+				{% include 'items/_item-related.twig' with {title: "Next steps", short: true} %}
 	
 			</div>
 		</div><!--
 
 	 --><div class="l-sidebar">
 	 		<div class="inner">
-				{% if contact %}
-					{% include 'items/_item-help.twig' with { record: contact, use_secondary_mail: record.secondary_mail } %}
-				{% endif %}
+	 		
+				{% include 'items/_item-help.twig' with { records: contacts, title: "Need help?", use_secondary_mail: record.secondary_mail } %}
 
 				{% if record.filelist_downloads %}
 				<div class="downloads">
 					<h2>{{ record.contenttype.fields.filelist_downloads.label }}</h2>
-					{% include 'items/_item-filelist.twig' with { records: record.filelist_downloads } %}
+					{% include 'items/_item-filelist-detail.twig' with { filelist: record.filelist_downloads, owner: 'hide' } %}
 				</div>
 				{% endif %}
 

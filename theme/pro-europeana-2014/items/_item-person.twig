@@ -3,14 +3,12 @@
 	- record_event
 	- listing_people
 #}
-
 {% if record %}
-
 <div class="l-person block block-thumb">
     <div class="b-inner">
 		<div class="b-thumb">
 			<a href="{{ person.link }}" title="{{ person.values['image'].title }}">
-				<img src="{{ person.image|image }}" alt="{{ person.values['image'].title }}" />
+				<img src="{{ person.image|image(300,400,"c") }}" alt="{{ person.values['image'].title }}" />
 			</a>
 		</div>
 		<div class="b-text">

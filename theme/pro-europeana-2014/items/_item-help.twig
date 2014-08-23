@@ -1,43 +1,50 @@
-{# 
-  used in:
-	- every contenttype
+{#  render one or more contact items.
+	params:
+		- title
+	  	- use_secondary_mail
 #}
 
-{#
-	todo: 
-		- 	there are more than one contact person possible. markup seems not ready for this. 
-			where should the loop be inserted?
-#}
-{% if record %}
-{% set person = record %}
+{% if records %}
 
-<div class="help-contact">
-
-	<h4>Need help? (hardcoded)</h4>
+{% for record in records %}
 	
-	<img src="{{ person.image|image }}" alt="{{ person.values['image'].title }}" />
-
-	<h5>Contact: (hardcoded)</h5>	
-
-	<div class="vcard">
-		<div class="fn">{{ person.first_name }} {{ person.last_name }}</div>
+	{% set person = record %}
 	
-		{% if person.telephone_number != "" %}
-		<div class="tel">{{ person.telephone_number }}</div>
+	<div class="help-contact">
+	
+		{% if title is empty %}
+		<h4>Need help?</h4>
 		{% endif %}
-		
-		{# show person.secondary_mail if event.secondary_mail is checked #}
-		{% if (use_secondary_mail and person.secondary_email != "") %}
-		<a class="email" href="mailto:{{ person.secondary_email }}">{{ person.secondary_email }}</a>
+	
+		{# the first contact item gets the "title" param for the headline #}
+ 		{% if loop.first %}
+		<h4>{{ title }}</h4>
 		{% endif %}
+		<img src="{{ person.image|image(600,600,"c") }}" alt="{{ person.values['image'].title }}" />
+	
+		<h5>Contact:</h5>	
+	
+		<div class="vcard">
+			<div class="fn">{{ person.first_name }} {{ person.last_name }}</div>
 		
-		{# show person.email as default #}
-		{% if (use_secondary_mail != 1 and person.email != "") %}
-		<a class="email" href="mailto:{{ person.email }}">{{ person.email }}</a>
-		{% endif %}
-		
+			{% if person.telephone_number != "" %}
+			<div class="tel">{{ person.telephone_number }}</div>
+			{% endif %}
+			
+			{# show person.secondary_mail if event.secondary_mail is checked #}
+			{% if (use_secondary_mail and person.secondary_email != "") %}
+			<a class="email" href="mailto:{{ person.secondary_email }}">{{ person.secondary_email }}</a>
+			{% endif %}
+			
+			{# show person.email as default #}
+			{% if (use_secondary_mail != 1 and person.email != "") %}
+			<a class="email" href="mailto:{{ person.email }}">{{ person.email }}</a>
+			{% endif %}
+			
+		</div>
+	
 	</div>
 
-</div>
+{% endfor %}
 
 {% endif %}

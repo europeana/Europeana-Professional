@@ -8,25 +8,57 @@
 
 {% if location %}
 
-{# 
-	address:
-	    0 str() => street number
-	    1 str() => postalcode city
-	    2 str() => country
+{# 	different address format
+	
+	geolocation arr(4) …
+	    address str(11) => maarweg 321
+   		latitude str(9) => 50.951231
+   	 	longitude str(8) => 6.898046
+   	 	formatted_address str(37) => Maarweg 271, 50825 Köln, Deutschland
+   	 	
+   	 VS:
+   	 
+  	geolocation arr(4) …
+    	address str(9) => Cleveland
+    	latitude str(8) => 41.49932
+    	longitude str(10) => -81.694361
+    	formatted_address str(66) => 168 Grand Army of the Republic Highway, Cleveland, Ohio 44113, USA
+    	
+    VS:
+    
+    geolocation arr(4) …
+    	address str(21) => den haag WESTEINDE 23
+    	latitude str(9) => 52.076673
+    	longitude str(8) => 4.305311
+    	formatted_address str(43) => Westeinde 23, 2512 GS Den Haag, Niederlande
+
+    
 #}
+
 {% set address = location.geolocation.formatted_address|split(',') %}
-{% set postalcode_city = address[1]|split(' ') %}
-{% set country = address[2] %}
+
+{% set street = address|first %}
+{% set country = address|last %}
+{% set region = address[3] %}
+{% set city = address[1] %}
+
+{% if address|length == 4 %}
+	{% set city = address[1] %}
+	{% set region = address[2] %}
+{% endif %}
+
 
 <div class="vcard">
 	{% if location.title != "" %}
 	<div class="org">{{ location.title }}</div>
 	{% endif %}
 	<div class="adr">
-		<div class="street-address">{{ location.geolocation.address }}</div>
-		<span class="locality">'locality' -> not a location property</span>,
-		<span class="postal-code">{{ postalcode_city[1] }}</span>,
-		<abbr class="region" title="{{ postalcode_city[2] }}">{{ postalcode_city[2] }}</abbr>
+		<div class="street-address">{{ street }}</div>
+		{#<span class="locality">'locality' -> not a location property</span>,#}
+		<span class="postal-code">{{ city }}</span>
+		{% if region %}
+		<abbr class="region" title="{{ region }}">, {{ region }}</abbr>
+		{% endif %}
 		<div class="country-name">{{ country }}</div>
 	</div>
 	{% if contact.telephone_number != "" %}

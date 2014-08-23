@@ -4,18 +4,26 @@
 	- record_event
 	- generic
 #}
+
+
+
 {% if filelist %}
 <ul class="item-files moredata">
 	{% for file in filelist %}
-	<li>
-		<span class="file-name">
-			<a href="{{ paths.root }}files/{{ file.filename }}">{{ file.title }}</a>
-			<span class="file-info">{ file.type } { file.size }</span>
-		</span>
-		
-		<span class="file-owner">{ file-owner.first ? } { file-owner.last ? }</span>
-		<span class="file-date">{ day.long }/{ month.digit }/{ year.long }</span>
-	</li>
+		{% set fileinfo = fileinfo(file) %}
+		<li>
+			<span class="file-name">
+				<a href="{{ paths.files }}{{ file.filename }}">{{ fileinfo.filename }}</a>
+				<span class="file-info">{{ fileinfo.filetype }} {{ fileinfo.filesize }}</span>
+			</span>
+			
+			{#	ToDo: fileowner should be dropbox meta data
+			<span class="file-owner">{ fileowner }</span>
+			#}
+			{% if owner != 'hide' %}
+			<span class="file-date">{{ fileinfo.filedate }}</span>
+			{% endif %}
+		</li>
 	{% endfor %}
 </ul>
 {% endif %}

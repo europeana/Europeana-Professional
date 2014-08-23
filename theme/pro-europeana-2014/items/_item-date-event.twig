@@ -15,7 +15,7 @@
 		<span class="date-start">{{ event.start_event|localdate("%e") }}</span>
 	{# show only on various days  #}
 	{% if event.start_event|date('d') != event.end_event|date('d') %}
-		<span class="date-end">- {{ event.end_event|localdate("%e") }}</span>
+		<span class="date-end">— {{ event.end_event|localdate("%e") }}</span>
 	{% endif %}
 	</div>
 	
@@ -36,8 +36,11 @@
 	</div>
 	
 	<div class="time">
+		<svg class="icon icon-clock">
+			<use xlink:href="#icon-clock"></use>
+		</svg>
 		<span class="time-start">{{ event.start_event|localdate("%H:%M") }}</span>
-		<span class="time-end">- {{ event.end_event|localdate("%H:%M") }}</span>
+		<span class="time-end">— {{ event.end_event|localdate("%H:%M") }}</span>
 	</div>
 	
 </div>

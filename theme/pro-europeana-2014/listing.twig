@@ -4,13 +4,22 @@
 {# set records by structureset #}
 {% if structureset %}
 	{% set records = structureset %}
+
 {# set records by tags #}
 {% elseif ('/tags/' in app.request.pathInfo) %}
 	{# % set sortoption = app.request.get('order') % #}
 	{% setcontent records = '(blogposts, events, publications, pages)' where { tags: slug } limit app.config.get('general/listing_records') allowpaging %}
+
 {# set records by contenttype #}
 {% else %}
-	{# get records for contenttype. limit must be definied to enable pagination #}
+	{# 
+		get records for contenttype. limit must be definied to enable pagination.
+		contenttypes:
+			- jobs
+			- blogposts
+			- publications
+			- events
+	#}
 	{% setcontent records = records|first.contenttype.slug limit app.config.get('general/listing_records') allowpaging %}
 	{% set showsortby = true %}
 {% endif %}
@@ -55,8 +64,13 @@
 
 	 --><div class="l-sidebar">
 	 		<div class="inner">
-	 			{# contact person has to be defined, this is only for testing #}
-				{% include 'items/_item-help.twig' with { record: listItems|first.related('persons')|first } %}
+	 			{#
+	 				get main contacts. definied in contenttype 'person'
+	 				example: contact_blog -> main contact of the blog
+	 			#}
+	 			{% set contacttype = ('contact_'~(records|first.contenttype.singular_slug))  %}
+	 			{% setcontent contacts = 'persons' where { (contacttype) : true } orderby 'datechanged' %}
+	 			{% include 'items/_item-help.twig' with { records: contacts, title: "Need help?"} %}
 			</div>
 
 		</div>

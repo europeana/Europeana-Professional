@@ -13,8 +13,13 @@ footer:
     path: homepage
     label: Home
   - title: 'About us'
-    path: '/about-us'
+    path: /about-us
     label: 'About us'
   - title: 'Terms & policies'
-    link: /pages/terms.policies
+    link: terms-policies
     label: 'Terms & policies'
+jointhenetwork:
+  - path: structures/join-the-network
+    label: 'Join the network'
+  - path: structure/share-your-data
+    label: 'Share your data'

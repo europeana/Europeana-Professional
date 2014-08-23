@@ -15,7 +15,7 @@
 		<div class="item-supplementary">
 		{% if (contenttype == "Publications" or contenttype == "BlogPosts") %}
 			<div class="item-image">
-				<a href="{{ listItem.link }}"><img src="{{ listItem.image|image }}" alt="{{ listItem.values['image'].title }}" /></a>
+				<a href="{{ listItem.link }}"><img src="{{ listItem.image|thumbnail() }}" alt="{{ listItem.values['image'].title }}" /></a>
 			</div>
 		{% elseif contenttype == "Events" %}
 			<div class="item-bigdate">
@@ -58,7 +58,9 @@
 				{% include 'items/_item-date.twig' %}
 				{# set tags #}
 				{% include 'items/_item-tags.twig' %}
-				{ molecules-item-comments }
+				{# set discus comments #}
+				{% include 'items/_item-comments-link.twig' %}
+				
 			{% elseif contenttype == "Events" %}
 				{# set location #}
 				{% include 'items/_item-location.twig' with {record: location} %}
@@ -68,7 +70,7 @@
 				{# set date #}
 				{% include 'items/_item-date.twig' %}
 				{# set location #}
-				{% include 'items/_item-location.twig' %}
+				{% include 'items/_item-location.twig' with {record: location} %}
 				{# set department #}
 				{% include 'items/_item-department.twig' %}
 			{% endif %}

@@ -8,4 +8,6 @@
 {% setcontent structures = 'structures' where { parent: record.id }  %}
 {% set structureset = pages|merge(structures) %}
 
+{{ print(structureset) }}
+
 {% include 'listing.twig' with {structureset: structureset} %}

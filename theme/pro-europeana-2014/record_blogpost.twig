@@ -43,9 +43,8 @@
 						{# set tags #}
 						{% include 'items/_item-tags.twig' %}
 						
-						{# set comments #}
-						{# todo: social media #}
-						{ molecules-item-comments }
+						{# set discus comments #}
+						{% include 'items/_item-comments-link.twig' %}
 					</div>
 
 				</div>
@@ -56,12 +55,10 @@
 			</div>
 
 			{# related content #}
-			
-			
-			{% include 'items/_item-related.twig' with {short: false} %}
+			{% include 'items/_item-related.twig' with {title: "You might also like:", short: false} %}
 			
 			<aside>
-				<<<<< TODO Disqus Comments go here >>>>>
+				{% include 'items/_item-comments.twig' %}
 			</aside>
 
 
@@ -71,8 +68,8 @@
 	 --><div class="l-sidebar">
 	 		<div class="inner">
 
-	 			{# set date #}
-				{% include 'items/_item-contact.twig' with {record : author} %}
+	 			{# set author #}
+				{% include 'items/_item-help.twig' with {records : authors, title: "About the Author:"} %}
 
 				{# set Downloads #}
 				{% if blogpost.attachments %}

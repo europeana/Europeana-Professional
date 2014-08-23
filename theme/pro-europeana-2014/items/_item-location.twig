@@ -4,16 +4,19 @@
 	- listing_list
 #}
 
+
+
 {% if record %}
+
 <span class="item-location">
 	<svg class="icon icon-location">
 		<use xlink:href="#icon-location"></use>
 	</svg>
 	{% set location = record.geolocation.formatted_address|split(',') %}
 	{# city #}
-	{{ location[1]|split(' ')|last }},
+	{{ location[1] }},
 	{# country #}
-	{{ location[2] }}
+	{{ location|last }}
 </span>
 {% endif %}
 

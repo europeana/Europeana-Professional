@@ -2,6 +2,7 @@
 
 {% set job = record %}
 {% set location = job.related('locations')|first %}
+{% set contacts = record.related('persons') %}
 
 <!-- Start content -->
 <main role="main" class="l-page">
@@ -24,12 +25,23 @@
 
 					<div class="item-meta-primary">
 						<span class="item-payscale">
-						{% if job.salary_eur != "" %}	
-							&euro;{{ job.salary_eur }} p/m 
+						{# EUR #}
+						{% if (job.salary_eur or job.scale_eur) %}
+							{% if job.salary_eur != "" %}	
+								&euro;{{ job.salary_eur }} p/m 
+							{% endif %}
+							{% if job.scale_eur != "" %}
+								{{ job.scale_eur }}
+							{% endif %}
+						{# GBP #}	
+						{% elseif (job.salary_gbp or job.scale_gbp) %}
+							{% if job.salary_gbp != "" %}	
+								&euro;{{ job.salary_gbp }} p/m 
+							{% endif %}
+							{% if job.scale_gbp != "" %}
+								{{ job.scale_gbp }}
+							{% endif %}
 						{% endif %}
-						{% if job.scale_eur != "" %}
-							{{ job.scale_eur }}
-						{% endif %}	
 						</span>
 						{# set location #}
 						{% include 'items/_item-location.twig' with {record : location } %}
@@ -58,17 +70,15 @@
 
 	 --><div class="l-sidebar">
 	 		<div class="inner">
-
-				{ ?? molecules-help-contact title: "Need Help?" ?? }
-				(currently no relation between "job" and "person")
 				
-				{% include 'items/_item-deadline.twig' %}
-
+				{# set contacts #}
+				{% include 'items/_item-help.twig' with { records: contacts, title: "Need Help?" } %}
+				
+				{# set filelist #}
 				{% if job.filelist %}
 				<div class="downloads">
 					<h4>{{ job.contenttype.fields.filelist.label }}</h4>
-					{# set filelist #}
-					{% include 'items/_item-filelist.twig' with {records : job.filelist } %}
+					{% include 'items/_item-filelist-detail.twig' with {filelist : job.filelist, owner: 'hide' } %}
 				</div>
 				{% endif %}
 				

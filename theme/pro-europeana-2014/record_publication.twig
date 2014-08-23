@@ -1,8 +1,9 @@
 {% include '_header.twig' %}
 
 {% set publication = record %}
-{% set authors = record.related('persons') %}
 {% set related = record.related() %}
+{% set authors = record.related('persons') %}
+{% set contacts = record.related('person') %}
 
 
 <!-- Start content -->
@@ -22,7 +23,7 @@
 			<div class="l-publication">
 
 			 	<div class="l-photo">
-					<img src="{{ publication.image|image }}" alt="{{ publication.values['image'].title }}"/>
+					<img src="{{ publication.image|image(300,400,"c") }}" alt="{{ publication.values['image'].title }}"/>
 				</div><!--
 
 			 --><div class="l-detail textcontent">
@@ -58,16 +59,13 @@
 				{% include 'items/_item-filelist-detail.twig' with { filelist: publication.filelist } %}
 			</div>
 
-			{% include 'items/_item-related.twig' with {short: true} %}
+			{% include 'items/_item-related.twig' with {title: "You might also like:", short: true} %}
 		</div>
 		</div><!--
 
 	 --><div class="l-sidebar">
 			<div class="inner">
-
-			{# todo: contact has to be defined, this is for testing only #}
-			{% include 'items/_item-help.twig' with { record: authors|first } %}
-				
+				{% include 'items/_item-help.twig' with { records: contacts } %}
 			</div>
 
 		</div>

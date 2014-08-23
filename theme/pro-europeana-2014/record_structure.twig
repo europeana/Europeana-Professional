@@ -1,6 +1,8 @@
 {% include '_header.twig' %}
 
-{% setcontent contacts = 'persons' where { id: record.contacts|join(' || ') } %}
+{% import 'macros/_helper.twig' as helper %}
+
+{% set contacts = record.related('persons') %}
 
 <!-- Start content -->
 <main role="main" class="l-page">
@@ -9,6 +11,8 @@
     <div class="grid-main">
 
         <div class="l-content">
+        
+        	
 
             <div class="l-breadcrumbs">
 				{% include 'items/_item-breadcrumb.twig' %}
@@ -18,89 +22,51 @@
 
                 <div class="page-intro">
                     <h1 class="title">{{ record.title }}</h1>
-                    <p>{{ record.intro|raw }}</p>
+                    <p>{{ record.teaser|raw }}</p>
                 </div>
                 
-                {% set taxonomySlug = record.group.slug %}
-                {# get pages #}
-                {% setcontent childs = 'pages' where { structures: taxonomySlug } %}
+                {# get sub pages by taxonomyslug #}
+                {% setcontent pages = 'pages' where { structures: record.group.slug } %}
+                
                 {# get sub structures #}
-                {% setcontent structures = 'structures' where { parent: record.id } %}
+                {% setcontent structures = 'structures' where { parent: record.id } orderby 'position' %}
+                
                 {# merge pages and structures #}
-                {# % set childs = childs|merge(structures)  % #}
+                {% set allChilds = pages|merge(structures)  %}
+                
+                {# order childs manually 
+                	- pages are ordered by group (has_sortorder)
+                	- structures by field "postion" -> elements with postition "automatic" at least in array 
+                #}
+                {% set childs = [] %}
+                {% for page in pages %}
+                	{% for structure in structures %}
+						{% if loop.parent.loop.index == structure.position  %}
+							{% set childs = childs|merge([structure]) %}
+	                	{% endif %}
+                	{% endfor %}
+                	{% set childs = childs|merge([page]) %}
+                	{# move not sorted strucutres with position "automatic" at the end #}
+                	{% if loop.last %}
+                		{% set notSorted = (pages|length + structures|length) - childs|length %}
+                		{% set childs = childs|merge(structures|slice(0,notSorted) ) %}
+                	{% endif %}
+                {% endfor %}
+                
+				{% set parentId = record.parent %}
+				{% set parents = [record] %}
+				{% for i in 0..3 if parentId %}
+					{% setcontent curParent = 'structures' where {id: parentId} %}
+					{% if curParent %}
+						{% set parents = parents|merge([curParent]) %}
+						{% set parentId = curParent.parent %}
+					{% endif %}
+				{% endfor %}
 
-                <ul class="l-next_options">
-                
-                
-				{# render pages #}
-                {% for child in childs %}
-                
-                {#
-					todo: move parent functionality into a macro
-				#}
-                {% set parents = [] %}
-                {% setcontent parent = 'structures' where {slug: record.group.slug } %}
-				{% set parentId = parent|first.id %}
-				{% for i in 0..3 %}
-					{% setcontent curParent = 'structures' where {id: parentId} %}
-					{% if curParent %}
-						{% set parents = parents|merge([curParent]) %}
-						{% set parentId = curParent.parent %}
-					{% endif %}
-				{% endfor %}
-				
-                	<li>
-                		<div class="link-block block">
-						    {% for parent in parents|reverse %}
-								{% set parentRoot = parentRoot~parent.group.slug~"/" %}
-								<a href="{{ paths.root }}{{parentRoot}}{{ child.slug }}" title="{{ child.title }}" class="b-inner">
-							{% endfor %}
-							
-								<div class="b-thumb">
-									<img src="{{ child.image|image }}" alt="{{ child.values['image'].title }}" />
-								</div>
-								<div class="b-text">
-									<h2 class="item-title">{{ child.title }}</h2>
-									<p>{{ child.teaser }}</p>
-								</div>
-							</a>
-						</div>
-					</li>
-				{% endfor %}
-				
-				
-				{# render sub structures #}
-                {% for child in structures %}
-				{#
-					todo: move parent functionality into a macro
-				#}
-                {% set parents = [] %}
-				{% set parentId = child.parent %}
-				{% for i in 0..3 %}
-					{% setcontent curParent = 'structures' where {id: parentId} %}
-					{% if curParent %}
-						{% set parents = parents|merge([curParent]) %}
-						{% set parentId = curParent.parent %}
-					{% endif %}
-				{% endfor %}
-				
-                	<li>
-                		<div class="link-block block">
-						    {% for parent in parents|reverse %}
-								{% set parentRoot = parentRoot~parent.group.slug~"/" %}
-								<a href="{{ paths.root }}{{parentRoot}}{{ child.slug }}" title="{{ child.title }}" class="b-inner">
-							{% endfor %}
-								<div class="b-thumb">
-									<img src="{{ child.image|image }}" alt="{{ child.values['image'].title }}" />
-								</div>
-								<div class="b-text">
-									<h2 class="item-title">{{ child.title }}</h2>
-									<p>{{ child.teaser }}</p>
-								</div>
-							</a>
-						</div>
-					</li>
-				{% endfor %}
+				<ul class="l-next_options"><!--
+             -->{% for child in childs %}<!--
+                -->{% include 'items/_item-lineblock.twig' with {child : child} %}<!--
+             -->{% endfor %}
                 </ul>
                 
                 <div class="section-sitemap">
@@ -116,13 +82,7 @@
 
      --><div class="l-sidebar">
             <div class="inner">
-            	{#
-            		contact "need help" - draft
-            		todo: mutliple contact issue. currently the first contact is displayed 
-            	#}
-                {% if contacts %}
-					{% include 'items/_item-help.twig' with { record: contacts|first, use_secondary_mail: record.secondary_mail } %}
-				{% endif %}
+				{% include 'items/_item-help.twig' with { records: contacts, title: "Need help?",  use_secondary_mail: record.secondary_mail } %}
             </div>
 
         </div>
