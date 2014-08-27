@@ -145,8 +145,8 @@ homepage:
     # Used to call in the latest blog post, but can be overwritten if desired
     blogposts:
       multiple: true
-      label: Select blog posts (two are shown)
-      order: -id
+      label: Select blog posts 
+      order: -datepublish
       format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
 
 # record_template: homepage.twig      
@@ -428,7 +428,7 @@ persons:
       prefix: "<em>URL has to start with http:// or https://</em>" 
       pattern: url 
       class: narrow
-    contact_blog:
+    contact_blogpost:
       type: checkbox
       label: "Main contact of the blog"
     contact_event:
@@ -461,7 +461,9 @@ persons:
     #  type: checkbox
     #  required: false
     #  label: "Chief editor of the blog (will show as main contact in blog):"          
-  taxonomy: [ tags ]                       
+  taxonomy: [ tags ]
+  sort: team
+  listing_records: 10
   record_template: record_person.twig
   listing_template : listing_person.twig
 
@@ -815,7 +817,7 @@ blogposts:
   relations:
     persons:
       multiple: false
-      label: "Written by"
+      label: "Author"
       order: -id
       prefix: "<em>URL has to start with http:// or https://</em>" 
     pages:
@@ -974,7 +976,7 @@ pages:
   #relations:
   #  structures:
   #    label: "Parent"
-  #    multiple: false                  
+  #    multiple: false
   taxonomy: [ tags, structures ]
   record_template: record_page.twig
 
@@ -1064,7 +1066,8 @@ structures:
       label: "Contact(s)"
       multiple: true
       format: "{{ item.last_name }}, {{ item.first_name }}"
-  # These tags are to be used to link together boxes that have been set to (automatic recommendation)                       
+  # These tags are to be used to link together boxes that have been set to (automatic recommendation)
+  order: position                       
   taxonomy: [ tags, structures ]
   record_template: record_structure.twig
 
@@ -1120,7 +1123,7 @@ locations:
       type: checkbox
       required: false
       label: "This is the main Europeana office (appear in footer):"
-  
+  record_template: record_location.twig
       
       
 #################################
@@ -1142,11 +1145,11 @@ footer:
       label: "Image: (required):"
       attrib: title
       extensions: [ gif, jpg, png ] 
-    address:
-      type: html
-      required: true
-      label: "Address (required):"
-      height: 300px
+    #address:
+    #  type: html
+    #  required: true
+    #  label: "Address (required):"
+    #  height: 300px
     socialmedia:
       type: html
       required: true
