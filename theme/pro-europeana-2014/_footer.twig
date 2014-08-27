@@ -2,6 +2,8 @@
 
 
 {% setcontent footer = 'Footer' returnsingle %}
+{% setcontent location = 'Location' where {'europeana_office' : '1' } returnsingle %}
+
 
 <footer class="footer" role="contentinfo">
     <div class="lc">
@@ -12,9 +14,12 @@
 	                	<img src="{{ footer.image|image }}" title="{{ footer.values['image'].title }}" alt="{{ footer.values['image'].title }}">
                 	</a>
                 </div>
-                
+
                 <div class="address">
-                   {{ footer.address }}
+                	{{ location.title }}
+                	{% for addressitem in location.geolocation.formatted_address|split(',')  %}
+                		<br /> {{ addressitem }} 
+                	{% endfor %}
                 </div>
 
             </div><!--
@@ -59,7 +64,7 @@
 
     <div class="sub-footer">
 
-        {{ menu('footer', '_submenu.twig') }}  
+        {{ menu('footer', '_submenu.twig') }}
 
         <p class="copyright">Co-funded by the European Union.</p>
 

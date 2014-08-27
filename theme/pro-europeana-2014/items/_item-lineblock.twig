@@ -1,7 +1,7 @@
 <li><div class="link-block block">
-	<a href="{{ helper.parentlink(parents, child) }}" title="{{ child.title }}" class="b-inner">
+	<a href="{{ helper.parentlink(STRUCTURES, child) }}" title="{{ child.title }}" class="b-inner">
 		<div class="b-thumb">
-			<img src="{{ child.image|thumbnail(400,300,"c") }}" alt="{{ child.values['image'].title }}" />
+			<img src="{{ thumbnail(child.image, 400,300,"c") }}" alt="{{ child.values['image'].title }}" />
 		</div>
 		<div class="b-text">
 			<h2 class="item-title">{{ child.title }}</h2>

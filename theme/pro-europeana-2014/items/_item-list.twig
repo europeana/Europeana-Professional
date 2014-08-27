@@ -8,7 +8,7 @@
 {% set listItem = record %}
 {% set contenttype = record.contenttype.name %}
 {% set authors = listItem.related('persons') %}
-{% set location = record.related('locations')|first %}
+{% set location = record.related('locations')|first %}	
 	
 	<li class="list-item">
 	

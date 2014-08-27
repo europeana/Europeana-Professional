@@ -68,7 +68,7 @@
 			</div>
 
 		</div><!--
-	 --><div class="usefulinfo-secondary">
+	 --><!--<div class="usefulinfo-secondary">
 	 
 			<div class="l-usefulinfo-item">
 
@@ -78,8 +78,7 @@
 				</div>
 
 
-			</div><!--
-		 --><div class="l-usefulinfo-item">
+			</div><div class="l-usefulinfo-item">
 
 				<div class="usefulinfo-item">
 					<a href="http://labs.europeana.eu" class="block-link labs-link">
@@ -88,7 +87,7 @@
 				</div>
 
 			</div>
-		</div>
+		</div>-->
 	</div>
 	</div>
 	</div>
@@ -116,23 +115,28 @@
 				#}
 				
 				{# get related blogposts #}
-				{% set blogposts = home.related('blogposts') %}
-				{# get latest items when related are not defined #}
-				{% if blogposts is empty %}
-					{% setcontent blogposts = "blogposts/latest/2" %}
-				{# merge related and latest items by id when only one related item available #}
-				{% elseif blogposts|length < 2 %}
-					{% setcontent latestBlogPosts = "blogposts/latest/2" %}
-					{% for k,v in latestBlogPosts %}
-						{% if (v.id != blogposts[0].id and loop.index0 < 2) %}
-							{% set blogposts = blogposts|merge({(k) : v}) %}
+				{% set blogposts = [] %}
+				{% set relatedBlogposts = home.related('blogposts')|slice(0,3) %}
+				
+				{# if no related post, get latest posts#}
+				{% if relatedBlogposts|length == 0  %}
+					{% setcontent relatedBlogposts = "blogposts/latest/3" %}
+				{# if less than 3 related post, merge related with latest posts #}
+				{% elseif relatedBlogposts|length < 3 %}
+					{% set postQuery = '' %}
+					{% for post in relatedBlogposts %}
+						{% set postQuery = postQuery ~ '!' ~ post.id %}
+						{% if not loop.last %}
+							{% set postQuery = postQuery ~ ' && ' %}
 						{% endif %}
 					{% endfor %}
+					
+					{% setcontent latestBlogposts = "blogposts/latest/" ~ (3-relatedBlogposts|length) where {id: postQuery } %}
+					{% set relatedBlogposts = relatedBlogposts|merge(latestBlogposts ) %}
 				{% endif %}
 				
 				{# render blogposts #}
-				{# NOTE: do not change this format!! "Enter" causes whitespace an break the layout. very strange #}
-				{% for post in blogposts %}<div class="l-post"><!--
+				{% for post in relatedBlogposts %}<div class="l-post"><!--
  				--><div class="block block-inset">
 					    <a href="{{ post.link }}" class="inner" title="{{ post.title }}">
 							<div class="b-thumb">
@@ -154,14 +158,14 @@
 			</div>
 
 			<a class="link-more" href="{{ paths.root }}blogposts">More from the Europeana professional Blog</a>
-		</div><div class="l-newsfeed">
+		</div><!-- <div class="l-newsfeed">
 
 			{# set twitter feed #}
 			<div class="tweets">
 				{{ twitterfeed() }}
 			</div>
 
-		</div>
+		</div> -->
 
 	</div>
 	</div>

@@ -3,6 +3,11 @@
 {% set blogpost = record %}
 {% set authors = blogpost.related('persons') %}
 
+
+{# set 'global' structures for path generating page and structures #}
+{% import 'macros/_helper.twig' as helper %}
+{% setcontent STRUCTURES = 'structures' %}
+
 <!-- Start content -->
 <main role="main" class="l-page">
 <div class="lc">

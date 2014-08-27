@@ -12,14 +12,8 @@
 	
 	<div class="help-contact">
 	
-		{% if title is empty %}
-		<h4>Need help?</h4>
-		{% endif %}
+		<h4>QUESTIONS?</h4>
 	
-		{# the first contact item gets the "title" param for the headline #}
- 		{% if loop.first %}
-		<h4>{{ title }}</h4>
-		{% endif %}
 		<img src="{{ person.image|image(600,600,"c") }}" alt="{{ person.values['image'].title }}" />
 	
 		<h5>Contact:</h5>	

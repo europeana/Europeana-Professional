@@ -1,25 +1,55 @@
 {% include '_header.twig' %}
 
-<br><br><br><br>
-<h1>person LIST</h1>
 
-{% for record in records %}
-<article>
-    {% if record.image!="" %}
-        <div class='imageholder'><img src="{{ record.image|thumbnail(120, 120) }}">
-        </div>
-    {% endif %}
+<!-- Start content -->
+<main role="main" class="l-page">
+<div class="lc">
+	<!-- Start grid -->
+	<div class="grid-main">
 
-    <h2><a href="{{ record.link }}">{{ record.title }}</a></h2>
+		<div class="l-content">
 
-    {{ record.excerpt(300) }}
+			<div class="l-breadcrumbs">
+				{% include 'items/_item-breadcrumb.twig' %}
+			</div>
 
-    {% include '_recordfooter.twig' with {record: record} %}
+			<div class="maincontent">
 
-</article>
-{% endfor %}
+				<h1 class="title">Who works at Europeana</h1>
 
-{{ pager() }}
+				{% set curTeam = '' %}
+				{% for record in records if record.checkbox_europeana  %}
+					{% if record.team != curTeam %}
+						<div class="team">
+							<h2>{{ record.team }}</h2>
+							{% set curTeam = record.team %}
+							<ul class="results-list"><!--
+							-->{% for person in records if record.team == person.team  %}<li>{% include 'items/_item-person-list.twig' with { record: person} %}</li>{% endfor %}<!--
+						--></ul>
+						</div>
+					{% endif %}
+				{% endfor %}
+				
+				{{ pager('persons') }}
+
+			</div>
+		</div><!--
+
+	 --><div class="l-sidebar">
+	 		<div class="inner">
+
+	 			{% setcontent contacts = 'persons' where { contact_staff : '1' } orderby 'datepublish'  %}
+	 			{% include 'items/_item-help.twig' with { records: contacts} %}
+				
+			</div>
+
+		</div>
+	</div>
+	<!-- End grid -->
+</div>
+</main>
+<!-- End Content -->
+
 
 
 {% include '_footer.twig' %}

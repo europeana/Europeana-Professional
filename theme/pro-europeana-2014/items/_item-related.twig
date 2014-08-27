@@ -27,44 +27,33 @@
 	{% endif %}
 {% endfor %}
 
-{% set records = relatedContents %}
 
-{# 
-	if less than three related content objects, get more objects by tags
-#}
-{% set relatedTags = '' %}
+{# if no related content get content by tag #}
+{% if relatedContents|length < 3  %}
 
-{% if records|length < 3 %}
-	
-	
 	{# build tag query #}
 	{% if record.taxonomy.tags is defined %}
-    	{% for tag in record.taxonomy.tags %}
-			{% set relatedTags = relatedTags ~ tag %}
-			{% if not loop.last %}
-				{% set relatedTags = relatedTags ~ ' || ' %}
-			{% endif %}
-    	{% endfor %}
-	{% endif %}
-
-	{# get content objects by tag query for the same contenttype#}
-	{% setcontent relatedContentsByTag = record.contenttype.name  where { tags: relatedTags, id: '!' ~ record.id } orderby 'datepublish DESC' limit 3 %}
-	
-	{% if records is empty %}
-		{% set records = relatedContentsByTag %}
-	{% else %}
-		{# merge related content with related content by tags #}
-		{% for key, value in relatedContentsByTag %}
-			{% for keyRecord, valueRecord in records %}
-				{% if (valueRecord.id != value.id and valueRecord.contenttype.name != value.contenttype.name) %}
-					{% set records = records|merge({(key) : value}) %}
+	    	{% set relatedTags = '' %}
+			{% for tag in record.taxonomy.tags %}
+				{% set relatedTags = relatedTags ~ tag %}
+				{% if not loop.last %}
+					{% set relatedTags = relatedTags ~ ' || ' %}
 				{% endif %}
 			{% endfor %}
-		{% endfor %}
+	{% endif %}
+	{# get content objects by tag query for the same contenttype #}
+	{% setcontent relatedContentsByTag = record.contenttype.name  where { tags: relatedTags, id: '!' ~ record.id } orderby 'datepublish DESC' limit 3 %}
+
+	{% if relatedContents|length > 0 %}
+		{% set relatedContents = relatedContents|merge(relatedContentsByTag ) %}
+	{% else %}
+		{% set relatedContents = relatedContentsByTag %}
 	{% endif %}
 	
 {% endif %}
-
+				
+{% set records = relatedContents %}
+				
 
 {% if (records) %}
 
@@ -74,16 +63,25 @@
 	<div class="related-items">
 	{% endif %}
 	
-		<h4>{{ title }}</h4>
-	
+		<h4>RELATED CONTENT:</h4>
 		<ul class="l-relatedlinks">
 		{% for related in records|slice(0,3) %}<!--
 		--><li class="related-item">
+		
 				{% if short %}
-				<a href="{{ related.link }}">{{ related.title }}</a>
+					{% if related.contenttype.slug == 'pages' %}
+						<a href="{{ helper.parentlink(STRUCTURES, related) }}">{{ related.title }}</a>
+					{% else %}
+						<a href="{{ related.link }}">{{ related.title }}</a>
+					{% endif %}
 				{% else %}
 				<div class="link-block block">
-				    <a href="{{ related.link }}" class="b-inner">
+				{% if related.contenttype.slug == 'pages' %}
+				    <a href="{{ helper.parentlink(STRUCTURES, related) }}" class="b-inner">
+				{% else %}
+					<a href="{{ related.link }}" class="b-inner">
+				{% endif %}
+				    
 						<div class="b-thumb">
 							<img src="{{ related.image|thumbnail() }}" alt="{{ related.image|title }}" />
 						</div>
