@@ -100,7 +100,7 @@ class Extension extends \Bolt\BaseExtension
 
             case "confirm":
 
-                $res = $this->readRSS($file, 15);
+                $res = $this->readRSS($file, 1000);
 
                 foreach ($res as $post) {
                     $output .= $this->importPost($post, false);
@@ -219,6 +219,8 @@ class Extension extends \Bolt\BaseExtension
 
                 $value = $post[$from];
 
+                $record->setValue($to, $value);
+
                 switch ($from) {
                     case "post_parent":
                         if (!empty($value)) {
@@ -247,7 +249,6 @@ class Extension extends \Bolt\BaseExtension
                         break;
                 }
 
-                $record->setValue($to, $value);
             }
 
         }
@@ -301,13 +302,13 @@ class Extension extends \Bolt\BaseExtension
             $scores[ levenshtein($name, $author)] = $id;
         }
 
-        \Dumper::dump($scores);
+        //\Dumper::dump($scores);
 
         ksort($scores);
 
-        \Dumper::dump($scores);
+        //\Dumper::dump($scores);
 
-        echo "Name: $name, chosen " . $this->authors[current($scores)] . "<br>";
+        //echo "Name: $name, chosen " . $this->authors[current($scores)] . "<br>";
 
         return current($scores);
 
