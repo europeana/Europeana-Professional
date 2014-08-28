@@ -100,7 +100,7 @@ class Extension extends \Bolt\BaseExtension
 
             case "confirm":
 
-                $res = $this->readRSS($file, 6);
+                $res = $this->readRSS($file, 1000);
 
                 foreach ($res as $post) {
                     $output .= $this->importPost($post, false);
