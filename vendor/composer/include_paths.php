@@ -6,7 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    $vendorDir . '/google/apiclient/src',
     $vendorDir . '/phpunit/php-text-template',
     $vendorDir . '/phpunit/phpunit-mock-objects',
     $vendorDir . '/phpunit/php-timer',

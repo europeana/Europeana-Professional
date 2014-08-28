@@ -86,7 +86,7 @@ class LowlevelChecks
     {
         $cfg = $config->get('general/database');
 
-        if($cfg['driver']=='mysql' || $cfg['driver']=='postgres' || $cfg['driver']=='postgresql'  ) {
+        if($cfg['driver']=='mysql' || $cfg['driver']=='postgres') {
             if(empty($cfg['password']) && ($cfg['username']=="root") ) {
                 $this->lowlevelError("There is no <code>password</code> set for the database connection, and you're using user 'root'." .
                     "<br>That must surely be a mistake, right? Bolt will stubbornly refuse to run until you've set a password for 'root'.");
@@ -104,7 +104,7 @@ class LowlevelChecks
                 $this->lowlevelError("MySQL was selected as the database type, but the driver does not exist or is not loaded. Please install the pdo_mysql driver.");
             }
             return;
-        } elseif ($cfg['driver']=='postgres' || $cfg['driver']=='postgresql') {
+        } elseif ($cfg['driver']=='postgres') {
             if (!extension_loaded('pdo_pgsql')) {
                 $this->lowlevelError("Postgres was selected as the database type, but the driver does not exist or is not loaded. Please install the pdo_pgsql driver.");
             }
