@@ -27,7 +27,7 @@ mapping:
     title: title
     desc: body
     link: originalurl
-    pubDate: datepublish
+    "dc:date": datepublish
 #
 #    post_id: id
 #    post_date: datecreated

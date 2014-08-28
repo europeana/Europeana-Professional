@@ -225,12 +225,14 @@ class Extension extends \Bolt\BaseExtension
                             $value = $mapping['fields']['post_parent_contenttype'] . "/" . $value;
                         }
                         break;
-                    case "post_date":
+                    case "pubDate":
+                    case "dc:date":
                         if (!empty($value)) {
+                            $date = date("Y-m-d H:i:s", strtotime($value));
                             // WXR seems to use only one date value.
-                            $record->setValue('datechanged', $value);
-                            $record->setValue('datecreated', $value);
-                            $record->setValue('datepublish', $value);
+                            $record->setValue('datechanged', $date);
+                            $record->setValue('datecreated', $date);
+                            $record->setValue('datepublish', $date);
                         }
                         break;
                 }
@@ -268,7 +270,7 @@ class Extension extends \Bolt\BaseExtension
         $record->setRelation('persons', $author);
 
         if ($dryrun) {
-            $output = "<p>Original RSS item <b>\"" . $post['post_title'] . "\"</b> -&gt; Converted Bolt Record :</p>";
+            $output = "<p>Original RSS item <b>\"" . $post['title'] . "\"</b> -&gt; Converted Bolt Record :</p>";
             $output .= \util::var_dump($post, true);
             $output .= \util::var_dump($record, true);
             $output .= "\n<hr>\n";
