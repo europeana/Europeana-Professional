@@ -100,7 +100,7 @@ class Extension extends \Bolt\BaseExtension
 
             case "confirm":
 
-                $res = $this->readRSS($file, 1000);
+                $res = $this->readRSS($file, 15);
 
                 foreach ($res as $post) {
                     $output .= $this->importPost($post, false);
@@ -301,7 +301,13 @@ class Extension extends \Bolt\BaseExtension
             $scores[ levenshtein($name, $author)] = $id;
         }
 
+        \Dumper::dump($scores);
+
         ksort($scores);
+
+        \Dumper::dump($scores);
+
+        echo "Name: $name, chosen " . $this->authors[current($scores)] . "<br>";
 
         return current($scores);
 
