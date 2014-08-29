@@ -820,10 +820,16 @@ blogposts:
   # every contenttype?
   relations:
     persons:
-      multiple: false
-      label: "Author"
-      order: -id
-      prefix: "<em>URL has to start with http:// or https://</em>"
+      label: "Author(s)"
+      multiple: true
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
+    person:
+      multiple: true
+      label: "Contact(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
     pages:
       multiple: true
       label: "Pages"
