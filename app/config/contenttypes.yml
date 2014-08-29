@@ -914,7 +914,7 @@ pages:
     #  multiple: true
     intro:
       type: html
-      label: "Snippet:"
+      label: "Intro:"
       height: 150px
     # Shown on Individual pages, Lists
     teaser:
