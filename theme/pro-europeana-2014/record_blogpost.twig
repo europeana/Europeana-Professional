@@ -2,6 +2,7 @@
 
 {% set blogpost = record %}
 {% set authors = blogpost.related('persons') %}
+{% set contacts = record.related('person') %}
 
 
 {# set 'global' structures for path generating page and structures #}
@@ -74,7 +75,7 @@
 	 		<div class="inner">
 
 	 			{# set author #}
-				{% include 'items/_item-help.twig' with {records : authors, title: "About the Author:"} %}
+				{% include 'items/_item-help.twig' with { records: contacts } %}
 
 				{# set Downloads #}
 				{% if blogpost.attachments %}
