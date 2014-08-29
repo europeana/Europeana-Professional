@@ -949,7 +949,6 @@ pages:
     secondary_mail:
       type: checkbox
       label: "Show secondary email instead:"
-      prefix: "<label><b>Contact(s)</b></label>"
     show_info:
       type: checkbox
       label: "Show info icon:"
