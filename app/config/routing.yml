@@ -52,6 +52,8 @@ contentlisting:
 structurelevel1binding:
   path: /{slug}
   defaults:           { _controller: 'Bolt\Controllers\Frontend::record', 'contenttypeslug': structure }
+  requirements:
+    slug: '[a-z0-9-_]+[^(sitemap)]' # ignore /sitemap
 
 structurelevel2binding:
   path: /{parentslug}/{slug}
