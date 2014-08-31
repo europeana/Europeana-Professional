@@ -76,6 +76,10 @@ structurelevel4binding:
     parentsluglevel2: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
     parentsluglevel2: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
 
+# google confirm (temp)
+googleauthbinding:
+   path:     /google925396343b30ccc8.html
+   defaults: { _controller: 'Bolt\Controllers\Frontend::template', template: 'google925396343b30ccc8' }
 
 
 
