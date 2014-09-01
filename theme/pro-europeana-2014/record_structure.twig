@@ -12,31 +12,37 @@
 {% setcontent pages = 'pages' where { structures: record.group.slug } %}
 
 {# get sub structures by parentID #}
-{% setcontent structures = 'structures' where { parent: record.id } orderby 'position' %}
+{% setcontent structures = 'structures' where { parent: record.id } orderby 'position'  %}
                 
 {# merge pages and structures #}
-{% set allChilds = pages|merge(structures)  %}
-                
+{# % set mixedContent = pages|merge(structures)  % #}
+
+
 {# order contenttyes manually 
 	- pages are ordered by group (has_sortorder)
 	- structures orded by field "postion". -> elements with postition "automatic" at least in array
 	- has_sortorder <->  postion
 #}
 {% set childs = [] %}
-{% for page in pages %}
-	{% for structure in structures %}
-		{% if loop.parent.loop.index == structure.position  %}
-			{% set childs = childs|merge([structure]) %}
-        {% endif %}
-  	{% endfor %}
-    {% set childs = childs|merge([page]) %}
-    {# move not sorted strucutres with position "automatic" at the end #}
-    {% if loop.last %}
-    	{% set notSorted = (pages|length + structures|length) - childs|length %}
-    	{% set childs = childs|merge(structures|slice(0,notSorted) ) %}
-    {% endif %}
-{% endfor %}
-                
+{% if (pages and structures) %}
+	{% for page in pages %}
+		{% for structure in structures %}
+			{% if loop.parent.loop.index == structure.position  %}
+				{% set childs = childs|merge([structure]) %}
+			{% endif %}
+		{% endfor %}
+		{% set childs = childs|merge([page]) %}
+		{% if loop.last %}
+	    	{% set notSorted = (pages|length + structures|length) - childs|length %}
+	    	{% set childs = childs|merge(structures|slice(0,notSorted) ) %}
+	    {% endif %}
+	{% endfor %}
+{# if no pages or structures are definied, set childs without order #}
+{% else %}
+	{% set childs =  pages|merge(structures)  %}
+{% endif %}
+
+
 
 <!-- Start content -->
 <main role="main" class="l-page">

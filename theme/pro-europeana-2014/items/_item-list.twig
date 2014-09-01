@@ -8,12 +8,14 @@
 {% set listItem = record %}
 {% set contenttype = record.contenttype.name %}
 {% set authors = listItem.related('persons') %}
-{% set location = record.related('locations')|first %}
+{% set location = record.related('locations')|first %}	
+	
 
+	
 	<li class="list-item">
-
+	
 		<div class="item-supplementary">
-		{% if (contenttype == "Publications" or contenttype == "BlogPosts") %}
+		{% if (contenttype == "Publications" or contenttype == "PressReleases" or contenttype == "BlogPosts") %}
 			<div class="item-image">
 				<a href="{{ listItem.link }}"><img src="{{ listItem.image|thumbnail() }}" alt="{{ listItem.values['image'].title }}" /></a>
 			</div>
@@ -22,9 +24,9 @@
 				{% include 'items/_item-date-event.twig' with {record : listItem} %}
 			</div>
 		{% endif %}
-
+			
 		</div><!--
-
+	
 	 --><div class="item-details">
 		{% if contenttype == 'Structures' %}
 			<h2 class="title"><a href="{{path.root}}{{ listItem.slug }}">{{ listItem.title }}</a></h2>
@@ -33,22 +35,22 @@
 		{% else %}
 			<h2 class="title"><a href="{{ listItem.link }}">{{ listItem.title }}</a></h2>
 		{% endif %}
-
-		{% if contenttype == "Publications" %}
+			
+		{% if (contenttype == "Publications" or contenttype == "PressReleases" ) %}
 			{# set authors #}
 			{% include 'items/_item-author.twig' with {records : authors} %}
 		{% elseif contenttype == "BlogPosts" %}
 			{# set author #}
 			{% include 'items/_item-author.twig' with {records : authors} %}
-
+			
 			{# set readtime #}
 			{#  todo: where did that came from? -> update contenttype "blogpost" #}
 			{% include 'items/_item-readtime.twig' %}
 		{% endif %}
-
+			
 			<div class="item-meta-secondary">
-
-			{% if contenttype == "Publications" %}
+			
+			{% if (contenttype == "Publications" or contenttype == "PressReleases") %}
 				{# set date #}
 				{% include 'items/_item-date.twig' %}
 				{# set tags#}
@@ -60,7 +62,7 @@
 				{% include 'items/_item-tags.twig' %}
 				{# set discus comments #}
 				{% include 'items/_item-comments-link.twig' %}
-
+				
 			{% elseif contenttype == "Events" %}
 				{# set location #}
 				{% include 'items/_item-location.twig' with {record: location} %}
@@ -74,26 +76,20 @@
 				{# set department #}
 				{% include 'items/_item-department.twig' %}
 			{% endif %}
-
+	
 			</div>
-
+	
 			<div class="item-preview">
-                {# addition by Bob: the old, imported blogpostings have no teaser. In this case we use an
-                   excerpt from the body instead. #}
-                {% if listItem.teaser|length > 10 %}
-				    {{ listItem.teaser }}
-                {% else %}
-                    {{ listItem.body|excerpt(250) }}
-                {% endif %}
+				{{ listItem.teaser }}
 			</div>
-
-			{% if contenttype == "Publications" %}
+			
+			{% if (contenttype == "Publications" or contenttype == "PressReleases" ) %}
 				{% include 'items/_item-filelist.twig' with {records: listItem.filelist} %}
 			{% endif %}
-
-
+			
+		
 		</div>
-
+	
 	</li>
 {% endif %}
 

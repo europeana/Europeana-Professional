@@ -10,7 +10,7 @@
 	{# % set sortoption = app.request.get('order') % #}
 	{% setcontent records = '(blogposts, events, publications, pages)' where { tags: slug } limit app.config.get('general/listing_records') allowpaging %}
 	{# set records by contenttype #}
-{% else %}
+{% elseif records is empty %}
 	{# 
 		get records for contenttype. limit must be definied to enable pagination.
 		contenttypes:
@@ -22,6 +22,9 @@
 	{% setcontent records = records|first.contenttype.slug limit app.config.get('general/listing_records') allowpaging %}
 	{% set showsortby = true %}
 	{% set contenttypePager = records|first.contenttype.slug %}
+	
+{# % elseif % #}
+	
 {% endif %}
 
 
@@ -68,7 +71,7 @@
 	 				example: contact_blog -> main contact of the blog
 	 			#}
 	 			{% set contacttype = ('contact_'~(records|first.contenttype.singular_slug))  %}
-	 			{% setcontent contacts = 'persons' where { (contacttype) : '1' } orderby 'last_name'  %}
+	 			{% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
 	 			{% include 'items/_item-help.twig' with { records: contacts} %}
 			</div>
 

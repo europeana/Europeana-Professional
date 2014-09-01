@@ -8,6 +8,21 @@
 {% setcontent structures = 'structures' where { parent: record.id }  %}
 {% set structureset = pages|merge(structures) %}
 
-{{ print(structureset) }}
 
-{% include 'listing.twig' with {structureset: structureset} %}
+{% if (record.children != 'none' and record.children != '' ) %}
+	{% setcontent records = record.children orderby '-team' %}
+	{% if record.children == 'Persons' %}
+		{% include 'listing_person.twig' with {records: records} %}
+	{% else %}
+		{% include 'listing.twig' %}
+	{% endif %}
+	
+{% else %}
+	{% include 'listing.twig' with {structureset: structureset} %}
+{% endif %}
+
+
+
+
+
+

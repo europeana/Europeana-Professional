@@ -5,12 +5,19 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+		{% if (record.title|length == 0) %}
+			{% set title = 'Home' %}
+		{% else %}
+			{% set title = record.title|striptags %}
+		{% endif %}
 		
-        <title>{% if record.title is defined %}{{ record.title|striptags }} - {% endif %}{{ app.config.get('general/sitename') }}</title>
+        <title>{{ title }} - {{ app.config.get('general/sitename') }}</title>
 	
 		<meta name="viewport" content="width=device-width, maximum-scale=1.0"/>
-	
-		<!-- <link rel="stylesheet" href="{{ paths.theme }}css/screen.css"  media="all"/> -->
+		{#
+		<link rel="stylesheet" href="{{ paths.theme }}css/screen.css"  media="all"/ >
+		#}
 		<link rel="stylesheet" href="http://develop.styleguide.eanadev.org/css/pro/screen.css"  media="all"/>
 		
 		<link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,700|Open+Sans:400italic,700italic,400,700&subset=latin,greek,cyrillic' rel='stylesheet' type='text/css'>
@@ -74,8 +81,12 @@
 	<div class="search-global">
 		<div class="inner">
 	
-		<form action="#" id="search_box">
-			<input type="text" id="search" name="search" placeholder="Search Europeana" />
+		{% set placeholder = 'Search Europeana' %}
+		{% if app.request.get('q') != NULL %}
+			{% set placeholder = app.request.get('q') %}
+		{% endif %}
+		<form action="{{ paths.root }}search" id="search_box">
+			<input type="text" id="search" name="q" placeholder="{{ placeholder }}" />
 			<button type="submit" class="search_btn">
 				<svg class="icon icon-search">
 					<use xlink:href="#icon-search"></use>
@@ -140,5 +151,8 @@
 	
 	<!-- Main site wrapper for offcanvas navigation -->
 	<div class="pusher">
-		{# set 'global' structures for path generating page and structures #}
-{% setcontent STRUCTURES = 'structures' %}
+	
+	{# set 'global' structures. path generating for pages and structures #}
+	{% setcontent STRUCTURES = 'structures' %}
+	
+	

@@ -1,6 +1,5 @@
 {% include '_header.twig' %}
 
-
 <!-- Start content -->
 <main role="main" class="l-page">
 <div class="lc">
@@ -18,7 +17,7 @@
 				<h1 class="title">Who works at Europeana</h1>
 
 				{% set curTeam = '' %}
-				{% for record in records if record.checkbox_europeana  %}
+				{% for record in records|order(record.team) if record.checkbox_europeana  %}
 					{% if record.team != curTeam %}
 						<div class="team">
 							<h2>{{ record.team }}</h2>

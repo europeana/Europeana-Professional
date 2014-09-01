@@ -16,43 +16,49 @@
 	get all related content objects
 	excepts PERSONS
 #}
-{% set allRelatedContent = record.related() %}
-{% set relatedExceptions = ['persons'] %}
-{% set relatedContents = [] %}
-
-{# collect all related content objects #}
-{% for key, value in allRelatedContent %}
-	 {% if value.contenttype.slug not in relatedExceptions %}
-		{% set relatedContents = relatedContents|merge({ (key) : value}) %}
-	{% endif %}
-{% endfor %}
-
-
-{# if no related content get content by tag #}
-{% if relatedContents|length < 3  %}
-
-	{# build tag query #}
-	{% if record.taxonomy.tags is defined %}
-	    	{% set relatedTags = '' %}
-			{% for tag in record.taxonomy.tags %}
-				{% set relatedTags = relatedTags ~ tag %}
-				{% if not loop.last %}
-					{% set relatedTags = relatedTags ~ ' || ' %}
-				{% endif %}
-			{% endfor %}
-	{% endif %}
-	{# get content objects by tag query for the same contenttype #}
-	{% setcontent relatedContentsByTag = record.contenttype.name  where { tags: relatedTags, id: '!' ~ record.id } orderby 'datepublish DESC' limit 3 %}
-
-	{% if relatedContents|length > 0 %}
-		{% set relatedContents = relatedContents|merge(relatedContentsByTag ) %}
-	{% else %}
-		{% set relatedContents = relatedContentsByTag %}
-	{% endif %}
+{% if record %}
+	{% set allRelatedContent = record.related() %}
+	{% set relatedExceptions = ['persons'] %}
+	{% set relatedContents = [] %}
 	
+	{# collect all related content objects #}
+	{% for key, value in allRelatedContent %}
+		 {% if value.contenttype.slug not in relatedExceptions %}
+			{% set relatedContents = relatedContents|merge({ (key) : value}) %}
+		{% endif %}
+	{% endfor %}
+	
+	
+	{# if no related content get content by tag #}
+	{% if relatedContents|length < 3  %}
+	
+		{# build tag query #}
+		{% if record.taxonomy.tags is defined %}
+		    	{% set relatedTags = '' %}
+				{% for tag in record.taxonomy.tags %}
+					{% set relatedTags = relatedTags ~ tag %}
+					{% if not loop.last %}
+						{% set relatedTags = relatedTags ~ ' || ' %}
+					{% endif %}
+				{% endfor %}
+		{% endif %}
+		{# get content objects by tag query for the same contenttype #}
+		{% setcontent relatedContentsByTag = record.contenttype.name  where { tags: relatedTags, id: '!' ~ record.id } orderby 'datepublish DESC' limit 3 %}
+	
+		{% if relatedContents|length > 0 %}
+			{% set relatedContents = relatedContents|merge(relatedContentsByTag ) %}
+		{% else %}
+			{% set relatedContents = relatedContentsByTag %}
+		{% endif %}
+		
+	{% endif %}
+					
+	{% set records = relatedContents %}
+	{%  set title = 'RELATED CONTENT:' %}
+{% else %}
+	{% setcontent records = 'blogposts/latest/3' %}
+	{% set title = 'Things you may find interesting:' %}
 {% endif %}
-				
-{% set records = relatedContents %}
 				
 
 {% if (records) %}
@@ -63,7 +69,7 @@
 	<div class="related-items">
 	{% endif %}
 	
-		<h4>RELATED CONTENT:</h4>
+		<h4>{{ title }}</h4>
 		<ul class="l-relatedlinks">
 		{% for related in records|slice(0,3) %}<!--
 		--><li class="related-item">
