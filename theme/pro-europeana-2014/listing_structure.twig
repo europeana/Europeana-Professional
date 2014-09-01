@@ -10,19 +10,14 @@
 
 
 {% if (record.children != 'none' and record.children != '' ) %}
-	{% setcontent records = record.children orderby '-team' %}
 	{% if record.children == 'Persons' %}
+		{% setcontent records = record.children orderby '-team' %}
 		{% include 'listing_person.twig' with {records: records} %}
 	{% else %}
+		{% setcontent records = record.children %}
 		{% include 'listing.twig' %}
 	{% endif %}
 	
 {% else %}
 	{% include 'listing.twig' with {structureset: structureset} %}
 {% endif %}
-
-
-
-
-
-
