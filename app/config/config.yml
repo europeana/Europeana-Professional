@@ -1,6 +1,10 @@
 # NOTE: Database configuration must be done in config_local.yml
 # -------------------------------------------------------------
-
+# Use sqlite, or Mysql..
+database:
+  driver: sqlite
+  databasename: bolt
+  
 # The name of the website
 sitename: Europeana Professional V2.0
 payoff: The Europeana Foundation
@@ -21,6 +25,7 @@ sort_options_blogposts: { datepublish: 'Date (ASC)', title: 'Title (ASC)', -date
 sort_options_events: { datepublish: 'Date (ASC)', title: 'Title (ASC)', -datepublish: 'Date (DESC)', -title: 'Title (DESC)'}
 sort_options_jobs: { datepublish: 'Date (ASC)', position: 'Position (ASC)', -datepublish: 'Date (DESC)', -position: 'Position (DESC)'}
 sort_options_publications: { datepublish: 'Date (ASC)', title: 'Title (ASC)', -datepublish: 'Date (DESC)', -title: 'Title (DESC)'}
+
 
 
 # Set maintenance mode true or false
