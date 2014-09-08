@@ -44,112 +44,7 @@
 #
 #################################################################
 
-#################################
-#
-# HOMEPAGE
-#
-# Notes: 
-#
-# Issues:
-# -  
-#
-# ToDos:
-# - make default content (prepopulatd) for intro text and callout
-#
-# Questions:
-# - Is there a max length for the banner text?
-# - What kind of links appear in the banner link? If only pages fine.
-#   If all kind of links could appear: Is it possible to select ALL contenttypes in a select field?
-# - Is the content from intro text and the callout prepopulated with the default values given from dean, or 
-#   what is the prepopulated content? 
-# - Is it correct to have two blog update fields?
-#
-#################################
-homepage:
-  name: Homepage
-  singular_name: Homepage
-  fields:
-    bannerimage:
-      type: image
-      attrib: title
-      extensions: [ gif, jpg, png ]
-      required: true
-      label: "Banner Image (required):"
-    bannertext:
-      type: html
-      required: true
-      label: "Banner Text (required):"
-      variant: inline 
-      class: wide
-    # This is the link that the "More" goes to.
-    bannerlink_select:
-      type: select
-      required: true
-      label: "Banner link:"             
-      values: page/id,title
-    bannerlink:
-      type: text
-      required: false
-      label: ".. or Banner link:"
-      variant: inline 
-      prefix: "<em>URL has to start with http:// or https://</em>" 
-      postfix: "(at least one of the above boxes is required)"  
-      pattern: url
-      class: narrow
-    subtitle:
-      type: html
-      required: true 
-      label: "Intro text (required):"            
-      height: 150px    
-    callout_1:
-      type: html
-      required: true 
-      label: "Join the network (required):"            
-      height: 150px 
-    callout_2:
-      type: html
-      required: true
-      label: "Share your data (required):"            
-      height: 150px 
-    callout_3:
-      type: html
-      required: true 
-      label: "Use Europeana data (required):"            
-      height: 150px 
-    callout_4:
-      type: html
-      required: true 
-      label: "For developers (required):"            
-      height: 150px 
-    callout_5:
-      type: html
-      required: true 
-      label: "Europeana Labs (required):"            
-      height: 150px
-    callout_6:
-      type: html
-      required: true 
-      label: "Latest Updates (required):"            
-      height: 150px  
-    #blog_update_1:
-    #  type: select
-    #  required: true
-    #  label: "Blog update 1:"
-    #  values: blog/id,title
-    #blog_update_2:
-    #  type: select
-    #  required: true
-    #  label: "Blog update 2:"             
-    #  values: blog/id,title
-  relations:
-    # Used to call in the latest blog post, but can be overwritten if desired
-    blogposts:
-      multiple: true
-      label: Select blog posts 
-      order: -datepublish
-      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
 
-# record_template: homepage.twig      
 
 #################################
 #
@@ -306,7 +201,7 @@ pressreleases:
       label: "Image:"
       attrib: title
       extensions: [ gif, jpg, png ]              
-  taxonomy: [ tags ]    
+  taxonomy: [ tags]    # , structures 
   relations:
     persons:
       label: "Author(s)"
@@ -389,7 +284,7 @@ persons:
       class: narrow
     slug:
       type: slug
-      uses: [ first_name, last_name ]
+      uses: [ first_name,last_name ]
     # If checked, then the following fields are set to 'required':
     # Job Title, Team ,Email address
     # If not checked, then all fields are optional.            
@@ -1000,7 +895,7 @@ pages:
     #  values: person/id,last_name,first_name
     #  multiple: true 
     intro:
-      type: html
+      type: textarea
       label: "Intro:"
       height: 150px
     # Shown on Individual pages, Lists            
@@ -1121,7 +1016,7 @@ structures:
       uses: title
     parent:
       type: select
-      label: "Parent (required):"
+      label: "Parent:"
       values: structure/id,title
     position:
       type: select
@@ -1129,7 +1024,7 @@ structures:
       values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
     children:
       type: select
-      values: ['none', 'Persons', 'PressReleases']
+      values: ['Pages', 'Persons', 'PressReleases', 'TaskForces', 'Projects']
     # Shown on Overview pages
     # -> moved to relationssss
     #contacts:
@@ -1224,8 +1119,264 @@ locations:
       required: false
       label: "This is the main Europeana office (appear in footer):"
   record_template: record_location.twig
-      
-      
+
+
+
+#################################
+#
+# PROJECTS
+#
+# Notes: 
+# 
+#
+#################################
+projects:
+  name: Projects
+  singular_name: Project
+  fields: 
+    title:
+      type: text
+      required: true
+      label: "Title (required):"
+      variant: inline
+    slug:
+      type: slug
+      uses: title
+    subtitle:
+      type: text
+      required: false
+      label: "Subtitle:"
+      variant: inline
+    date_start:
+      type: date
+      required: false
+      label: "Project start:"
+      variant: inline  
+    date_end:
+      type: date
+      required: false
+      label: "Project end:"
+      variant: inline
+    teaser:
+      type: html
+      label: "Teaser (required):"
+      height: 150px     
+    intro:
+      type: textarea
+      label: "Intro:"
+      height: 150px
+    body:
+      type: html
+      label: "Body (required):"
+      height: 300px
+    url:
+      type: text
+      required: false
+      label: "Link to projects website:"
+      variant: inline 
+      prefix: "<em>URL has to start with http:// or https://</em>"  
+      pattern: url   
+    logo:
+      type: image
+      required: false
+      label: "Project logo:"
+      extensions: [ gif, jpg, png ]
+    filelist:
+      type: filelist
+      required: true
+      label: "Downloads:"
+  taxonomy: [ tags ]
+  relations:
+    person:
+      multiple: true
+      label: "Contact(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
+  record_template: record_project.twig
+
+
+
+#################################
+#
+# Task forces
+#
+# 
+# 
+#
+#################################
+taskforces:
+  name: TaskForces
+  singular_name: TaskForce
+  fields: 
+    title:
+      type: text
+      required: true
+      label: "Title (required):"
+      variant: inline
+    slug:
+      type: slug
+      uses: title
+    department:
+      type: select
+      label: "Department:"
+      values: [ "Europeana Network", "Europeana Tech" ]
+    subtitle:
+      type: text
+      required: false
+      label: "Subtitle:"
+      variant: inline
+    date_start:
+      type: date
+      required: false
+      label: "Expected timeframe start:"
+      format: "{{d.Y}}"
+    date_end:
+      type: date
+      required: false
+      label: "Expected timeframe end:"
+    teaser:
+      type: html
+      label: "Teaser (required):"
+      height: 150px     
+    intro:
+      type: textarea
+      label: "Intro:"
+      height: 150px
+    body:
+      type: html
+      label: "Body (required):"
+      height: 300px
+    teaser_image:
+      type: image
+      required: false
+      label: "Teaser image:"
+  taxonomy: [ tags ]    
+  relations:
+    person:
+      multiple: true
+      label: "Contact(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
+    persons:
+      multiple: true
+      label: "Chair(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
+  record_template: record_taskforce.twig
+
+#################################
+#
+# HOMEPAGE
+#
+# Notes: 
+#
+# Issues:
+# -  
+#
+# ToDos:
+# - make default content (prepopulatd) for intro text and callout
+#
+# Questions:
+# - Is there a max length for the banner text?
+# - What kind of links appear in the banner link? If only pages fine.
+#   If all kind of links could appear: Is it possible to select ALL contenttypes in a select field?
+# - Is the content from intro text and the callout prepopulated with the default values given from dean, or 
+#   what is the prepopulated content? 
+# - Is it correct to have two blog update fields?
+#
+#################################
+homepage:
+  name: Homepage
+  singular_name: Homepage
+  fields:
+    title:
+      type: text
+      required: false
+    bannerimage:
+      type: image
+      attrib: title
+      extensions: [ gif, jpg, png ]
+      required: true
+      label: "Banner Image (required):"
+    bannertext:
+      type: html
+      required: true
+      label: "Banner Text (required):"
+      variant: inline 
+      class: wide
+    # This is the link that the "More" goes to.
+    #bannerlink_select:
+    #  type: select
+    #  required: true
+    #  label: "Banner link:"             
+    #  values: page/id,title
+    bannerlink:
+      type: text
+      required: false
+      label: ".. or Banner link:"
+      variant: inline 
+      prefix: "<em>URL has to start with http:// or https://</em>" 
+      postfix: "(at least one of the above boxes is required)"  
+      pattern: url
+      class: narrow
+    subtitle:
+      type: html
+      required: true 
+      label: "Intro text (required):"            
+      height: 150px    
+    callout_1:
+      type: html
+      required: true 
+      label: "Join the network (required):"            
+      height: 150px 
+    callout_2:
+      type: html
+      required: true
+      label: "Share your data (required):"            
+      height: 150px 
+    callout_3:
+      type: html
+      required: true 
+      label: "Use Europeana data (required):"            
+      height: 150px 
+    #callout_4:
+    #  type: html
+    #  required: true 
+    #  label: "For developers (required):"            
+    #  height: 150px 
+    #callout_5:
+    #  type: html
+    #  required: true 
+    #  label: "Europeana Labs (required):"            
+    #  height: 150px
+    callout_6:
+      type: html
+      required: true 
+      label: "Latest Updates (required):"            
+      height: 150px  
+    #blog_update_1:
+    #  type: select
+    #  required: true
+    #  label: "Blog update 1:"
+    #  values: blog/id,title
+    #blog_update_2:
+    #  type: select
+    #  required: true
+    #  label: "Blog update 2:"             
+    #  values: blog/id,title
+  relations:
+    # Used to call in the latest blog post, but can be overwritten if desired
+    blogposts:
+      multiple: true
+      label: Select blog posts 
+      order: -datepublish
+      format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
+
+# record_template: homepage.twig      
+
 #################################
 #
 # FOOTER
