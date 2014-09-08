@@ -6,13 +6,15 @@
 
 {% if records %}
 
-{% for record in records %}
-	
-	{% set person = record %}
+
 	
 	<div class="help-contact">
 	
 		<h4>QUESTIONS?</h4>
+		
+		{% for record in records %}
+	
+		{% set person = record %}
 	
 		<img src="{{ person.image|image(600,600,"c") }}" alt="{{ person.values['image'].title }}" />
 	
@@ -36,9 +38,11 @@
 			{% endif %}
 			
 		</div>
+		
+		{% endfor %}
 	
 	</div>
 
-{% endfor %}
+
 
 {% endif %}
