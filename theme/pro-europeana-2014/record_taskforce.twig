@@ -1,0 +1,84 @@
+{% include '_header.twig' %}
+
+{% set contacts = record.related('person') %}
+{% set chairs =  record.related('persons') %}
+
+<!-- Start content -->
+<main role="main" class="l-page">
+
+
+<div class="lc">
+	<!-- Start grid -->
+	<div class="grid-main">
+		
+
+		<div class="l-content">
+
+		<div class="l-breadcrumbs">
+			{% include 'items/_item-breadcrumb.twig' %}
+		</div>
+		
+		<article class="maincontent">
+			<div class="textcontent">
+
+				<div class="articleheader">
+
+					<h1 class="title">{{ record.title }}</h1>
+
+					{% if record.department != "" %}
+					<div class="item-meta-primary">
+						<span class="item-department">
+							<svg class="icon icon-users">
+								<use xlink:href="#icon-users"/>
+							</svg>
+							{{ record.department }}
+						</span>
+					</div>
+					{% endif %}
+
+					<div class="item-meta-secondary">
+						Expected timeframe: {% include 'items/_item-date.twig' %} to:&nbsp;&nbsp; {% include 'items/_item-date.twig' %}
+					</div>
+
+					<div class="item-meta-tertiary">
+						<h4>Chaired by:</h4>
+						<ul class="people-list">
+							{% for chair in chairs %}<!--
+								--><li>{% include 'items/_item-person.twig' with { record: chair } %}</li><!--
+							-->{% endfor %}
+						</ul>
+					</div>
+				</div>
+
+				<div class="prose">
+					<p class="intro">{{ record.intro }}</p>
+					{{ record.body|raw }}
+				</div>
+
+
+			</div>
+
+			{% include 'items/_item-related.twig' with {title: "RELATED:", short: false} %}
+
+		</article>
+		</div><!--
+
+	 --><div class="l-sidebar">
+	 		<div class="inner">
+	 			{% include 'items/_item-help.twig' with { records: contacts } %}
+			</div>
+
+		</div>
+	</div>
+	<!-- End grid -->
+</div>
+
+
+
+
+</main>
+<!-- End Content -->
+
+
+{% include '_footer.twig' %}
+

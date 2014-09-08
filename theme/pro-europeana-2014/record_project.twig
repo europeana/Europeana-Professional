@@ -1,0 +1,90 @@
+{% include '_header.twig' %}
+
+{% set contacts = record.related('person') %}
+
+<!-- Start content -->
+<main role="main" class="l-page">
+
+
+<div class="lc">
+	<!-- Start grid -->
+	<div class="grid-main">
+		
+
+		<div class="l-content">
+
+		<div class="l-breadcrumbs">
+			{% include 'items/_item-breadcrumb.twig' %}
+		</div>
+		
+		<div class="maincontent">
+			
+			
+			<div class="l-twoup">
+
+			 	<div class="l-photo">
+			 		<img src="{{ record.image|image(300,300) }}" alt="{{ record.title }} logo" class="photo" />
+				</div><!--
+
+			 --><div class="l-detail textcontent">
+
+			 		<h1 class="title">{{ record.title }}</h1>
+
+					<div class="item-meta-primary">
+						<div class="item-link">
+							<a href="{{ record.url }}">
+								<svg class="icon icon-bookmark"><use xlink:href="#icon-bookmark"/></svg> 
+								{{ record.url }}
+							</a>
+						</div>
+					</div>
+
+					<div class="item-meta-secondary">
+						{% include 'items/_item-date.twig' %} <span>to:</span> {% include 'items/_item-date.twig' %}
+						<br>
+						{% include 'items/_item-tags.twig' %}
+					</div>
+
+
+					<div class="prose">
+						<p class="intro">
+							{{ record.intro }}
+						</p>
+						{{ record.body|raw }}
+					</div>
+
+				</div>
+			</div>
+			
+			
+			{% if record.filelist %}
+			<div class="section files">
+				<h2>Downloads:</h2>
+				{% include 'items/_item-filelist-detail.twig' with { filelist: record.filelist } %}
+			</div>
+			{% endif %}
+
+			{% include 'items/_item-related.twig' with {title: "RELATED:", short: false} %}
+
+		</div>
+		</div><!--
+
+	 --><div class="l-sidebar">
+	 		<div class="inner">
+	 			{% include 'items/_item-help.twig' with { records: contacts } %}
+			</div>
+
+		</div>
+	</div>
+	<!-- End grid -->
+</div>
+
+
+
+
+</main>
+<!-- End Content -->
+
+
+{% include '_footer.twig' %}
+
