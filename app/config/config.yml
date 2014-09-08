@@ -27,6 +27,25 @@ sort_options_jobs: { datepublish: 'Date (ASC)', position: 'Position (ASC)', -dat
 sort_options_publications: { datepublish: 'Date (ASC)', title: 'Title (ASC)', -datepublish: 'Date (DESC)', -title: 'Title (DESC)'}
 
 
+# our sites header navigation
+# three columns (left, middle, right)
+our_sites:
+  left:
+    title: Discover
+    subtitle: Search Collections
+    description: Search through Europe's cultural heritage
+    link: http://pro.europeana.eu/
+  middle:
+    title: Network
+    subtitle: Professional
+    description: For Culture Professionals
+    link: http://pro.europeana.eu/
+  right:
+    title: Develop
+    subtitle: Labs
+    description: A playground for remixing cultural content
+    link: http://pro.europeana.eu/ 
+
 
 # Set maintenance mode true or false
 # While in maintenance mode, only users of level editor or higher can access the site.
