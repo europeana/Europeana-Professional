@@ -2,12 +2,11 @@
 	breadcrumb
 #}
 <ul class="breadcrumbs">
-
 	{# home #}
 	<li><a href="{{ paths.root }}"><svg class="icon icon-home"><use xlink:href="#icon-home"></use></svg>Home</a></li>
 	
 	{# groups #}
-	{% if record.group %}
+	{% if record.group or paths.current|split('/')|length > 2 %}
 	{#
 		todo: move parent functionality into a macro
 	#}
@@ -17,6 +16,7 @@
 		{% set parentId = record.parent %}
 		
 		{# parentId page #}
+		{#
 		{% if record.contenttype.name == "Pages" %}
 			{% setcontent parent = 'structures' where {slug: record.group.slug } %}
 			{% set parentId = parent|first.id %}
@@ -34,6 +34,23 @@
 			{% set parentRoot = parentRoot~parent.group.slug~"/" %}
 			<li><a href="{{ paths.root }}{{parentRoot}}">{{ parent.group.name|capitalize }}</a></li>
 		{% endfor %}
+		#}
+		
+		{% set urlSLugs = paths.current|split('/')|slice(1,length-1) %}
+		{% set baseLink = paths.root %}
+		{% for slug in urlSLugs if slug != paths.root|slice(1,length-1) %}
+			{% set labels = slug|split('-') %}
+			{% set name = '' %}
+			{% for label in labels %}
+				{% if loop.first %}
+					{% set name = label|capitalize %}
+				{% else %}
+					{% set name = name ~ ' ' ~ label %}
+				{% endif %}
+			{% endfor %}
+			{% set baseLink = baseLink ~ slug ~ '/' %}
+			<li><a href="{{ baseLink }}">{{ name }}</a></li>
+		{% endfor %}
 		
 		<li><span class="lastitem">{{ record.title }}</span></li>
 		
@@ -49,6 +66,8 @@
 	{% elseif record %}
 	<li><a href="{{ paths.root }}{{ record.contenttype.slug }}">{{ record.contenttype.slug|capitalize }}</a></li>
 	<li><span class="lastitem">{{ record.title }}</span></li>
+	
+	{# listing -> search #}
 	{% elseif name != "" %}
 	<li><span class="lastitem">{{ name }}</span></li>
 	{% endif %}
