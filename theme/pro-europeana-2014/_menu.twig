@@ -1,10 +1,10 @@
 <!-- start .nav-->
 <nav id="nav" class="nav_primary nav">
 	<ul class="nav-list">
+		{% set slugs = paths.currenturl|split('/') %}
 		{% for item in menu %}
     	<li>
-    		{# add class="current" to active menu item #}
-    		{% if item|current %}
+    		{% if ( item.path|slice(1, length) in slugs) %}
     			<a class="current" href="{{ item.link }}">{{item.label}}</a>
     		{% else %}
     			<a href="{{ item.link }}">{{item.label}}</a>
