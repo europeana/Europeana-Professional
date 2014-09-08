@@ -15,9 +15,9 @@ homepage:
   path:               /
   defaults:           { _controller: 'Bolt\Controllers\Frontend::homepage' }
 
-search:
-  path:               /search
-  defaults:           { _controller: 'Bolt\Controllers\Frontend::search' }
+#search:
+#  path:               /search
+#  defaults:           { _controller: 'Bolt\Controllers\Frontend::search' }
 
 preview:
   path:               /preview/{contenttypeslug}
@@ -48,38 +48,38 @@ contentlisting:
 
 
 
+
 # pseudo hierarchy routing for structures and pages
 structurelevel1binding:
   path: /{slug}
   defaults:           { _controller: 'Bolt\Controllers\Frontend::record', 'contenttypeslug': structure }
   requirements:
-    slug: '[a-z0-9-_]+[^(sitemap)]' # ignore /sitemap
+    slug: '[a-z0-9-_]+[^(sitemap)^(search)]' # ignore /sitemap + /search
 
 structurelevel2binding:
   path: /{parentslug}/{slug}
-  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages'] }
+  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages', 'pressreleases', 'persons', 'taskforces', 'projects'] }
   requirements:
     parentslug:    [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
-
+    slug: '[a-z0-9-_]+'
+    
 structurelevel3binding:
   path: /{parentslug}/{parentsluglevel2}/{slug}
-  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages'] }
+  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages', 'pressreleases', 'persons', 'taskforces', 'projects'] }
   requirements:
     parentslug:     [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
     parentsluglevel2: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
+    slug: '[a-z0-9-_]+'
     
 structurelevel4binding:
   path: /{parentslug}/{parentsluglevel2}/{parentsluglevel3}/{slug}
-  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages'] }
+  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages', 'pressreleases', 'persons', 'taskforces', 'projects'] }
   requirements:
     parentslug:     [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
     parentsluglevel2: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
     parentsluglevel2: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
+    slug: '[a-z0-9-_]+'
 
-# google confirm (temp)
-googleauthbinding:
-   path:     /google925396343b30ccc8.html
-   defaults: { _controller: 'Bolt\Controllers\Frontend::template', template: 'google925396343b30ccc8' }
 
 
 
