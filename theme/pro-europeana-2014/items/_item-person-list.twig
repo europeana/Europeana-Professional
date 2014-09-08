@@ -1,12 +1,17 @@
+{% if (childs) %}
+	{% set listeItemLink = paths.current ~ '/' ~ record.slug %}
+{% else %}
+	{% set listeItemLink = record.link %}
+{% endif %}
 {% if record %}<div class="l-person block block-thumb">
     <div class="b-inner">
 		<div class="b-thumb">
-			<a href="{{ record.link }}">
+			<a href="{{ listeItemLink }}">
 				<img src="{{ record.image|image(300,400) }}" alt="{{ record.first_name }} {{ record.last_name }}" />
 			</a>
 		</div>
 		<div class="b-text">
-			<h2 class="person-name"><a href="{{ record.link }}">{{ record.first_name }} {{ record.last_name }}</a></h2>
+			<h2 class="person-name"><a href="{{ listeItemLink }}">{{ record.first_name }} {{ record.last_name }}</a></h2>
 			<div class="jobdetails">
 				<div class="job-title">{{ record.job_title }}</div>
 			</div>

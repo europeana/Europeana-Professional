@@ -13,8 +13,11 @@
 			</div>
 
 			<div class="maincontent">
-
-				<h1 class="title">Who works at Europeana</h1>
+				{% if record.title == "" %}
+					<h1 class="title">Who works at Europeana</h1>
+				{% else %}
+					<h1 class="title">{{ record.title }}</h1>
+				{% endif %}
 
 				{% set curTeam = '' %}
 				{% for record in records|order(record.team) if record.checkbox_europeana  %}
@@ -23,7 +26,7 @@
 							<h2>{{ record.team }}</h2>
 							{% set curTeam = record.team %}
 							<ul class="results-list"><!--
-							-->{% for person in records if record.team == person.team  %}<li>{% include 'items/_item-person-list.twig' with { record: person} %}</li>{% endfor %}<!--
+							-->{% for person in records if record.team == person.team  %}<li>{% include 'items/_item-person-list.twig' with { record: person, childs: true} %}</li>{% endfor %}<!--
 						--></ul>
 						</div>
 					{% endif %}

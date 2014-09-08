@@ -11,7 +11,7 @@
 	{% set currentsortoption = records|first.contenttype.sort %}
 {% endif %}
 
-{# get default sort options from the config file by contenttypeslug #}
+{# get sort options from the config file by contenttypeslug #}
 {% set sortoptions = app.config.get('general/sort_options_'~records|first.contenttype.slug ) %}
 
 <div class="sortby">

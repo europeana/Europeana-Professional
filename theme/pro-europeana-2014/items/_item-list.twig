@@ -9,15 +9,19 @@
 {% set contenttype = record.contenttype.name %}
 {% set authors = listItem.related('persons') %}
 {% set location = record.related('locations')|first %}	
-	
 
-	
+{% if (childs) %}
+	{% set listeItemLink = paths.current ~ '/' ~ record.slug %}
+{% else %} 
+	{% set listeItemLink = listItem.link %}
+{% endif %}
+
 	<li class="list-item">
 	
 		<div class="item-supplementary">
 		{% if (contenttype == "Publications" or contenttype == "PressReleases" or contenttype == "BlogPosts") %}
 			<div class="item-image">
-				<a href="{{ listItem.link }}"><img src="{{ listItem.image|thumbnail() }}" alt="{{ listItem.values['image'].title }}" /></a>
+				<a href="{{ listeItemLink }}"><img src="{{ listItem.image|thumbnail() }}" alt="{{ listItem.values['image'].title }}" /></a>
 			</div>
 		{% elseif contenttype == "Events" %}
 			<div class="item-bigdate">
@@ -29,11 +33,11 @@
 	
 	 --><div class="item-details">
 		{% if contenttype == 'Structures' %}
-			<h2 class="title"><a href="{{path.root}}{{ listItem.slug }}">{{ listItem.title }}</a></h2>
+			<h2 class="title"><a href="{{ listeItemLink }}">{{ listItem.title }}</a></h2>
 		{% elseif contenttype == 'Pages' %}
-			<h2 class="title"><a href="{{path.root}}{{ listItem.group.slug }}/{{ listItem.slug }}">{{ listItem.title }}</a></h2>
+			<h2 class="title"><a href="{{ listeItemLink }}">{{ listItem.title }}</a></h2>
 		{% else %}
-			<h2 class="title"><a href="{{ listItem.link }}">{{ listItem.title }}</a></h2>
+			<h2 class="title"><a href="{{ listeItemLink }}">{{ listItem.title }}</a></h2>
 		{% endif %}
 			
 		{% if (contenttype == "Publications" or contenttype == "PressReleases" ) %}
@@ -55,6 +59,7 @@
 				{% include 'items/_item-date.twig' %}
 				{# set tags#}
 				{% include 'items/_item-tags.twig' %}
+				
 			{% elseif contenttype == "BlogPosts" %}
 				{# set date #}
 				{% include 'items/_item-date.twig' %}
@@ -68,6 +73,7 @@
 				{% include 'items/_item-location.twig' with {record: location} %}
 				{# set tags #}
 				{% include 'items/_item-tags.twig' %}
+			
 			{% elseif contenttype == "Jobs" %}
 				{# set date #}
 				{% include 'items/_item-date.twig' %}
@@ -75,6 +81,15 @@
 				{% include 'items/_item-location.twig' with {record: location} %}
 				{# set department #}
 				{% include 'items/_item-department.twig' %}
+				
+			{% elseif contenttype == "TaskForces" %}
+				{# set tags #}
+				{% include 'items/_item-tags.twig' %}
+				
+			{% elseif contenttype == "Projects" %}
+				{# set tags #}
+				{% include 'items/_item-tags.twig' %}
+				
 			{% endif %}
 	
 			</div>
