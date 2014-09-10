@@ -1,10 +1,7 @@
 # NOTE: Database configuration must be done in config_local.yml
 # -------------------------------------------------------------
-# Use sqlite, or Mysql..
-database:
-  driver: sqlite
-  databasename: bolt
-  
+
+
 # The name of the website
 sitename: Europeana Professional V2.0
 payoff: The Europeana Foundation
@@ -26,6 +23,9 @@ sort_options_events: { datepublish: 'Date (ASC)', title: 'Title (ASC)', -datepub
 sort_options_jobs: { datepublish: 'Date (ASC)', position: 'Position (ASC)', -datepublish: 'Date (DESC)', -position: 'Position (DESC)'}
 sort_options_publications: { datepublish: 'Date (ASC)', title: 'Title (ASC)', -datepublish: 'Date (DESC)', -title: 'Title (DESC)'}
 
+
+# set default excerpt length
+excerpt_length: 140
 
 # our sites header navigation
 # three columns (left, middle, right)
@@ -101,7 +101,7 @@ search_results_records: 10
 # The list of enabled extensions. For Example:
 # GoogleAnalytics, FacebookLike, TwitterButton, FacebookComments, Disqus, RSSFeed, SimpleForms.
 # Read each 'readme.md' from the Bolt Extensions screen, to see what they do.
-enabled_extensions: [ TwitterFeed, Disqus, Sitemap, FileInfo ] # ImportRSS
+enabled_extensions: [ TwitterFeed, Disqus, Sitemap, FileInfo, MenuEditor ] # ImportRSS
 
 # Add jQuery to the rendered HTML, whether or not it's added by an extension.
 add_jquery: false
@@ -121,8 +121,8 @@ recordsperpage: 10
 # - authenticated: cache 'templates' and 'request' for logged-on users. In most cases you should *NOT* enable
 #   this, because it will cause side-effects if the website shows different content to authenticated users.
 caching:
-  config: true
-  templates: true
+  config: true #dev
+  templates: true #dev
   request: false
   duration: 10
   authenticated: false
