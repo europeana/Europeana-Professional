@@ -33,9 +33,9 @@
 
 		<div class="jointhenetwork">
 			{{ home.callout_1|raw  }}
-			
+			{#
 			<a class="btn button-join cta" href="{{ root.path}}get-involved/join-the-network">
-				{#
+				
 				<svg class="icon icon-check">
 					<use xlink:href="#icon-check"></use>
 				</svg>
@@ -117,7 +117,7 @@
  				--><div class="block block-inset">
 					    <a href="{{ post.link }}" class="inner" title="{{ post.title }}">
 							<div class="b-thumb">
-								<img src="{{ post.teaser_image|thumbnail(400,300,"c") }}" alt="{{ post.values['teaser_image'].title }}" />
+								<img src="{{ post.image|thumbnail(400,300,"c") }}" alt="{{ post.values['image'].title }}" />
 								<div class="b-text">
 									<h2 class="headline">{{ post.title }}</h2>
 								</div>
@@ -137,11 +137,12 @@
 			<a class="link-more" href="{{ paths.root }}blogposts">More from the Europeana professional Blog</a>
 		</div><!-- <div class="l-newsfeed">
 
-			{# set twitter feed #}
+			{# set twitter feed - disabled #}
+			{#
 			<div class="tweets">
 				{{ twitterfeed() }}
 			</div>
-
+			#}
 		</div> -->
 
 	</div>
