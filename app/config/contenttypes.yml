@@ -717,28 +717,28 @@ Jobs:
       index: true   
       postfix: "<hr>"   
     # Show on Job page 
-    salary_gbp:
-      type: text
-      required: false
-      variant: inline
-      label: "Monthly salary (GBP):"
-      index: true
+    #salary_gbp:
+    #  type: text
+    #  required: false
+    #  variant: inline
+    #  label: "Monthly salary (GBP):"
+    #  index: true
     # Show on Job page 
-    scale_gbp:
-      type: text
-      required: false
-      variant: inline
-      label: "Scale (GBP):"
-      index: true
+    #scale_gbp:
+    #  type: text
+    #  required: false
+    #  variant: inline
+    #  label: "Scale (GBP):"
+    #  index: true
     deadline:
       type: date
       required: false
       label: "Deadline"
-    deadlinelabel:
-      type: text
-      required: true
-      label: "Deadline label"
-      default: "Deadline for applications"
+    #deadlinelabel:
+    #  type: text
+    #  required: true
+    #  label: "Deadline label"
+    #  default: "Deadline for applications"
     filelist:
       type: filelist
       required: false 
@@ -812,11 +812,11 @@ blogposts:
     #  type: select
     #  label: "Parent:"
     #  values: structure/id,title
-    teaser:
-      type: html
-      required: false
-      label: "Teaser (required):"           
-      height: 150px
+    #teaser:
+    #  type: html
+    #  required: false
+    #  label: "Teaser (required):"           
+    #  height: 150px
     # Shown on Blog page
     body:
       type: html
