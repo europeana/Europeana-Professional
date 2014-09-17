@@ -1455,9 +1455,9 @@ homepage:
       label: Select blog posts 
       order: -datepublish
       format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
-    #footers:
-    #  label: "Footer"
-    #  multiple: false
+    footers:
+      label: "Footer"
+      multiple: false
 
 # record_template: homepage.twig      
 
