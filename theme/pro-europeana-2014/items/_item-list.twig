@@ -99,11 +99,7 @@
 			<div class="item-preview">
 				
 				{% if (contenttype == "Publications" or contenttype == "PressReleases" or contenttype == "BlogPosts") %}
-					{% if listItem.teaser is empty %}
-						{{ listItem.excerpt(app.config.get('general/excerpt_length')) }}
-					{% else %}
-						{{ listItem.teaser }}
-					{% endif %}
+					{{ listItem.excerpt(app.config.get('general/excerpt_length')) }}
 				{% else %}
 					{{ listItem.teaser }}
 				{% endif %}
