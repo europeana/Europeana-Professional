@@ -40,6 +40,8 @@
 # - PERSON
 # - PUBLICATION
 # - PRESSRELEASE
+# - PROJECTS
+# - TASKFORCES
 # - HOMEPAGE
 # - FOOTER
 #
@@ -465,8 +467,9 @@ persons:
     #  required: false
     #  label: "Chief editor of the blog (will show as main contact in blog):"          
   taxonomy: [ tags ]
-  sort: -team
-  listing_records: 10
+  sort: team
+  # no pager for person
+  listing_records: 100000
   record_template: record_person.twig
   listing_template : listing_person.twig
 
@@ -920,6 +923,11 @@ pages:
       label: 'Parents:'
       multiple: true
       values: structure/id,title
+    position:
+      type: select
+      label: "Postition Parent"
+      values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
+    
     # This is used to manually select the position the content should be shown on a list or overview page - default value is automatic
     #position:
     #  type: select
@@ -973,7 +981,20 @@ pages:
       label: "Show secondary email instead:"
     show_info:
       type: checkbox
-      label: "Show info icon:" 
+      label: "Show info icon:"
+    listtitle:
+      type: text
+      default: "Thumbnail/image grid view"
+      required: false
+      variant: inline
+      prefix: "<hr><h2>Image Grid</h2>"
+    imagelist:
+      type: imagelist
+      label: "Grid images for subsites:"
+    liststyle:
+      type: select
+      label: "Style modifier"
+      values: ['default', 'fivecols']
   relations:
     persons:
       label: "Contact(s)"
@@ -1012,6 +1033,8 @@ pages:
   taxonomy: [ tags, structures ]
   record_template: record_page.twig
 
+      
+      
 #################################
 #
 # STRUCTURE
@@ -1054,9 +1077,10 @@ structures:
     slug:
       type: slug
       uses: title
-    parents:
+    parent:
       type: select
       label: "Parent:"
+      multiple: false
       values: structure/id,title
     position:
       type: select
@@ -1090,21 +1114,30 @@ structures:
       required: true  
       label: "Image:"
       attrib: title
-      extensions: [ gif, jpg, png ] 
-    # This is to be used to define the layout - it should either be a overview page, which has the various boxes. Or a list page, that contains pages. 
+      extensions: [ gif, jpg, png ]
     template:
       type: templateselect
-      filter: 'listing_structure.twig'
+      filter: '*_structure.twig'
+      prefix: "<hr>"
       postfix: 'Use "default template" for overview.'
+    subclass:
+      type: select
+      label: "Subsite body class"
+      values: ['none', 'europeana_pro_subsite']
+      prefix: "<hr><h2>Subsite Settings</h2>"
+    # This is to be used to define the layout - it should either be a overview page, which has the various boxes. Or a list page, that contains pages. 
   relations:
     persons:
       label: "Contact(s)"
       multiple: true
       format: "{{ item.last_name }}, {{ item.first_name }}"
+    footer:
+      label: "Footer"
+      multiple: false
   # These tags are to be used to link together boxes that have been set to (automatic recommendation)
   order: position                       
   taxonomy: [ tags, structures ]
-  record_template: record_structure.twig
+  record_template: overview_structure.twig
 
 
 #################################
@@ -1245,8 +1278,6 @@ projects:
 #################################
 #
 # Task forces
-#
-# 
 # 
 #
 #################################
@@ -1424,6 +1455,9 @@ homepage:
       label: Select blog posts 
       order: -datepublish
       format: "{{ item.title|escape }} <span>({{ item.id }})</span>"
+    #footers:
+    #  label: "Footer"
+    #  multiple: false
 
 # record_template: homepage.twig      
 
@@ -1435,8 +1469,8 @@ homepage:
 # Only the first footer is used. 
 #
 #################################
-footer:
-  name : Footer
+footers:
+  name : Footers
   singular_name: Footer
   fields:
     title:
@@ -1479,4 +1513,8 @@ footer:
       required: true
       label: "Linklist others (required):"
       height: 300px
+  relations:
+    locations:
+      label: "Location:"
+      multiple: false
   
