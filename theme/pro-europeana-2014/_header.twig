@@ -5,14 +5,16 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<link rel="Shortcut Icon" href="{{ paths.theme }}images/favicon.ico" />
 
-		{% if (record.title|length == 0) %}
-			{% set title = 'Home' %}
-		{% else %}
+		{% if record is defined %}
 			{% set title = record.title|striptags %}
+		{% elseif records is defined %}
+			{% set title = records|first.contenttype .name %}
 		{% endif %}
 		
         <title>{{ title }} - {{ app.config.get('general/sitename') }}</title>
+	
 	
 		<meta name="viewport" content="width=device-width, maximum-scale=1.0"/>
 		{#
@@ -28,7 +30,19 @@
 		<![endif]-->
 	</head>
 
-	<body class="europeana_pro">
+	{# get possible subsite options #}
+	{% set subsite = '' %}
+	{% if (parent is defined ) %}
+		{% set subsite = subsite(record, parent)  %}
+	{% endif %}
+	
+	{# set subsite class #}
+	{% if subsite %}
+		<body class="{{ subsite.subclass }}">
+	{# set default pro class #}
+	{% else %}
+		<body class="europeana_pro">
+	{% endif %}
 	
 	{# include SVG #}
 	{% include 'svg/global_svg.twig' %}
@@ -143,7 +157,5 @@
 	<!-- Main site wrapper for offcanvas navigation -->
 	<div class="pusher">
 	
-	{# set 'global' structures. path generating for pages and structures #}
-	{% setcontent STRUCTURES = 'structures' %}
 	
 	

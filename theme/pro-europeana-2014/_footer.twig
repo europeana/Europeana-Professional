@@ -1,8 +1,23 @@
 <!-- Start Footer -->
 
+{# set possible subsite class #}
+{% set subsite = '' %}
+{% if (record is defined and parent is defined) %}
+	{% set subsite = subsite(record, parent)  %}
+{% endif %}
 
-{% setcontent footer = 'Footer' returnsingle %}
-{% setcontent location = 'Location' where {'europeana_office' : '1' } returnsingle %}
+{# set subsite footer #}
+{% if subsite|length %}
+	{% setcontent footer = 'Footers' where {id: subsite.footer} %}
+	{% set location = footer.related('location') %}
+	{% set logolink = subsite.path %}
+{# set default footer #}
+{% else %}
+	{% setcontent home = "homepage/latest/1" returnsingle %}
+	{% set footer = home.related('footers')|first %}
+	{% setcontent location = 'Location' where {'europeana_office' : '1' } returnsingle %}
+	{% set logolink = paths.root %}
+{% endif %}
 
 
 <footer class="footer" role="contentinfo">
@@ -10,16 +25,18 @@
         <div class="grid">
             <div class="l-contact">
                 <div>
-                	<a href="{{ paths.root }}">
-	                	<img src="{{ footer.image|image }}" title="{{ footer.values['image'].title }}" alt="{{ footer.values['image'].title }}">
+                	<a href="{{ logolink }}">
+	                	<img src="{{ footer.image|image }}" title="{{ footer.image|title }}" alt="{{ footer.values['image'].title }}">
                 	</a>
                 </div>
 
                 <div class="address">
+                {% if location %}
                 	{{ location.title }}
                 	{% for addressitem in location.geolocation.formatted_address|split(',')  %}
                 		<br /> {{ addressitem }} 
                 	{% endfor %}
+                {% endif %}
                 </div>
 
             </div><!--
@@ -68,19 +85,16 @@
 
         <p class="copyright">Co-funded by the European Union.</p>
 
-        {#
-        <a class="licensehr" rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
-            <img alt="Creative Commons License" src="/images/cc.png"> (hardcoded)
-        </a>
-        #}
-        
     </div>
 
 </footer>
 
+
 </div> {# closing "pusher" #}
 
 <script src="{{ paths.theme }}js/init.js"></script>
+<script src="{{ paths.theme }}js/minRead.js"></script>
+
 
 </body>
 </html>
