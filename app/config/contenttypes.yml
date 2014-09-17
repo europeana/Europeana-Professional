@@ -982,6 +982,9 @@ pages:
     show_info:
       type: checkbox
       label: "Show info icon:"
+    hide_related:
+      type: checkbox
+      label: "Hide from related:"
     listtitle:
       type: text
       default: "Thumbnail/image grid view"

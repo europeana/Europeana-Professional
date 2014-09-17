@@ -42,7 +42,7 @@
 				{% endfor %}
 		{% endif %}
 		{# get content objects by tag query for the same contenttype #}
-		{% setcontent relatedContentsByTag = record.contenttype.name  where { tags: relatedTags, id: '!' ~ record.id } orderby 'datepublish DESC' limit 3 %}
+		{% setcontent relatedContentsByTag = record.contenttype.name  where { tags: relatedTags, id: '!' ~ record.id, 'hide_related' : '!1' } orderby 'datepublish DESC' limit 3 %}
 	
 		{% if relatedContents|length > 0 %}
 			{% set relatedContents = relatedContents|merge(relatedContentsByTag ) %}
