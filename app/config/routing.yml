@@ -37,49 +37,24 @@ taxonomylink:
   requirements:
     taxonomytype:     'Bolt\Controllers\Routing::getAnyTaxonomyTypeRequirement'
 
+#contentlisting:
+#  path:               /{contenttypeslug}
+#  defaults:           { _controller: 'Bolt\Controllers\Frontend::listing' }
+#  requirements:
+#    contenttypeslug:  'Bolt\Controllers\Routing::getPluralContentTypeRequirement'
+
+# changed controller to enable sort options
 contentlisting:
-  path:               /{contenttypeslug}
-  defaults:           { _controller: 'Bolt\Controllers\Frontend::listing' }
+  path:               /{contenttypeslug} 
+  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::sortlisting' }
   requirements:
     contenttypeslug:  'Bolt\Controllers\Routing::getPluralContentTypeRequirement'
 
+
+
+
 # ------------------------------------------------------------------------------
 # Place your own routes here, that have a LOWER priority than the default routes.
-
-
-
-
-# pseudo hierarchy routing for structures and pages
-structurelevel1binding:
-  path: /{slug}
-  defaults:           { _controller: 'Bolt\Controllers\Frontend::record', 'contenttypeslug': structure }
-  requirements:
-    slug: '[a-z0-9-_]+[^(sitemap)^(search)]' # ignore /sitemap + /search
-
-structurelevel2binding:
-  path: /{parentslug}/{slug}
-  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages', 'pressreleases', 'persons', 'taskforces', 'projects'] }
-  requirements:
-    parentslug:    [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
-    slug: '[a-z0-9-_]+'
-    
-structurelevel3binding:
-  path: /{parentslug}/{parentsluglevel2}/{slug}
-  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages', 'pressreleases', 'persons', 'taskforces', 'projects'] }
-  requirements:
-    parentslug:     [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
-    parentsluglevel2: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
-    slug: '[a-z0-9-_]+'
-    
-structurelevel4binding:
-  path: /{parentslug}/{parentsluglevel2}/{parentsluglevel3}/{slug}
-  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::multirecord', 'contenttypeslugs': ['structures', 'pages', 'pressreleases', 'persons', 'taskforces', 'projects'] }
-  requirements:
-    parentslug:     [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
-    parentsluglevel2: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
-    parentsluglevel2: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures'] ]
-    slug: '[a-z0-9-_]+'
-
 
 
 
