@@ -1,0 +1,36 @@
+{# 
+  used in:
+	- record_page
+#}
+
+{% if record.imagelist %}
+<div class="thumbnails">
+
+	<h4>{{ record.listtitle }}</h4>
+	
+	<form action="{{ fileDownloadLink() }}" method="post">
+		<ul class="l-grid-media {{ record.liststyle }}">
+			
+			{% for image in record.imagelist %}
+			<li>
+	            <div class="block block-thumb">
+					<a href="{{ image.filename|image }}" title="{{ image.title }}">
+				 		<img src="{{ image.filename|thumbnail(300,300) }}">
+					</a>
+				</div>
+				{{ fileDownloadLink(image, 'Download') }}
+			</li>
+			{% endfor %}
+			
+			<li class="l-placeholder"></li>
+			<li class="l-placeholder"></li>
+	        <li class="l-placeholder"></li>
+	        <li class="l-placeholder"></li>
+	        <li class="l-placeholder"></li>
+		</ul>
+		
+	</form>
+
+</div>
+{% endif %}
+
