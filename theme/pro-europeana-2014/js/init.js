@@ -51,6 +51,30 @@ var Site = window.Site || {};
         
     };
     
+    //	init jQuery plugin "minRead"
+    // 	https://github.com/heyimjuani/minRead
+    Site.initMinRead = function() {
+    	
+    	//	check for read-time item
+    	if ( !$(".read-time").length ) return;
+    	
+    	var options = {
+    		where: ".read-time",				// where the "x min read" will be inserted. Defaults to ".min-read"
+    		wordsPerMinute	: 180,				// this is the avg adults can read on a screen, acording to wikipedia
+    		archive: true,						// set to true if trying to fetch read time from another page. "false" by default
+    		archiveText: ".textcontent",		// if archive: true, time will be calculated using text on div specified here. Defaults to ".text"
+    		anchor: ".item-details h2 a",		// external article anchor class. Defaults to ".article-link"
+    		label: " mins to read"
+    	}
+
+    	//	init for list views
+    	$(".list-item").minRead(options);
+
+    	//	init for page view with disabled "archive" function
+    	options.archive = 0;
+    	$(".textcontent").minRead(options);
+    }
+    
 
 
     //same as $(document).ready();
@@ -99,7 +123,7 @@ var Site = window.Site || {};
 
 
         Site.placeholders();
-
+        Site.initMinRead();
 
 
     });
