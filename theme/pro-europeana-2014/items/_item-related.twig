@@ -77,12 +77,7 @@
 						<a href="{{ structurelink(related) }}">{{ related.title }}</a>
 				{% else %}
 				<div class="link-block block">
-				{% if related.contenttype.slug == 'pages' %}
 				    <a href="{{ structurelink(related) }}" class="b-inner">
-				{% else %}
-					<a href="{{ related.link }}" class="b-inner">
-				{% endif %}
-				    
 						<div class="b-thumb">
 							<img src="{{ related.image|thumbnail() }}" alt="{{ related.image|title }}" />
 						</div>

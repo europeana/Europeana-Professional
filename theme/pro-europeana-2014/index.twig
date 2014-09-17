@@ -115,7 +115,7 @@
 				{# render blogposts #}
 				{% for post in relatedBlogposts %}<div class="l-post"><!--
  				--><div class="block block-inset">
-					    <a href="{{ post.link }}" class="inner" title="{{ post.title }}">
+					    <a href="{{ structurelink(post) }}" class="inner" title="{{ post.title }}">
 							<div class="b-thumb">
 								<img src="{{ post.image|thumbnail(400,300,"c") }}" alt="{{ post.values['image'].title }}" />
 								<div class="b-text">
