@@ -62,7 +62,7 @@ var Site = window.Site || {};
     		where: ".read-time",				// where the "x min read" will be inserted. Defaults to ".min-read"
     		wordsPerMinute	: 180,				// this is the avg adults can read on a screen, acording to wikipedia
     		archive: true,						// set to true if trying to fetch read time from another page. "false" by default
-    		archiveText: ".textcontent",		// if archive: true, time will be calculated using text on div specified here. Defaults to ".text"
+    		archiveText: ".prose",				// if archive: true, time will be calculated using text on div specified here. Defaults to ".text"
     		anchor: ".item-details h2 a",		// external article anchor class. Defaults to ".article-link"
     		label: " mins to read"
     	}
