@@ -12,73 +12,66 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class FrontendExt
 {
-  
-    
-    public static function multirecord(Silex\Application $app, $contenttypeslugs, $slug)
-    {
-    	
-    	foreach ($contenttypeslugs as $contenttypeslug ) {
-    
-	    	$contenttype = $app['storage']->getContentType($contenttypeslug);
-	    	
-	    	
-	    	$slug = makeSlug($slug, -1);
-	    
-	    	// First, try to get it by slug.
-	    	$content = $app['storage']->getContent($contenttype['slug'], array('slug' => $slug, 'returnsingle' => true));
-	    
-	    	if (!$content && is_numeric($slug)) {
-	    		// And otherwise try getting it by ID
-	    		$content = $app['storage']->getContent($contenttype['slug'], array('id' => $slug, 'returnsingle' => true));
-	    	}
-	    	
-	    	if ($content) break;
-	    	
-    	}
-    	
-    
-    	// No content, no page!
-    	if (!$content) {
-    		// There's one special edge-case we check for: if the request is for the backend, without trailing
-    		// slash and it is intercepted by custom routing, we forward the client to that location.
-    		if ($slug == trim($app['config']->get('general/branding/path'), "/")) {
-    			simpleredirect($app['config']->get('general/branding/path') . "/");
-    		}
-    		$app->abort(404, "Page $contenttypeslug/$slug not found.");
-    	}
-    
-    	// Then, select which template to use, based on our 'cascading templates rules'
-    	$template = $content->template();
-    
-    	// Fallback: If file is not OK, show an error page
-    	$filename = $app['paths']['themepath'] . "/" . $template;
-    	if (!file_exists($filename) || !is_readable($filename)) {
-    		$error = sprintf(
-    				"No template for '%s' defined. Tried to use '%s/%s'.",
-    				$content->getTitle(),
-    				basename($app['config']->get('general/theme')),
-    				$template
-    		);
-    		$app['log']->setValue('templateerror', $error);
-    		$app->abort(404, $error);
-    	}
-    
-    	// Setting the canonical path and the editlink.
-    	$app['canonicalpath'] = $content->link();
-    	$app['paths'] = getPaths($app);
-    	$app['editlink'] = path('editcontent', array('contenttypeslug' => $contenttype['slug'], 'id' => $content->id));
-    	$app['edittitle'] = $content->getTitle();
-    
-    	// Make sure we can also access it as {{ page.title }} for pages, etc. We set these in the global scope,
-    	// So that they're also available in menu's and templates rendered by extensions.
-    	$app['twig']->addGlobal('record', $content);
-    	$app['twig']->addGlobal($contenttype['singular_slug'], $content);
-    
-    	// Render the template and return.
-    	return $app['render']->render($template);
-    
-    }
-
-
-
+	
+	// 	copy of the default listing controller. 
+	//	add GET param "order" to sort records
+	public static function sortlisting(Silex\Application $app, $contenttypeslug)
+	{
+	
+		$contenttype = $app['storage']->getContentType($contenttypeslug);
+	
+		// First, get some content
+		$page = $app['request']->query->get('page', 1);
+		$order = $app['request']->query->get('order');
+		$amount = (!empty($contenttype['listing_records']) ? $contenttype['listing_records'] : $app['config']->get('general/listing_records'));
+		$order = (!empty ($order) ? $order : (!empty($contenttype['sort']) ? $contenttype['sort'] : $app['config']->get('general/listing_sort')));
+		$content = $app['storage']->getContent($contenttype['slug'], array('limit' => $amount, 'order' => $order, 'page' => $page));
+	
+		// We do _not_ abort when there's no content. Instead, we handle this in the template:
+		// {% for record in records %} .. {% else %} no records! {% endif %}
+		// if (!$content) {
+		//     $app->abort(404, "Content for '$contenttypeslug' not found.");
+		// }
+	
+		// Then, select which template to use, based on our 'cascading templates rules'
+		if (!empty($contenttype['listing_template'])) {
+			$template = $contenttype['listing_template'];
+			$chosen = "contenttype";
+		} else {
+			$filename = $app['paths']['themepath'] . "/" . $contenttype['slug'] . ".twig";
+			if (file_exists($filename) && is_readable($filename)) {
+				$template = $contenttype['slug'] . ".twig";
+				$chosen = "slug";
+			} else {
+				$template = $app['config']->get('general/listing_template');
+				$chosen = "config";
+	
+			}
+		}
+	
+		$app['log']->setValue('templatechosen', $app['config']->get('general/theme') . "/$template ($chosen)");
+	
+		// Fallback: If file is not OK, show an error page
+		$filename = $app['paths']['themepath'] . "/" . $template;
+		if (!file_exists($filename) || !is_readable($filename)) {
+			$error = sprintf(
+					"No template for '%s'-listing defined. Tried to use '%s/%s'.",
+					$contenttypeslug,
+					basename($app['config']->get('general/theme')),
+					$template
+			);
+			$app['log']->setValue('templateerror', $error);
+			$app->abort(404, $error);
+		}
+	
+		// Make sure we can also access it as {{ pages }} for pages, etc. We set these in the global scope,
+		// So that they're also available in menu's and templates rendered by extensions.
+		$app['twig']->addGlobal('records', $content);
+		$app['twig']->addGlobal($contenttype['slug'], $content);
+		$app['twig']->addGlobal('contenttype', $contenttype['name']);
+		
+		return $app['render']->render($template);
+	
+	}
+	
 }
