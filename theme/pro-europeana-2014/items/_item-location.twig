@@ -4,19 +4,17 @@
 	- listing_list
 #}
 
-
-
-{% if record %}
-
-<span class="item-location">
-	<svg class="icon icon-location">
-		<use xlink:href="#icon-location"></use>
-	</svg>
-	{% set location = record.geolocation.formatted_address|split(',') %}
-	{# city #}
-	{{ location[1] }},
-	{# country #}
-	{{ location|last }}
-</span>
+{% if record.relation.locations is defined %}
+	{% setcontent location = 'locations' where {id: record.relation.locations|first, order: 'title'  } returnsingle %}
+	<span class="item-location">
+		<svg class="icon icon-location">
+			<use xlink:href="#icon-location"></use>
+		</svg>
+		{% set geolocation = location.geolocation.formatted_address|split(',') %}
+		{# city #}
+		{{ geolocation[1] }},
+		{# country #}
+		{{ geolocation|last }}
+	</span>
 {% endif %}
 

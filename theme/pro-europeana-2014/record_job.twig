@@ -33,14 +33,6 @@
 							{% if job.scale_eur != "" %}
 								{{ job.scale_eur }}
 							{% endif %}
-						{# GBP #}	
-						{% elseif (job.salary_gbp or job.scale_gbp) %}
-							{% if job.salary_gbp != "" %}	
-								&euro;{{ job.salary_gbp }} p/m 
-							{% endif %}
-							{% if job.scale_gbp != "" %}
-								{{ job.scale_gbp }}
-							{% endif %}
 						{% endif %}
 						</span>
 						{# set location #}

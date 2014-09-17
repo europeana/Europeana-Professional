@@ -4,14 +4,15 @@
   	- record_publication
   	- listing_listing
 #}
-{% if records %}
+{% if record.relation.persons is defined %}
+	{% setcontent authors = 'persons' where {id: record.relation.persons|join(' || ')} orderby 'last_name' %}
 	{# be sure to have an array #}
-	{% if records is not iterable %}
-		{% set records = [records] %}
+	{% if authors is not iterable %}
+		{% set authors = [authors] %}
 	{% endif %}
 	<span class="author-name">Author: 
-	{% for person in records %}
-				<a href="{{ person.link }}">{{person.first_name}} {{person.last_name}}</a>{% if (not loop.last) %},{% endif %}
+	{% for person in authors %}
+		<a href="{{ person.link }}">{{person.first_name}} {{person.last_name}}</a>{% if (not loop.last) %},{% endif %}
 	{% endfor%}
 	</span>
 {% endif %}

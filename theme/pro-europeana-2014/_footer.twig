@@ -8,16 +8,17 @@
 
 {# set subsite footer #}
 {% if subsite|length %}
-	{% setcontent footer = 'Footers' where {id: subsite.footer} %}
-	{% set location = footer.related('location') %}
+	{% setcontent footer = 'footer' where { id: subsite.footer, order: 'title'} %}
+	{% setcontent location = 'location' where {id: footer.relation.locations|first, order: 'title' } returnsingle %}
 	{% set logolink = subsite.path %}
 {# set default footer #}
 {% else %}
-	{% setcontent home = "homepage/latest/1" returnsingle %}
-	{% set footer = home.related('footers')|first %}
-	{% setcontent location = 'Location' where {'europeana_office' : '1' } returnsingle %}
+	{% setcontent home = 'homepage' where { id: 1, order: 'title'}  %}
+	{% setcontent footer = 'footer' where { id: home.relation.footers|first, order: 'title'} %}
+	{% setcontent location = 'location' where {id: footer.relation.locations|first, 'europeana_office' : '1', order: 'title' } returnsingle %}
 	{% set logolink = paths.root %}
 {% endif %}
+
 
 
 <footer class="footer" role="contentinfo">
