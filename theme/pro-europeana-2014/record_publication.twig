@@ -5,10 +5,6 @@
 {% set authors = record.related('persons') %}
 {% set contacts = record.related('person') %}
 
-{# set 'global' structures for path generating page and structures #}
-{% import 'macros/_helper.twig' as helper %}
-{% setcontent STRUCTURES = 'structures' %}
-
 <!-- Start content -->
 <main role="main" class="l-page">
 <div class="lc">
@@ -23,10 +19,10 @@
 
 		<div class="maincontent">
 
-			<div class="l-publication">
+			<div class="l-twoup">
 
 			 	<div class="l-photo">
-					<img src="{{ publication.image|image(300,400,"c") }}" alt="{{ publication.values['image'].title }}"/>
+					<img src="{{ publication.image|image(300,400,"c") }}" alt="{{ publication.image|title }}"/>
 				</div><!--
 
 			 --><div class="l-detail textcontent">
@@ -56,13 +52,15 @@
 
 				</div>
 			</div>
-
+		
+			{% if publication.filelist|length %}
 			<div class="section files">
 				<h2>{{ record.contenttype.fields.filelist.label }}</h2>
 				{% include 'items/_item-filelist-detail.twig' with { filelist: publication.filelist } %}
 			</div>
+			{% endif %}
 
-			{% include 'items/_item-related.twig' with {title: "You might also like:", short: true} %}
+			{% include 'items/_item-related.twig' with {title: "You might also like:", short: false} %}
 		</div>
 		</div><!--
 

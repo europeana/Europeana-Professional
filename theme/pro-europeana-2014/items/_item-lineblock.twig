@@ -1,8 +1,10 @@
 <li><div class="link-block block">
-	<a href="{{ helper.parentlink(STRUCTURES, child) }}" title="{{ child.title }}" class="b-inner">
+	<a href="{{ structurelink(record, structure) }}" title="{{ child.title }}" class="b-inner">
+		{% if child.image|length %}
 		<div class="b-thumb">
-			<img src="{{ thumbnail(child.image, 400,300,"c") }}" alt="{{ child.values['image'].title }}" />
+			<img src="{{ child.image|image(400,300,"c") }}" alt="{{ child.image|title }}" />
 		</div>
+		{% endif %}
 		<div class="b-text">
 			<h2 class="item-title">{{ child.title }}</h2>
 		<p>{{ child.teaser }}</p>

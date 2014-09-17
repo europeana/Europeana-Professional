@@ -1,48 +1,52 @@
-{#  render one or more contact items.
+{#  
+	render one or more contact items.
 	params:
 		- title
 	  	- use_secondary_mail
 #}
 
-{% if records %}
+{% if records|length %}
 
-
-	
 	<div class="help-contact">
-	
+
+	{#
+	{% if records|length %}
+		{% set records = [records] %}
+	{% endif %}
+#}
 		<h4>QUESTIONS?</h4>
-		
 		{% for record in records %}
 	
-		{% set person = record %}
-	
-		<img src="{{ person.image|image(600,600,"c") }}" alt="{{ person.values['image'].title }}" />
-	
-		<h5>Contact:</h5>	
-	
-		<div class="vcard">
-			<div class="fn">{{ person.first_name }} {{ person.last_name }}</div>
+			{% set person = record %}
+			{% set personlink = structurelink(person) %}
+			
+			<a href="{{ personlink }}">
+				<img src="{{ person.image|image(600,600,"c") }}" alt="{{ person.image|title }}" />
+			</a>
+			
+			<h5>Contact:</h5>	
 		
-			{% if person.telephone_number != "" %}
-			<div class="tel">{{ person.telephone_number }}</div>
-			{% endif %}
+			<div class="vcard">
+				<div class="fn">{{ person.first_name }} {{ person.last_name }}</div>
 			
-			{# show person.secondary_mail if event.secondary_mail is checked #}
-			{% if (use_secondary_mail and person.secondary_email != "") %}
-			<a class="email" href="mailto:{{ person.secondary_email }}">{{ person.secondary_email }}</a>
-			{% endif %}
-			
-			{# show person.email as default #}
-			{% if (use_secondary_mail != 1 and person.email != "") %}
-			<a class="email" href="mailto:{{ person.email }}">{{ person.email }}</a>
-			{% endif %}
-			
-		</div>
+				{% if person.telephone_number != "" %}
+				<div class="tel">{{ person.telephone_number }}</div>
+				{% endif %}
+				
+				{# show person.secondary_mail if event.secondary_mail is checked #}
+				{% if (use_secondary_mail is defined and person.secondary_email != "") %}
+				<a class="email" href="mailto:{{ person.secondary_email }}">{{ person.secondary_email }}</a>
+				{% endif %}
+				
+				{# show person.email as default #}
+				{% if (not use_secondary_mail is defined and person.email != "") %}
+				<a class="email" href="mailto:{{ person.email }}">{{ person.email }}</a>
+				{% endif %}
+				
+			</div>
 		
 		{% endfor %}
 	
 	</div>
-
-
 
 {% endif %}

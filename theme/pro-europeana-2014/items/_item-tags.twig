@@ -4,7 +4,7 @@
 	- listing_list
 #}
 
-{% if record.taxonomy.tags %}
+{% if record.taxonomy.tags is defined  %}
 <span class="item-tags">
 	<svg class="icon icon-bookmark">
 		<use xlink:href="#icon-bookmark"></use>

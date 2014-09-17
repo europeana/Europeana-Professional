@@ -1,10 +1,7 @@
 {% include '_header.twig' %}
 
-{% set contacts = record.related('persons') %}
 
-{# set 'global' structures for path generating page and structures #}
-{% import 'macros/_helper.twig' as helper %}
-{% setcontent STRUCTURES = 'structures' %}
+{% set contacts = record.related('persons') %}
 
 <!-- Start content -->
 <main role="main" class="l-page">
@@ -27,8 +24,12 @@
 					<p class="intro">{{ record.intro }}</p>
 	
 					{{ record.body|raw }}
+					
 				</div>
 
+				{#
+					filelist section
+				#}
 				{% if record.filelist_files %}
 				<div class="section files">
 					<h2>{{ record.contenttype.fields.filelist_files.label }}</h2>
@@ -36,14 +37,22 @@
 				</div>
 				{% endif %}
 				
-				{% include 'items/_item-related.twig' with {title: "Next steps", short: true} %}
+				{#
+					include image grid with page record
+				#}
+				{% include 'items/_item-imagegrid.twig' with { record: record} %}
+				
+				{#
+					include related items
+				#}
+				{% include 'items/_item-related.twig' with {title: "Next steps", short: false} %}
 	
 			</div>
 		</div><!--
 
 	 --><div class="l-sidebar">
 	 		<div class="inner">
-	 		
+	 			
 				{% include 'items/_item-help.twig' with { records: contacts, title: "Need help?", use_secondary_mail: record.secondary_mail } %}
 
 				{% if record.filelist_downloads %}

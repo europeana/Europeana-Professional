@@ -1,34 +1,12 @@
 {#
 	structures list template
-	use listing.twig with structureset (contains pages and sub structures)
+	include default listing with records for all listview except "Persons"
 #}
 
-{# set 'global' structures for path generating page and structures #}
-{% setcontent STRUCTURES = 'structures' %}
-
-{% set taxonomySlug = record.group.slug %}
-{% set contenttype = record.children %}
-
-{% setcontent pages = contenttype where { structures: taxonomySlug }  %}
-
-{% setcontent structures = 'structures' where { parent: record.id }  %}
-{% set structureset = pages|merge(structures) %}
-
-
-{% if (record.children != 'none' and record.children != '' ) %}
-	{% if record.children == 'Persons' %}
-		{% setcontent records = record.children orderby '-team' %}
-		{% include 'listing_person.twig' with {records: records, childs: true} %}
+{% if records is defined %}
+	{% if (records|length and records|first.contenttype.name == 'Persons') %}
+		{% include 'listing_person.twig' with {records: records } %}
 	{% else %}
-		{% setcontent records = record.children %}
-		{% include 'listing.twig' with {childs: true} %}
+		{% include 'listing.twig' with {records: records} %}
 	{% endif %}
-{% else %}
-	{% include 'listing.twig' with {structureset: structureset} %}
 {% endif %}
-
-
-
-
-
-

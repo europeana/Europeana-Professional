@@ -1,29 +1,23 @@
 {% include '_header.twig' %}
 
 
-{# set records by structureset #}
-{% if structureset %}
-	{% set records = structureset %}
+{% if records|length %}
 
-{# set records by tags #}
-{% elseif ('/tags/' in app.request.pathInfo) %}
-	{# % set sortoption = app.request.get('order') % #}
-	{% setcontent records = '(blogposts, events, publications, pages)' where { tags: slug } limit app.config.get('general/listing_records') allowpaging %}
-	{# set records by contenttype #}
-{% elseif records is empty %}
-	{# 
-		get records for contenttype. limit must be definied to enable pagination.
-		contenttypes:
-			- jobs
-			- blogposts
-			- publications
-			- events
-	#}
-	{% setcontent records = records|first.contenttype.slug limit app.config.get('general/listing_records') allowpaging %}
-	{% set showsortby = true %}
-	{% set contenttypePager = records|first.contenttype.slug %}
+	{# show/hide sortby item #}
+	{% set showsortby = false %}
 	
-{% endif %}
+	{# set contenttype für default records and structures #}
+	{% if not contenttype['name'] is defined %}
+		{% set contenttype = records|first.contenttype %}
+	{% endif %}
+	{# set sortby option and pager with exceots contenttypes without sort options #}
+	{% set contenttypeexception = ['Structures', 'Persons', 'Pages'] %}
+	{% if (contenttype['name'] not in contenttypeexception and taxonomy is not defined ) %}
+		{# show pager #}
+		{% set contenttypePager = contenttype['slug'] %}
+		{# show showsortby #}
+		{% set showsortby = true %}
+	{% endif %}
 
 
 <!-- Start content -->
@@ -35,7 +29,7 @@
 		<div class="l-content">
 
 			<div class="l-breadcrumbs">
-				{% include 'items/_item-breadcrumb.twig' with {childs: true} %}
+				{% include 'items/_item-breadcrumb.twig' %}
 				
 				{# hide sortby template for tag- and structure listing #}
 				{% if showsortby %}
@@ -44,20 +38,19 @@
 			</div>
 
 		<div class="maincontent">
-
+		
 			<div class="results">
 
 				<ul class="results-list">
 					{% for listItem in records %}
-						{% include 'items/_item-list.twig' with { record: listItem, childs: childs } %}
+						{% include 'items/_item-list.twig' with { record: listItem } %}
 					{% endfor %}
 				</ul>
 				
-				{{ pager(contenttypePager) }}
-
+				{% if showsortby %}
+					{{ pager(contenttypePager) }}
+				{% endif %}
 			</div>
-			
-			
 
 		</div>
 		</div><!--
@@ -68,9 +61,19 @@
 	 				get main contacts. definied in contenttype 'person'
 	 				example: contact_blog -> main contact of the blog
 	 			#}
-	 			{% set contacttype = ('contact_'~(records|first.contenttype.singular_slug))  %}
-	 			{% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
-	 			{% include 'items/_item-help.twig' with { records: contacts} %}
+	 			{% if ( record is defined and record.relation|length ) %}
+		 			{% setcontent contacts = 'persons' where { id: record.relation.persons|join(' || ') } orderby 'last_name' %}
+		 			{% if( contacts|length and contacts is not iterable) %}
+		 				{% set contacts = [contacts] %}
+		 			{% endif %}
+	 				{% include 'items/_item-help.twig' with { records: contacts} %}
+		 		{% else %}
+	 				{% set contacttype = ('contact_'~(records|first.contenttype.singular_slug))  %}
+	 				{% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
+	 			{% endif %}
+	 			
+	 			
+	 			
 			</div>
 
 		</div>
@@ -79,6 +82,8 @@
 </div>
 </main>
 <!-- End Content -->
+
+{% endif %}
 
 {% include '_footer.twig' %}
 

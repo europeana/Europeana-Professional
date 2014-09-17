@@ -1,70 +1,43 @@
 {#
 	breadcrumb
+	- included in alle listviews and record pages
 #}
+
 <ul class="breadcrumbs">
+
 	{# home #}
 	<li><a href="{{ paths.root }}"><svg class="icon icon-home"><use xlink:href="#icon-home"></use></svg>Home</a></li>
-	
-	{# groups #}
-	{% if record.group or paths.current|split('/')|length > 2 %}
-	{#
-		todo: move parent functionality into a macro
-	#}
-		{% set parents = [] %}
+
+	{# structure listing #}
+	{% if parent is defined %}
 		
-		{# parentId structure #}
-		{% set parentId = record.parent %}
-		
-		{# parentId page #}
-		{#
-		{% if record.contenttype.name == "Pages" %}
-			{% setcontent parent = 'structures' where {slug: record.group.slug } %}
-			{% set parentId = parent|first.id %}
+		{# parent links #}
+		{% if parent|length %}
+			{% for bc in breadcrumbitems(record, parent) %}
+				<li><a href="{{ bc.path }}">{{ bc.title }}</a></li>
+			{% endfor %}
 		{% endif %}
 		
-		{% for i in 0..3 %}
-			{% setcontent curParent = 'structures' where {id: parentId} %}
-			{% if curParent %}
-				{% set parents = parents|merge([curParent]) %}
-				{% set parentId = curParent.parent %}
-			{% endif %}
-		{% endfor %}
-		
-		{% for parent in parents|reverse %}
-			{% set parentRoot = parentRoot~parent.group.slug~"/" %}
-			<li><a href="{{ paths.root }}{{parentRoot}}">{{ parent.group.name|capitalize }}</a></li>
-		{% endfor %}
-		#}
-		
-		{% set urlSLugs = paths.current|split('/')|slice(1,length-1) %}
-		{% set baseLink = paths.root %}
-		{% for slug in urlSLugs if slug != paths.root|slice(1,length-1) %}
-			{% set labels = slug|split('-') %}
-			{% set name = '' %}
-			{% for label in labels %}
-				{% if loop.first %}
-					{% set name = label|capitalize %}
-				{% else %}
-					{% set name = name ~ ' ' ~ label %}
-				{% endif %}
-			{% endfor %}
-			{% set baseLink = baseLink ~ slug ~ '/' %}
-			<li><a href="{{ baseLink }}">{{ name }}</a></li>
-		{% endfor %}
-		
-		<li><span class="lastitem">{{ record.title }}</span></li>
-		
+		{# page titel #}
+		{% if (record.contenttype.name == 'Persons') %}
+			<li><span class="lastitem">{{ record.first_name }} {{ record.last_name }}</span></li>
+		{% else %}
+			<li><span class="lastitem">{{ record.title }}</span></li>
+		{% endif %}
+	
 	{# tags listing #}
 	{% elseif ('/tags/' in app.request.pathInfo) %}
 	<li><span class="lastitem">{{ slug|capitalize }}</span></li>
 	
 	{# listing #}
-	{% elseif records %}
+	{% elseif records is defined %}
 	<li><span class="lastitem">{{ records|first.contenttype.slug|capitalize }}</span></li>
 	
-	{# listing -> record #}
+	{# listing -> record  #}
 	{% elseif record %}
+	{#
 	<li><a href="{{ paths.root }}{{ record.contenttype.slug }}">{{ record.contenttype.slug|capitalize }}</a></li>
+	#}
 	<li><span class="lastitem">{{ record.title }}</span></li>
 	
 	{# listing -> search #}

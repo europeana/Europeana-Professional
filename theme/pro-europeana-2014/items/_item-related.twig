@@ -28,13 +28,12 @@
 		{% endif %}
 	{% endfor %}
 	
-	
 	{# if no related content get content by tag #}
 	{% if relatedContents|length < 3  %}
 	
 		{# build tag query #}
+		{% set relatedTags = '' %}
 		{% if record.taxonomy.tags is defined %}
-		    	{% set relatedTags = '' %}
 				{% for tag in record.taxonomy.tags %}
 					{% set relatedTags = relatedTags ~ tag %}
 					{% if not loop.last %}
@@ -75,15 +74,11 @@
 		--><li class="related-item">
 		
 				{% if short %}
-					{% if related.contenttype.slug == 'pages' %}
-						<a href="{{ helper.parentlink(STRUCTURES, related) }}">{{ related.title }}</a>
-					{% else %}
-						<a href="{{ related.link }}">{{ related.title }}</a>
-					{% endif %}
+						<a href="{{ structurelink(related) }}">{{ related.title }}</a>
 				{% else %}
 				<div class="link-block block">
 				{% if related.contenttype.slug == 'pages' %}
-				    <a href="{{ helper.parentlink(STRUCTURES, related) }}" class="b-inner">
+				    <a href="{{ structurelink(related) }}" class="b-inner">
 				{% else %}
 					<a href="{{ related.link }}" class="b-inner">
 				{% endif %}
@@ -98,6 +93,8 @@
 					</a>
 				</div>
 				{% endif %}
+		
+				
 			</li><!--
 		-->{% endfor %}
 		</ul>

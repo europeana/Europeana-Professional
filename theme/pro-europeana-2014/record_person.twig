@@ -4,7 +4,7 @@
 {% set events = record.related('events') %}
 {% set publications = record.related('publications') %}
 {% set blogposts = record.related('blogposts') %}
-
+{% set contacts = record.related('person') %}
 
 <!-- Start content -->
 <main role="main" class="l-page">
@@ -144,9 +144,8 @@
 
 	 --><div class="l-sidebar">
 			<div class="inner">
-			
-				{ molecules-help-contact title: "Need Help?" }
-				
+				{% setcontent contacts = 'persons' where { contact_staff : '1' } orderby 'datepublish'  %}
+	 			{% include 'items/_item-help.twig' with { records: contacts} %}
 			</div>
 
 		</div>

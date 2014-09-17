@@ -102,8 +102,8 @@
 						{% include 'items/_item-date-event.twig' %}
 						<h1 class="title">{{ event.title }}</h1>
 					</div>
-					{% if location %}
-					{% include 'items/_item-address.twig' with {location: location, contact: contact} %}
+					{% if (location and contacts) %}
+					{% include 'items/_item-address.twig' with {location: location} %}
 					{% endif %}
 				</div>
 
@@ -121,7 +121,7 @@
 				<h2>Speakers</h2>
 				<ul class="people-list">
 					{% for speaker in speakers %}<!--
-					--><li>{% include 'items/_item-person.twig' with { person: speaker } %}</li><!--
+					--><li>{% include 'items/_item-person.twig' with { record: speaker } %}</li><!--
 				-->{% endfor %}
 				</ul>
 			</div>

@@ -4,11 +4,14 @@
   	- record_publication
   	- listing_listing
 #}
-
 {% if records %}
-<span class="author-name">Author: 
-{% for record in records %}
-	<a href="{{ record.link }}">{{record.first_name}} {{record.last_name}}</a>{% if (authors|length > 1 and not loop.last) %},{% endif %}
-{% endfor%}
-</span>
+	{# be sure to have an array #}
+	{% if records is not iterable %}
+		{% set records = [records] %}
+	{% endif %}
+	<span class="author-name">Author: 
+	{% for person in records %}
+				<a href="{{ person.link }}">{{person.first_name}} {{person.last_name}}</a>{% if (not loop.last) %},{% endif %}
+	{% endfor%}
+	</span>
 {% endif %}

@@ -1,6 +1,6 @@
+
 {#
 	sort list view by url param 'url' or default contenttype sort setting 
-	-> works only for records with the same contenttype
 #}
 
 {# get current sort option by url param 'order' #}
@@ -8,11 +8,22 @@
 
 {# otherwise get default sort option of the contenttype #}
 {% if currentsortoption is empty %}
-	{% set currentsortoption = records|first.contenttype.sort %}
+	{# default sort option for stucture content #}
+	{% if contenttype is defined %}
+		{% set currentsortoption = contenttype['sort'] %}
+	{# default sort option for bolt lising #}
+	{% else %}
+		{% set currentsortoption = records|first.contenttype.sort %}
+	{% endif %}
 {% endif %}
 
+
 {# get sort options from the config file by contenttypeslug #}
-{% set sortoptions = app.config.get('general/sort_options_'~records|first.contenttype.slug ) %}
+{% set defaultSortOptions = app.config.get('general/sort_options') %}
+{% set sortoptions = defaultSortOptions['default'] %}
+{% if defaultSortOptions[(contenttype['slug'])] is defined  %}
+	{% set sortoptions = defaultSortOptions[(contenttype['slug'])] %}
+{% endif %}
 
 <div class="sortby">
 	<form method="get">
@@ -28,6 +39,3 @@
 	    </select>
     </form>
 </div>
-
-
-	

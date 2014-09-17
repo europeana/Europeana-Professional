@@ -39,10 +39,10 @@
 
 {% set street = address|first %}
 {% set country = address|last %}
-{% set region = address[3] %}
-{% set city = address[1] %}
 
-{% if address|length == 4 %}
+{% if address|length == 3 %}
+	{% set city = address[1] %}
+{% elseif address|length == 4 %}
 	{% set city = address[1] %}
 	{% set region = address[2] %}
 {% endif %}
@@ -56,14 +56,16 @@
 		<div class="street-address">{{ street }}</div>
 		{#<span class="locality">'locality' -> not a location property</span>,#}
 		<span class="postal-code">{{ city }}</span>
-		{% if region %}
+		{% if region is defined %}
 		<abbr class="region" title="{{ region }}">, {{ region }}</abbr>
 		{% endif %}
 		<div class="country-name">{{ country }}</div>
 	</div>
+	{#
 	{% if contact.telephone_number != "" %}
 	<div class="tel">{{ contact.telephone_number }}</div>
 	{% endif %}
+	#}
 </div>
 
 {% endif %}

@@ -6,25 +6,34 @@
 #}
 
 
-
 {% if filelist %}
 <ul class="item-files moredata">
+
+<form action="{{ fileDownloadLink() }}" method="post">
+
 	{% for file in filelist %}
-		{% set fileinfo = fileinfo(file) %}
+		{% set fileinfo = fileInfo(file) %}
 		<li>
 			<span class="file-name">
 				<a href="{{ paths.files }}{{ file.filename }}">{{ fileinfo.filename }}</a>
 				<span class="file-info">{{ fileinfo.filetype }} {{ fileinfo.filesize }}</span>
 			</span>
 			
+			{{ fileDownloadLink(file, 'Download') }}
+			
 			{#	ToDo: fileowner should be dropbox meta data
-			<span class="file-owner">{ fileowner }</span>
-			#}
 			{% if owner != 'hide' %}
-			<span class="file-date">{{ fileinfo.filedate }}</span>
+				<span class="file-owner">{ fileowner }</span>
 			{% endif %}
+			#}
+			
+			<span class="file-date">{{ fileinfo.filedate }}</span>
+			
 		</li>
 	{% endfor %}
+
+</form>
+
 </ul>
 {% endif %}
 

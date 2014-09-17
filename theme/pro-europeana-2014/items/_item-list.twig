@@ -3,25 +3,25 @@
   	- listing.twig
 #}
 
-{% if (record) %}
+{% if record is defined %}
 
-{% set listItem = record %}
-{% set contenttype = record.contenttype.name %}
-{% set authors = listItem.related('persons') %}
-{% set location = record.related('locations')|first %}	
+	{% set listItem = record %}
+	{% set contenttype = record.contenttype.name %}
+	{% set location = record.related('locations')|first %}	
+	{% set authors = "" %}
+	{% if listItem.relation.person is defined %}
+		{% setcontent authors = 'persons' where {id: listItem.relation.person|join(' || ')} orderby 'last_name' %}
+	{% endif %}
 
-{% if (childs) %}
-	{% set listeItemLink = paths.current ~ '/' ~ record.slug %}
-{% else %} 
-	{% set listeItemLink = listItem.link %}
-{% endif %}
+	{% set listItemLink = structurelink(record) %}
+	
 
-	<li class="list-item">
+<li class="list-item">
 	
 		<div class="item-supplementary">
 		{% if (contenttype == "Publications" or contenttype == "PressReleases" or contenttype == "BlogPosts") %}
 			<div class="item-image">
-				<a href="{{ listeItemLink }}"><img src="{{ listItem.image|thumbnail() }}" alt="{{ listItem.values['image'].title }}" /></a>
+				<a href="{{ listItemLink }}"><img src="{{ listItem.values['image']|thumbnail() }}" alt="{{ listItem.image|title }}" /></a>
 			</div>
 		{% elseif contenttype == "Events" %}
 			<div class="item-bigdate">
@@ -33,13 +33,14 @@
 	
 	 --><div class="item-details">
 		{% if contenttype == 'Structures' %}
-			<h2 class="title"><a href="{{ listeItemLink }}">{{ listItem.title }}</a></h2>
+			<h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title }}</a></h2>
 		{% elseif contenttype == 'Pages' %}
-			<h2 class="title"><a href="{{ listeItemLink }}">{{ listItem.title }}</a></h2>
+			<h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title }}</a></h2>
 		{% else %}
-			<h2 class="title"><a href="{{ listeItemLink }}">{{ listItem.title }}</a></h2>
+			<h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title }}</a></h2>
 		{% endif %}
 			
+			<div class="item-meta-primary">
 		{% if (contenttype == "Publications" or contenttype == "PressReleases" ) %}
 			{# set authors #}
 			{% include 'items/_item-author.twig' with {records : authors} %}
@@ -51,6 +52,7 @@
 			{#  todo: where did that came from? -> update contenttype "blogpost" #}
 			{% include 'items/_item-readtime.twig' %}
 		{% endif %}
+			</div>
 			
 			<div class="item-meta-secondary">
 			
@@ -95,7 +97,17 @@
 			</div>
 	
 			<div class="item-preview">
-				{{ listItem.teaser }}
+				
+				{% if (contenttype == "Publications" or contenttype == "PressReleases" or contenttype == "BlogPosts") %}
+					{% if listItem.teaser is empty %}
+						{{ listItem.excerpt(app.config.get('general/excerpt_length')) }}
+					{% else %}
+						{{ listItem.teaser }}
+					{% endif %}
+				{% else %}
+					{{ listItem.teaser }}
+				{% endif %}
+				
 			</div>
 			
 			{% if (contenttype == "Publications" or contenttype == "PressReleases" ) %}
@@ -106,5 +118,6 @@
 		</div>
 	
 	</li>
+
 {% endif %}
 

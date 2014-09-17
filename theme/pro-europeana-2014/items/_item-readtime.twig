@@ -1,3 +1,6 @@
-{% if record.time %}
-<span class="read-time">{{record.time}} mins to read</span>
+{#
+	works with jquery plugin "minRead" - init in init.js
+#}
+{% if record %}
+<span class="read-time"></span>
 {% endif %}
