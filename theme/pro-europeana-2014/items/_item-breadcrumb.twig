@@ -35,9 +35,10 @@
 	
 	{# listing -> record  #}
 	{% elseif record %}
-	{#
+	
+	{% if record.slug != 'not-found' %}
 	<li><a href="{{ paths.root }}{{ record.contenttype.slug }}">{{ record.contenttype.slug|capitalize }}</a></li>
-	#}
+	{% endif %}
 	<li><span class="lastitem">{{ record.title }}</span></li>
 	
 	{# listing -> search #}
