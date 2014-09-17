@@ -27,23 +27,26 @@
 	
 	{# tags listing #}
 	{% elseif ('/tags/' in app.request.pathInfo) %}
-	<li><span class="lastitem">{{ slug|capitalize }}</span></li>
+		<li><span class="lastitem">{{ slug|capitalize }}</span></li>
 	
 	{# listing #}
 	{% elseif records is defined %}
-	<li><span class="lastitem">{{ records|first.contenttype.slug|capitalize }}</span></li>
+		<li><span class="lastitem">{{ records|first.contenttype.slug|capitalize }}</span></li>
 	
 	{# listing -> record  #}
 	{% elseif record %}
 	
 	{% if record.slug != 'not-found' %}
-	<li><a href="{{ paths.root }}{{ record.contenttype.slug }}">{{ record.contenttype.slug|capitalize }}</a></li>
+		<li><a href="{{ paths.root }}{{ record.contenttype.slug }}">{{ record.contenttype.slug|capitalize }}</a></li>
 	{% endif %}
-	<li><span class="lastitem">{{ record.title }}</span></li>
-	
+		{% if (record.contenttype.name == 'Persons') %}
+			<li><span class="lastitem">{{ record.first_name }} {{ record.last_name }}</span></li>
+		{% else %}
+		<li><span class="lastitem">{{ record.title }}</span></li>
+		{% endif %}
 	{# listing -> search #}
 	{% elseif name != "" %}
-	<li><span class="lastitem">{{ name }}</span></li>
+		<li><span class="lastitem">{{ name }}</span></li>
 	{% endif %}
 	
 </ul>
