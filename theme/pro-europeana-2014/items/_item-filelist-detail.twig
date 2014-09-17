@@ -25,9 +25,10 @@
 			{% if owner != 'hide' %}
 				<span class="file-owner">{ fileowner }</span>
 			{% endif %}
+			<span class="file-date">{{ fileinfo.filedate }}</span>
 			#}
 			
-			<span class="file-date">{{ fileinfo.filedate }}</span>
+			
 			
 		</li>
 	{% endfor %}
