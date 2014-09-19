@@ -14,6 +14,8 @@
 		{% set records = [records] %}
 	{% endif %}
 #}
+
+
 		<h4>QUESTIONS?</h4>
 		{% for person in records %}
 	
@@ -31,9 +33,9 @@
 				{% if person.telephone_number != "" %}
 				<div class="tel">{{ person.telephone_number }}</div>
 				{% endif %}
-				
+				{{ print(record) }}
 				{# show person.secondary_mail if event.secondary_mail is checked #}
-				{% if (use_secondary_mail is defined and record.secondary_email != "") %}
+				{% if (record.secondary_mail == "1" ) %}
 				<a class="email" href="mailto:{{ person.secondary_email }}">{{ person.secondary_email }}</a>
 				{% endif %}
 				
