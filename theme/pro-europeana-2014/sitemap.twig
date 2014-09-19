@@ -1,0 +1,37 @@
+{% include '_header.twig' %}
+
+
+<!-- Start content -->
+<main role="main" class="l-page">
+<div class="lc">
+	<!-- Start grid -->
+	<div class="grid-main">
+	
+	<div class="l-content">
+
+		<div class="l-breadcrumbs">
+			{% include 'items/_item-breadcrumb.twig' with {name: 'Sitemap' } %}
+		</div>
+		
+
+		<div class="maincontent">
+	
+		    <h1>{{ __('Sitemap') }}</h1>
+		    
+		    
+		    <div id="sitemap" >
+		    	{% for entry in entries %}
+		    	<ul>
+	    			<li><h2>{{ entry.title }}</h2></li>
+	    			<li>{% include 'items/_item-sitemap.twig' with {records: entry.childs } %}</li>
+		    	</ul>
+				{% endfor %}
+			</div>
+			
+		</div>
+		
+    </div>
+</div>
+</main>
+
+{% include '_footer.twig' %}
