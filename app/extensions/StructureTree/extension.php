@@ -2,6 +2,7 @@
 
 namespace StructureTree;
 
+use Silex;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Bolt\Extensions\Snippets\Location as SnippetLocation;
@@ -40,6 +41,12 @@ class Extension extends \Bolt\BaseExtension
         	->assert('slug', '[a-zA-Z0-9_\-]+')
             ->bind('structureParentLink');
         
+        // preview
+        $this->app->post("/preview/{contenttypeslug}", array($this, 'preview'))
+        ->assert('contenttypeslug', '[a-zA-Z0-9_\-]+')
+        ->bind('preview');
+        
+        
         //	sitemap
         $this->app->match("/sitemap", array($this, 'sitemap'));
         $this->app->match("/sitemap.xml", array($this, 'xmlSitemap'));
@@ -68,6 +75,36 @@ class Extension extends \Bolt\BaseExtension
     
     
    
+    
+    public function preview(Request $request, Silex\Application $app,  $contenttypeslug) {
+    	
+    	$contenttype = $this->app['storage']->getContentType($contenttypeslug);
+    	
+    	// First, get the preview from Post.
+    	$content = $this->app['storage']->getContentObject($contenttypeslug);
+    	$content->setFromPost($request->request->all(), $contenttype);
+    	
+    	// 	get structures with parents and save to session
+    	$structures = ( !is_array( $this->app['session']->get('parents')) ) ?
+    	self::setStructuresToSession() : $this->app['session']->get('parents');
+    	
+    	$slug = $content->values['slug'];
+    	
+    	if ($content->values['parent']) {
+    		$parentId = $content->values['parent'];
+    		$parentSlugs = $this->app['session']->get('parents')[$parentId]['testpath'];
+    		return self::structureParentLink($request, $parentSlugs, $slug);
+    	}
+    	elseif ($content->values['parents']) {
+    		$parentId = $content->values['parents'][0];
+    		$parentSlugs = $this->app['session']->get('parents')[$parentId]['testpath'];
+	    	return self::structureParentLink($request, $parentSlugs, $slug);
+    	}
+    	else {
+    		return self::structureLink($request, null, $slug);
+    		
+    	}
+    }
     
     
     
@@ -153,7 +190,7 @@ class Extension extends \Bolt\BaseExtension
     /**
      * 	
      */
-    public function structureParentLink(Request $request, $parentSlugs, $slug) 
+    public function structureParentLink(Request $request, $parentSlugs, $slug, $preview = false) 
     {
     	 
     	// 	get structures with parents and save to session
@@ -265,10 +302,10 @@ class Extension extends \Bolt\BaseExtension
 	/**
 	 * 	set content for structures
 	 */    
-    private function setStructureContent($slug, $parentContent = null) #
+    private function setStructureContent($slug, $parentContent = null)
     {
-    	
     	$structureContent = $this->app['storage']->getContent('structures', array('slug' => $slug,'parent' => $parentContent->id, 'returnsingle' => true));
+    	
     	
     	//	abort by no structure by slug
     	if (!$structureContent) self::abort($slug);
