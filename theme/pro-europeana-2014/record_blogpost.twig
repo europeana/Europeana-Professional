@@ -54,6 +54,12 @@
 					{{ blogpost.body|raw }}
 				</div>
 			</div>
+			
+			<div id="sharethis">
+				<span class='st_facebook_large' displayText='Facebook'></span>
+				<span class='st_twitter_large' displayText='Tweet'></span>
+				<span class='st_sharethis_large' displayText='ShareThis'></span>
+			</div>
 
 			{# related content #}
 			{% include 'items/_item-related.twig' with {title: "You might also like:", short: false} %}
@@ -90,5 +96,5 @@
 <!-- End Content -->
 
 
-{% include '_footer.twig' %}
+{% include '_footer.twig' with { sharethis: true} %}
 
