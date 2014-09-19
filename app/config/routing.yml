@@ -19,11 +19,11 @@ homepage:
 #  path:               /search
 #  defaults:           { _controller: 'Bolt\Controllers\Frontend::search' }
 
-preview:
-  path:               /preview/{contenttypeslug}
-  defaults:           { _controller: 'Bolt\Controllers\Frontend::preview' }
-  requirements:
-    contenttypeslug:  'Bolt\Controllers\Routing::getAnyContentTypeRequirement'
+#preview:
+#  path:               /preview/{contenttypeslug}
+#  defaults:           { _controller: 'Bolt\Controllers\Frontend::preview' }
+#  requirements:
+#    contenttypeslug:  'Bolt\Controllers\Routing::getAnyContentTypeRequirement'
 
 contentlink:
   path:               /{contenttypeslug}/{slug}
