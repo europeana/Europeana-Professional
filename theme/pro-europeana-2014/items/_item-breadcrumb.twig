@@ -34,16 +34,18 @@
 		<li><span class="lastitem">{{ records|first.contenttype.slug|capitalize }}</span></li>
 	
 	{# listing -> record  #}
-	{% elseif record %}
+	{% elseif record is defined %}
 	
-	{% if record.slug != 'not-found' %}
-		<li><a href="{{ paths.root }}{{ record.contenttype.slug }}">{{ record.contenttype.slug|capitalize }}</a></li>
-	{% endif %}
+		{% if record.slug != 'not-found' %}
+			<li><a href="{{ paths.root }}{{ record.contenttype.slug }}">{{ record.contenttype.slug|capitalize }}</a></li>
+		{% endif %}
+		
 		{% if (record.contenttype.name == 'Persons') %}
 			<li><span class="lastitem">{{ record.first_name }} {{ record.last_name }}</span></li>
 		{% else %}
-		<li><span class="lastitem">{{ record.title }}</span></li>
+			<li><span class="lastitem">{{ record.title }}</span></li>
 		{% endif %}
+	
 	{# listing -> search #}
 	{% elseif name != "" %}
 		<li><span class="lastitem">{{ name }}</span></li>

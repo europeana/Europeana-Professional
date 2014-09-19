@@ -2,32 +2,29 @@
 <html lang="{{ htmllang() }}">
 
 	<head>
-		<meta charset="utf-8"/>
-		<meta name="viewport" content="width=device-width" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-		<link rel="Shortcut Icon" href="{{ paths.theme }}images/favicon.ico" />
-
+	
 		{% if record is defined %}
 			{% set title = record.title|striptags %}
 		{% elseif records is defined %}
-			{% set title = records|first.contenttype .name %}
+			{% set title = records|first.contenttype.name %}
 		{% endif %}
 		
         <title>{{ title }} - {{ app.config.get('general/sitename') }}</title>
-	
-	
-		<meta name="viewport" content="width=device-width, maximum-scale=1.0"/>
-		{#
-		<link rel="stylesheet" href="{{ paths.theme }}css/screen.css"  media="all"/ >
-		#}
-		<link rel="stylesheet" href="http://develop.styleguide.eanadev.org/css/pro/screen.css"  media="all"/>
 		
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8">
+		<meta name="description" content="">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+		<meta name="viewport" content="width=device-width, maximum-scale=1.0"/>
+
+		<link rel="Shortcut Icon" href="{{ paths.theme }}images/favicon.ico" />
+		<link rel="stylesheet" href="http://develop.styleguide.eanadev.org/css/pro/screen.css"  media="all"/>
 		<link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,700|Open+Sans:400italic,700italic,400,700&subset=latin,greek,cyrillic' rel='stylesheet' type='text/css'>
 		
 		<script src="{{ paths.theme }}js/jquery-2.0.0b2.js"></script>
 		<!--[if lt IE 9]>
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
+		
 	</head>
 
 	{# get possible subsite options #}
@@ -44,13 +41,13 @@
 		<body class="europeana_pro">
 	{% endif %}
 	
+	
 	{# include SVG #}
 	{% include 'svg/global_svg.twig' %}
 	{% include 'svg/pro_svg.twig' %}
 	
 	
 	<!-- Super global navigation -->
-
 
 	<header class="header">
 	
