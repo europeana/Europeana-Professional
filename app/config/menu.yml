@@ -16,10 +16,21 @@ footer:
     path: /about-us
     label: 'About us'
   - title: 'Terms & policies'
-    link: terms-policies
+    path: /terms-policies
     label: 'Terms & policies'
-jointhenetwork:
-  - path: structures/join-the-network
-    label: 'Join the network'
-  - path: structure/share-your-data
-    label: 'Share your data'
+  - title: Sitemap
+    path: /sitemap
+    label: Sitemap
+Explorer-Europeana:
+  - title: Search portal
+    path: /sitemap
+    label: Search portal
+  - title: Labs
+    path: /sitemap
+    label: Labs
+  - title: 1914-1918
+    path: /sitemap
+    label: 1914-1918
+  - title: End user blog
+    path: /sitemap
+    label: End user blog
