@@ -33,15 +33,11 @@
 				{% if person.telephone_number != "" %}
 				<div class="tel">{{ person.telephone_number }}</div>
 				{% endif %}
-				{{ print(record) }}
 				{# show person.secondary_mail if event.secondary_mail is checked #}
 				{% if (record.secondary_mail == "1" ) %}
-				<a class="email" href="mailto:{{ person.secondary_email }}">{{ person.secondary_email }}</a>
-				{% endif %}
-				
-				{# show person.email as default #}
-				{% if (not use_secondary_mail is defined and person.email != "") %}
-				<a class="email" href="mailto:{{ person.email }}">{{ person.email }}</a>
+					<a class="email" href="mailto:{{ person.secondary_email }}">{{ person.secondary_email }}</a>
+				{% else %}
+					<a class="email" href="mailto:{{ person.email }}">{{ person.email }}</a>
 				{% endif %}
 				
 			</div>
