@@ -42,8 +42,7 @@ class Extension extends \Bolt\BaseExtension
         
         //	sitemap
         $this->app->match("/sitemap", array($this, 'sitemap'));
-        //$this->app->match("/sitemap.xml", array($this, 'xmlSitemap'));
-        
+        $this->app->match("/sitemap.xml", array($this, 'xmlSitemap'));
         
         //	load contenttypes
         $this->contenttypeslugs = $this->config['contenttypes'];
@@ -62,7 +61,6 @@ class Extension extends \Bolt\BaseExtension
         	
         	$entry = date('Y-m-d H:i:s').' '.$event->getContentType().' with id '.$event->getId().' has been saved'."\n";
         	file_put_contents('storage.log', $entry, FILE_APPEND);
-        	
         }
         */
         
@@ -527,6 +525,7 @@ class Extension extends \Bolt\BaseExtension
     				$itemRaw = $this->app['storage']->getContent('structures', array('slug' => $slug, 'returnsingle' => true));
     				$item = $itemRaw->values;
     				$item['childs'] = self::getChilds($pages, $item['id']);
+    				$item['link'] = $this->app['paths']['root'] . $item['slug'];
     				array_push($sitemap, $item);
     			}
     		}
@@ -553,7 +552,7 @@ class Extension extends \Bolt\BaseExtension
     						if ($itemRaw) break;
     					}
     					$item = $itemRaw->values;
-    					$item['link'] = $this->app['paths']['root'] . $item['slug']; //self::getStructureLink($itemRaw);
+    					$item['link'] = $this->app['paths']['root'] . $item['slug'];
     					$item['childs'] = self::getChilds($pages, $item['id']);
     					array_push($itemRoot['childs'], $item);
     				}
@@ -568,13 +567,11 @@ class Extension extends \Bolt\BaseExtension
     	 
     	$headers = array();
     	if ($xml) {
-    		$sitemapLinks = [];
     		$headers['Content-Type'] = 'application/xml; charset=utf-8';
-    		$sitemapLinks= self::makeArray($sitemapLinks, $sitemap);
-    		$sitemap =  [];
-    		$sitemap = $sitemapLinks;
+    		$temp = [];
+    		self::flat($sitemap, $temp);
+    		$sitemap = $temp;
     	}
-    	
     	
     	$body = $this->app['render']->render($template, array(
     			'entries'	=> $sitemap,
@@ -584,15 +581,27 @@ class Extension extends \Bolt\BaseExtension
     	return new Response($body, 200, $headers);
     }
     
-    private function makeArray($finalArray,$element) {
-    	foreach ($element as $key => $value){
-    		//if(is_array($value)) self::makeArray($finalArray,$value);
-//    		echo '<br>' . $key . '<br>';
-    		if($key == 'childs') $finalArray[] = self::makeArray($finalArray,$value);
-    		else return $finalArray[] = $value;
+    
+    
+    /**
+     * 
+     */
+    private function flat($sitemapItem, &$f) {
+    	foreach ($sitemapItem as $item) {
+    		if ( isset($item['childs']) ){
+    			$f[] = $item;
+    			self::flat($item['childs'], $f);
+    		}
+    		else {
+    			$f[] = $item;
+    		}
     	}
     }
     
+    
+    /**
+     * 
+     */
     private function getChilds($pages, $parentId, $p = [])
     {
     	 

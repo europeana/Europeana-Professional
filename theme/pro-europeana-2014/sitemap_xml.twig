@@ -4,8 +4,8 @@
         {% if entry.link is defined %}
             <url>
                 <loc>{{ app.paths.hosturl }}{{ entry.link }}</loc>
-                {% if entry.lastmod is defined %}
-                    <lastmod>{{ entry.lastmod }}</lastmod>
+                {% if entry.datechanged is defined %}
+                    <lastmod>{{ entry.datechanged }}</lastmod>
                 {% endif %}
             </url>
         {% endif %}
