@@ -3,7 +3,7 @@
 
 
 # The name of the website
-sitename: Europeana Professional V2.0
+sitename: Europeana Professional
 payoff: The Europeana Foundation
 
 # The theme to use. Be sure to copy the {theme_path}/base-2013 folder, and change the
@@ -16,6 +16,8 @@ theme: pro-europeana-2014
 locale: en_GB
 #timezone: UTC
 
+#sharethis publisher id
+sharethis: cb2e010f-d3ab-4d91-8a02-935f467f48c0
 
 # contenttype sort options configuration for list views
 # possible options are contenttype properties
@@ -112,7 +114,7 @@ search_results_records: 10
 # The list of enabled extensions. For Example:
 # GoogleAnalytics, FacebookLike, TwitterButton, FacebookComments, Disqus, RSSFeed, SimpleForms.
 # Read each 'readme.md' from the Bolt Extensions screen, to see what they do.
-enabled_extensions: [StructureTree, FileHelper, Disqus, Sitemap, RSSFeed, MenuEditor ] # ImportRSS
+enabled_extensions: [StructureTree, FileHelper, Disqus, RSSFeed, MenuEditor ] # ImportRSS
 
 # Add jQuery to the rendered HTML, whether or not it's added by an extension.
 add_jquery: false
