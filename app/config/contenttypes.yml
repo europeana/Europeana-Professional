@@ -658,7 +658,7 @@ Jobs:
       required: true  
       label: "Position (required):"
       variant: inline  
-      class: wide  
+      class: wide
     slug:
       type: slug
       uses: position
@@ -1085,7 +1085,9 @@ structures:
       type: text
       required: true  
       label: "Title (required):"
-      variant: inline 
+      variant: inline
+      postfix: "(max. 70 characters)"
+      pattern: "^.{1,70}$"
     # The permalink should be /parent URL/title - eg pro.europeana.eu/share-your-data/getting-started.html 
     slug:
       type: slug
@@ -1225,6 +1227,8 @@ projects:
       required: true
       label: "Title (required):"
       variant: inline
+      postfix: "(max. 70 characters)"
+      pattern: "^.{1,70}$"
     slug:
       type: slug
       uses: title
@@ -1303,6 +1307,8 @@ taskforces:
       required: true
       label: "Title (required):"
       variant: inline
+      postfix: "(max. 70 characters)"
+      pattern: "^.{1,70}$"
     slug:
       type: slug
       uses: title
