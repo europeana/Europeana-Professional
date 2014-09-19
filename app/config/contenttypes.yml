@@ -79,7 +79,9 @@ publications:
       type: text
       required: true  
       label: "Title (required):"
-      variant: inline  
+      variant: inline
+      postfix: "(max. 70 characters)"
+      pattern: "^.{1,70}$"
     slug:
       type: slug
       uses: title
@@ -179,7 +181,9 @@ pressreleases:
       type: text
       required: true  
       label: "Title (required):"
-      variant: inline  
+      variant: inline
+      postfix: "(max. 70 characters)"
+      pattern: "^.{1,70}$"
     slug:
       type: slug
       uses: title
@@ -513,6 +517,8 @@ events:
       label: "Title (required):"
       variant: inline  
       postfix: "<hr>"
+      postfix: "(max. 70 characters)"
+      pattern: "^.{1,70}$"
     slug:
       type: slug
       uses: title
@@ -792,6 +798,8 @@ blogposts:
       required: true  
       label: "Title (required):"
       variant: inline
+      postfix: "(max. 70 characters)"
+      pattern: "^.{1,70}$"
     slug:
       type: slug
       uses: title
@@ -914,7 +922,9 @@ pages:
       type: text
       required: true  
       label: "Title (required):"
-      variant: inline  
+      variant: inline
+      postfix: "(max. 70 characters)"
+      pattern: "^.{1,70}$"
     slug:
       type: slug
       uses: title
@@ -1138,8 +1148,8 @@ structures:
       label: "Footer"
       multiple: false
   # These tags are to be used to link together boxes that have been set to (automatic recommendation)
-  order: position                       
-  taxonomy: [ tags, structures ]
+  sort: -parent                 
+  taxonomy: [ tags ]
   record_template: overview_structure.twig
 
 
