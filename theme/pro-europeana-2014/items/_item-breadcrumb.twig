@@ -3,52 +3,50 @@
 	- included in alle listviews and record pages
 #}
 
+
 <ul class="breadcrumbs">
 
 	{# home #}
 	<li><a href="{{ paths.root }}"><svg class="icon icon-home"><use xlink:href="#icon-home"></use></svg>Home</a></li>
+	
+	{# page view #}
+	{% if record is defined %}
 
-	{# structure listing #}
-	{% if parent is defined %}
-		
-		{# parent links #}
-		{% if parent|length %}
-			{% for bc in breadcrumbitems(record, parent) %}
+		{# links #}
+
+		{# structure view record.taxonomy.structures   or record.group['slug'] is defined #}
+		{#
+			todo: 
+			http://localhost/Europeana-Professional/blogpost/blog-post-3000
+			VS.
+			http://localhost/Europeana-Professional/use-our-data/task-force-home/task-force-no78/
+		#}
+		{% if (record.contenttype.name == 'Structures' or record.group['slug']|length) %}
+			{% set breadcrumbs = breadcrumb(record) %}
+			{% for bc in breadcrumbs %}
 				<li><a href="{{ bc.path }}">{{ bc.title }}</a></li>
 			{% endfor %}
+		{# default record view #}
+		{% else %}
+			<li><a href="{{ paths.root }}{{ record.contenttype.slug }}">{{ record.contenttype.name }}</a></li>
 		{% endif %}
 		
-		{# page titel #}
-		{% if (record.contenttype.name == 'Persons') %}
+		{# title #}
+		
+		{% if (record.contenttype.singular_name == 'Person') %}
 			<li><span class="lastitem">{{ record.first_name }} {{ record.last_name }}</span></li>
 		{% else %}
 			<li><span class="lastitem">{{ record.title }}</span></li>
 		{% endif %}
-	
-	{# tags listing #}
+		
 	{% elseif ('/tags/' in app.request.pathInfo) %}
-		<li><span class="lastitem">{{ slug|capitalize }}</span></li>
-	
-	{# listing #}
+		<li><span class="lastitem">{{ slug|capitalize }}</span></li>	
+	{# list view #}
 	{% elseif records is defined %}
-		<li><span class="lastitem">{{ records|first.contenttype.slug|capitalize }}</span></li>
+		<li><span class="lastitem">{{ records|first.contenttype.name }}</span></li>
 	
-	{# listing -> record  #}
-	{% elseif record is defined %}
-	
-		{% if record.slug != 'not-found' %}
-			<li><a href="{{ paths.root }}{{ record.contenttype.slug }}">{{ record.contenttype.slug|capitalize }}</a></li>
-		{% endif %}
-		
-		{% if (record.contenttype.name == 'Persons') %}
-			<li><span class="lastitem">{{ record.first_name }} {{ record.last_name }}</span></li>
-		{% else %}
-			<li><span class="lastitem">{{ record.title }}</span></li>
-		{% endif %}
-	
-	{# listing -> search #}
-	{% elseif name != "" %}
-		<li><span class="lastitem">{{ name }}</span></li>
+	{% else %}
+		<li><span class="lastitem">Sitemap</span></li>
 	{% endif %}
 	
 </ul>

@@ -1,5 +1,43 @@
 {% include '_header.twig' %}
 
+{# get content by texonomy -> structure slug  #}
+
+
+{% set contenttype = structurecontenttype(record.slug) %}
+
+{% if contenttype %}
+	{% setcontent records = '(Structures, ' ~ contenttype['name'] ~ ')' where { tree : record.slug } %}
+	{% set records = sortRecords(records, 'position') %}
+{% else %}
+	{% setcontent records = 'Structures' where { tree : record.slug } %}
+{% endif %}
+
+	
+
+{#
+{% setcontent structureRecords = 'structure' where { tree  : record.slug} %}
+{% setcontent pageRecords = 'page' where { tree : record.slug} %}
+{% set records =  structureRecords|merge(pageRecords) %}
+
+#}
+
+
+{# order records by position #}
+{#
+{% for pageRecord in pageRecords %}
+
+	{% for structureRecord in structureRecords %}
+		
+		{% if (pageRecord.group.order <= structureRecord.group.order ) %}
+			{{ print(pageRecord.group.order) }}
+		
+		{% endif %}
+	
+	{% endfor %}
+{% endfor %}
+#}
+
+
 {% set contacts = record.related('persons') %}
 
 <!-- Start content -->
@@ -8,34 +46,33 @@
     <!-- Start grid -->
     <div class="grid-main">
 
+
         <div class="l-content">
-        
+            
             <div class="l-breadcrumbs">
 				{% include 'items/_item-breadcrumb.twig' %}
 			</div>
-
+            
             <div class="maincontent">
-
                 <div class="page-intro">
                     <h1 class="title">{{ record.title }}</h1>
                     <p>{{ record.teaser|raw }}</p>
                 </div>
-				{% if records|length %}
+				{% if records is defined %}
 				<ul class="l-next_options"><!--
-             -->{% for record in records|order('position') %}<!--
+             -->{% for record in records|order('group') %}<!--
                 -->{% include 'items/_item-lineblock.twig' with {child : record} %}<!--
              -->{% endfor %}
                 </ul>
                 {% endif %}
+
                 {#
                 <div class="section-sitemap">
-                
-                <div class="l-section-sitemap">
-                	{% include 'items/_item-linklist.twig' with {record : "Join the Network"} %}<!--
-                 -->{% include 'items/_item-linklist.twig' with {record : "Provide data"} %}<!--
-                 -->{% include 'items/_item-linklist.twig' with {record : "Re-use data"} %}
-                </div>
-               
+	                <div class="l-section-sitemap">
+	                	{% include 'items/_item-linklist.twig' with {record : "Join the Network"} %}<!--
+	                 -->{% include 'items/_item-linklist.twig' with {record : "Provide data"} %}<!--
+	                 -->{% include 'items/_item-linklist.twig' with {record : "Re-use data"} %}
+	                </div>
                 </div>
  				#}
             </div>

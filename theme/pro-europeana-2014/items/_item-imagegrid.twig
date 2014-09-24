@@ -8,17 +8,22 @@
 
 	<h4>{{ record.listtitle }}</h4>
 	
-	<form action="{{ fileDownloadLink() }}" method="post">
+	<form {{ fileDownloadAction() }} >
+		
 		<ul class="l-grid-media {{ record.liststyle }}">
 			
 			{% for image in record.imagelist %}
+			{% set fileinfo = fileInfo(image) %}
 			<li>
 	            <div class="block block-thumb">
-					<a href="{{ image.filename|image }}" title="{{ image.title }}">
-				 		<img src="{{ image.filename|thumbnail(300,300) }}">
+					<a href="{{ image.filename|image }}" class="download" data-downloadFile="{{ image.filename }}" title="{{ image.title }}">
+				 		<img src="{{ image.filename|thumbnail(300,300) }}" alt="{{ image.title }}">
 					</a>
+					<div class="thumb-info">
+						<p class="thumb-title">{{ image.title }}</p>
+						<p class="thumb-size">{{ fileinfo.filesize }}</p>
+					</div>
 				</div>
-				{{ fileDownloadLink(image, 'Download') }}
 			</li>
 			{% endfor %}
 			
@@ -27,8 +32,9 @@
 	        <li class="l-placeholder"></li>
 	        <li class="l-placeholder"></li>
 	        <li class="l-placeholder"></li>
+	         
 		</ul>
-		
+
 	</form>
 
 </div>

@@ -1,6 +1,7 @@
 {#
   used in:
   	- listing.twig
+  	- search
 #}
 
 {% if record is defined %}
@@ -15,6 +16,16 @@
 		{% if (contenttype == "Publications" or contenttype == "PressReleases" or contenttype == "BlogPosts") %}
 			<div class="item-image">
 				<a href="{{ listItemLink }}"><img src="{{ listItem.values['image']|thumbnail() }}" alt="{{ listItem.image|title }}" /></a>
+			</div>
+		{% elseif (contenttype == "Projects" ) %}
+			<div class="item-image">
+				<a href="{{ listItemLink }}"><img src="{{ listItem.values['logo']|thumbnail() }}" alt="{{ listItem.image|title }}" /></a>
+			</div>
+		{# get footer logo for subsite in projects list view #}			
+		{% elseif 'subsite' in listItem.template %}
+			{% setcontent footer = 'Footer' where {id: listItem.footer, order: 'id', limit: 1} %}
+			<div class="item-image">
+				<a href="{{ listItemLink }}"><img src="{{ footer.values['image']|thumbnail() }}" alt="{{ footer.image|title }}" /></a>
 			</div>
 		{% elseif contenttype == "Events" %}
 			<div class="item-bigdate">

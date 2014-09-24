@@ -1,14 +1,13 @@
 <!-- Start Footer -->
 
-{# set possible subsite class #}
-{% set subsite = '' %}
-{% if (record is defined and parent is defined) %}
-	{% set subsite = subsite(record, parent)  %}
+{% if record is defined %}
+	{# set possible subsite class #}
+	{% set subsite = subsite(record)  %}
 {% endif %}
 
 {# set subsite footer #}
-{% if subsite|length %}
-	{% setcontent footer = 'footer' where { id: subsite.footer, order: 'title'} %}
+{% if subsite['footer'] is defined %}
+	{% setcontent footer = 'footer' where { id: subsite['footer'], order: 'title'} %}
 	{% setcontent location = 'location' where {id: footer.relation.locations|first, order: 'title' } returnsingle %}
 	{% set logolink = subsite.path %}
 {# set default footer #}
@@ -29,6 +28,7 @@
                 	<a href="{{ logolink }}">
 	                	<img src="{{ footer.image|image }}" title="{{ footer.image|title }}" alt="{{ footer.values['image'].title }}">
                 	</a>
+                	
                 </div>
 
                 <div class="address">
@@ -79,7 +79,6 @@
         </div>
 
     </div>
-
     <div class="sub-footer">
 
         {{ menu('footer', '_submenu.twig') }}

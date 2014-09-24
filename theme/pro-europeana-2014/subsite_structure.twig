@@ -1,5 +1,14 @@
 {% include '_header.twig' %}
 
+{% set contenttype = structurecontenttype(record.slug) %}
+
+{% if contenttype %}
+	{% setcontent records = '(Structures, ' ~ contenttype['name'] ~ ')' where { tree : record.slug } %}
+	{% set records = sortRecords(records, 'position') %}
+{% else %}
+	{% setcontent records = 'Structures' where { tree : record.slug } %}
+{% endif %}
+
 {% set contacts = record.related('persons') %}
 
 <!-- Start content -->
@@ -20,8 +29,7 @@
             
                 <div class="page-intro">
                     <h1 class="title">{{ record.title }}</h1>
-
-                    <p>{{ record.intro }}</p>
+                    <p>{{ record.teaser }}</p>
                 </div>
 	
 				{% if records|length %}

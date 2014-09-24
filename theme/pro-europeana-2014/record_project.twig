@@ -5,7 +5,6 @@
 <!-- Start content -->
 <main role="main" class="l-page">
 
-
 <div class="lc">
 	<!-- Start grid -->
 	<div class="grid-main">
@@ -40,7 +39,7 @@
 					</div>
 
 					<div class="item-meta-secondary">
-						{% include 'items/_item-date.twig' %} <span>to:</span> {% include 'items/_item-date.twig' %}
+						{% include 'items/_item-date.twig' with {date: record.date_start} %} <span>to:</span> {% include 'items/_item-date.twig' with {date: record.date_end} %}
 						<br>
 						{% include 'items/_item-tags.twig' %}
 					</div>

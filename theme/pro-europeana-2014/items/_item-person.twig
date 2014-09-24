@@ -8,13 +8,13 @@
 <div class="l-person block block-thumb">
     <div class="b-inner">
 		<div class="b-thumb">
-			<a href="{{ person.link }}" title="{{ person.image|title}}">
+			<a href="{{ structurelink(person) }}" title="{{ person.image|title}}">
 				<img src="{{ person.image|image(300,400,"c") }}" alt="{{ person.image|title }}" />
 			</a>
 		</div>
 		<div class="b-text">
 		
-			<h2 class="person-name"><a href="{{ person.link }}">{{ person.first_name }} {{ person.last_name }}</a></h2>
+			<h2 class="person-name"><a href="{{ structurelink(person) }}">{{ person.first_name }} {{ person.last_name }}</a></h2>
 			
 			{% if person.job_title != "" %}
 			<div class="jobdetails">

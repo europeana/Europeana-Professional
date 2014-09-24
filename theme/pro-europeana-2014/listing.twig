@@ -1,25 +1,34 @@
 {% include '_header.twig' %}
 
-
 {% if records|length %}
 
-	{# show/hide sortby item #}
+	{# show/hide sortby item and pager #}
 	{% set showsortby = false %}
 	
-	{# set contenttype für default records and structures #}
-	{% if not contenttype['name'] is defined %}
-		{% set contenttype = records|first.contenttype %}
+	{# default list views #}
+	{% if record is not defined %}
+	
+		{# tags #}
+		{% if taxonomy is defined %}
+			{% set showsortby = false %}
+			{% set contenttype = taxonomy %}
+			
+		{% else %}
+			{% set contenttype = getContenttype(records|first.contenttype.name) %}
+			{% set showsortby = true %}
+			{% set contenttypePager = contenttype['slug'] %}
+		{% endif %}
+		
+	{# structure content #}
+	{% elseif contenttype['name'] is defined %}
+		{% if (contenttype['slug'] in app.config.get('general/sort_options/disabled')|keys ) %}
+			{% set contenttypePager = contenttype['slug'] %}
+			{% set showsortby = true %}
+		{% endif %}
 	{% endif %}
-	{# set sortby option and pager with exceots contenttypes without sort options #}
-	{% set contenttypeexception = ['Structures', 'Persons', 'Pages'] %}
-	{% if (contenttype['name'] not in contenttypeexception and taxonomy is not defined ) %}
-		{# show pager #}
-		{% set contenttypePager = contenttype['slug'] %}
-		{# show showsortby #}
-		{% set showsortby = true %}
-	{% endif %}
+	
 
-
+	
 <!-- Start content -->
 <main role="main" class="l-page">
 <div class="lc">
@@ -40,16 +49,27 @@
 		<div class="maincontent">
 		
 			<div class="results">
-
+				
+				{# show title and intro for structrure listview #}
+				{% if record is defined %}
+				<div class="page-intro">
+                 	<h1 class="title">{{ record.title }}</h1>
+                    <p>{{ record.teaser|raw }}</p>
+                </div>
+                {% endif %}
+                
 				<ul class="results-list">
 					{% for listItem in records %}
 						{% include 'items/_item-list.twig' with { record: listItem } %}
 					{% endfor %}
 				</ul>
 				
-				{% if showsortby %}
+				{% if showsortby and taxonomy is not defined %}
 					{{ pager(contenttypePager) }}
+				{% elseif taxonomy is defined %}
+					{{ pager() }}
 				{% endif %}
+				
 			</div>
 
 		</div>
@@ -59,20 +79,22 @@
 	 		<div class="inner">
 	 			{#
 	 				get main contacts. definied in contenttype 'person'
-	 				example: contact_blog -> main contact of the blog
+	 				example: field "contact_blog" -> main contact of the blogposts
 	 			#}
-	 			{% if ( record is defined and record.relation|length ) %}
+	 			{% if ( record.relation.persons is defined and record.relation.persons|length and record.content == 'default' ) %}
 		 			{% setcontent contacts = 'persons' where { id: record.relation.persons|join(' || ') } orderby 'last_name' %}
 		 			{% if( contacts|length and contacts is not iterable) %}
 		 				{% set contacts = [contacts] %}
 		 			{% endif %}
 	 				{% include 'items/_item-help.twig' with { records: contacts} %}
-		 		{% else %}
-	 				{% set contacttype = ('contact_'~(records|first.contenttype.singular_slug))  %}
+		 		{% elseif contenttype.singular_slug is defined %}
+		 			{% set contacttype = ('contact_'~(contenttype.singular_slug))  %}
 	 				{% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
+	 				{% if( contacts|length and contacts is not iterable) %}
+		 				{% set contacts = [contacts] %}
+		 			{% endif %}
+	 				{% include 'items/_item-help.twig' with { records: contacts} %}
 	 			{% endif %}
-	 			
-	 			
 	 			
 			</div>
 

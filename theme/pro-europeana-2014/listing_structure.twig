@@ -1,12 +1,65 @@
 {#
 	structures list template
-	include default listing with records for all listview except "Persons"
 #}
 
-{% if records is defined %}
-	{% if (records|length and records|first.contenttype.name == 'Persons') %}
-		{% include 'listing_person.twig' with {records: records } %}
-	{% else %}
-		{% include 'listing.twig' with {records: records} %}
-	{% endif %}
+
+{# get contenttype object #}
+{% set contenttype = structurecontenttype(record.slug) %}
+{% if contenttype == 0 %}
+	{% set contenttype = getContenttype(record.content) %}
 {% endif %}
+
+{% if contenttype != 0 %}
+	
+	{# set order #}
+	{% set order = contenttype['sort'] %}
+	{% if app.request.get('order') %}
+		{% set order = app.request.get('order') %}
+	{% endif %}
+	{# set page number #}
+	{% set page = app.request.get('page', 1) %}
+	{# set amount #}
+	{% if contenttype['listing_records'] is defined %}
+		{% set amount = contenttype['listing_records'] %}
+	{% else %}	
+		{% set amount = app.config.get('general/listing_records') %}
+	{% endif %}
+	
+{% endif %}
+	
+	{# listing for stucture with contenttype based content  #}
+	{% if (record.content != '' and record.content != 'default' )  %}
+		{% setcontent records = record.content where { 'limit' : amount, 'order' : order, 'page' : page }  %}
+		
+	{# listing for structure with mixed content #}
+	{% elseif contenttype %}
+		
+		{# get mixed content -> structure and contenttype #}
+		
+		
+		{% set structurecontenttype = getContenttype('Structure') %}
+		{% if order not in structurecontenttype.fields|keys %}
+			{% set order = structurecontenttype.sort %}
+		{% endif %}
+		
+		{% setcontent recordsStructure = 'Structures' where { tree : record.slug, 'limit' : amount, 'order' : order, 'page' : page }  %}
+		{% setcontent recordsContent = contenttype['name'] where { tree : record.slug, 'limit' : amount, 'order' : order, 'page' : page } allowpaging %}
+		
+		{# merge + sort mixed content by order #}
+		{% set records = recordsContent|merge(recordsStructure) %}
+		{% set records = sortRecords(records, order) %}
+	
+	{# listing for structure content #}
+	{% else %}
+		{% setcontent records = 'Structures' where { tree : record.slug } %}
+	{% endif %}
+	
+		
+	{% if records is defined %}
+		{% if (records|length and records|first.contenttype.name == 'Persons') %}
+			{% include 'listing_person.twig' with {records: records } %}
+		{% else %}
+			{% include 'listing.twig' with {records: records} %}
+		{% endif %}
+	{% endif %}
+	

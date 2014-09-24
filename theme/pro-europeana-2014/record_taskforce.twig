@@ -37,7 +37,7 @@
 					{% endif %}
 
 					<div class="item-meta-secondary">
-						Expected timeframe: {% include 'items/_item-date.twig' %} to:&nbsp;&nbsp; {% include 'items/_item-date.twig' %}
+						Expected timeframe: {% include 'items/_item-date.twig' with {date: record.date_start} %} to:&nbsp;&nbsp; {% include 'items/_item-date.twig' with {date: record.date_end} %}
 					</div>
 
 					<div class="item-meta-tertiary">

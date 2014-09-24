@@ -27,16 +27,13 @@
 		
 	</head>
 
-	{# get possible subsite options #}
-	{% set subsite = '' %}
-	{% if (parent is defined ) %}
-		{% set subsite = subsite(record, parent)  %}
+	{% if record is defined %}
+		{# set possible subsite options #}
+		{% set subsite = subsite(record) %}
 	{% endif %}
 	
-	{# set subsite class #}
-	{% if subsite %}
-		<body class="{{ subsite.subclass }}">
-	{# set default pro class #}
+	{% if subsite['subclass'] is defined %}
+		<body class="{{ subsite['subclass'] }}">
 	{% else %}
 		<body class="europeana_pro">
 	{% endif %}

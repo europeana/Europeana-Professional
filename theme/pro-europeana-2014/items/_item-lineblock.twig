@@ -1,5 +1,5 @@
 <li><div class="link-block block">
-	<a href="{{ structurelink(record, structure) }}" title="{{ child.title }}" class="b-inner">
+	<a href="{{ structurelink(record) }}" title="{{ child.title }}" class="b-inner">
 		{% if child.image|length %}
 		<div class="b-thumb">
 			<img src="{{ child.image|image(400,300,"c") }}" alt="{{ child.image|title }}" />
