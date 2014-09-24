@@ -1,31 +1,24 @@
-# This file defines the different types of taxonomies in Bolt. See the 
-# documentation for details: http://docs.bolt.cm/taxonomies#taxonomies
-
-    
-main: 
+main:
     slug: main
     singular_slug: main
     behaves_like: grouping
-    options: [ toplevel1, toplevel2, toplevel3, toplevel4 ]
+    options: [toplevel1, toplevel2, toplevel3, toplevel4]
     has_sortorder: false
-
 tags:
     slug: tags
     singular_slug: tag
     behaves_like: tags
-    #listing_template: listing_tags.twig
-
-#structures:
-#    slug: structures
-#    singular_slug: structure
-#    behaves_like: grouping
-#    #options: { get-involved: "Get involved", europeana-network: "Europeana Network", projects: "Projects", task-forces: "Task Forces", europeana-tech: "Europeana Tech", share-your-data: "Share your data", technical-requirements: "Technical Requirements", legal-requirents: "Legal requirents",  use-our-data: "Use our data", about-us: "About us", staff: "Staff", press: "Press", pressreleases: "Press releases", join-the-network: "Join the Network" }
-#    options: [ get-involved, europeana-network, projects, europeana-tech, share-your-data, task-forces, technical-requirements, legal-requirents, use-our-data, about-us, staff, press, press-releases, join-the-network ]
-#    has_sortorder: true
-    
+    listing_template: listing_tags.twig
+tree:
+    slug: tree
+    singular_slug: tree
+    behaves_like: grouping
+    options: { about-us: 'About us', blog: Blog, case-studies: 'Case studies', europeana-tech: 'Europeana Tech', events: Events, get-involved: 'Get involved', how-to-contribute: 'How to contribute', our-network: 'Our Network', own-your-data: 'own your data', ppersons: PPersons, press: Press, projects: Projects, projects-list: 'Projects List', share-your-data: 'Share your data', staff: Staff, sub-sub-1: 'Sub Sub #1', subsite-test: 'Subsite Test', task-force-home: 'Task Force HOME', task-forces-1: 'Task Forces', use-our-api: 'Use our API', use-our-data: 'Use our data' }
+    multiple: false
+    has_sortorder: true
 chapters:
     slug: chapters
     singular_slug: chapter
     behaves_like: grouping
-    options: { main: "The main chapter", sub: "Meta Chapter", subsub: "The other stuff" }
+    options: { main: 'The main chapter', sub: 'Meta Chapter', subsub: 'The other stuff' }
     has_sortorder: true
