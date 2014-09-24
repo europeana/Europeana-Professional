@@ -38,7 +38,8 @@ class Extension extends BoltExtension
         ->bind('downloadHandler');
 		
         $this->addTwigFunction('fileInfo', 'fileInfo');
-        $this->addTwigFunction('fileDownloadLink', 'fileDownloadLink');
+        $this->addTwigFunction('fileDownloadAction', 'fileDownloadAction');
+        
         
         $this->absFilePath = $this->app['paths']['filespath'] . '/';
         $this->downloadName = 'targetfile';
@@ -61,34 +62,28 @@ class Extension extends BoltExtension
     }
     
     
-    public function fileDownloadLink($file = null, $label = '')
+    public function fileDownloadAction()
     {
     	
-    	if (!$file) 
-    		return $this->app['paths']['root'] . 'download/';
+    	$formAction = sprintf('action="%s" method="post"', $this->app['paths']['root'] . 'download/' ); 
     	
-    	$linkMarkup = sprintf('<button type="submit" name="%s" value="%s">%s</button>',$this->downloadName, $file['filename'], $label );
-    	return new \Twig_Markup($linkMarkup, 'UTF-8');
+    	return  new \Twig_Markup($formAction, 'UTF-8'); ;
     }
-    
     
     public function downloadHandler(Request $request)
     {
     	
-    	$target = $request->request->get($this->downloadName);
+    	$target = $request->request->get('downloadfile');
     	$filePath = $this->absFilePath . $target;
-
+    	
     	// 	get mime-type
     	$finfo = finfo_open(FILEINFO_MIME_TYPE);
     	$type = finfo_file($finfo, $filePath);
     	finfo_close($finfo);
-    	
+
     	//	send file
     	return $this->app->sendFile($filePath, 200, array('Content-type' => $type), 'attachment');
     }
-    
-    
-    
     
     
     private function fileName($filePath)
@@ -110,6 +105,7 @@ class Extension extends BoltExtension
 		return $filesize;
     }
     
+    
     private function fileType($filePath)
     {
     	$filetype = pathinfo($filePath)['extension'];
@@ -123,7 +119,6 @@ class Extension extends BoltExtension
 		$filedate = date($format, filemtime($filePath));
 		return $filedate;
 	}    
-
 	
 }
 
