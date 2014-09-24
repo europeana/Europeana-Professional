@@ -85,11 +85,11 @@ publications:
     slug:
       type: slug
       uses: title
-    parents:
-      type: select
-      label: 'Parents:'
-      multiple: true
-      values: structure/id,title
+    #parents:
+    #  type: select
+    #  label: 'Parents:'
+    #  multiple: true
+    #  values: structure/id,title
     subtitle:
       type: html
       required: false 
@@ -187,11 +187,11 @@ pressreleases:
     slug:
       type: slug
       uses: title
-    parents:
-      type: select
-      label: 'Parents:'
-      multiple: true
-      values: structure/id,title
+    #parents:
+    #  type: select
+    #  label: 'Parents:'
+    #  multiple: true
+    #  values: structure/id,title
     subtitle:
       type: html
       required: false 
@@ -302,11 +302,11 @@ persons:
     slug:
       type: slug
       uses: [ first_name, last_name ]
-    parents:
-      type: select
-      label: 'Parents:'
-      multiple: true
-      values: structure/id,title
+    #parents:
+    #  type: select
+    #  label: 'Parents:'
+    #  multiple: true
+    #  values: structure/id,title
     # If checked, then the following fields are set to 'required':
     # Job Title, Team ,Email address
     # If not checked, then all fields are optional.            
@@ -528,11 +528,11 @@ events:
     slug:
       type: slug
       uses: title
-    parents:
-      type: select
-      label: 'Parents:'
-      multiple: true
-      values: structure/id,title
+    #parents:
+    #  type: select
+    #  label: 'Parents:'
+    #  multiple: true
+    #  values: structure/id,title
     # Show on Events list page, Events page, Home page
     start_event:
       type: datetime
@@ -668,11 +668,11 @@ Jobs:
     slug:
       type: slug
       uses: position
-    parents:
-      type: select
-      label: 'Parents:'
-      multiple: true
-      values: structure/id,title
+    #parents:
+    #  type: select
+    #  label: 'Parents:'
+    #  multiple: true
+    #  values: structure/id,title
     # Show on Job list page, Job page                 
     #location:
     #  type: select
@@ -811,11 +811,11 @@ blogposts:
     slug:
       type: slug
       uses: title
-    parents:
-      type: select
-      label: 'Parents:'
-      multiple: true
-      values: structure/id,title
+    #parents:
+    #  type: select
+    #  label: 'Parents:'
+    #  multiple: true
+    #  values: structure/id,title
     # This is a drop down box that is populated with the content of the Person content type
     # Show on Blog list page, Blog page
     #author:
@@ -938,15 +938,15 @@ pages:
     slug:
       type: slug
       uses: title
-    parents:
-      type: select
-      label: 'Parents:'
-      multiple: true
-      values: structure/id,title
-    position:
-      type: select
-      label: "Postition Parent"
-      values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
+    #parents:
+    #  type: select
+    #  label: 'Parents:'
+    #  multiple: true
+    #  values: structure/id,title
+    #position:
+    #  type: select
+    #  label: "Postition Parent"
+    #  values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
     
     # This is used to manually select the position the content should be shown on a list or overview page - default value is automatic
     #position:
@@ -1133,11 +1133,11 @@ projects:
     slug:
       type: slug
       uses: title
-    parents:
-      type: select
-      label: 'Parents:'
-      multiple: true
-      values: structure/id,title
+    #parents:
+    #  type: select
+    #  label: 'Parents:'
+    #  multiple: true
+    #  values: structure/id,title
     subtitle:
       type: text
       required: false
@@ -1213,11 +1213,11 @@ taskforces:
     slug:
       type: slug
       uses: title
-    parents:
-      type: select
-      label: 'Parents:'
-      multiple: true
-      values: structure/id,title
+    #parents:
+    #  type: select
+    #  label: 'Parents:'
+    #  multiple: true
+    #  values: structure/id,title
     department:
       type: select
       label: "Department:"
@@ -1315,15 +1315,15 @@ structures:
     slug:
       type: slug
       uses: title
-    parent:
-      type: select
-      label: "Parent:"
-      multiple: false
-      values: structure/id,title
-    position:
-      type: select
-      label: "Postition Parent"
-      values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
+    #parent:
+    #  type: select
+    #  label: "Parent:"
+    #  multiple: false
+    #  values: structure/id,title
+    #position:
+    #  type: select
+    #  label: "Postition Parent"
+    #  values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
     #children:
     #  type: select
     #  values: ['Pages', 'Persons', 'PressReleases', 'TaskForces', 'Projects']
