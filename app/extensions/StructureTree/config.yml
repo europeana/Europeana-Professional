@@ -7,8 +7,6 @@ parenttype: structures
 # child contenttypes
 contenttypes: [ pages, blogposts, publications, pressreleases, events, projects, taskforces, jobs, persons]
 
-
-
 #
 # sitemap settings
 #
@@ -18,7 +16,7 @@ sitemap:
       menu: 'primary'
     source_2:
       label: 'More info'
-      data:    
+      data:
         blog:
           label: 'Blog'
           link: '/blogposts'
