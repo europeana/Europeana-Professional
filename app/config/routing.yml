@@ -63,10 +63,9 @@ contentlisting:
 # ------------------------------------------------------------------------------
 # Place your own routes here, that have a LOWER priority than the default routes.
 
-robots:
-  path: /robots.txt
-  defaults: { _controller: 'Bolt\Controllers\Frontend::template', template: 'robots' }
-  
+
+
+
   
 # ------------------------------------------------------------------------------
 # Routes examples:

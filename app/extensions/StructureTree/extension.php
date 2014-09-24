@@ -40,13 +40,16 @@ class Extension extends \Bolt\BaseExtension
     	
     	//	listings 
     	
+    	//	robots
+    	$this->app->match("/robots.txt", array($this, 'robots'));
+    	
     	//	sitemap
     	$this->app->match("/sitemap", array($this, 'sitemap'));
     	$this->app->match("/sitemap.xml", array($this, 'xmlSitemap'));
     	
     	//	slug listing
     	$this->app->match("/{slug}", array($this, 'slugTreeRecord'))
-    	->assert('slug', '[a-zA-Z0-9_\-]+')
+    	->assert('slug', '[a-zA-Z0-9_\-]+[^(sitemap)^(search)]')
     	->bind('slugTreeRecord');
     	
 		// 	strucuture listing
@@ -441,6 +444,26 @@ class Extension extends \Bolt\BaseExtension
     	return 0;
     }
     
+    
+    
+    public function robots()
+    {
+    	$this->app['extensions']->clearSnippetQueue();
+    		$this->app['extensions']->disableJquery();
+    		$this->app['debugbar'] = false;
+    	
+    	$headers['Content-Type'] = 'text/plain; charset=utf-8';
+    	$template = 'robots.twig';
+    	$body = '';
+    	$body = 'User-agent: *
+Allow: /get-involved/projects/project-list/europeana-creative/about-europeana-creative
+Allow: /get-involved/projects/project-list/europeana-creative/creative-blog/introducing-the-euheritagetour-project
+Allow: /get-involved/projects/project-list/europeana-sounds/
+Disallow: /
+';
+    	
+    	return new Response($body, 200, $headers);
+    }
     
     
     public function xmlSitemap()
