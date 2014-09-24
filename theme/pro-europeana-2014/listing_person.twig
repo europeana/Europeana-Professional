@@ -20,7 +20,8 @@
 				{% endif %}
 				
 				{% set currentTeam = 'empty' %}
-				{% for record in records if record.checkbox_europeana %}
+				{# if record.checkbox_europeana #}
+				{% for record in records %}
 					{% if ( record.team != currentTeam ) %}
 						{% set currentTeam = records|first.team %}
 						<div class="team">

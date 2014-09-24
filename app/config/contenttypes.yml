@@ -310,9 +310,9 @@ persons:
     # If checked, then the following fields are set to 'required':
     # Job Title, Team ,Email address
     # If not checked, then all fields are optional.            
-    checkbox_europeana:
-      type: checkbox
-      label: "Europeana Staff:" 
+    #checkbox_europeana:
+    #  type: checkbox
+    #  label: "Europeana Staff:" 
     # If checked, then the person will be listed on the Network Members page    
     #checkbox_network:
     #  type: checkbox
@@ -1371,7 +1371,7 @@ structures:
     footer: 
       type: select
       label: 'Subsite footer'
-      values: footers/id
+      values: footer/id,title
     date_start:
       type: date
       required: false
