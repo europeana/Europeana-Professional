@@ -19,11 +19,11 @@ homepage:
 #  path:               /search
 #  defaults:           { _controller: 'Bolt\Controllers\Frontend::search' }
 
-#preview:
-#  path:               /preview/{contenttypeslug}
-#  defaults:           { _controller: 'Bolt\Controllers\Frontend::preview' }
-#  requirements:
-#    contenttypeslug:  'Bolt\Controllers\Routing::getAnyContentTypeRequirement'
+preview:
+  path:               /preview/{contenttypeslug}
+  defaults:           { _controller: 'Bolt\Controllers\Frontend::preview' }
+  requirements:
+    contenttypeslug:  'Bolt\Controllers\Routing::getAnyContentTypeRequirement'
 
 contentlink:
   path:               /{contenttypeslug}/{slug}
@@ -31,11 +31,18 @@ contentlink:
   requirements:
     contenttypeslug:  'Bolt\Controllers\Routing::getAnyContentTypeRequirement'
 
+#taxonomylink:
+#  path:               /{taxonomytype}/{slug}
+#  defaults:           { _controller: 'Bolt\Controllers\Frontend::taxonomy' }
+#  requirements:
+#    taxonomytype:     'Bolt\Controllers\Routing::getAnyTaxonomyTypeRequirement'
+
 taxonomylink:
   path:               /{taxonomytype}/{slug}
-  defaults:           { _controller: 'Bolt\Controllers\Frontend::taxonomy' }
+  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::sorttaxonomy' }
   requirements:
     taxonomytype:     'Bolt\Controllers\Routing::getAnyTaxonomyTypeRequirement'
+
 
 #contentlisting:
 #  path:               /{contenttypeslug}
@@ -45,7 +52,7 @@ taxonomylink:
 
 # changed controller to enable sort options
 contentlisting:
-  path:               /{contenttypeslug} 
+  path:               /{contenttypeslug}
   defaults:           { _controller: 'Bolt\Controllers\FrontendExt::sortlisting' }
   requirements:
     contenttypeslug:  'Bolt\Controllers\Routing::getPluralContentTypeRequirement'
@@ -56,6 +63,12 @@ contentlisting:
 # ------------------------------------------------------------------------------
 # Place your own routes here, that have a LOWER priority than the default routes.
 
+
+#taxonomylink:
+#  path:               /{taxonomytypeslug}
+#  defaults:           { _controller: 'Bolt\Controllers\Frontend::taxonomy' }
+#  requirements:
+#    taxonomytypeslug: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures', 'pages'] ]
 
 
 # ------------------------------------------------------------------------------
