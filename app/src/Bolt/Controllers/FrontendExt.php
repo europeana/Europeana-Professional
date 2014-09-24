@@ -74,4 +74,74 @@ class FrontendExt
 	
 	}
 	
+	
+	public static function sorttaxonomy(Silex\Application $app, $taxonomytype, $slug)
+	{
+		// First, get some content
+		$page = $app['request']->query->get('page', 1);
+		$order = $app['request']->query->get('order');
+		$amount = $app['config']->get('general/listing_records');
+		$order = (!empty ($order) ? $order : (!empty($contenttype['sort']) ? $contenttype['sort'] : $app['config']->get('general/listing_sort')));
+		$content = $app['storage']->getContentByTaxonomy($taxonomytype, $slug, array('limit' => $amount, 'order' => $order, 'page' => $page));
+		
+		$taxonomytype = $app['storage']->getTaxonomyType($taxonomytype);
+	
+		// No taxonomytype, no possible content..
+		if (empty($taxonomytype)) {
+			return false;
+		} else {
+			$taxonomyslug = $taxonomytype['slug'];
+		}
+	
+		if (!$content) {
+			$app->abort(404, "Content for '$taxonomyslug/$slug' not found.");
+		}
+	
+		$chosen = "taxonomy";
+	
+		// Set the template based on the (optional) setting in taxonomy.yml, or fall back to default listing template
+		if ($app['config']->get('taxonomy/' . $taxonomyslug . '/listing_template')) {
+			$template = $app['config']->get('taxonomy/' . $taxonomyslug . '/listing_template');
+		} else {
+			$template = $app['config']->get('general/listing_template');
+		}
+	
+		$app['log']->setValue('templatechosen', $app['config']->get('general/theme') . "/$template ($chosen)");
+	
+		// Fallback: If file is not OK, show an error page
+		$filename = $app['paths']['themepath'] . "/" . $template;
+		if (!file_exists($filename) || !is_readable($filename)) {
+			$error = sprintf(
+					"No template for '%s'-listing defined. Tried to use '%s/%s'.",
+					$taxonomyslug,
+					basename($app['config']->get('general/theme')),
+					$template
+			);
+			$app['log']->setValue('templateerror', $error);
+			$app->abort(404, $error);
+		}
+
+		$name = $slug;
+		// Look in taxonomies in 'content', to get a display value for '$slug', perhaps.
+		foreach($content as $record) {
+			$flat = \Util::array_flatten($record->taxonomy);
+			$key = $app['paths']['root'] . $taxonomytype['slug'] . '/' . $slug;
+			if (isset($flat[$key])) {
+				$name = $flat[$key];
+			}
+			$key = $app['paths']['root'] . $taxonomytype['singular_slug'] . '/' . $slug;
+			if (isset($flat[$key])) {
+				$name = $flat[$key];
+			}
+		}
+	
+		$app['twig']->addGlobal('records', $content);
+		$app['twig']->addGlobal('slug', $name);
+		$app['twig']->addGlobal('taxonomy', $app['config']->get('taxonomy/' . $taxonomyslug));
+		$app['twig']->addGlobal('taxonomytype', $taxonomyslug);
+	
+		return $app['render']->render($template);
+	
+	}
+	
 }
