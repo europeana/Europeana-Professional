@@ -37,26 +37,27 @@
 	
 	 --><div class="item-details">
 		{% if contenttype == 'Structures' %}
-			<h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title }}</a></h2>
+			<h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
 		{% elseif contenttype == 'Pages' %}
-			<h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title }}</a></h2>
+			<h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
 		{% else %}
-			<h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title }}</a></h2>
+			<h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
 		{% endif %}
 			
-			<div class="item-meta-primary">
+			
 		{% if (contenttype == "Publications" or contenttype == "PressReleases" ) %}
-			{# set authors #}
-			{% include 'items/_item-author.twig' %}
-		{% elseif contenttype == "BlogPosts" %}
-			{# set author #}
-			{% include 'items/_item-author.twig' %}
-			
-			{# set readtime #}
-			{#  todo: where did that came from? -> update contenttype "blogpost" #}
-			{% include 'items/_item-readtime.twig' %}
-		{% endif %}
+			<div class="item-meta-primary">
+				{# set authors #}
+				{% include 'items/_item-author.twig' %}
 			</div>
+		{% elseif contenttype == "BlogPosts" %}
+			<div class="item-meta-primary">
+				{# set author #}
+				{% include 'items/_item-author.twig' %}
+				{% include 'items/_item-readtime.twig' %}
+			</div>
+		{% endif %}
+			
 			
 			<div class="item-meta-secondary">
 			
@@ -93,9 +94,12 @@
 				{% include 'items/_item-tags.twig' %}
 				
 			{% elseif contenttype == "Projects" %}
+				{% include 'items/_item-date.twig' with { date: listItem.date_start } %}
+				<span>to: </span> 
+				{% include 'items/_item-date.twig' with { date: listItem.date_end } %}
+				<br />
 				{# set tags #}
 				{% include 'items/_item-tags.twig' %}
-				
 			{% endif %}
 	
 			</div>
