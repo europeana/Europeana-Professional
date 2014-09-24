@@ -4,7 +4,7 @@
 		{% set slugs = paths.currenturl|split('/') %}
 		{% for item in menu %}
     	<li>
-    		{% if ( item.path|slice(1, length) in slugs) %}
+    		{% if ( item.path|slice(1, item.path|length) in slugs) %}
     			<a class="current" href="{{ item.link }}">{{item.label}}</a>
     		{% else %}
     			<a href="{{ item.link }}">{{item.label}}</a>
