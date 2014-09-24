@@ -62,7 +62,7 @@ var Site = window.Site || {};
     		where: ".read-time",				// where the "x min read" will be inserted. Defaults to ".min-read"
     		wordsPerMinute	: 180,				// this is the avg adults can read on a screen, acording to wikipedia
     		archive: true,						// set to true if trying to fetch read time from another page. "false" by default
-    		archiveText: ".prose",				// if archive: true, time will be calculated using text on div specified here. Defaults to ".text"
+    		archiveText: ".textcontent",		// if archive: true, time will be calculated using text on div specified here. Defaults to ".text"
     		anchor: ".item-details h2 a",		// external article anchor class. Defaults to ".article-link"
     		label: " mins to read"
     	}
@@ -73,6 +73,31 @@ var Site = window.Site || {};
     	//	init for page view with disabled "archive" function
     	options.archive = 0;
     	$(".textcontent").minRead(options);
+    }
+    
+    
+    //	file download handler
+    Site.fileHelper = function() {
+    	
+    	//	prevent event default to force download
+    	$('form').on('click', 'a.download', function(e) {
+    		
+    		e.preventDefault();
+    		$link = $(this);
+    		$form = $link.parents('form');
+    		
+    		//	remove input previous download
+    		$('input', $form).remove();
+    		
+    		//	create hidden input with download values
+    		$input = $('<input type="hidden" name="downloadfile" value="' + $link.attr('data-downloadFile') + '" >')
+
+    		//	insert input + submit
+    		$form.append($input);
+    		$form[0].submit();
+    		
+    	});
+    	
     }
     
 
@@ -124,6 +149,7 @@ var Site = window.Site || {};
 
         Site.placeholders();
         Site.initMinRead();
+        Site.fileHelper();
 
 
     });
