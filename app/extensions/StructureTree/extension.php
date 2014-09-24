@@ -85,14 +85,17 @@ class Extension extends \Bolt\BaseExtension
     
     
     public function slugTreeRecord($slug) {
-    	 
+    	
+    	$parents= self::getTreeParents();
+    	$slug = makeSlug($slug, -1);
+    	
     	// slug is strucutre
-    	if ( isset(self::getTreeParents()[$slug])  ) {
+    	if ( isset($parents[$slug])  ) {
     		$contenttype = 'Structures';
-    		//return Bolt\Controllers\Frontend::taxonomy($this->app , $contenttype, $slug);
     		return Bolt\Controllers\Frontend::record($this->app , $contenttype, $slug);
     	}
     	else {
+    		
     		$contenttype = self::getContenttypeBySlug($slug);
     		return Bolt\Controllers\Frontend::record($this->app , $contenttype, $slug);
     	}
@@ -123,6 +126,7 @@ class Extension extends \Bolt\BaseExtension
     		if ( !isset($parent) || $parent['testpath'] != $structureSlugs)
     			self::abort($slug);
 	    	
+    		
     		$contenttype = 'structures';
     		return Bolt\Controllers\Frontend::record($this->app , $contenttype, $slug);
     	}
