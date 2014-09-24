@@ -17,16 +17,15 @@
 	{% endif %}
 {% endif %}
 
-
-{# get sort options from the config file by contenttypeslug #}
+{# get sort options (contenttypeslugs) #}
 {% set defaultSortOptions = app.config.get('general/sort_options') %}
 
-
-
+{# set default or contenttype specific options #}
 {% set sortoptions = defaultSortOptions['default'] %}
 {% if defaultSortOptions[(contenttype['slug'])] is defined  %}
 	{% set sortoptions = defaultSortOptions[(contenttype['slug'])] %}
 {% endif %}
+
 
 <div class="sortby">
 	<form method="get">
