@@ -23,7 +23,7 @@ sharethis: cb2e010f-d3ab-4d91-8a02-935f467f48c0
 # possible options are contenttype properties
 # add contenttype to disabled to hide sort function -> not activated
 sort_options:
-  # disabled: ['persons', 'pages', 'structures', 'locations']
+  disabled: ['persons', 'pages', 'structures', 'locations']
   default:
     datepublish: 'Date (ASC)'
     title: 'Title (ASC)'
@@ -34,7 +34,15 @@ sort_options:
     position: 'Position (ASC)'
     -datepublish: 'Date (DESC)'
     -position: 'Position (DESC)'
-    
+  projects:
+    datepublish: 'Date (ASC)'
+    title: 'Title (ASC)'
+    date_start: 'Project start (ASC)'
+    date_end: 'Project end (ASC)'
+    -datepublish: 'Date (DESC)'
+    -title: 'Title (DESC)'
+    -date_start: 'Project start (DESC)'
+    -date_end: 'Project end (DESC)'
 
 
 # set default excerpt length
@@ -114,7 +122,7 @@ search_results_records: 10
 # The list of enabled extensions. For Example:
 # GoogleAnalytics, FacebookLike, TwitterButton, FacebookComments, Disqus, RSSFeed, SimpleForms.
 # Read each 'readme.md' from the Bolt Extensions screen, to see what they do.
-enabled_extensions: [StructureTree, FileHelper, Disqus, RSSFeed, MenuEditor ] # ImportRSS
+enabled_extensions: [StructureTree, FileHelper, Disqus, RSSFeed, MenuEditor, GoogleAnalytics  ] # ImportRSS
 
 # Add jQuery to the rendered HTML, whether or not it's added by an extension.
 add_jquery: false
