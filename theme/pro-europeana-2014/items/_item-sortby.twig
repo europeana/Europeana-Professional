@@ -9,7 +9,7 @@
 {# otherwise get default sort option of the contenttype #}
 {% if currentsortoption is empty %}
 	{# default sort option for stucture content #}
-	{% if contenttype is defined %}
+	{% if contenttype['sort'] is defined %}
 		{% set currentsortoption = contenttype['sort'] %}
 	{# default sort option for bolt lising #}
 	{% else %}
@@ -20,6 +20,9 @@
 
 {# get sort options from the config file by contenttypeslug #}
 {% set defaultSortOptions = app.config.get('general/sort_options') %}
+
+
+
 {% set sortoptions = defaultSortOptions['default'] %}
 {% if defaultSortOptions[(contenttype['slug'])] is defined  %}
 	{% set sortoptions = defaultSortOptions[(contenttype['slug'])] %}
