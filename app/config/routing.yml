@@ -63,14 +63,11 @@ contentlisting:
 # ------------------------------------------------------------------------------
 # Place your own routes here, that have a LOWER priority than the default routes.
 
-
-#taxonomylink:
-#  path:               /{taxonomytypeslug}
-#  defaults:           { _controller: 'Bolt\Controllers\Frontend::taxonomy' }
-#  requirements:
-#    taxonomytypeslug: [ 'Bolt\Controllers\Routing::getTaxonomyRequirement', ['structures', 'pages'] ]
-
-
+robots:
+  path: /robots.txt
+  defaults: { _controller: 'Bolt\Controllers\Frontend::template', template: 'robots' }
+  
+  
 # ------------------------------------------------------------------------------
 # Routes examples:
 
