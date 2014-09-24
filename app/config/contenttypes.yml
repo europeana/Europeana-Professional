@@ -938,15 +938,15 @@ pages:
     slug:
       type: slug
       uses: title
-    #parents:
-    #  type: select
-     # label: 'Parents:'
-     # multiple: true
-     # values: structure/id,title
-    #position:
-    #  type: select
-    #  label: "Postition Parent"
-    #  values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
+    parents:
+      type: select
+      label: 'Parents:'
+      multiple: true
+      values: structure/id,title
+    position:
+      type: select
+      label: "Postition Parent"
+      values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
     
     # This is used to manually select the position the content should be shown on a list or overview page - default value is automatic
     #position:
@@ -1320,10 +1320,10 @@ structures:
       label: "Parent:"
       multiple: false
       values: structure/id,title
-    #position:
-    #  type: select
-    #  label: "Postition Parent"
-    #  values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
+    position:
+      type: select
+      label: "Postition Parent"
+      values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
     #children:
     #  type: select
     #  values: ['Pages', 'Persons', 'PressReleases', 'TaskForces', 'Projects']
