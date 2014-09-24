@@ -80,8 +80,8 @@ publications:
       required: true  
       label: "Title (required):"
       variant: inline
-      postfix: "(max. 70 characters)"
-      pattern: "^.{1,70}$"
+      postfix: "(max. 50 characters)"
+      pattern: "^.{1,50}$"
     slug:
       type: slug
       uses: title
@@ -123,7 +123,7 @@ publications:
       label: "Image:"
       attrib: title
       extensions: [ gif, jpg, png ]              
-  taxonomy: [ tags ]    
+  taxonomy: [ tags, tree ]    
   relations:
     persons:
       label: "Author(s)"
@@ -182,8 +182,8 @@ pressreleases:
       required: true  
       label: "Title (required):"
       variant: inline
-      postfix: "(max. 70 characters)"
-      pattern: "^.{1,70}$"
+      postfix: "(max. 50 characters)"
+      pattern: "^.{1,50}$"
     slug:
       type: slug
       uses: title
@@ -218,7 +218,7 @@ pressreleases:
       label: "Image:"
       attrib: title
       extensions: [ gif, jpg, png ]              
-  taxonomy: [ tags]    # , structures 
+  taxonomy: [ tags, tree ]
   relations:
     persons:
       label: "Author(s)"
@@ -312,7 +312,6 @@ persons:
     # If not checked, then all fields are optional.            
     checkbox_europeana:
       type: checkbox
-      required: false
       label: "Europeana Staff:" 
     # If checked, then the person will be listed on the Network Members page    
     #checkbox_network:
@@ -452,25 +451,32 @@ persons:
     contact_pressrelease:
       type: checkbox
       label: "Main contact of the press releases page"
-    contact_aggregator:
+    contact_taskforce:
       type: checkbox
-      label: "Main contact of the Aggregator events page"
-    contact_tech:
+      label: "Main contact of the task forces page"
+    contact_tag:
       type: checkbox
-      label: "Main contact of the Europeana Tech events page"
-    contact_network:
-      type: checkbox
-      label: "Main contact of the Network events page"
-    contact_member:
-      type: checkbox
-      label: "Main contact of the Network members page"
-      class: inline
+      label: "Main contact of tag page"
+    
+    #contact_aggregator:
+    #  type: checkbox
+    #  label: "Main contact of the Aggregator events page"
+    #contact_tech:
+    #  type: checkbox
+    #  label: "Main contact of the Europeana Tech events page"
+    #contact_network:
+    #  type: checkbox
+    #  label: "Main contact of the Network events page"
+    #contact_member:
+    #  type: checkbox
+    #  label: "Main contact of the Network members page"
+    #  class: inline
     # If this check box is selected, then this person will be listed as the Contact person on the blog list and individual blog pages
     #checkbox_chief:
     #  type: checkbox
     #  required: false
     #  label: "Chief editor of the blog (will show as main contact in blog):"          
-  taxonomy: [ tags ]
+  taxonomy: [ tags, tree ]
   sort: team
   # no pager for person
   listing_records: 100000
@@ -517,8 +523,8 @@ events:
       label: "Title (required):"
       variant: inline  
       postfix: "<hr>"
-      postfix: "(max. 70 characters)"
-      pattern: "^.{1,70}$"
+      postfix: "(max. 50 characters)"
+      pattern: "^.{1,50}$"
     slug:
       type: slug
       uses: title
@@ -610,7 +616,7 @@ events:
       label: "Contact(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-  taxonomy: [ tags ]
+  taxonomy: [ tags, tree ]
   sort: -datepublish
   record_template : record_event.twig
 
@@ -758,6 +764,7 @@ Jobs:
     locations:
       label: "Locations"
       multiple: false
+  taxonomy: [ tree ]
   sort: -datepublish
   record_template: record_job.twig
   
@@ -791,6 +798,7 @@ Jobs:
 blogposts:
   name: BlogPosts
   singular_name: BlogPost
+  display_name: 'Blog Posts'
   fields:
     # Show on Blog list page, Blog page, Related items snippet, Home page
     title:
@@ -798,8 +806,8 @@ blogposts:
       required: true  
       label: "Title (required):"
       variant: inline
-      postfix: "(max. 70 characters)"
-      pattern: "^.{1,70}$"
+      postfix: "(max. 50 characters)"
+      pattern: "^.{1,50}$"
     slug:
       type: slug
       uses: title
@@ -845,7 +853,7 @@ blogposts:
       attrib: title
       extensions: [ gif, jpg, png ]
   # Show on Blog page
-  taxonomy: [ tags ]
+  taxonomy: [ tags, tree ]
   # every contenttype?
   relations:
     persons:
@@ -886,6 +894,8 @@ blogposts:
       format: "{{ item.title|escape }}"
   sort: -datepublish
   record_template: record_blogpost.twig
+#  listing_records: 2
+#  recordsperpage: 2
 
 #################################
 #
@@ -923,20 +933,20 @@ pages:
       required: true  
       label: "Title (required):"
       variant: inline
-      postfix: "(max. 70 characters)"
-      pattern: "^.{1,70}$"
+      postfix: "(max. 50 characters)"
+      pattern: "^.{1,50}$"
     slug:
       type: slug
       uses: title
-    parents:
-      type: select
-      label: 'Parents:'
-      multiple: true
-      values: structure/id,title
-    position:
-      type: select
-      label: "Postition Parent"
-      values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
+    #parents:
+    #  type: select
+     # label: 'Parents:'
+     # multiple: true
+     # values: structure/id,title
+    #position:
+    #  type: select
+    #  label: "Postition Parent"
+    #  values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
     
     # This is used to manually select the position the content should be shown on a list or overview page - default value is automatic
     #position:
@@ -1039,120 +1049,11 @@ pages:
       label: "Jobs"
       order: -id
       format: "{{ item.title|escape }}"
-  #relations:
-  #  structures:
-  #    label: "Parent"
-  #    multiple: false
-  taxonomy: [ tags, structures ]
+  taxonomy: [ tags, tree ]
   record_template: record_page.twig
 
       
       
-#################################
-#
-# STRUCTURE
-#
-# Notes: 
-# Some of these list pages (eg - the publications list page), will not need creating here, 
-# they should be dynamic lists that show anything that was created as a publication, likewise the staff list page 
-# should show any person that has been created
-#
-# Comment Bob for parent issue:
-# There's no real support for hierarchical content in Bolt, but you can use grouping to structure it somewhat better
-# What we often do, is that we use the "behaves_like: grouping" taxonomy for this. We make one group called 'main' or 'top', 
-# with a bunch of pages, and then as much groups as we have top level pages.
-#
-# Issues: 
-# - Not defined how to build up the selectfield for parent to build a structure; using suggestion from bob with taxonomies
-# - The slug contenttype does not fit the requirement
-#
-# ToDos:
-# - Define the templates for visualization in type templateselect
-# - Define top level pages in taxonomy.yml and delete selectfield for parent if taxonomy is choosen as the prefferd way
-#
-# Questions:
-# - Is it possible to build up contenttype slug with a slash in it? Example: /parent/title
-# - Can one use choosen taxonomies for the value of a slug type? Example: value: taxonomy['main']
-# - How exactly will be the handling for taxonomy tags? Are there prefilled tags?
-#
-#################################
-structures:
-  name: Structures
-  singular_name: Structure
-  fields:
-  # Shown on Overview pages, List pages, Teasers
-    title:
-      type: text
-      required: true  
-      label: "Title (required):"
-      variant: inline
-      postfix: "(max. 70 characters)"
-      pattern: "^.{1,70}$"
-    # The permalink should be /parent URL/title - eg pro.europeana.eu/share-your-data/getting-started.html 
-    slug:
-      type: slug
-      uses: title
-    parent:
-      type: select
-      label: "Parent:"
-      multiple: false
-      values: structure/id,title
-    position:
-      type: select
-      label: "Postition Parent"
-      values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
-    #children:
-    #  type: select
-    #  values: ['Pages', 'Persons', 'PressReleases', 'TaskForces', 'Projects']
-    # Shown on Overview pages
-    # -> moved to relationssss
-    #contacts:
-    #  type: select
-    #  required: false
-    #  label: "Contact person:"             
-    #  values: person/id,last_name,first_name
-    #  multiple: true 
-    # Shown on Lists, Overviews  
-    secondary_mail:
-      type: checkbox
-      required: false
-      label: "Show secondary email instead:" 
-    ## Shown on Overview pages, List pages                 
-    teaser:
-      type: html
-      required: false 
-      label: "Intro text:"             
-      height: 150px 
-    # Shown on Overview pages, List pages, Teasers    
-    image:
-      type: image
-      required: true  
-      label: "Image:"
-      attrib: title
-      extensions: [ gif, jpg, png ]
-    template:
-      type: templateselect
-      filter: '*_structure.twig'
-      prefix: "<hr>"
-      postfix: 'Use "default template" for overview.'
-    subclass:
-      type: select
-      label: "Subsite body class"
-      values: ['none', 'europeana_pro_subsite']
-      prefix: "<hr><h2>Subsite Settings</h2>"
-    # This is to be used to define the layout - it should either be a overview page, which has the various boxes. Or a list page, that contains pages. 
-  relations:
-    persons:
-      label: "Contact(s)"
-      multiple: true
-      format: "{{ item.last_name }}, {{ item.first_name }}"
-    footer:
-      label: "Footer"
-      multiple: false
-  # These tags are to be used to link together boxes that have been set to (automatic recommendation)
-  sort: -parent                 
-  taxonomy: [ tags ]
-  record_template: overview_structure.twig
 
 
 #################################
@@ -1227,8 +1128,8 @@ projects:
       required: true
       label: "Title (required):"
       variant: inline
-      postfix: "(max. 70 characters)"
-      pattern: "^.{1,70}$"
+      postfix: "(max. 50 characters)"
+      pattern: "^.{1,50}$"
     slug:
       type: slug
       uses: title
@@ -1280,7 +1181,7 @@ projects:
       type: filelist
       required: true
       label: "Downloads:"
-  taxonomy: [ tags ]
+  taxonomy: [ tags, tree ]
   relations:
     person:
       multiple: true
@@ -1289,8 +1190,8 @@ projects:
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
   record_template: record_project.twig
-
-
+  listing_records: 5
+  recordsperpage: 20
 
 #################################
 #
@@ -1307,8 +1208,8 @@ taskforces:
       required: true
       label: "Title (required):"
       variant: inline
-      postfix: "(max. 70 characters)"
-      pattern: "^.{1,70}$"
+      postfix: "(max. 50 characters)"
+      pattern: "^.{1,50}$"
     slug:
       type: slug
       uses: title
@@ -1351,7 +1252,7 @@ taskforces:
       type: image
       required: false
       label: "Teaser image:"
-  taxonomy: [ tags ]    
+  taxonomy: [ tags, tree ]    
   relations:
     person:
       multiple: true
@@ -1365,8 +1266,138 @@ taskforces:
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
+  sort: -datepublish
   record_template: record_taskforce.twig
 
+
+
+#################################
+#
+# STRUCTURE
+#
+# Notes: 
+# Some of these list pages (eg - the publications list page), will not need creating here, 
+# they should be dynamic lists that show anything that was created as a publication, likewise the staff list page 
+# should show any person that has been created
+#
+# Comment Bob for parent issue:
+# There's no real support for hierarchical content in Bolt, but you can use grouping to structure it somewhat better
+# What we often do, is that we use the "behaves_like: grouping" taxonomy for this. We make one group called 'main' or 'top', 
+# with a bunch of pages, and then as much groups as we have top level pages.
+#
+# Issues: 
+# - Not defined how to build up the selectfield for parent to build a structure; using suggestion from bob with taxonomies
+# - The slug contenttype does not fit the requirement
+#
+# ToDos:
+# - Define the templates for visualization in type templateselect
+# - Define top level pages in taxonomy.yml and delete selectfield for parent if taxonomy is choosen as the prefferd way
+#
+# Questions:
+# - Is it possible to build up contenttype slug with a slash in it? Example: /parent/title
+# - Can one use choosen taxonomies for the value of a slug type? Example: value: taxonomy['main']
+# - How exactly will be the handling for taxonomy tags? Are there prefilled tags?
+#
+#################################
+structures:
+  name: Structures
+  singular_name: Structure
+  fields:
+  # Shown on Overview pages, List pages, Teasers
+    title:
+      type: text
+      required: true  
+      label: "Title (required):"
+      variant: inline
+      postfix: "(max. 50 characters)"
+      pattern: "^.{1,50}$"
+    # The permalink should be /parent URL/title - eg pro.europeana.eu/share-your-data/getting-started.html 
+    slug:
+      type: slug
+      uses: title
+    parent:
+      type: select
+      label: "Parent:"
+      multiple: false
+      values: structure/id,title
+    #position:
+    #  type: select
+    #  label: "Postition Parent"
+    #  values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
+    #children:
+    #  type: select
+    #  values: ['Pages', 'Persons', 'PressReleases', 'TaskForces', 'Projects']
+    # Shown on Overview pages
+    # -> moved to relationssss
+    #contacts:
+    #  type: select
+    #  required: false
+    #  label: "Contact person:"             
+    #  values: person/id,last_name,first_name
+    #  multiple: true 
+    # Shown on Lists, Overviews  
+    secondary_mail:
+      type: checkbox
+      required: false
+      label: "Show secondary email instead:" 
+    ## Shown on Overview pages, List pages                 
+    teaser:
+      type: html
+      required: false 
+      label: "Intro text:"             
+      height: 150px 
+    # Shown on Overview pages, List pages, Teasers    
+    image:
+      type: image
+      required: true  
+      label: "Image:"
+      attrib: title
+      extensions: [ gif, jpg, png ]
+    template:
+      type: templateselect
+      filter: '*_structure.twig'
+      postfix: 'Use "default template" for overview.'
+      prefix: "<hr>"
+    content:
+      type: select
+      label: 'Contenttype'
+      values: ['default', 'Events', 'BlogPosts', 'Persons', 'PressReleases', 'Projects', 'Publications', 'TaskForces', 'Jobs']
+      postfix: 'Set content by contenttype'
+    subclass: # change name to 'theme'
+      type: select
+      label: "Subsite theme"
+      values: ['none', 'europeana_pro_subsite']
+      prefix: "<hr><h2>Subsite Settings</h2>"
+    footer: 
+      type: select
+      label: 'Subsite footer'
+      values: footers/id
+    date_start:
+      type: date
+      required: false
+      label: "Project start:"
+      variant: inline  
+    date_end:
+      type: date
+      required: false
+      label: "Project end:"
+      variant: inline
+    # This is to be used to define the layout - it should either be a overview page, which has the various boxes. Or a list page, that contains pages. 
+  relations:
+    persons:
+      label: "Contact(s)"
+      multiple: true
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+    #footer:
+    #  label: "Footer"
+    #  multiple: false
+  # These tags are to be used to link together boxes that have been set to (automatic recommendation)
+  #sort: -structures                 
+  taxonomy: [ tags, tree ]
+  record_template: overview_structure.twig
+  recordsperpage: 1000
+  
+  
 #################################
 #
 # HOMEPAGE
@@ -1480,6 +1511,8 @@ homepage:
 
 # record_template: homepage.twig      
 
+
+  
 #################################
 #
 # FOOTER
