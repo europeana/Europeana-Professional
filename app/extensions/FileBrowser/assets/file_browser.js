@@ -15,7 +15,7 @@ $(document).ready(function(){
         listElem.append(
             $('<li class="file-browser file-browser-loading" />')
                 .text('Loading...'));
-        $.get('/async/file_browser?fb_cp=' + targetPath + '&fb_mode=' + mode,
+        $.get('/async/file_browser?fb_cp=' + targetPath + '&fb_mode=' + mode + '&fb_root=' + rootPath,
             function(html) {
                 container.html(html);
             });

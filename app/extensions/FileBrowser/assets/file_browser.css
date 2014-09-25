@@ -1,6 +1,7 @@
 .file-browser {
     position: relative;
     margin: 0 !important;
+    font-size: 13px;
 }
 
 .file-browser-list {
@@ -19,7 +20,7 @@
 .file-browser-list-icons .file-browser-item {
     display: inline-block;
     width: 100px;
-    height: 80px;
+    min-height: 80px;
     text-align: center;
     margin: 10px 5px !important;
     vertical-align: bottom;
@@ -48,11 +49,13 @@
 }
 
 .file-browser-list-list .file-browser-item > a {
-    display: block
+    display: block;
+    margin-bottom: 4px !important;
 }
 
 .file-browser-list-list .file-browser-item > a > * {
     display: inline-block;
+    vertical-align: bottom;
 }
 
 .file-browser-list-list .file-browser-item > a > .file-browser-label {
@@ -60,7 +63,7 @@
 }
 
 .file-browser-list-list .file-browser-item > a > .file-browser-filename {
-    width: 15em;
+    width: 25em;
 }
 
 .file-browser-list-list .file-browser-item > a > .file-browser-filesize {

@@ -25,6 +25,10 @@
 	
 					{{ record.body|raw }}
 					
+					{% if record.filelist_downloads != "" %}
+						{{ file_browser("list", record.filelist_downloads) }}
+					{% endif %}
+
 				</div>
 
 				{#
