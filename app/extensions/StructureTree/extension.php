@@ -29,7 +29,7 @@ class Extension extends \Bolt\BaseExtension
             'type' => "General",
             'first_releasedate' => null,
             'latest_releasedate' => null,
-            'priority' => 10
+            //'priority' => 10
         );
          
     }
@@ -68,7 +68,6 @@ class Extension extends \Bolt\BaseExtension
     	$this->addTwigFunction('sitemap', 'renderSitemap');
     	$this->addTwigFunction('sortRecords', 'sortRecords');
     	$this->addTwigFunction('getContenttype', 'getContenttype');
-    	//$this->addTwigFunction('getMixedContent', 'getMixedContent');
 
     	
     	//	events
@@ -100,9 +99,6 @@ class Extension extends \Bolt\BaseExtension
     		return Bolt\Controllers\Frontend::record($this->app , $contenttype, $slug);
     	}
     	
-    	// check if structure slug or not
-    	//$contenttypeslug = 'structures';
-    	//return Bolt\Controllers\Frontend::record($this->app , $contenttypeslug, $slug);
     }
     
     
@@ -351,9 +347,51 @@ class Extension extends \Bolt\BaseExtension
     	return array_reverse($items);
     }
     
-    public function sortRecords($records, $sortby) 
+    
+    
+    
+    
+    
+    public function sortRecords( $records, $sortby, $col=null) 
     {
-    	self::array_sort_by_column($records, $sortby);
+    	
+    	if (!$sortby) return $records;
+
+    	$callbackArraySortDESC = function($a, $b) use ($sortby, $col) {
+    		return strcmp($a->{($col)}[$sortby], $b->{($col)}[$sortby]);
+    	};
+    	
+    	
+    	$callbackArraySortASC = function($a, $b) use ($sortby, $col) {
+    		return strcmp($a->{($col)}[$sortby], $b->{($col)}[$sortby]);
+    	};
+    	
+    	/*
+    	$callbackObjectSortASC = function($a, $b) use ($sortby) {
+    		return strcmp($a->{$sortby}, $b->{$sortby});
+    	};
+    	
+    	$callbackObjectSortDESC = function($a, $b) use ($sortby) {
+    		return strcmp($b->{$sortby}, $a->{$sortby});
+    	};
+		*/
+    	
+    	
+    	
+    	echo gettype($sortby);
+    	
+    	if ($col) {
+    		//if ( strpos($sortby,'-') === false ) {
+    			
+    			echo usort($records, $callbackArraySortDESC );
+    		//}
+    		//else {
+    		//	echo usort($rec, $callbackArraySortASC );
+    		//} 
+    			
+    	}
+    	
+    		
     	return $records;
     }
     
