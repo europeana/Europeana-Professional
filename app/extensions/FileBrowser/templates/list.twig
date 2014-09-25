@@ -39,7 +39,7 @@
     {% endif %}
     {% for file in files %}
         {% set relative_pathname = file.relativePathname %}
-        {% set absolute_pathname = paths.current ~ '/' ~ relative_pathname %}
+        {% set absolute_pathname = paths.root ~ '/' ~ paths.current ~ '/' ~ relative_pathname %}
         {% set type = file.type %}
         {% if type == 'file' %}
             {% set link = "/files/" ~ absolute_pathname %}
