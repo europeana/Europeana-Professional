@@ -1,5 +1,8 @@
 {#
-	structures list template
+	structures list template.
+	- collects content for structure and possible assigend contenttype
+	- set pager options
+	- include "default" list template
 #}
 
 
@@ -9,6 +12,7 @@
 	{% set contenttype = getContenttype(record.content) %}
 {% endif %}
 
+{# set order / page / amount #}
 {% if contenttype != 0 %}
 	
 	{# set order #}
@@ -16,8 +20,10 @@
 	{% if app.request.get('order') %}
 		{% set order = app.request.get('order') %}
 	{% endif %}
+	
 	{# set page number #}
 	{% set page = app.request.get('page', 1) %}
+	
 	{# set amount #}
 	{% if contenttype['listing_records'] is defined %}
 		{% set amount = contenttype['listing_records'] %}
@@ -26,24 +32,41 @@
 	{% endif %}
 	
 {% endif %}
-	
+
 
 {# listing for stucture with fixed content  #}
 {% if (record.content != '' and record.content != 'default' )  %}
 	{% setcontent records = record.content where { limit : amount, order : order, page : page }  %}
 
-{# listing for structure with mixed content #}
+{# listing for mixed content (structure + contenttype) #}
 {% elseif contenttype %}
 
+	{# 
+		because of the mixed content, we have to sort the list manually.
+		1. get all structure and contenttype content by tree
+		2. merge and order the result
+		3. calculate pager properties
+		4. slice result list
+	#}
+	
+	{# get content for current structure #}
 	{% set recordsStruture = [] %}
-	{% if order in record.contenttype['fields']|keys %}
-		{% setcontent recordsStruture = 'Structures' where { tree : record.slug, limit: 10000, order : order }  %}
+	{% if (order or order|slice(1,order|length)) in record.contenttype['fields']|keys %}
+		{% setcontent recordsStruture = 'Structures' where { tree : record.slug, order : order }  %}
 	{% endif %}
+	
+	{# get content assigned contenttype #}
 	{% setcontent records = contenttype['name'] where { tree : record.slug, order : order}  %}
 	
+	{# merge content #}
 	{% set records = records|merge(recordsStruture)|order(order) %}
-	{% set pager = { totalpages :  (records|length/amount)|number_format+1,  current : page }  %}
+	
+	{# set pager properties. totalpages always round up #}
+	{% set pager = { totalpages :  (records|length/amount)|ceil,  current : page }  %}
+	
+	{# get items to display #}
 	{% set records = records|slice(amount*(page-1),amount) %}
+	
 	
 {# listing for structure content #}
 {% else %}
@@ -51,12 +74,17 @@
 {% endif %}
 
 
+{# include contenttype list template #}
 {% if records is defined %}
+	
+	{# for contenttype "Person" include listing_person #}
 	{% if (records|length and records|first.contenttype.name == 'Persons') %}
 		{% set records = records|order('team') %}
 		{% include 'listing_person.twig' with {records: records } %}
+		
+	{# for the other content use the default listing #}
 	{% else %}
 		{% include 'listing.twig' with {records: records} %}
 	{% endif %}
-{% endif %}
 	
+{% endif %}
