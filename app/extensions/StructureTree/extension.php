@@ -75,6 +75,8 @@ class Extension extends \Bolt\BaseExtension
     	$this->app['dispatcher']->addListener(\Bolt\StorageEvents::POST_SAVE, array($this, 'updateStructureTaxonomy'));
     	$this->app['dispatcher']->addListener(\Bolt\StorageEvents::POST_DELETE, array($this, 'updateStructureTaxonomy'));
     	
+        // Add snippets, since this is a Frontend route.
+        $this->app['htmlsnippets'] = true;
     	
     	$this->contenttypeslugs = $this->config['contenttypes'];
     	 
