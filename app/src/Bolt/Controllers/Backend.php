@@ -161,7 +161,7 @@ class Backend implements ControllerProviderInterface
         // get the 'latest' from each of the content types.
         foreach ($app['config']->get('contenttypes') as $key => $contenttype) {
             if ($app['users']->isAllowed('contenttype:' . $key) && $contenttype['show_on_dashboard'] == true) {
-                $latest[$key] = $app['storage']->getContent($key, array('limit' => $limit, 'order' => 'datechanged DESC'));
+                $latest[$key] = $app['storage']->getContent($key, array('limit' => $limit, 'order' => 'datechanged DESC', 'hydrate' => false));
                 if (!empty($latest[$key])) {
                     $total += count($latest[$key]);
                 }
@@ -444,7 +444,7 @@ class Backend implements ControllerProviderInterface
 
         $multiplecontent = $app['storage']->getContent(
             $contenttype['slug'],
-            array('limit' => $limit, 'order' => $order, 'page' => $page, 'filter' => $filter)
+            array('limit' => $limit, 'order' => $order, 'page' => $page, 'filter' => $filter, 'hydrate' => true)
         );
 
         // @todo Do we need pager here?
@@ -1069,6 +1069,7 @@ class Backend implements ControllerProviderInterface
         ));
 
     }
+
 
     /**
      * Perform actions on users.

@@ -494,6 +494,10 @@ class IntegrityChecker
 
         // a plain-text summary of the differences between the old and the new version
         $contentChangelogTable->addColumn("diff", "text", array());
+
+        // message to create a story of revisions
+        $contentChangelogTable->addColumn("comment", "string", array('length' => 150, "default" => "", "notnull" => false));
+
         $tables[] = $contentChangelogTable;
 
         $cronTable = $schema->createTable($this->prefix."cron");

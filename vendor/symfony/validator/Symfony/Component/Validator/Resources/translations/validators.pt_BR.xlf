@@ -35,12 +35,12 @@
                 <target>Um ou mais valores informados são inválidos.</target>
             </trans-unit>
             <trans-unit id="9">
-                <source>The fields {{ fields }} were not expected.</source>
-                <target>Os campos {{ fields }} não são esperados.</target>
+                <source>This field was not expected.</source>
+                <target>Este campo não era esperado.</target>
             </trans-unit>
             <trans-unit id="10">
-                <source>The fields {{ fields }} are missing.</source>
-                <target>Os campos {{ fields }} estão ausentes.</target>
+                <source>This field is missing.</source>
+                <target>Este campo está ausente.</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>This value is not a valid date.</source>
@@ -280,11 +280,11 @@
             </trans-unit>
             <trans-unit id="73">
                 <source>The image ratio is too big ({{ ratio }}). Allowed maximum ratio is {{ max_ratio }}.</source>
-                <target>O formato da imagem é muito grande ({{ ratio }}). O formato máximo é {{ max_ratio }}.</target>
+                <target>A proporção da imagem é muito grande ({{ ratio }}). A proporção máxima permitida é {{ max_ratio }}.</target>
             </trans-unit>
             <trans-unit id="74">
                 <source>The image ratio is too small ({{ ratio }}). Minimum ratio expected is {{ min_ratio }}.</source>
-                <target>O formato da imagem é muito pequeno ({{ ratio }}). O formato mínimo esperado é {{ min_ratio }}.</target>
+                <target>A proporção da imagem é muito pequena ({{ ratio }}). A proporção mínima esperada é {{ min_ratio }}.</target>
             </trans-unit>
             <trans-unit id="75">
                 <source>The image is square ({{ width }}x{{ height }}px). Square images are not allowed.</source>
@@ -300,7 +300,7 @@
             </trans-unit>
             <trans-unit id="78">
                 <source>An empty file is not allowed.</source>
-                <target>Ficheiro vazio não é permitido.</target>
+                <target>Arquivo vazio não é permitido.</target>
             </trans-unit>
         </body>
     </file>

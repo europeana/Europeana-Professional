@@ -385,7 +385,12 @@ function makeUri(contenttypeslug, id, usesfields, slugfield, fulluri) {
         $('#'+this).on('propertychange.bolt input.bolt change.bolt', function() {
             var usesvalue = "";
             $(usesfields).each( function() {
-                usesvalue += $("#"+this).val() ? $("#"+this).val() : "";
+                if ($("#"+this).is("select") && $("#"+this).hasClass("slug-text")) {
+                    usesvalue += $("#"+this).val() ? $("#"+this).find("option[value=" + $("#"+this).val() + "]").text() : "";
+                }
+                else {
+                    usesvalue += $("#"+this).val() ? $("#"+this).val() : "";
+                }
                 usesvalue += " ";
             })
             clearTimeout(makeuritimeout);
@@ -719,6 +724,10 @@ var Stack = Backbone.Model.extend({
                     $(html).find('small').html(filename);
                 }
                 $('#stackholder').prepend(html);
+
+                // If the "empty stack" notice was showing, remove it.
+                $('.nostackitems').remove();
+
             },
             error: function() {
                 console.log('Failed to add file to stack');
@@ -737,6 +746,11 @@ var Stack = Backbone.Model.extend({
         // For Imagelist fields. Check if imagelist[key] is an object.
         if (typeof imagelist == "object" && typeof imagelist[key] == "object") {
             imagelist[key].add(filename, filename);
+        }
+
+        // For Filelist fields. Check if filelist[key] is an object.
+        if (typeof filelist == "object" && typeof filelist[key] == "object") {
+            filelist[key].add(filename, filename);
         }
 
         // If the field has a thumbnail, set it.
@@ -972,8 +986,11 @@ var ImagelistHolder = Backbone.View.extend({
         this.list.sort();
 
         var $list = $('#imagelist-'+this.id+' .list');
+        var index = 0;
+
         $list.html('');
         _.each(this.list.models, function(image){
+            image.set('id', index++);
             var html = "<div data-id='" + image.get('id') + "' class='ui-state-default'>" +
                 "<img src='" + path + "../thumbs/60x40/" + image.get('filename') + "' width=60 height=40><input type='text' value='" +
                 _.escape(image.get('title'))  + "'><a href='#'><i class='icon-remove'></i></a></div>";
