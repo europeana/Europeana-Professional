@@ -53,6 +53,7 @@
 				{# show title and intro for structrure listview #}
 				{% if record is defined %}
 				<div class="page-intro">
+					
                  	<h1 class="title">{{ record.title }}</h1>
                     <p>{{ record.teaser|raw }}</p>
                 </div>
@@ -64,12 +65,15 @@
 					{% endfor %}
 				</ul>
 				
-				{% if showsortby and taxonomy is not defined %}
+				
+				{% if pager is defined %}
+					{% include '_sub_pager.twig' with { class: '', surr: 2, pager: pager } %}
+				
+				{% elseif showsortby and taxonomy is not defined %}
 					{{ pager(contenttypePager) }}
 				{% elseif taxonomy is defined %}
 					{{ pager() }}
 				{% endif %}
-				
 			</div>
 
 		</div>

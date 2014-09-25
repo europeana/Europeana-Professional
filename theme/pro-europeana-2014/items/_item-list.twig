@@ -93,7 +93,7 @@
 				{# set tags #}
 				{% include 'items/_item-tags.twig' %}
 				
-			{% elseif contenttype == "Projects" %}
+			{% elseif (contenttype == "Projects" or contenttype == 'Structures') %}
 				{% include 'items/_item-date.twig' with { date: listItem.date_start } %}
 				<span>to: </span> 
 				{% include 'items/_item-date.twig' with { date: listItem.date_end } %}

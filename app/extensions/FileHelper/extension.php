@@ -24,6 +24,7 @@ class Extension extends BoltExtension
             'type' => "Twig function",
             'first_releasedate' => "2014-09-16",
             'latest_releasedate' => "2013-08-16",
+        	'priority' => 10,
         );
 
         return $data;
@@ -72,8 +73,8 @@ class Extension extends BoltExtension
     
     public function downloadHandler(Request $request)
     {
-    	
     	$target = $request->request->get('downloadfile');
+    	
     	$filePath = $this->absFilePath . $target;
     	
     	// 	get mime-type

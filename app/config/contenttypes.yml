@@ -999,12 +999,12 @@ pages:
     secondary_mail:
       type: checkbox
       label: "Show secondary email instead:"
-    show_info:
+    hide_list:
       type: checkbox
-      label: "Show info icon:"
+      label: "Hide from list views:"
     hide_related:
       type: checkbox
-      label: "Hide from related:"
+      label: "Hide from related content:"
     listtitle:
       type: text
       default: "Thumbnail/image grid view"
@@ -1192,6 +1192,7 @@ projects:
   record_template: record_project.twig
   listing_records: 5
   recordsperpage: 20
+  sort: -datepublish
 
 #################################
 #
@@ -1395,8 +1396,7 @@ structures:
   #sort: -structures                 
   taxonomy: [ tags, tree ]
   record_template: overview_structure.twig
-  recordsperpage: 1000
-  
+  recordsperpage: 1000  
   
 #################################
 #

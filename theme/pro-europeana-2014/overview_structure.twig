@@ -6,38 +6,17 @@
 {% set contenttype = structurecontenttype(record.slug) %}
 
 {% if contenttype %}
+
 	{% setcontent records = '(Structures, ' ~ contenttype['name'] ~ ')' where { tree : record.slug } %}
-	{% set records = sortRecords(records, 'position') %}
+	{% set records = records|order('sortorder') %}
+	
 {% else %}
+	
 	{% setcontent records = 'Structures' where { tree : record.slug } %}
+
 {% endif %}
 
 	
-
-{#
-{% setcontent structureRecords = 'structure' where { tree  : record.slug} %}
-{% setcontent pageRecords = 'page' where { tree : record.slug} %}
-{% set records =  structureRecords|merge(pageRecords) %}
-
-#}
-
-
-{# order records by position #}
-{#
-{% for pageRecord in pageRecords %}
-
-	{% for structureRecord in structureRecords %}
-		
-		{% if (pageRecord.group.order <= structureRecord.group.order ) %}
-			{{ print(pageRecord.group.order) }}
-		
-		{% endif %}
-	
-	{% endfor %}
-{% endfor %}
-#}
-
-
 {% set contacts = record.related('persons') %}
 
 <!-- Start content -->
@@ -60,7 +39,7 @@
                 </div>
 				{% if records is defined %}
 				<ul class="l-next_options"><!--
-             -->{% for record in records|order('group') %}<!--
+             -->{% for record in records %}<!--
                 -->{% include 'items/_item-lineblock.twig' with {child : record} %}<!--
              -->{% endfor %}
                 </ul>

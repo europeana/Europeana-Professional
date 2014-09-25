@@ -21,46 +21,42 @@
 	{# set amount #}
 	{% if contenttype['listing_records'] is defined %}
 		{% set amount = contenttype['listing_records'] %}
-	{% else %}	
+	{% else %}
 		{% set amount = app.config.get('general/listing_records') %}
 	{% endif %}
 	
 {% endif %}
 	
-	{# listing for stucture with contenttype based content  #}
-	{% if (record.content != '' and record.content != 'default' )  %}
-		{% setcontent records = record.content where { 'limit' : amount, 'order' : order, 'page' : page }  %}
-		
-	{# listing for structure with mixed content #}
-	{% elseif contenttype %}
-		
-		{# get mixed content -> structure and contenttype #}
-		
-		
-		{% set structurecontenttype = getContenttype('Structure') %}
-		{% if order not in structurecontenttype.fields|keys %}
-			{% set order = structurecontenttype.sort %}
-		{% endif %}
-		
-		{% setcontent recordsStructure = 'Structures' where { tree : record.slug, 'limit' : amount, 'order' : order, 'page' : page }  %}
-		{% setcontent recordsContent = contenttype['name'] where { tree : record.slug, 'limit' : amount, 'order' : order, 'page' : page } allowpaging %}
-		
-		{# merge + sort mixed content by order #}
-		{% set records = recordsContent|merge(recordsStructure) %}
-		{% set records = sortRecords(records, order) %}
+
+{# listing for stucture with fixed content  #}
+{% if (record.content != '' and record.content != 'default' )  %}
+	{% setcontent records = record.content where { limit : amount, order : order, page : page }  %}
+
+{# listing for structure with mixed content #}
+{% elseif contenttype %}
+
+	{% set recordsStruture = [] %}
+	{% if order in record.contenttype['fields']|keys %}
+		{% setcontent recordsStruture = 'Structures' where { tree : record.slug, limit: 10000, order : order }  %}
+	{% endif %}
+	{% setcontent records = contenttype['name'] where { tree : record.slug, order : order}  %}
 	
-	{# listing for structure content #}
+	{% set records = records|merge(recordsStruture)|order(order) %}
+	{% set pager = { totalpages :  (records|length/amount)|number_format+1,  current : page }  %}
+	{% set records = records|slice(amount*(page-1),amount) %}
+	
+{# listing for structure content #}
+{% else %}
+	{% setcontent records = 'Structures' where { tree : record.slug } %}
+{% endif %}
+
+
+{% if records is defined %}
+	{% if (records|length and records|first.contenttype.name == 'Persons') %}
+		{% set records = sortRecords(records, 'team') %}
+		{% include 'listing_person.twig' with {records: records } %}
 	{% else %}
-		{% setcontent records = 'Structures' where { tree : record.slug } %}
+		{% include 'listing.twig' with {records: records} %}
 	{% endif %}
-	
-		
-	{% if records is defined %}
-		{% if (records|length and records|first.contenttype.name == 'Persons') %}
-			{% set records = sortRecords(records, 'team') %}
-			{% include 'listing_person.twig' with {records: records } %}
-		{% else %}
-			{% include 'listing.twig' with {records: records} %}
-		{% endif %}
-	{% endif %}
+{% endif %}
 	
