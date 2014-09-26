@@ -16,6 +16,7 @@
 	get all related content objects
 	excepts PERSONS
 #}
+
 {% if record %}
 	{% set allRelatedContent = record.related() %}
 	{% set relatedExceptions = ['persons', 'location'] %}
@@ -26,8 +27,7 @@
 		 {% if value.contenttype.slug not in relatedExceptions %}
 			{% set relatedContents = relatedContents|merge({ (key) : value}) %}
 		{% endif %}
-	{% endfor %}
-	
+	{% endfor %}	
 	{# if no related content get content by tag #}
 	{% if relatedContents|length < 3  %}
 	
@@ -53,7 +53,7 @@
 	{% endif %}
 					
 	{% set records = relatedContents %}
-	{%  set title = 'RELATED CONTENT:' %}
+	{% set title = 'RELATED CONTENT:' %}
 {% else %}
 	{% setcontent records = 'blogposts/latest/3' %}
 	{% set title = 'Things you may find interesting:' %}
@@ -83,7 +83,7 @@
 						</div>
 						<div class="b-text">
 							<h2 class="item-title">{{ related.title }}</h2>
-							<p>{{ related.teaser }}</p>
+							<p>{{ related.excerpt(app.config.get('general/excerpt_length')) }}</p>
 						</div>
 					</a>
 				</div>
