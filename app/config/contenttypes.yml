@@ -5,7 +5,7 @@
 # Version: 0.1
 # Creation date: 07.07.2014
 #
-# Modified by:
+# Modified by: Patrick Tettenborn
 # Modification date:
 #
 # Based upon:
@@ -16,16 +16,17 @@
 # Examples
 # http://demo.deanbirkett.name/ETHZZG/#p=location
 #
+#
 # Issues:
-# - Integration of google drive to each contenttype not done yet
-# - Testing max characters
-# - Testing savin with required fields not filled out
-# 
+# - required field function for more type ('select', 'html')
+#
+#
 # ToDos:
-# - localize contenttypes
 #
 #
 #################################################################
+
+
 
 ##################################################################
 #
@@ -57,17 +58,6 @@
 # Image: The dimensions need to be specified. The image should appear as a thumbnail on all pages above, 
 # but on the individual publications page it may be larger?
 #
-# Issues: 
-# - Related Content?
-# - Integration google drive for attachments
-#
-# ToDos:
-# - Regex validation for isbn numbers
-# - Correct related content lists
-#
-# Questions:
-# - Where do the authors com from?
-# - What exactly should appear in the related content?
 #
 #################################
 publications:
@@ -85,11 +75,6 @@ publications:
     slug:
       type: slug
       uses: title
-    #parents:
-    #  type: select
-    #  label: 'Parents:'
-    #  multiple: true
-    #  values: structure/id,title
     subtitle:
       type: html
       required: false 
@@ -101,13 +86,6 @@ publications:
       required: false 
       label: "Body:"             
       height: 150px
-    # -> moved to relations
-    #authors:
-    #  type: select
-    #  required: false
-    #  label: "Authors:"             
-    #  values: person/id,last_name,first_name
-    #  multiple: true
     isbn:
       type: text
       required: false 
@@ -172,6 +150,8 @@ publications:
 #
 # Notes:
 # Copy of PUBLICATION
+#
+#
 #################################
 pressreleases:
   name: PressReleases
@@ -187,11 +167,6 @@ pressreleases:
     slug:
       type: slug
       uses: title
-    #parents:
-    #  type: select
-    #  label: 'Parents:'
-    #  multiple: true
-    #  values: structure/id,title
     subtitle:
       type: html
       required: false 
@@ -260,6 +235,7 @@ pressreleases:
   record_template : record_publication.twig
 
   
+  
 #################################
 #
 # PERSON
@@ -267,18 +243,6 @@ pressreleases:
 # Notes:
 # The permalink should be /people/{first name}-{last-name} eg. /people/dean-birkett
 #
-# Issues:
-# - Related content?
-#
-# ToDos:
-# - Set required fields if checkbox_europeana is marked (if possible)
-# - Integrate drive if images are also used from the dms
-# - Correct related content lists
-#
-# Questions:
-# - Again: possibilitie to make one field required based upon the values of another?
-# - Do Images com from the dms as well?
-# - What exactly should appear in the related content?
 #
 #################################
 persons:
@@ -302,22 +266,6 @@ persons:
     slug:
       type: slug
       uses: [ first_name, last_name ]
-    #parents:
-    #  type: select
-    #  label: 'Parents:'
-    #  multiple: true
-    #  values: structure/id,title
-    # If checked, then the following fields are set to 'required':
-    # Job Title, Team ,Email address
-    # If not checked, then all fields are optional.            
-    #checkbox_europeana:
-    #  type: checkbox
-    #  label: "Europeana Staff:" 
-    # If checked, then the person will be listed on the Network Members page    
-    #checkbox_network:
-    #  type: checkbox
-    #  required: false
-    #  label: "Network member:"               
     company:
       type: text
       required: false
@@ -457,31 +405,14 @@ persons:
     contact_tag:
       type: checkbox
       label: "Main contact of tag page"
-    
-    #contact_aggregator:
-    #  type: checkbox
-    #  label: "Main contact of the Aggregator events page"
-    #contact_tech:
-    #  type: checkbox
-    #  label: "Main contact of the Europeana Tech events page"
-    #contact_network:
-    #  type: checkbox
-    #  label: "Main contact of the Network events page"
-    #contact_member:
-    #  type: checkbox
-    #  label: "Main contact of the Network members page"
-    #  class: inline
-    # If this check box is selected, then this person will be listed as the Contact person on the blog list and individual blog pages
-    #checkbox_chief:
-    #  type: checkbox
-    #  required: false
-    #  label: "Chief editor of the blog (will show as main contact in blog):"          
   taxonomy: [ tags, tree ]
   sort: team
-  # no pager for person
+  # no pager for person, mabe there is a better solution
   listing_records: 100000
   record_template: record_person.twig
   listing_template : listing_person.twig
+
+
 
 #################################
 #
@@ -496,20 +427,6 @@ persons:
 # The folder area will be shown on the single events page, and when files are uploaded into this area, 
 # then the website will update automatically.
 #
-# Issues: 
-# - Different setup for event start and end
-# - Make a seperation on location field
-# - Integration google drive folders
-#
-# ToDos:
-# - Validate regex for date/ time
-# - Integration google drive folders
-# - Maybe adapt contact values 
-#
-# Questions:
-# - Is it possible to put validation on the datetime field?
-# - Is it possible to structure type select while querying the db? Example: put a dash between value entries?
-# - Where do the entries for contact come from?  
 #
 #################################
 events:
@@ -528,12 +445,6 @@ events:
     slug:
       type: slug
       uses: title
-    #parents:
-    #  type: select
-    #  label: 'Parents:'
-    #  multiple: true
-    #  values: structure/id,title
-    # Show on Events list page, Events page, Home page
     start_event:
       type: datetime
       required: false
@@ -552,15 +463,6 @@ events:
       type: checkbox
       required: false
       label: "Unconfirmed:" 
-    # Locations is populated and contains ALL locations that are in the Location content type - there should be some seperation between Europeana address and Other addresses
-    # Show on Events list page, Events page, Home page    
-    # -> moved to relations
-    #location:
-    #  type: select
-    #  required: true
-    #  label: "Location (required):"
-    #  values: location/id,title 
-    # Show on Events list page, Events page, Home page   
     teaser:
       type: html
       required: true
@@ -572,29 +474,10 @@ events:
       required: true
       label: "Body (required):"
       height: 150px
-    # Show on Events page
-    # This section should be populated with the content of the Person content type
-    # -> moved to relations  
-    #speakers:
-    #  type: select
-    #  required: false
-    #  label: "Choose speakers:"             
-    #  values: person/id,last_name,first_name
-    #  multiple: true  
-    # Show on Events page
     filelist:
       type: filelist
       required: true
       label: "Attachments:"
-    # Show on Events page   
-    #contact:
-    #  type: select
-    #  multiple: false
-    #  required: false
-    #  label: "Contact:"          
-    #  values: persons/id,last_name,first_name,job_title
-    #  order: "{{ last_name }}"
-    #  format: "{{ last_name }} {{ first_name }} {{ job_title }}" 
     # If this is checked, then the contact persons secondary email will be shown instead of their primary email in the contact block   
     secondary_mail:
       type: checkbox
@@ -620,6 +503,8 @@ events:
   sort: -datepublish
   record_template : record_event.twig
 
+
+
 #################################
 #
 # JOB
@@ -637,21 +522,6 @@ events:
 # - then the job ad would be removed from the list, and the job page will be depublished. Before this date, there should 
 # be text saying ʺYou should respond by February 10, 2014ʺ on the job page.
 # 
-# Issues: 
-# - How to make either salary field (eur/ gbp) required?
-# - Show only locations wehre europeana_place is checked  
-# - Attachments should probably come from google drive?
-#
-# ToDos:
-# - Integrate google drive
-# - Finalize select lists based upon answers
-#
-# Questions:
-# - What exactly is the name of the contenttype? Career or Job? 
-# - Is it possible to show only values in type select which match a certain criteria. 
-#   Example: show only locations where in the contenttype location the checkbox europeana_place is checked
-# - What exactly is the scale for?
-# - Is it possible to make one at least one salary required. Example: one has to select fields and one of it at least must be required
 #
 #################################
 Jobs:
@@ -668,27 +538,6 @@ Jobs:
     slug:
       type: slug
       uses: position
-    #parents:
-    #  type: select
-    #  label: 'Parents:'
-    #  multiple: true
-    #  values: structure/id,title
-    # Show on Job list page, Job page                 
-    #location:
-    #  type: select
-    #  required: true
-    #  label: "Location (required):"
-    #  # show only locations where europeana_place is checked
-    #  values: location/europeana_place,title,europeana_place
-    #  multiple: true
-    # Show on Job list page, Job page  
-    # -> moved to relations
-    #contacts:
-    #  type: select
-    #  required: false
-    #  label: "Contact person:"             
-    #  values: person/id,last_name,first_name
-    #  multiple: true 
     department:
       type: select
       required: false
@@ -728,29 +577,10 @@ Jobs:
       label: "Scale (EUR):"
       index: true   
       postfix: "<hr>"   
-    # Show on Job page 
-    #salary_gbp:
-    #  type: text
-    #  required: false
-    #  variant: inline
-    #  label: "Monthly salary (GBP):"
-    #  index: true
-    # Show on Job page 
-    #scale_gbp:
-    #  type: text
-    #  required: false
-    #  variant: inline
-    #  label: "Scale (GBP):"
-    #  index: true
     deadline:
       type: date
       required: false
       label: "Deadline"
-    #deadlinelabel:
-    #  type: text
-    #  required: true
-    #  label: "Deadline label"
-    #  default: "Deadline for applications"
     filelist:
       type: filelist
       required: false 
@@ -768,6 +598,7 @@ Jobs:
   sort: -datepublish
   record_template: record_job.twig
   
+  
 
 #################################
 #
@@ -778,21 +609,6 @@ Jobs:
 # Type Attachments should link directly with our DMS. This should allow for multiple files to be added, and not just one file
 # Type owner is not shown at all if the Written by section is populated; I think dependet choice list are not possible?
 #
-# Issues:
-# - Modify type attachment to link directly to the dms
-# - Related content_N should include all content types....
-#
-# ToDos:
-# - Clarify integration with dms
-# - Probably add ALL contenttypes to the relation section (see Questions)
-# - Implent answers to questions if possible
-#
-# Questions:
-# - Is there a limit the length of element teaser to "show that the intro is brief, short and sweet"
-# - Is it possible to add a new button (control) to the editcontent dialogue to directly call the dms in a popup? 
-# - Is it possible to use the type filelist for integration with dms? For mulitple upload.
-# - Is it possible to show in one relation ALL other contentypes or is this a single relation each time? 
-# - Is it possible to build up dependend choice lists? E.g. disable the field owner if field written by ist populated
 #
 #################################
 blogposts:
@@ -811,28 +627,6 @@ blogposts:
     slug:
       type: slug
       uses: title
-    #parents:
-    #  type: select
-    #  label: 'Parents:'
-    #  multiple: true
-    #  values: structure/id,title
-    # This is a drop down box that is populated with the content of the Person content type
-    # Show on Blog list page, Blog page
-    #author:
-    #  type: select
-    #  required: false
-    #  label: "Written by:"            
-    #  values: person/id,last_name,first_name
-    # Show on Blog list page, Blog page, Home page
-    #parent:
-    #  type: select
-    #  label: "Parent:"
-    #  values: structure/id,title
-    #teaser:
-    #  type: html
-    #  required: false
-    #  label: "Teaser (required):"           
-    #  height: 150px
     # Shown on Blog page
     body:
       type: html
@@ -894,8 +688,8 @@ blogposts:
       format: "{{ item.title|escape }}"
   sort: -datepublish
   record_template: record_blogpost.twig
-#  listing_records: 2
-#  recordsperpage: 2
+
+
 
 #################################
 #
@@ -938,30 +732,6 @@ pages:
     slug:
       type: slug
       uses: title
-    #parents:
-    #  type: select
-    #  label: 'Parents:'
-    #  multiple: true
-    #  values: structure/id,title
-    #position:
-    #  type: select
-    #  label: "Postition Parent"
-    #  values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
-    
-    # This is used to manually select the position the content should be shown on a list or overview page - default value is automatic
-    #position:
-    #  type: select
-    #  required: true
-    #  label: "Position on overview or list page:"             
-    #  values: ["(automatic)", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]  
-    # Shown on Individual pages, Lists
-    # -> contacts moved to relationships
-    #contacts:
-    #  type: select
-    #  required: false
-    #  label: "Contact person:"             
-    #  values: person/id,last_name,first_name
-    #  multiple: true 
     intro:
       type: textarea
       label: "Intro:"
@@ -1004,9 +774,11 @@ pages:
     hide_list:
       type: checkbox
       label: "Hide from list views:"
+      postfix: "Check to hide this page from overview. The page is linked in the sidebar."
     hide_related:
       type: checkbox
       label: "Hide from related content:"
+      postfix: "Check to hide this page from related content sections."
     listtitle:
       type: text
       default: "Thumbnail/image grid view"
@@ -1067,16 +839,6 @@ pages:
 # it is used to enter data into the other areas where it is required 
 # so the /permalink/locations area should not be in the sitemap, and should be ignored by robots.
 #
-# Issues:
-# - Not prooven that one can get marked entries from europeana_place in the job contenttype. See ToDos.
-#
-# ToDos: 
-# - make content type not crawable
-#
-# Questions:
-# - Is it possible  in the contenttypes to choose values in type: select based upon a certain value in another contenttype?
-#   Example: Conenttype location with checkobox marked. Contenttype Job will only get location values which are marked.
-#
 #################################
 locations:
   name: Locations
@@ -1135,11 +897,6 @@ projects:
     slug:
       type: slug
       uses: title
-    #parents:
-    #  type: select
-    #  label: 'Parents:'
-    #  multiple: true
-    #  values: structure/id,title
     subtitle:
       type: text
       required: false
@@ -1196,6 +953,8 @@ projects:
   recordsperpage: 20
   sort: -datepublish
 
+
+
 #################################
 #
 # Task forces
@@ -1216,11 +975,6 @@ taskforces:
     slug:
       type: slug
       uses: title
-    #parents:
-    #  type: select
-    #  label: 'Parents:'
-    #  multiple: true
-    #  values: structure/id,title
     department:
       type: select
       label: "Department:"
@@ -1283,24 +1037,6 @@ taskforces:
 # they should be dynamic lists that show anything that was created as a publication, likewise the staff list page 
 # should show any person that has been created
 #
-# Comment Bob for parent issue:
-# There's no real support for hierarchical content in Bolt, but you can use grouping to structure it somewhat better
-# What we often do, is that we use the "behaves_like: grouping" taxonomy for this. We make one group called 'main' or 'top', 
-# with a bunch of pages, and then as much groups as we have top level pages.
-#
-# Issues: 
-# - Not defined how to build up the selectfield for parent to build a structure; using suggestion from bob with taxonomies
-# - The slug contenttype does not fit the requirement
-#
-# ToDos:
-# - Define the templates for visualization in type templateselect
-# - Define top level pages in taxonomy.yml and delete selectfield for parent if taxonomy is choosen as the prefferd way
-#
-# Questions:
-# - Is it possible to build up contenttype slug with a slash in it? Example: /parent/title
-# - Can one use choosen taxonomies for the value of a slug type? Example: value: taxonomy['main']
-# - How exactly will be the handling for taxonomy tags? Are there prefilled tags?
-#
 #################################
 structures:
   name: Structures
@@ -1318,32 +1054,11 @@ structures:
     slug:
       type: slug
       uses: title
-    #parent:
-    #  type: select
-    #  label: "Parent:"
-    #  multiple: false
-    #  values: structure/id,title
-    #position:
-    #  type: select
-    #  label: "Postition Parent"
-    #  values: ["(automatic)", "1", "2", "3", "4", "5", "6"]
-    #children:
-    #  type: select
-    #  values: ['Pages', 'Persons', 'PressReleases', 'TaskForces', 'Projects']
-    # Shown on Overview pages
-    # -> moved to relationssss
-    #contacts:
-    #  type: select
-    #  required: false
-    #  label: "Contact person:"             
-    #  values: person/id,last_name,first_name
-    #  multiple: true 
-    # Shown on Lists, Overviews  
     secondary_mail:
       type: checkbox
       required: false
       label: "Show secondary email instead:" 
-    ## Shown on Overview pages, List pages                 
+    # Shown on Overview pages, List pages                 
     teaser:
       type: html
       required: false 
@@ -1366,7 +1081,9 @@ structures:
       label: 'Contenttype'
       values: ['default', 'Events', 'BlogPosts', 'Persons', 'PressReleases', 'Projects', 'Publications', 'TaskForces', 'Jobs']
       postfix: 'Set content by contenttype'
-    subclass: # change name to 'theme'
+    # subclass get a own body class 
+    # -> change name to 'theme'
+    subclass: 
       type: select
       label: "Subsite theme"
       values: ['none', 'europeana_pro_subsite']
@@ -1385,20 +1102,16 @@ structures:
       required: false
       label: "Project end:"
       variant: inline
-    # This is to be used to define the layout - it should either be a overview page, which has the various boxes. Or a list page, that contains pages. 
   relations:
     persons:
       label: "Contact(s)"
       multiple: true
       format: "{{ item.last_name }}, {{ item.first_name }}"
-    #footer:
-    #  label: "Footer"
-    #  multiple: false
-  # These tags are to be used to link together boxes that have been set to (automatic recommendation)
-  #sort: -structures                 
   taxonomy: [ tags, tree ]
   record_template: overview_structure.twig
   recordsperpage: 1000  
+  
+  
   
 #################################
 #
@@ -1406,19 +1119,8 @@ structures:
 #
 # Notes: 
 #
-# Issues:
-# -  
-#
 # ToDos:
 # - make default content (prepopulatd) for intro text and callout
-#
-# Questions:
-# - Is there a max length for the banner text?
-# - What kind of links appear in the banner link? If only pages fine.
-#   If all kind of links could appear: Is it possible to select ALL contenttypes in a select field?
-# - Is the content from intro text and the callout prepopulated with the default values given from dean, or 
-#   what is the prepopulated content? 
-# - Is it correct to have two blog update fields?
 #
 #################################
 homepage:
@@ -1490,18 +1192,7 @@ homepage:
       required: true 
       label: "Latest Updates (required):"            
       height: 150px  
-    #blog_update_1:
-    #  type: select
-    #  required: true
-    #  label: "Blog update 1:"
-    #  values: blog/id,title
-    #blog_update_2:
-    #  type: select
-    #  required: true
-    #  label: "Blog update 2:"             
-    #  values: blog/id,title
   relations:
-    # Used to call in the latest blog post, but can be overwritten if desired
     blogposts:
       multiple: true
       label: Select blog posts 
@@ -1511,8 +1202,6 @@ homepage:
       label: "Footer"
       multiple: false
 
-# record_template: homepage.twig      
-
 
   
 #################################
@@ -1520,7 +1209,7 @@ homepage:
 # FOOTER
 #
 # Notes: 
-# Only the first footer is used. 
+#
 #
 #################################
 footers:
@@ -1537,11 +1226,6 @@ footers:
       label: "Image: (required):"
       attrib: title
       extensions: [ gif, jpg, png ] 
-    #address:
-    #  type: html
-    #  required: true
-    #  label: "Address (required):"
-    #  height: 300px
     socialmedia:
       type: html
       required: true
