@@ -4,7 +4,7 @@ $(document).ready(function(){
         var rootPath = listElem.data('fb-root');
         var currentPath = listElem.data('fb-cp');
         var currentMode = listElem.data('fb-mode');
-        console.log(targetPath, mode, typeof(mode), currentMode);
+        // console.log(targetPath, mode, typeof(mode), currentMode);
         if (typeof(mode) !== typeof('') || mode === '') {
             mode = currentMode;
         }
@@ -20,14 +20,19 @@ $(document).ready(function(){
                 container.html(html);
             });
     };
-    $('.file-browser-container').on('click', '.file-browser-dir a, a.file-browser-up', function(e){
+
+    // make sure we don't have duplicate events bound.. Doesn't work unfortunately.
+    $('.file-browser-container').off('click.filebrowser');
+
+    $('.file-browser-container').on('click.filebrowser', '.file-browser-dir a, a.file-browser-up', function(e){
+        console.log('click');
         var container = $(this).closest('.file-browser-container');
         var targetPath = $(this).data('fb-cp');
         navigate(targetPath, null, container);
         e.preventDefault();
         e.stopPropagation();
     });
-    $('.file-browser-container').on('click', '.file-browser-mode-button', function(e){
+    $('.file-browser-container').on('click.filebrowser', '.file-browser-mode-button', function(e){
         var container = $(this).closest('.file-browser-container');
         var mode = $(this).data('fb-mode');
         navigate(null, mode, container);
