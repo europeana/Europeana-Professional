@@ -49,16 +49,6 @@
 
      --><div class="l-sidebar">
             <div class="inner">
-            	
-            	{# show hidden pages in tertiary navi #}
-	            {% if 1 in records|keys('hide_list') %}
-	            	<h4>More:</h4>
-	            	<ul class="nav_tertiary">
-	            	{% for record in records if (record.hide_list == 1) %}
-						<a href="{{ structurelink(record) }}">{{ record.title }}</a>
-	            	{% endfor %}
-	            	</ul>
-				{% endif %}
 			
 				{# import contact snippet #}	
 				{% include 'items/_item-help.twig' with { records: contacts, title: "",  use_secondary_mail: record.secondary_mail } %}
