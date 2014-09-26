@@ -11,6 +11,9 @@
 #     - '%theme%/filebrowser'
 #     - '%self%/templates'
 
+# Title for the file browser. %path% is replaced with the correct path.
+title: "Document folder: %path%"
+
 # Provide a list of CSS stylesheets to include, overriding the default
 # stylesheet, relative to the Bolt installation's root directory. The
 # placeholder '%assets%' can be used to insert the path to the FileBrowser

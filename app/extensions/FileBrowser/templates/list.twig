@@ -1,6 +1,8 @@
 {% from 'macros.twig' import linkto, format_filesize, format_filetime %}
 
-<h1>{{ __("Files in ") ~ paths.current|default('/') }}</h1>
+{% set title = title|default("Files in: %path%")|replace({"%path%": paths.current|default('/')}) %}
+
+<h1>{{ title }}</h1>
 {% spaceless %}
 <div class="file-browser file-browser-buttons">
     {% for bmode in allowedModes %}

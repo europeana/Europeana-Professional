@@ -141,11 +141,15 @@ class Extension extends \Bolt\BaseExtension
         $paths = $this->sanitizePaths($rootPath, $currentPath);
         list($rootPath, $currentPath, $upPath) = array_values($paths);
         $iconsPath = $this->getIconsPath();
+
+        $title = (isset($this->config['title']) ? $this->config['title'] : '');
+
         return array(
             'mode' => $mode,
             'allowedModes' => $this->getAllowedModes(),
             'paths' => $paths,
             'icons' => $iconsPath,
+            'title' => $title,
             'files' => $this->listFiles($rootPath, $currentPath));
     }
 
@@ -179,8 +183,12 @@ class Extension extends \Bolt\BaseExtension
         return $this->render("list.twig", $context);
     }
 
-    public function twigFileBrowser($mode = null, $rootPath = '', $currentPath = '')
+    public function twigFileBrowser($params)
     {
+        $mode = (isset($params['mode']) ? $params['mode'] : null);
+        $rootPath = (isset($params['root']) ? $params['root'] : '');
+        $currentPath = (isset($params['currentpath']) ? $params['currentpath'] : '');
+
         $allowedModes = $this->getAllowedModes();
         $defaultMode = reset($allowedModes);
         if ($mode === null) {

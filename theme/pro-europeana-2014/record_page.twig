@@ -26,7 +26,7 @@
 					{{ record.body|raw }}
 					
 					{% if record.filelist_downloads|length > 3 %}
-						{{ file_browser("list", record.filelist_downloads) }}
+						{{ file_browser({'mode': 'list', 'root': record.filelist_downloads}) }}
 					{% endif %}
 
 				</div>
