@@ -54,10 +54,10 @@ class Extension extends BoltExtension
     	
     	$fileInfo = array(
     			'filename' 		=> $this->fileName($filePath),
-    			'filesize' 		=> $this->fileSize($filePath),
-    			'filetype' 		=> $this->fileType($filePath),
-    			'filedate' 		=> $this->fileLastModified($filePath),
-    			'mimetype' 		=> $this->fileMimeType($filePath)
+    			'filesize' 		=> @$this->fileSize($filePath),
+    			'filetype' 		=> @$this->fileType($filePath),
+    			'filedate' 		=> @$this->fileLastModified($filePath),
+    			'mimetype' 		=> @$this->fileMimeType($filePath)
     	);
     	
     	return $fileInfo;
