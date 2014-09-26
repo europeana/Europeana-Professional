@@ -125,7 +125,7 @@
 								</div>
 							</div>
 							<div class="excerpt">
-								<p>{{ post.excerpt }}</p>
+								<p>{{ post.excerpt(app.config.get('general/excerpt_length')) }}</p>
 							</div>
 						</a>
 					</div>
