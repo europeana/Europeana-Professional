@@ -129,6 +129,16 @@ publications:
       label: "Publications"
       order: -id
       format: "{{ item.title|escape }}"
+    pressreleases:
+      multiple: true
+      label: "Press releases"
+      order: -id
+      format: "{{ item.title|escape }}"
+    projects:
+      multiple: true
+      label: "Projects"
+      order: -id
+      format: "{{ item.title|escape }}"
     events:
       multiple: true
       label: "Events"
@@ -219,6 +229,16 @@ pressreleases:
     publications:
       multiple: true
       label: "Publications"
+      order: -id
+      format: "{{ item.title|escape }}"
+    pressreleases:
+      multiple: true
+      label: "Press releases"
+      order: -id
+      format: "{{ item.title|escape }}"
+    projects:
+      multiple: true
+      label: "Projects"
       order: -id
       format: "{{ item.title|escape }}"
     events:
@@ -676,6 +696,16 @@ blogposts:
       label: "Publications"
       order: -id
       format: "{{ item.title|escape }}"
+    pressreleases:
+      multiple: true
+      label: "Press releases"
+      order: -id
+      format: "{{ item.title|escape }}"
+    projects:
+      multiple: true
+      label: "Projects"
+      order: -id
+      format: "{{ item.title|escape }}"
     events:
       multiple: true
       label: "Events"
@@ -811,6 +841,16 @@ pages:
     publications:
       multiple: true
       label: "Publications"
+      order: -id
+      format: "{{ item.title|escape }}"
+    pressreleases:
+      multiple: true
+      label: "Press releases"
+      order: -id
+      format: "{{ item.title|escape }}"
+    projects:
+      multiple: true
+      label: "Projects"
       order: -id
       format: "{{ item.title|escape }}"
     events:
