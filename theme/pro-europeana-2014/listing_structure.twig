@@ -51,7 +51,7 @@
 	
 	{# get content for current structure #}
 	{% set recordsStruture = [] %}
-	{% if (order in record.contenttype['fields']|keys) or (order|slice(1,order|length) in record.contenttype['fields']|keys ) %}
+	{% if (order in record.values|keys) or ( order|slice(1,order|length) in record.values|keys ) %}
 		{% setcontent recordsStruture = 'Structures' where { tree : record.slug, order : order }  %}
 	{% endif %}
 	
