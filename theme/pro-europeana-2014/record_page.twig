@@ -58,8 +58,8 @@
 	 		<div class="inner">
 	 			
 				{% include 'items/_item-help.twig' with { records: contacts, title: "Need help?", use_secondary_mail: record.secondary_mail } %}
-
-				{% if record.filelist_downloads %}
+				
+				{% if record.filelist_downloads|length %}
 				<div class="downloads">
 					<h2>{{ record.contenttype.fields.filelist_downloads.label }}</h2>
 					{% include 'items/_item-filelist-detail.twig' with { filelist: record.filelist_downloads, owner: 'hide' } %}
