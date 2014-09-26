@@ -149,7 +149,7 @@ class Extension extends \Bolt\BaseExtension
             'allowedModes' => $this->getAllowedModes(),
             'paths' => $paths,
             'icons' => $iconsPath,
-            'title' => $title,
+            'filebrowsetitle' => $title,
             'files' => $this->listFiles($rootPath, $currentPath));
     }
 
