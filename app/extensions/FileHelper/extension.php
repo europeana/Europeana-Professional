@@ -43,20 +43,21 @@ class Extension extends BoltExtension
         
         
         $this->absFilePath = $this->app['paths']['filespath'] . '/';
-        $this->downloadName = 'targetfile';
+        
     }
     
     
     public function fileInfo($file = null)
     {
     	
-    	$filePath = $this->absFilePath . $file['filename'];
+    	$filePath = ( is_array($file) ) ? $this->absFilePath . $file['filename'] : $this->absFilePath . $file;
     	
     	$fileInfo = array(
-    			'filename' => $this->fileName($filePath),
-    			'filesize' => $this->fileSize($filePath),
-    			'filetype' => $this->fileType($filePath),
-    			'filedate' => $this->fileLastModified($filePath)
+    			'filename' 		=> $this->fileName($filePath),
+    			'filesize' 		=> $this->fileSize($filePath),
+    			'filetype' 		=> $this->fileType($filePath),
+    			'filedate' 		=> $this->fileLastModified($filePath),
+    			'mimetype' 		=> $this->fileMimeType($filePath)
     	);
     	
     	return $fileInfo;
@@ -71,19 +72,15 @@ class Extension extends BoltExtension
     	return  new \Twig_Markup($formAction, 'UTF-8'); ;
     }
     
+    
     public function downloadHandler(Request $request)
     {
     	$target = $request->request->get('downloadfile');
-    	
     	$filePath = $this->absFilePath . $target;
+    	$mimeType = self::fileMimeType($filePath);
     	
-    	// 	get mime-type
-    	$finfo = finfo_open(FILEINFO_MIME_TYPE);
-    	$type = finfo_file($finfo, $filePath);
-    	finfo_close($finfo);
-
     	//	send file
-    	return $this->app->sendFile($filePath, 200, array('Content-type' => $type), 'attachment');
+    	return $this->app->sendFile($filePath, 200, array('Content-type' => $mimeType), 'attachment');
     }
     
     
@@ -113,6 +110,16 @@ class Extension extends BoltExtension
     	return $filetype;
     }
     
+    
+    private function fileMimeType($filePath)
+    {
+    	$finfo = finfo_open(FILEINFO_MIME_TYPE);
+    	$type = finfo_file($finfo, $filePath);
+    	finfo_close($finfo);
+    	
+    	return $type;
+    }
+
     
 	private	function fileLastModified($filePath) 
 	{
