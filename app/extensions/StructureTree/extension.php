@@ -29,7 +29,7 @@ class Extension extends \Bolt\BaseExtension
             'type' => "General",
             'first_releasedate' => null,
             'latest_releasedate' => null,
-            //'priority' => 10
+            'priority' => 10
         );
          
     }
@@ -500,10 +500,15 @@ class Extension extends \Bolt\BaseExtension
     	$template = 'robots.twig';
     	$body = '';
     	$body = 'User-agent: *
-Allow: /get-involved/projects/project-list/europeana-creative/about-europeana-creative
-Allow: /get-involved/projects/project-list/europeana-creative/creative-blog/introducing-the-euheritagetour-project
-Allow: /get-involved/projects/project-list/europeana-sounds/
 Disallow: /
+Allow: /get-involved/projects/project-list/europeana-space/
+Allow: /get-involved/projects/project-list/europeana-v20/
+Allow: /get-involved/projects/project-list/europeana-sounds/
+Allow: /get-involved/projects/project-list/europeana-v30/
+Allow: /europeana-cloud/ecloud-blog/forthcoming-event-highlights/
+Allow: /europeana-cloud/ecloud-blog/put-cultural-heritage-in-the-hands-of-the-public/
+Allow: /about-us/staff/susan-muthalaly/
+Allow: /about-us/staff/luis-ramos-pinto/
 ';
     	
     	return new Response($body, 200, $headers);
