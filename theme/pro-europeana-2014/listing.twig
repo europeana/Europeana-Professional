@@ -68,7 +68,6 @@
 				
 				{% if pager is defined %}
 					{% include '_sub_pager.twig' with { class: '', surr: 2, pager: pager } %}
-				
 				{% elseif showsortby and taxonomy is not defined %}
 					{{ pager(contenttypePager) }}
 				{% elseif taxonomy is defined %}

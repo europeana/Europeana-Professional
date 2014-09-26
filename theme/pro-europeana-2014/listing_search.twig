@@ -9,69 +9,144 @@
 		<div class="l-content">
 
 		<div class="l-breadcrumbs">
-			{% include 'items/_item-breadcrumb.twig' with {name: app.request.get('q') } %}
+			{% include 'items/_item-breadcrumb.twig' %}
 		</div>
+
 		
 		<div class="l-filter filters">
-			<form action="#">
-			    <fieldset>
-			    <h4 class="title">Include:</h4>
-			        <ul class="nav">
-			            <li><label for="checkbox1">Pages <input id="checkbox1" name="checkbox" type="checkbox" checked="checked"></label></li>
-			            <li><label for="checkbox2">Documents <input id="checkbox2" name="checkbox" type="checkbox" checked="checked"></label></li>
-			            <li><label for="checkbox3">Blog Posts <input id="checkbox3" name="checkbox" type="checkbox" checked="checked"></label></li>
-			            <li><label for="checkbox4">Events <input id="checkbox4" name="checkbox" type="checkbox" checked="checked"></label></li>
-			            <li><label for="checkbox4">Publications <input id="checkbox4" name="checkbox" type="checkbox" checked="checked"></label></li>
-			            <li><label for="checkbox4">Jobs <input id="checkbox4" name="checkbox" type="checkbox" checked="checked"></label></li>
-			            <li><label for="checkbox4">Persons <input id="checkbox4" name="checkbox" type="checkbox" checked="checked"></label></li>
-			        </ul>
-			    </fieldset>
-			</form>
+			<div class="is-open-globalsearch">
+				<div class="search-global" style="background: none">
+					<form id="search_inside" action="/Europeana-Professional/search">
+					
+						<fieldset>
+							<input type="text" placeholder="{{ query }}" name="q" id="search_google" value="{{ query }}">
+							<button class="search_btn" type="submit">
+								<svg class="icon icon-search">
+									<use xlink:href="#icon-search"/>
+								</svg>
+								<span>Search</span>
+							</button>
+						</fieldset>
+							
+						<fieldset>
+					    	<h4 class="title">Include:</h4>
+					        <ul class="nav">
+					            <li><label for="checkbox1">Pages <input id="checkbox1" name="checkbox" type="checkbox" checked="checked"></label></li>
+					            <li><label for="checkbox2">Documents <input id="checkbox2" name="checkbox" type="checkbox" checked="checked"></label></li>
+					            <li><label for="checkbox3">Blog Posts <input id="checkbox3" name="checkbox" type="checkbox" checked="checked"></label></li>
+					            <li><label for="checkbox4">Events <input id="checkbox4" name="checkbox" type="checkbox" checked="checked"></label></li>
+					            <li><label for="checkbox4">Publications <input id="checkbox4" name="checkbox" type="checkbox" checked="checked"></label></li>
+					            <li><label for="checkbox4">Jobs <input id="checkbox4" name="checkbox" type="checkbox" checked="checked"></label></li>
+					            <li><label for="checkbox4">Persons <input id="checkbox4" name="checkbox" type="checkbox" checked="checked"></label></li>
+					        </ul>
+					    </fieldset>
+				    
+					</form>
+					
+					<script type="text/javascript">
 
-			{searchmistake }
-				<div class="searchterms">
-					Did you mean "EDM documentation"? 
-					<div class="resultsnum">Showing <strong>75</strong> results for <strong>"EDM documentation"</strong></div>
-				</div>
-			{ searchmistake }
-		</div>
+					$(function() {
+						
+					var autoCompletionOptions = {
+					  'maxCompletions' : {{ searchoptions.max_autocompletions }},
+					  'styleOptions' : {
+					    'xOffset' : 10
+					}};
+					google.setOnLoadCallback(function() {
+					  google.search.CustomSearchControl.attachAutoCompletionWithOptions(
+					    "{{ cx }}", document.getElementById('search_google'), 'search_inside',
+					    autoCompletionOptions);
+					    
+					});
 
-		{% if searchresults is empty %}
-		<article class="maincontent">
-			<div class="textcontent">
+					});
+					</script>
 
-				<div class="prose">
-				<p>Unfortunately we haven't found what you are looking for, please check the spelling, or have a look at some content that may interest you.
-				</p>
 				</div>
 			</div>
-			
-			{% include 'items/_item-related.twig' with {title: "You might also like:", short: true} %}
-			
-		</article>
 		
+			{#
+				result number + query
+			#}
+			<div class="searchterms">
+				<h4>{{ resultsnum }} results for "{{ query }}"<h4>
+			</div>
+			
+			{#
+				suggestion option
+			#}
+			{% if suggestion %}
+				<div class="searchterms">
+					Did you mean "<a href="{{ paths.rooturl }}search?q={{ suggestion|striptags }}">{{ suggestion|striptags }}</a>"?
+				</div>
+			{% endif %}
+			
+		</div>
+
+		{#
+			nothing found
+		#}
+		{% if searchresults is empty %}
+			<article class="maincontent">
+				<div class="textcontent">
+					<div class="prose">
+						<p>Unfortunately we haven't found what you are looking for, please check the spelling, or have a look at some content that may interest you.</p>
+					</div>
+				</div>
+				{#
+				{% include 'items/_item-related.twig' with {title: "You might also like:", short: true} %}
+				#}
+			</article>
+			
 		{% else %}
 		
-		{#
-			render the search results
-		#}
-		<div class="maincontent">
-			<div class="results">
-				<ul class="results-list">
-				{% for record in searchresults %}
+			{#
+				render the search results
+			#}
+			<div class="maincontent">
+				<div class="results">
 					
-					{% include 'items/_item-list.twig' with { record: record } %}
+					<ul class="results-list">
+						{% for record in searchresults %}
+						
+							{#
+								render "unknown" content
+							#}
+							{% if record.snippet is defined %}
+							
+								<li class="list-item">
+									<div class="item-supplementary">
+											<div class="item-image">
+												<a href="#"><img alt="4x3 Image" src="../../images/fpo_4x3.png"></a>
+											</div>
+									</div><!--
+								 --><div class="item-details">
+										<h2 class="title"><a href="{{ record.link|striptags }}">{{ record.title|striptags }}</a></h2>
+										<div class="item-preview">
+											{{ record.snippet|raw }}
+										</div>
+									</div>
+								</li>
+							
+							{#
+								render bolt objects
+							#}
+							{% else %}
+								
+								{% include 'items/_item-list.twig' with { record: record } %}
+							
+							{% endif %}
+							
+						{% endfor %}
+					</ul>
 					
-				{% endfor %}
-				</ul>
-				
-				{% if pager is defined %}
-					{% include '_sub_pager.twig' with { class: '', surr: 2, pager: pager } %}
-				{% endif %}
-				
+					{% if pager is defined %}
+						{% include '_sub_pager.twig' with { class: '', surr: 2, pager: pager } %}
+					{% endif %}
+					
+				</div>
 			</div>
-		</div>
-		
+			
 		{% endif %}
 		
 		</div><!--
@@ -85,6 +160,22 @@
 </main>
 <!-- End Content -->
 
+
+
+{#
+<script>
+  (function() {
+    var cx = '{{ cx }}';
+    var gcse = document.createElement('script');
+    gcse.type = 'text/javascript';
+    gcse.async = true;
+    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+        '//www.google.com/cse/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+#}
 
 {% include '_footer.twig' %}
 

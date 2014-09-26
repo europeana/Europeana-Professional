@@ -46,8 +46,8 @@
 			<li><span class="lastitem">{{ record.title }}</span></li>
 		{% endif %}
 	
-	{% elseif title is defined %}
-		<li><span class="lastitem">{{ title }}</span></li>
+	{% elseif tag is defined %}
+		<li><span class="lastitem">{{ tag }}</span></li>
 		
 	{% elseif ('/tags/' in app.request.pathInfo) %}
 		<li><span class="lastitem">{{ slug|capitalize }}</span></li>

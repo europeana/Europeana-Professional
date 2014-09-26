@@ -25,8 +25,8 @@
         <div class="grid">
             <div class="l-contact">
                 <div>
-                	<a href="{{ logolink }}">
-	                	<img src="{{ footer.image|image }}" title="{{ footer.image|title }}" alt="{{ footer.values['image'].title }}">
+                	<a href="{{ logolink }}" title="{{ footer.image|title }}">
+	                	<img src="{{ footer.image|image }}" alt="{{ footer.values['image'].title }}">
                 	</a>
                 	
                 </div>
@@ -92,14 +92,38 @@
 
 </div> {# closing "pusher" #}
 
-<script src="{{ paths.theme }}js/init.js"></script>
+
+{#
+	JS scripts includes
+#}
+
 <script src="{{ paths.theme }}js/minRead.js"></script>
+<script src="{{ paths.theme }}js/init.js"></script>
 
 {% if sharethis is defined %}
 	<script type="text/javascript">var switchTo5x=true;</script>
 	<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
 	<script type="text/javascript">stLight.options({publisher: "{{ app.config.get('general/sharethis') }}", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
 {% endif %}
+
+{# 
+	google search snippet
+#}
+<script type="text/javascript" src="//www.google.com/jsapi"></script>
+<script type="text/javascript">
+google.load('search', '1');
+var autoCompletionOptions = {
+  'maxCompletions' : 5,
+  'styleOptions' : {
+    'xOffset' : 10
+}};
+google.setOnLoadCallback(function() {
+  google.search.CustomSearchControl.attachAutoCompletionWithOptions(
+    "009775384710117617031:r4qwwnlya8s", document.getElementById('search'), 'search_box',
+    autoCompletionOptions);
+});
+</script>
+
 
 </body>
 </html>

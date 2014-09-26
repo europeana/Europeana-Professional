@@ -117,7 +117,9 @@
  				--><div class="block block-inset">
 					    <a href="{{ structurelink(post) }}" class="inner" title="{{ post.title }}">
 							<div class="b-thumb">
-								<img src="{{ post.image|thumbnail(400,300,"c") }}" alt="{{ post.values['image'].title }}" />
+								{% if post.image|length %}
+									<img src="{{ post.image|thumbnail(400,300,"c") }}" alt="{{ post.image|title }}" />
+								{% endif %}
 								<div class="b-text">
 									<h2 class="headline">{{ post.title }}</h2>
 								</div>
