@@ -139,6 +139,11 @@ publications:
       label: "Projects"
       order: -id
       format: "{{ item.title|escape }}"
+    taskforces:
+      multiple: true
+      label: "Task forces"
+      order: -id
+      format: "{{ item.title|escape }}"
     events:
       multiple: true
       label: "Events"
@@ -239,6 +244,11 @@ pressreleases:
     projects:
       multiple: true
       label: "Projects"
+      order: -id
+      format: "{{ item.title|escape }}"
+    taskforces:
+      multiple: true
+      label: "Task forces"
       order: -id
       format: "{{ item.title|escape }}"
     events:
@@ -428,7 +438,7 @@ persons:
   taxonomy: [ tags, tree ]
   sort: team
   # no pager for person, mabe there is a better solution
-  listing_records: 100000
+  listing_records: 10000
   record_template: record_person.twig
   listing_template : listing_person.twig
 
@@ -519,6 +529,46 @@ events:
       label: "Contact(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
+    pages:
+      multiple: true
+      label: "Pages"
+      order: -id
+      format: "{{ item.title|escape }}"
+    blogposts:
+      multiple: true
+      label: "Blog posts"
+      order: -id
+      format: "{{ item.title|escape }}"
+    publications:
+      multiple: true
+      label: "Publications"
+      order: -id
+      format: "{{ item.title|escape }}"
+    pressreleases:
+      multiple: true
+      label: "Press releases"
+      order: -id
+      format: "{{ item.title|escape }}"
+    projects:
+      multiple: true
+      label: "Projects"
+      order: -id
+      format: "{{ item.title|escape }}"
+    taskforces:
+      multiple: true
+      label: "Task forces"
+      order: -id
+      format: "{{ item.title|escape }}"
+    events:
+      multiple: true
+      label: "Events"
+      order: -id
+      format: "{{ item.title|escape }}"
+    jobs:
+      multiple: true
+      label: "Jobs"
+      order: -id
+      format: "{{ item.title|escape }}"
   taxonomy: [ tags, tree ]
   sort: -datepublish
   record_template : record_event.twig
@@ -614,6 +664,46 @@ Jobs:
     locations:
       label: "Locations"
       multiple: false
+    pages:
+      multiple: true
+      label: "Pages"
+      order: -id
+      format: "{{ item.title|escape }}"
+    blogposts:
+      multiple: true
+      label: "Blog posts"
+      order: -id
+      format: "{{ item.title|escape }}"
+    publications:
+      multiple: true
+      label: "Publications"
+      order: -id
+      format: "{{ item.title|escape }}"
+    pressreleases:
+      multiple: true
+      label: "Press releases"
+      order: -id
+      format: "{{ item.title|escape }}"
+    projects:
+      multiple: true
+      label: "Projects"
+      order: -id
+      format: "{{ item.title|escape }}"
+    taskforces:
+      multiple: true
+      label: "Task forces"
+      order: -id
+      format: "{{ item.title|escape }}"
+    events:
+      multiple: true
+      label: "Events"
+      order: -id
+      format: "{{ item.title|escape }}"
+    jobs:
+      multiple: true
+      label: "Jobs"
+      order: -id
+      format: "{{ item.title|escape }}"
   taxonomy: [ tree ]
   sort: -datepublish
   record_template: record_job.twig
@@ -704,6 +794,11 @@ blogposts:
     projects:
       multiple: true
       label: "Projects"
+      order: -id
+      format: "{{ item.title|escape }}"
+    taskforces:
+      multiple: true
+      label: "Task forces"
       order: -id
       format: "{{ item.title|escape }}"
     events:
@@ -853,6 +948,11 @@ pages:
       label: "Projects"
       order: -id
       format: "{{ item.title|escape }}"
+    taskforces:
+      multiple: true
+      label: "Task forces"
+      order: -id
+      format: "{{ item.title|escape }}"
     events:
       multiple: true
       label: "Events"
@@ -987,7 +1087,46 @@ projects:
       label: "Contact(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-      order: last_name
+    pages:
+      multiple: true
+      label: "Pages"
+      order: -id
+      format: "{{ item.title|escape }}"
+    blogposts:
+      multiple: true
+      label: "Blog posts"
+      order: -id
+      format: "{{ item.title|escape }}"
+    publications:
+      multiple: true
+      label: "Publications"
+      order: -id
+      format: "{{ item.title|escape }}"
+    pressreleases:
+      multiple: true
+      label: "Press releases"
+      order: -id
+      format: "{{ item.title|escape }}"
+    projects:
+      multiple: true
+      label: "Projects"
+      order: -id
+      format: "{{ item.title|escape }}"
+    taskforces:
+      multiple: true
+      label: "Task forces"
+      order: -id
+      format: "{{ item.title|escape }}"
+    events:
+      multiple: true
+      label: "Events"
+      order: -id
+      format: "{{ item.title|escape }}"
+    jobs:
+      multiple: true
+      label: "Jobs"
+      order: -id
+      format: "{{ item.title|escape }}"    
   record_template: record_project.twig
   listing_records: 5
   recordsperpage: 20
@@ -1063,6 +1202,46 @@ taskforces:
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
+    pages:
+      multiple: true
+      label: "Pages"
+      order: -id
+      format: "{{ item.title|escape }}"
+    blogposts:
+      multiple: true
+      label: "Blog posts"
+      order: -id
+      format: "{{ item.title|escape }}"
+    publications:
+      multiple: true
+      label: "Publications"
+      order: -id
+      format: "{{ item.title|escape }}"
+    pressreleases:
+      multiple: true
+      label: "Press releases"
+      order: -id
+      format: "{{ item.title|escape }}"
+    projects:
+      multiple: true
+      label: "Projects"
+      order: -id
+      format: "{{ item.title|escape }}"
+    taskforces:
+      multiple: true
+      label: "Task forces"
+      order: -id
+      format: "{{ item.title|escape }}"
+    events:
+      multiple: true
+      label: "Events"
+      order: -id
+      format: "{{ item.title|escape }}"
+    jobs:
+      multiple: true
+      label: "Jobs"
+      order: -id
+      format: "{{ item.title|escape }}"
   sort: -datepublish
   record_template: record_taskforce.twig
 
