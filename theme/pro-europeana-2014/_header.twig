@@ -9,10 +9,11 @@
 			{% set title = records|first.contenttype.name %}
 		{% endif %}
 		
-        <title>{{ title }} - {{ app.config.get('general/sitename') }}</title>
+        <title>{{ title|striptags }} - {{ app.config.get('general/sitename') }}</title>
+		
+		{% include 'items/_item-meta-open-graph.twig' %}
 		
 		<meta http-equiv="content-type" content="text/html;charset=UTF-8">
-		<meta name="description" content="">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 		<meta name="viewport" content="width=device-width, maximum-scale=1.0"/>
 
@@ -150,6 +151,4 @@
 	
 	<!-- Main site wrapper for offcanvas navigation -->
 	<div class="pusher">
-	
-	
 	
