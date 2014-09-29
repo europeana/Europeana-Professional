@@ -6,13 +6,12 @@ use Silex;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Yaml;
-use Bolt;
-
-
+//use Bolt;
 use Bolt\StorageEvents;
+use Bolt\Extensions\Snippets\Location as SnippetLocation;
 
-class StructureTreeException extends \Exception {};
 
+//class StructureTreeException extends \Exception {};
 class Extension extends \Bolt\BaseExtension
 {
 
@@ -29,7 +28,7 @@ class Extension extends \Bolt\BaseExtension
             'type' => "General",
             'first_releasedate' => null,
             'latest_releasedate' => null,
-            'priority' => 10
+            //'priority' => 10
         );
          
     }
@@ -40,9 +39,6 @@ class Extension extends \Bolt\BaseExtension
     	
     	//	listings 
     	
-    	//	robots
-    	$this->app->match("/robots.txt", array($this, 'robots'));
-    	
     	//	sitemap
     	$this->app->match("/sitemap", array($this, 'sitemap'));
     	$this->app->match("/sitemap.xml", array($this, 'xmlSitemap'));
@@ -52,7 +48,7 @@ class Extension extends \Bolt\BaseExtension
     	->assert('slug', '[a-zA-Z0-9_\-]+[^(sitemap)^(search)]')
     	->bind('slugTreeRecord');
     	
-		// 	strucuture listing
+		// 	strucutureslug / slug listing
     	$this->app->match("/{structureSlugs}/{slug}/", array($this, 'structureTreeRecord'))
     	->assert('structureSlugs', '.+')
     	->assert('slug', '[a-zA-Z0-9_\-]+')
@@ -70,21 +66,22 @@ class Extension extends \Bolt\BaseExtension
     	$this->addTwigFunction('getContenttype', 'getContenttype');
 
     	
-    	//	events
+    	//	storage events
     	
     	$this->app['dispatcher']->addListener(\Bolt\StorageEvents::POST_SAVE, array($this, 'updateStructureTaxonomy'));
     	$this->app['dispatcher']->addListener(\Bolt\StorageEvents::POST_DELETE, array($this, 'updateStructureTaxonomy'));
     	
-        // Add snippets, since this is a Frontend route.
-        $this->app['htmlsnippets'] = true;
-    	
+    	// Add snippets, since this is a Frontend route.
+    	$this->app['htmlsnippets'] = true;
+
     	$this->contenttypeslugs = $this->config['contenttypes'];
-    	 
+    	
     }
     
     
-    
-    
+    /**
+     * 
+     */
     public function slugTreeRecord($slug) {
     	
     	$parents= self::getTreeParents();
@@ -100,6 +97,8 @@ class Extension extends \Bolt\BaseExtension
     		$contenttype = self::getContenttypeBySlug($slug);
     		return Bolt\Controllers\Frontend::record($this->app , $contenttype, $slug);
     	}
+    	
+    	
     	
     }
     
@@ -154,9 +153,15 @@ class Extension extends \Bolt\BaseExtension
     }
     
     
+    
+    /**
+     * 
+     */
     public function getContenttype($slug) {
     	return $this->app['storage']->getContentType($slug);
     }
+    
+    
     
     /**
      * 	search contenttype by structure slug
@@ -368,19 +373,6 @@ class Extension extends \Bolt\BaseExtension
     		return strcmp($a->{($col)}[$sortby], $b->{($col)}[$sortby]);
     	};
     	
-    	/*
-    	$callbackObjectSortASC = function($a, $b) use ($sortby) {
-    		return strcmp($a->{$sortby}, $b->{$sortby});
-    	};
-    	
-    	$callbackObjectSortDESC = function($a, $b) use ($sortby) {
-    		return strcmp($b->{$sortby}, $a->{$sortby});
-    	};
-		*/
-    	
-    	
-    	
-    	echo gettype($sortby);
     	
     	if ($col) {
     		//if ( strpos($sortby,'-') === false ) {
@@ -489,38 +481,19 @@ class Extension extends \Bolt\BaseExtension
     }
     
     
-    
-    public function robots()
-    {
-    	$this->app['extensions']->clearSnippetQueue();
-    		$this->app['extensions']->disableJquery();
-    		$this->app['debugbar'] = false;
-    	
-    	$headers['Content-Type'] = 'text/plain; charset=utf-8';
-    	$template = 'robots.twig';
-    	$body = '';
-    	$body = 'User-agent: *
-Disallow: /
-Allow: /get-involved/projects/project-list/europeana-space/
-Allow: /get-involved/projects/project-list/europeana-v20/
-Allow: /get-involved/projects/project-list/europeana-sounds/
-Allow: /get-involved/projects/project-list/europeana-v30/
-Allow: /europeana-cloud/ecloud-blog/forthcoming-event-highlights/
-Allow: /europeana-cloud/ecloud-blog/put-cultural-heritage-in-the-hands-of-the-public/
-Allow: /about-us/staff/susan-muthalaly/
-Allow: /about-us/staff/luis-ramos-pinto/
-';
-    	
-    	return new Response($body, 200, $headers);
-    }
-    
-    
+    /**
+     * 	xml sitemap listing
+     * 
+     */
     public function xmlSitemap()
     {
     	return self::sitemap(true);
     }
     
-     
+
+    /**
+     * 	sitemap
+     */
     public function sitemap($xml = false)
     {
     	 
@@ -541,9 +514,6 @@ Allow: /about-us/staff/luis-ramos-pinto/
     		$pages = array_merge($pages, $this->app['storage']->getContent($contenttype));
     	}
     	
-    	//	sort content by postion
-    	//self::array_sort_by_column($pages, 'position');
-   
     	 
     	// get sitemap sources
     	foreach ($sources as $source) {
@@ -563,14 +533,14 @@ Allow: /about-us/staff/luis-ramos-pinto/
     			}
     		}
     		
-    		//	get entries from data
-    		elseif ($source['data']) {
+    		//	get entries by slug
+    		elseif ($source['slug']) {
     			 
     			$itemRoot = [];
     			$itemRoot['title'] = $source['label'];
     			$itemRoot['childs'] = [];
     			 
-    			foreach ($source['data'] as $entry) {
+    			foreach ($source['slug'] as $entry) {
     
     				// 	get link entries
     				if ($entry['link']) {
@@ -578,8 +548,8 @@ Allow: /about-us/staff/luis-ramos-pinto/
     					array_push($itemRoot['childs'], $item);
     				}
     				//	get contenttype entries
-    				elseif ($entry['data']) {
-    					$slug = makeSlug($entry['data'], -1);
+    				elseif ($entry['slug']) {
+    					$slug = makeSlug($entry['slug'], -1);
     					$itemRaw = [];
     					foreach ($contenttypes as $contenttype ) {
     						$itemRaw = $this->app['storage']->getContent($contenttype, array('slug' => $slug, 'returnsingle' => true));
@@ -633,41 +603,25 @@ Allow: /about-us/staff/luis-ramos-pinto/
     }
     
     
+    
     /**
      * 
      */
     private function getChilds(&$pages, $parentSlug, $p = [])
     {
-    	 
     	foreach ($pages as $page ) {
     		
     		if ( isset($page->group['slug']) && $page->group['slug'] == $parentSlug ) {
     			$temp = $page->values;
-    			$temp['link'] = self::getStructureLink($page);
-    			$temp['childs'] = self::getChilds($pages, $page['slug'] );
+    			$temp['link'] 		= self::getStructureLink($page);
+    			$temp['childs'] 	= self::getChilds($pages, $page['slug'] );
     			$p[] = $temp;
     		}
-    		
-    		
     
     	}
     	 
     	return $p;
     }
-    
-    
-   
-    
-    private function array_sort_by_column(&$arr, $col, $dir = SORT_ASC) {
-    	$sort_col = array();
-    	foreach ($arr as $key=> $row) {
-    		$sort_col[$key] = $row[$col];
-    	}
-    
-    	array_multisort($sort_col, $dir, $arr);
-    }
-    
-    
     
 }
 

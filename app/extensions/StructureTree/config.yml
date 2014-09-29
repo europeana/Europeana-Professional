@@ -1,20 +1,39 @@
-#
-# gerneral settings
-#
+##   StructureTree config
+ 
 
-# parent contenttype
-parenttype: structures
+# widget visibility
+widget: 1
+
+# tree contenttype for tree building
+treetype: structures
+
 # child contenttypes
 contenttypes: [ pages, blogposts, publications, pressreleases, events, projects, taskforces, jobs, persons]
 
-#
+
 # sitemap settings
+# 
+# source options to specify the content
+# every source listed in a seperate list. exepting 'menu' option, use first level nodes
+# three 'types':
+#   - type:     'menu' || 'list'   get menu by name and seach childs recursively
+#   - link:     simple link with label + link
+#     - label
+#     - link
+#   - link:     slug link with label + slug
+#     - label
+#     - slug
+# 
+# todo: cleanup
 #
 sitemap:
   sources:
-    source_1:
+    source_1:                     
+      type: 'menu'
+      values: 'primary'
       menu: 'primary'
     source_2:
+      type: 'list'
       label: 'More info'
       data:
         blog:
@@ -31,10 +50,10 @@ sitemap:
           link: '/jobs'
         about:
           label: 'About Us'
-          data: 'about-us'
+          slug: 'about-us'
         press:
           label: 'Press'
-          data: 'press'
+          slug: 'press'
     source_3:
       label: 'Explore Europeana'
       data:
@@ -53,5 +72,3 @@ sitemap:
   contenttypes: ['structures', 'pages']
   template: 'sitemap.twig'
   xml_template: 'sitemap_xml.twig'
-  
-  
