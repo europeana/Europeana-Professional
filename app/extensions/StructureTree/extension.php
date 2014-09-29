@@ -6,7 +6,7 @@ use Silex;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Yaml\Yaml;
-//use Bolt;
+use Bolt;
 use Bolt\StorageEvents;
 use Bolt\Extensions\Snippets\Location as SnippetLocation;
 

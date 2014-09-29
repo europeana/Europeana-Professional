@@ -31,15 +31,9 @@ contentlink:
   requirements:
     contenttypeslug:  'Bolt\Controllers\Routing::getAnyContentTypeRequirement'
 
-#taxonomylink:
-#  path:               /{taxonomytype}/{slug}
-#  defaults:           { _controller: 'Bolt\Controllers\Frontend::taxonomy' }
-#  requirements:
-#    taxonomytype:     'Bolt\Controllers\Routing::getAnyTaxonomyTypeRequirement'
-
 taxonomylink:
   path:               /{taxonomytype}/{slug}
-  defaults:           { _controller: 'Bolt\Controllers\FrontendExt::sorttaxonomy' }
+  defaults:           { _controller: 'Bolt\Controllers\Frontend::taxonomy' }
   requirements:
     taxonomytype:     'Bolt\Controllers\Routing::getAnyTaxonomyTypeRequirement'
 
