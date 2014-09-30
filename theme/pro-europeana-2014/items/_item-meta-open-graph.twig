@@ -15,12 +15,14 @@
 	<meta property="og:url" content="{{ paths.canonicalurl }}" />
 	<meta property="og:site_name" content="{{ app.config.get('general/sitename') }}" />
 	<meta property="og:locale" content="{{ app.config.get('general/locale') }}" />
+	
 
 	{#
 		add contenttype to enable search filter option
 	#}
 	<meta property="og:contenttype" content="{{ record.contenttype.singular_slug }}" />
-
+	<meta name="contenttype" content="{{ record.contenttype.singular_slug }}" />
+		
 	{% if (record.contenttype.name == 'Persons' and app.request.get('order') is not defined) %}
 	
 		{#

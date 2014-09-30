@@ -41,9 +41,11 @@ class Extension extends \Bolt\BaseExtension
     public function initialize()
     {
     	
+    	//	listing
+    	
     	$this->app->match("/search", array($this, 'googleSearch'));
     	
-    	$this->addTwigFunction('googlesearchresult', 'googleSearchResult');
+    	//	options
     	
     	$this->cx = $this->config['cx'];
     	$this->output = $this->config['output'];
@@ -56,12 +58,6 @@ class Extension extends \Bolt\BaseExtension
     	
     }
 
-    
-    public function googleSearchResult() {
-    	$html = 'hello';
-    	return new \Twig_Markup($html, 'UTF-8');
-    }
-    
     
     /**
      * 	google api call
@@ -76,8 +72,7 @@ class Extension extends \Bolt\BaseExtension
     	
     	//	build request url
     	$url = "http://www.google.com/cse?cx=".$this->cx."&client=".$this->client."&output=".$this->output."&q=".$q."&hl=en&start=".$start."&num=".$num;
-    	
-    	//	echo $url;
+    	//echo $url;
     	
     	//	curl setup
     	$ch = curl_init();
@@ -103,9 +98,11 @@ class Extension extends \Bolt\BaseExtension
      */
    	public function googleSearch() {
    		
-   		$query = $_GET['q'];
+   		
    		$page = ( is_null($_GET['page']) ) ? 1 : $_GET['page'];
    		$start = ( ($page-1) * $this->resultsPerPage );
+   		
+   		$query = $_GET['q'];
    		
    		//	call search api
    		$resultsRaw = $this->searchRequest($query, $start, $this->resultsPerPage);
@@ -114,7 +111,7 @@ class Extension extends \Bolt\BaseExtension
    		$resultsStart = $resultsXML->RES[SN];
    		$resultsEnd = $resultsXML->RES[EN];
    		$resultsNum = ($resultsXML->RES->M) ? $resultsXML->RES->M : 0 ;
-		
+   		
    		$resultsRecords = [];
 		$suggestion = ( $resultsXML->Spelling->Suggestion ) ? (string) $resultsXML->Spelling->Suggestion : null;
 		
@@ -122,10 +119,7 @@ class Extension extends \Bolt\BaseExtension
    		//	extract information
    		if ($resultsXML->RES->R) {
    			
-   			$i = 0;
    			foreach ($resultsXML->RES->R as $item) {
-   				
-   				$i++;
    				
    				$title = (string) $item->T;
    				$link = (string) $item->U;
@@ -152,15 +146,6 @@ class Extension extends \Bolt\BaseExtension
    			}
    		}
    		
-   			
-   			
-   		/**
-   	
-   		 more:pagemap:metatags-og:
-   		
-   		*/
-   			
-
    		
    		//	set bolt pager
    		$pager = array(
@@ -168,6 +153,19 @@ class Extension extends \Bolt\BaseExtension
    			current 	=> $page,
    			link		=> '?q=' . $query . '&page='
    		);
+   		
+   		
+   		//	params 'filter' is only set in global search
+   		$default = ($_GET['filter']) ? 'checked' : '';
+   		 
+   		//	set search filters by get params
+   		$this->searchOptions['pages'] = ($_GET['pages']) ? 'checked' : $default;
+   		$this->searchOptions['blogposts'] = ($_GET['blogposts']) ? 'checked' : $default;
+   		$this->searchOptions['events'] = ($_GET['events']) ? 'checked' : $default;
+   		$this->searchOptions['publications'] = ($_GET['publications']) ? 'checked' : $default;
+   		$this->searchOptions['presspreleases'] = ($_GET['presspreleases']) ? 'checked' : $default;
+   		$this->searchOptions['jobs'] = ($_GET['jobs']) ? 'checked' : $default;
+   		$this->searchOptions['persons'] = ($_GET['persons']) ? 'checked' : $default;
    		
    		
 		$this->app['twig.loader.filesystem']->addPath(__DIR__);
@@ -181,6 +179,8 @@ class Extension extends \Bolt\BaseExtension
 		$this->app['twig']->addGlobal('query', $query);
 		$this->app['twig']->addGlobal('searchoptions', $this->searchOptions);
 		
+		
+		
 		$this->app['twig']->addGlobal('pager', $pager);
 		
 		$body = $this->app['render']->render($this->template);
@@ -189,3 +189,10 @@ class Extension extends \Bolt\BaseExtension
    		
    	}
 }
+
+/**
+
+more:pagemap:metatags-og:
+ 
+*/
+

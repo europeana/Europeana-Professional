@@ -31,13 +31,13 @@
 						<fieldset>
 					    	<h4 class="title">Include:</h4>
 					        <ul class="nav">
-					            <li><label for="checkbox1">Pages <input id="checkbox1" name="checkbox" type="checkbox" checked="checked"></label></li>
-					            <li><label for="checkbox2">Documents <input id="checkbox2" name="checkbox" type="checkbox" checked="checked"></label></li>
-					            <li><label for="checkbox3">Blog Posts <input id="checkbox3" name="checkbox" type="checkbox" checked="checked"></label></li>
-					            <li><label for="checkbox4">Events <input id="checkbox4" name="checkbox" type="checkbox" checked="checked"></label></li>
-					            <li><label for="checkbox4">Publications <input id="checkbox4" name="checkbox" type="checkbox" checked="checked"></label></li>
-					            <li><label for="checkbox4">Jobs <input id="checkbox4" name="checkbox" type="checkbox" checked="checked"></label></li>
-					            <li><label for="checkbox4">Persons <input id="checkbox4" name="checkbox" type="checkbox" checked="checked"></label></li>
+					            <li><label for="checkbox_pages">Pages <input id="checkbox_pages" name="pages" type="checkbox" {{ searchoptions.pages }}></label></li>
+					            <li><label for="checkbox_blogposts">Blog Posts <input id="checkbox_blogposts" name="blogposts" type="checkbox" {{ searchoptions.blogposts }}></label></li>
+					            <li><label for="checkbox_events">Events <input id="checkbox_events" name="events" type="checkbox" {{ searchoptions.events }}></label></li>
+					            <li><label for="checkbox_publications">Publications <input id="checkbox_publications" name="publications" type="checkbox" {{ searchoptions.publications }}></label></li>
+					            <li><label for="checkbox_pressreleases">Press Releases<input id="checkbox_pressreleases" name="presspreleases" type="checkbox" {{ searchoptions.presspreleases }}></label></li>
+					            <li><label for="checkbox_jobs">Jobs <input id="checkbox_jobs" name="jobs" type="checkbox" {{ searchoptions.jobs }}></label></li>
+					            <li><label for="checkbox_persons">Persons <input id="checkbox_persons" name="persons" type="checkbox" {{ searchoptions.persons }}></label></li>
 					        </ul>
 					    </fieldset>
 				    
@@ -159,23 +159,6 @@
 </div>
 </main>
 <!-- End Content -->
-
-
-
-{#
-<script>
-  (function() {
-    var cx = '{{ cx }}';
-    var gcse = document.createElement('script');
-    gcse.type = 'text/javascript';
-    gcse.async = true;
-    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-        '//www.google.com/cse/cse.js?cx=' + cx;
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(gcse, s);
-  })();
-</script>
-#}
 
 {% include '_footer.twig' %}
 

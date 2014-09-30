@@ -90,6 +90,7 @@
 		{% endif %}
 		<form action="{{ paths.root }}search" id="search_box">
 			<input type="text" id="search" name="q" placeholder="{{ placeholder }}" />
+			<input type="hidden" id="filter" name="filter" value="on" />
 			<button type="submit" class="search_btn">
 				<svg class="icon icon-search">
 					<use xlink:href="#icon-search"></use>
