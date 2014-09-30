@@ -49,8 +49,9 @@ class Extension extends \Bolt\BaseExtension
     	->bind('slugTreeRecord');
     	
 		// 	strucutureslug / slug listing
+		//	todo: except _profiler
     	$this->app->match("/{structureSlugs}/{slug}", array($this, 'structureTreeRecord'))
-    	->assert('structureSlugs', '[^(_profiler)].+')	//	except _profiler
+    	->assert('structureSlugs', '.+')	
     	->assert('slug', '[a-zA-Z0-9_\-]+')
     	->bind('structureTreeRecord');
     	
