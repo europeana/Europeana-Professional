@@ -151,7 +151,6 @@ class Extension extends \Bolt\BaseExtension
     }
     
     
-    
     /**
      * 
      */
