@@ -28,7 +28,7 @@ class Extension extends \Bolt\BaseExtension
             'type' => "General",
             'first_releasedate' => null,
             'latest_releasedate' => null,
-            //'priority' => 10
+            'priority' => 10
         );
          
     }
@@ -49,8 +49,8 @@ class Extension extends \Bolt\BaseExtension
     	->bind('slugTreeRecord');
     	
 		// 	strucutureslug / slug listing
-    	$this->app->match("/{structureSlugs}/{slug}/", array($this, 'structureTreeRecord'))
-    	->assert('structureSlugs', '.+')
+    	$this->app->match("/{structureSlugs}/{slug}", array($this, 'structureTreeRecord'))
+    	->assert('structureSlugs', '[^(_profiler)].+')	//	except _profiler
     	->assert('slug', '[a-zA-Z0-9_\-]+')
     	->bind('structureTreeRecord');
     	
@@ -111,7 +111,7 @@ class Extension extends \Bolt\BaseExtension
      *	@param (string) slug
      */
     public function structureTreeRecord($structureSlugs, $slug) {
-    	
+
     	$parents = self::getTreeParents();
 
     	// slug is strucutre
@@ -122,13 +122,11 @@ class Extension extends \Bolt\BaseExtension
     		// validate url
     		if ( !isset($parent) || $parent['testpath'] != $structureSlugs)
     			self::abort($slug);
-	    	
     		
     		$contenttype = 'structures';
     		return Bolt\Controllers\Frontend::record($this->app , $contenttype, $slug);
     	}
     	else {
-    		
     		$contenttype = self::getContenttypeBySlug($slug);
     		return Bolt\Controllers\Frontend::record($this->app , $contenttype, $slug);
     	}
