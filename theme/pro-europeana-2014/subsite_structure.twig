@@ -34,7 +34,7 @@
 	
 				{% if records|length %}
                 <ul class="l-next_options"><!--
-             -->{% for record in records|order('position') %}<!--
+             -->{% for record in records|order('position') if (record.hide_list != 1) %}<!--
                 -->{% include 'items/_item-lineblock.twig' with {child : record} %}<!--
              -->{% endfor %}
                 </ul>
