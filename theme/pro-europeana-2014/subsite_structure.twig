@@ -6,7 +6,7 @@
 	{% setcontent records = '(Structures, ' ~ contenttype['name'] ~ ')' where { tree : record.slug } %}
 	{% set records = sortRecords(records, 'sortorder') %}
 {% else %}
-	{% setcontent records = 'Structures' where { tree : record.slug } %}
+	{% setcontent records = 'Structures' where { tree : record.slug, orderby: 'sortorder'  } %}
 {% endif %}
 
 {% set contacts = record.related('persons') %}
