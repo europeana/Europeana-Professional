@@ -4,7 +4,7 @@
 
 {% if contenttype %}
 	{% setcontent records = '(Structures, ' ~ contenttype['name'] ~ ')' where { tree : record.slug } %}
-	{% set records = sortRecords(records, 'position') %}
+	{% set records = sortRecords(records, 'sortorder') %}
 {% else %}
 	{% setcontent records = 'Structures' where { tree : record.slug } %}
 {% endif %}
