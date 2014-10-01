@@ -316,7 +316,10 @@ persons:
       required: false
       label: "Job Title:"
       variant: inline  
-      class: narrow                      
+      class: narrow
+    department:
+      type: select
+      values: ['Europeana Staff', 'Our Partner']
     team:
       type: select
       required: false

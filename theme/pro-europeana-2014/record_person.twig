@@ -21,8 +21,11 @@
 
 		<div class="maincontent">
 
+			{% if record.department is iterable %}
 			<h1 class="title">Europeana Staff</h1>
-			
+			{% else %}
+			<h1 class="title">{{ record.department }}</h1>
+			{% endif %}
 
 			<div class="section contact-detail">
 			
@@ -73,9 +76,11 @@
 							<li><a href="skype:{{ record.skype }}"><svg class="icon icon-skype"><use xlink:href="#icon-skype"></use></svg>{{ record.skype }}</a></li>
 							{% endif %}
 							{% if record.linkedin != '' %}
-							<li><a href="{{ record.linkedin }}"><svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>{{ record.linkedin|split('/')|last }}</a></li>
+							<li><a href="{{ record.linkedin }}"><svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>{{ record.first_name }} {{ record.last_name }}</a></li>
 							{% endif %}
 						</ul>
+						
+						
 
 					</div>
 
