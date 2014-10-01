@@ -907,6 +907,10 @@ pages:
       type: checkbox
       label: "Hide from related content:"
       postfix: "Check to hide this page from related content sections."
+    hide_related_section:
+      type: checkbox
+      label: "Hide related content section:"
+      postfix: "Check to hide the related content section."
     listtitle:
       type: text
       default: "Thumbnail/image grid view"

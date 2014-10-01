@@ -49,8 +49,9 @@
 				{#
 					include related items
 				#}
-				{% include 'items/_item-related.twig' with {title: "Next steps", short: false} %}
-	
+				{% if not record.hide_related_section %}
+					{% include 'items/_item-related.twig' with {title: "Next steps", short: false} %}
+				{% endif %}
 			</div>
 		</div><!--
 
