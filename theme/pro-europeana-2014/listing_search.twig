@@ -107,7 +107,11 @@
 								render bolt objects
 							#}
 							{% if record.values is defined %}
-								{% include 'items/_item-list.twig' with { record: record } %}
+								{% if record.contenttype.name == 'Persons' %}
+									{% include 'items/_item-person-list.twig' with { record: record} %}
+								{% else %}
+									{% include 'items/_item-list.twig' with { record: record } %}
+								{% endif %}
 							{#
 								render "unknown" content
 							#}
