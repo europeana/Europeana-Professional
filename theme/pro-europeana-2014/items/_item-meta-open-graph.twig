@@ -18,8 +18,8 @@
 	{#
 		add contenttype to enable search filter option
 	#}
-	<meta property="og:contenttype" content="{{ record.contenttype.singular_slug }}" />
-	<meta name="contenttype" content="{{ record.contenttype.singular_slug }}" />
+	<meta property="og:contenttype" content="{{ record.contenttype.slug }}" />
+	<meta name="contenttype" content="{{ record.contenttype.slug }}" />
 		
 	{% if (record.contenttype.name == 'Persons' and app.request.get('order') is not defined) %}
 		{#
@@ -39,7 +39,7 @@
 		{% if (record.datedepublish is defined and record.datedepublish != '1900-01-01 00:00:00') %}
 		<meta property="article:expiration_time" content="{{ record.datedepublish|date('Y-m-d') }}" />
 		{% endif %}
-		<meta property="article:section" content="{{ record.contenttype.singular_slug }}" />
+		<meta property="article:section" content="{{ record.contenttype.slug }}" />
 		{% if record.taxonomy.tags is defined %}
 			<meta property="article:tag" content="{{ record.taxonomy.tags|join(',') }}" />
 		{% endif %}
@@ -55,7 +55,7 @@
 		{#
 			image meta information
 		#}
-		<meta property="og:image" content="{{ paths.rooturl }}{{ record.image|thumbnail(200, 200) }}" />
+		<meta property="og:image" content="{{ paths.hosturl }}{{ record.image|thumbnail(200, 200) }}" />
 		{% if (record.image is defined and record.image|length) %}
 		<meta property="og:image:type" content="{{ fileInfo(record.image).mimetype }}" />
 		{% endif %}
