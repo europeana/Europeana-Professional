@@ -72,7 +72,7 @@ class Extension extends \Bolt\BaseExtension
     private function searchRequest($query,$filter, $start, $num) 
     {
     	
-    	
+    	$q = $query;
     	//	build request url
     	$url = "http://www.google.com/cse?cx=".$this->cx."&client=".$this->client."&output=".$this->output."&q=".$q."&hl=en&start=".$start."&num=".$num;
     	//echo $url;
@@ -200,10 +200,3 @@ class Extension extends \Bolt\BaseExtension
    		
    	}
 }
-
-/**
-
-more:pagemap:metatags-og:
- 
-*/
-
