@@ -72,8 +72,6 @@ class Extension extends \Bolt\BaseExtension
     private function searchRequest($query,$filter, $start, $num) 
     {
     	
-    	$q = urlencode($query);
-    	$q .= $filter; 
     	
     	//	build request url
     	$url = "http://www.google.com/cse?cx=".$this->cx."&client=".$this->client."&output=".$this->output."&q=".$q."&hl=en&start=".$start."&num=".$num;
@@ -107,7 +105,9 @@ class Extension extends \Bolt\BaseExtension
    		$page = ( is_null($_GET['page']) ) ? 1 : $_GET['page'];
    		$start = ( ($page-1) * $this->resultsPerPage );
    		
-   		$query = $_GET['q'];
+   		$q = $_GET['q'];
+   		$query = urlencode($query);
+   		$query .= $filter;
    		
    		
    		$currentFilterOptions = array();
