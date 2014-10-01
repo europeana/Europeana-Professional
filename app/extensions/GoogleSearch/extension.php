@@ -5,7 +5,6 @@ namespace GoogleSearch;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Bolt\Extensions\Snippets\Location as SnippetLocation;
 
 class Extension extends \Bolt\BaseExtension
 {
@@ -16,6 +15,8 @@ class Extension extends \Bolt\BaseExtension
 	private $template;
 	private $resultsPerPage;
 	private $searchOptions;
+	private $filter;
+	private $filterOptions;
 
     public function info()
     {
@@ -37,6 +38,7 @@ class Extension extends \Bolt\BaseExtension
         
         return $data;
     }
+    
 
     public function initialize()
     {
@@ -55,6 +57,8 @@ class Extension extends \Bolt\BaseExtension
     	$this->searchOptions = array(
     		'max_autocompletions' 	=> 	$this->config['max_autocompletions']
     	);
+    	$this->filter = $this->config['filter'];
+    	$this->filterOptions = $this->config['filter_options'];
     	
     }
 
@@ -65,14 +69,15 @@ class Extension extends \Bolt\BaseExtension
      * 	@params (string) search query
      * 	@return (XML) search result
      */
-    private function searchRequest($query, $start, $num) 
+    private function searchRequest($query,$filter, $start, $num) 
     {
     	
     	$q = urlencode($query);
+    	$q .= $filter; 
     	
     	//	build request url
     	$url = "http://www.google.com/cse?cx=".$this->cx."&client=".$this->client."&output=".$this->output."&q=".$q."&hl=en&start=".$start."&num=".$num;
-    	//echo $url;
+    	echo $url;
     	
     	//	curl setup
     	$ch = curl_init();
@@ -104,19 +109,32 @@ class Extension extends \Bolt\BaseExtension
    		
    		$query = $_GET['q'];
    		
-   		//	call search api
-   		$resultsRaw = $this->searchRequest($query, $start, $this->resultsPerPage);
-   		$resultsXML = simplexml_load_string($resultsRaw);
    		
+   		$currentFilterOptions = array();
+   		foreach ($this->filterOptions as $filter) {
+   			if ($_GET[($filter)])
+   				$currentFilterOptions[] = $filter;
+   		}
+   		
+   		
+   		$filter =  $this->filter . join(',', $currentFilterOptions);
+   		echo $filter . '<br>';
+   		//'+more:pagemap:metatags-contenttype:blogpost,event';
+   		
+   		//	call search api
+   		$resultsRaw = $this->searchRequest($query, $filter, $start, $this->resultsPerPage);
+   		
+   		//	start xml parsing
+   		$resultsXML = simplexml_load_string($resultsRaw);
    		$resultsStart = $resultsXML->RES[SN];
    		$resultsEnd = $resultsXML->RES[EN];
    		$resultsNum = ($resultsXML->RES->M) ? $resultsXML->RES->M : 0 ;
-   		
-   		$resultsRecords = [];
+
+   		//	get suggestion if set
 		$suggestion = ( $resultsXML->Spelling->Suggestion ) ? (string) $resultsXML->Spelling->Suggestion : null;
 		
-		
    		//	extract information
+		$resultsRecords = [];
    		if ($resultsXML->RES->R) {
    			
    			foreach ($resultsXML->RES->R as $item) {
@@ -124,22 +142,23 @@ class Extension extends \Bolt\BaseExtension
    				$title = (string) $item->T;
    				$link = (string) $item->U;
    				$snippet = (string) $item->S;
-   				$pageMap = (array) $item->PageMap->DataObject;
-
-   				$contenttype = '';
-   				$slug = '';
+   				$urlParts = explode("/", $link);
+   				$slug = end($urlParts);
+   				$contenttype = (string) $item->xpath('PageMap/DataObject[@type="metatags"]/Attribute[@name="contenttype"]')[0]["value"];
    				
-   				//	try to get content element for result
-   				$content = $this->app['storage']->getContent( $contenttype , array( slug => $slug) );
-   					
+   				//	try to get content element by contenttype and slug
+   				$content = $this->app['storage']->getContent($contenttype, array(slug => $slug, returnsingle => true) );
+
    				if ($content) {
    					$records[] = $content;
    				}
-   				//	otherwise use the google response
    				else {
+   					$imageLink = (string) $item->xpath('PageMap/DataObject[@type="metatags"]/Attribute[@name="og:image"]')[0]["value"];
+   					$image = ($imageLink) ? $imageLink : null;
    					$records[] = array(
    						'title' 	=> $title,
    						'link' 		=> $link,
+   						'image'		=> $image,
    						'snippet'	=> $snippet
    					);
    				}
@@ -158,14 +177,10 @@ class Extension extends \Bolt\BaseExtension
    		//	params 'filter' is only set in global search
    		$default = ($_GET['filter']) ? 'checked' : '';
    		 
-   		//	set search filters by get params
-   		$this->searchOptions['pages'] = ($_GET['pages']) ? 'checked' : $default;
-   		$this->searchOptions['blogposts'] = ($_GET['blogposts']) ? 'checked' : $default;
-   		$this->searchOptions['events'] = ($_GET['events']) ? 'checked' : $default;
-   		$this->searchOptions['publications'] = ($_GET['publications']) ? 'checked' : $default;
-   		$this->searchOptions['presspreleases'] = ($_GET['presspreleases']) ? 'checked' : $default;
-   		$this->searchOptions['jobs'] = ($_GET['jobs']) ? 'checked' : $default;
-   		$this->searchOptions['persons'] = ($_GET['persons']) ? 'checked' : $default;
+   		//	set result filter
+   		foreach ($this->filterOptions as $filter) {
+   			$this->searchOptions[($filter)] = ($_GET[($filter)]) ? 'checked' : $default;
+   		}
    		
    		
 		$this->app['twig.loader.filesystem']->addPath(__DIR__);
@@ -178,8 +193,7 @@ class Extension extends \Bolt\BaseExtension
 		$this->app['twig']->addGlobal('suggestion', $suggestion);
 		$this->app['twig']->addGlobal('query', $query);
 		$this->app['twig']->addGlobal('searchoptions', $this->searchOptions);
-		
-		
+		$this->app['twig']->addGlobal('filteroptions', $this->filterOptions);
 		
 		$this->app['twig']->addGlobal('pager', $pager);
 		
