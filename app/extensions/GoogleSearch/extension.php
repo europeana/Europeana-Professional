@@ -76,6 +76,8 @@ class Extension extends \Bolt\BaseExtension
     	
     	//	build request url
     	$url = "http://www.google.com/cse?cx=".$this->cx."&client=".$this->client."&output=".$this->output."&q=".$q."&hl=en&start=".$start."&num=".$num;
+    	//echo $url;
+    	
     	
     	//	curl setup
     	$ch = curl_init();
@@ -137,7 +139,9 @@ class Extension extends \Bolt\BaseExtension
    		$resultsNum = ($resultsXML->RES->M) ? $resultsXML->RES->M : 0 ;
 
    		//	get suggestion if set
-		$suggestion = ( $resultsXML->Spelling->Suggestion ) ? (string) $resultsXML->Spelling->Suggestion : null;
+		$suggestionRaw = ( $resultsXML->Spelling->Suggestion ) ? (string) $resultsXML->Spelling->Suggestion : null;
+		$suggestion = trim(explode('more:', $suggestionRaw)[0]);
+		
 		
    		//	extract information
 		$resultsRecords = [];

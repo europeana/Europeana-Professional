@@ -71,7 +71,7 @@
 			#}
 			{% if suggestion %}
 				<div class="searchterms">
-					Did you mean "<a href="{{ paths.rooturl }}search?q={{ suggestion|striptags }}">{{ suggestion|striptags }}</a>"?
+					Did you mean "<a href="{{ paths.rooturl }}search?q={{ suggestion|striptags }}&{{ filteroptions|join('&') }}">{{ suggestion|striptags }}</a>"?
 				</div>
 			{% endif %}
 			
