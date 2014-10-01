@@ -14,24 +14,25 @@ contenttypes: [ pages, blogposts, publications, pressreleases, events, projects,
 # sitemap settings
 # 
 # source options to specify the content
-# every source listed in a seperate list. exepting 'menu' option, use first level nodes
+# every source is listed in a seperate list. except 'menu' option
 # three 'types':
-#   - type:     'menu' || 'list'   get menu by name and seach childs recursively
-#   - link:     simple link with label + link
-#     - label
-#     - link
-#   - link:     slug link with label + slug
-#     - label
-#     - slug
+#   - type:     'menu' get menu by name and seach childs recursively
+#   - type:     'list' 
+#     - link:     simple link with label + link
+#       - label
+#       - link
+#     - link:     slug link with label + slug
+#       - label
+#       - slug
 # 
 # todo: cleanup
 #
 sitemap:
   sources:
-    source_1:                     
+    source_1:
       type: 'menu'
-      values: 'primary'
-      menu: 'primary'
+      data:
+        menu: 'primary'
     source_2:
       type: 'list'
       label: 'More info'
@@ -55,6 +56,7 @@ sitemap:
           label: 'Press'
           slug: 'press'
     source_3:
+      type: 'list'
       label: 'Explore Europeana'
       data:
         search_portal:

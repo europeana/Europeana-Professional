@@ -354,40 +354,6 @@ class Extension extends \Bolt\BaseExtension
     
     
     
-    
-    public function sortObjectRecords( $records, $sortby, $col=null)
-    {
-    	 
-    	if (!$sortby) return $records;
-    
-    	$callbackArraySortDESC = function($a, $b) use ($sortby, $col) {
-    		return strcmp($a->{($col)}[$sortby], $b->{($col)}[$sortby]);
-    	};
-    	 
-    	 
-    	$callbackArraySortASC = function($a, $b) use ($sortby, $col) {
-    		return strcmp($a->{($col)}[$sortby], $b->{($col)}[$sortby]);
-    	};
-    	 
-    	 
-    	if ($col) {
-    		//if ( strpos($sortby,'-') === false ) {
-    		 
-    		echo usort($records, $callbackArraySortASC );
-    		//}
-    		//else {
-    		//	echo usort($rec, $callbackArraySortASC );
-    		//}
-    		 
-    	}
-    	 
-    	$records = usort($records, $callbackArraySortASC );
-    
-    	return $records;
-    }
-    
-    
-    
     public function sortObject( $records, $sortby) 
     {
     	
@@ -531,34 +497,35 @@ class Extension extends \Bolt\BaseExtension
     
     		$item = [];
     		
-    		//	get entries from menu
-    		if ($source['menu']) {
-    			$menu = $this->app['config']->get('menu/'.$source['menu']);
+    		//	entry type 'menu'
+    		if ($source['type'] == 'menu') {
+    			$menu = $this->app['config']->get('menu/'.$source['data']['menu']);
     			foreach ($menu as $entry) {
     				$slug = makeSlug($entry['path'], -1);
     				$itemRaw = $this->app['storage']->getContent('structures', array('slug' => $slug, 'returnsingle' => true));
     				$item = $itemRaw->values;
-    				$item['childs'] = self::getChilds($pages, $itemRaw['slug']);
+    				$childsUnsorted = self::getChilds($pages, $itemRaw['slug']);
+    				$item['childs'] = self::sortObject($childsUnsorted, 'sortorder');
     				$item['link'] = $this->app['paths']['root'] . $item['slug'];
     				array_push($sitemap, $item);
     			}
     		}
     		
-    		//	get entries by slug
-    		elseif ($source['slug']) {
+    		//	entrie type 'list'
+    		elseif ($source['type'] == 'list') {
     			 
     			$itemRoot = [];
     			$itemRoot['title'] = $source['label'];
     			$itemRoot['childs'] = [];
-    			 
-    			foreach ($source['slug'] as $entry) {
-    
+    			
+    			foreach ($source['data'] as $entry) {
+    				
     				// 	get link entries
     				if ($entry['link']) {
     					$item = array('title'=> $entry['label'], 'link' => $entry['link']);
     					array_push($itemRoot['childs'], $item);
     				}
-    				//	get contenttype entries
+    				//	get slug entries
     				elseif ($entry['slug']) {
     					$slug = makeSlug($entry['slug'], -1);
     					$itemRaw = [];
@@ -578,7 +545,6 @@ class Extension extends \Bolt\BaseExtension
     	 
     	 
     	$this->app['twig.loader.filesystem']->addPath(__DIR__);
-    	
     	 
     	$headers = array();
     	if ($xml) {
@@ -598,9 +564,6 @@ class Extension extends \Bolt\BaseExtension
     
     
     
-    /**
-     * 
-     */
     private function flat($sitemapItem, &$f) {
     	foreach ($sitemapItem as $item) {
     		if ( isset($item['childs']) ){
@@ -615,9 +578,6 @@ class Extension extends \Bolt\BaseExtension
     
     
     
-    /**
-     * 
-     */
     private function getChilds(&$pages, $parentSlug, $p = [])
     {
     	foreach ($pages as $page ) {
