@@ -5,7 +5,7 @@
             <url>
                 <loc>{{ app.paths.hosturl }}{{ entry.link }}</loc>
                 {% if entry.datechanged is defined %}
-                    <lastmod>{{ entry.datechanged }}</lastmod>
+                    <lastmod>{{ entry.datechanged|date('Y-m-d\\TH:i:sP') }}</lastmod>
                 {% endif %}
             </url>
         {% endif %}
