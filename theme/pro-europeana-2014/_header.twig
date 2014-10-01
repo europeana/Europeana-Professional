@@ -3,7 +3,9 @@
 
 	<head>
 	
-		{% if record is defined %}
+		{% if curtitle is defined %}
+			{% set title = curtitle %}
+		{% elseif record is defined %}
 			{% set title = record.title|striptags %}
 		{% elseif records is defined %}
 			{% set title = records|first.contenttype.name %}
@@ -36,6 +38,7 @@
 		{% set subsite = subsite(record) %}
 	{% endif %}
 	
+	{# todo: change "subclass" to "theme" #}
 	{% if subsite['subclass'] is defined %}
 		<body class="{{ subsite['subclass'] }}">
 	{% else %}
