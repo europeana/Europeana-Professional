@@ -12,7 +12,6 @@
 			{% include 'items/_item-breadcrumb.twig' %}
 		</div>
 
-		
 		<div class="l-filter filters">
 			<div class="is-open-globalsearch">
 				<div class="search-global" style="background: none">
@@ -31,13 +30,9 @@
 						<fieldset>
 					    	<h4 class="title">Include:</h4>
 					        <ul class="nav">
-					            <li><label for="checkbox_pages">Pages <input id="checkbox_pages" name="pages" type="checkbox" {{ searchoptions.pages }}></label></li>
-					            <li><label for="checkbox_blogposts">Blog Posts <input id="checkbox_blogposts" name="blogposts" type="checkbox" {{ searchoptions.blogposts }}></label></li>
-					            <li><label for="checkbox_events">Events <input id="checkbox_events" name="events" type="checkbox" {{ searchoptions.events }}></label></li>
-					            <li><label for="checkbox_publications">Publications <input id="checkbox_publications" name="publications" type="checkbox" {{ searchoptions.publications }}></label></li>
-					            <li><label for="checkbox_pressreleases">Press Releases<input id="checkbox_pressreleases" name="presspreleases" type="checkbox" {{ searchoptions.presspreleases }}></label></li>
-					            <li><label for="checkbox_jobs">Jobs <input id="checkbox_jobs" name="jobs" type="checkbox" {{ searchoptions.jobs }}></label></li>
-					            <li><label for="checkbox_persons">Persons <input id="checkbox_persons" name="persons" type="checkbox" {{ searchoptions.persons }}></label></li>
+					        	{% for filter in filteroptions %}
+					        		<li><label for="checkbox_{{ filter }}">{{ filter|capitalize }} <input id="checkbox_{{ filter }}" name="{{ filter }}" type="checkbox" {{ searchoptions[(filter)] }}></label></li>
+					        	{% endfor %}
 					        </ul>
 					    </fieldset>
 				    
@@ -47,17 +42,16 @@
 
 					$(function() {
 						
-					var autoCompletionOptions = {
-					  'maxCompletions' : {{ searchoptions.max_autocompletions }},
-					  'styleOptions' : {
-					    'xOffset' : 10
-					}};
-					google.setOnLoadCallback(function() {
-					  google.search.CustomSearchControl.attachAutoCompletionWithOptions(
-					    "{{ cx }}", document.getElementById('search_google'), 'search_inside',
-					    autoCompletionOptions);
-					    
-					});
+						var autoCompletionOptions = {
+						  'maxCompletions' : {{ searchoptions.max_autocompletions }},
+						  'styleOptions' : {
+						    'xOffset' : 10
+						}};
+						google.setOnLoadCallback(function() {
+						  google.search.CustomSearchControl.attachAutoCompletionWithOptions(
+						    "{{ cx }}", document.getElementById('search_google'), 'search_inside',
+						    autoCompletionOptions);
+						});
 
 					});
 					</script>
@@ -105,20 +99,26 @@
 			#}
 			<div class="maincontent">
 				<div class="results">
-					
+
 					<ul class="results-list">
 						{% for record in searchresults %}
 						
 							{#
+								render bolt objects
+							#}
+							{% if record.values is defined %}
+								{% include 'items/_item-list.twig' with { record: record } %}
+							{#
 								render "unknown" content
 							#}
-							{% if record.snippet is defined %}
-							
+							{% else %}
 								<li class="list-item">
 									<div class="item-supplementary">
-											<div class="item-image">
-												<a href="#"><img alt="4x3 Image" src="../../images/fpo_4x3.png"></a>
-											</div>
+										{% if record.image %}
+										<div class="item-image">
+											<a href="{{ record.link|striptags }}"><img alt="{{ record.title|striptags }}" src="{{ record.image }}"></a>
+										</div>
+										{% endif %}
 									</div><!--
 								 --><div class="item-details">
 										<h2 class="title"><a href="{{ record.link|striptags }}">{{ record.title|striptags }}</a></h2>
@@ -127,16 +127,7 @@
 										</div>
 									</div>
 								</li>
-							
-							{#
-								render bolt objects
-							#}
-							{% else %}
-								
-								{% include 'items/_item-list.twig' with { record: record } %}
-							
 							{% endif %}
-							
 						{% endfor %}
 					</ul>
 					
