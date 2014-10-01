@@ -69,13 +69,13 @@ class Extension extends \Bolt\BaseExtension
      * 	@params (string) search query
      * 	@return (XML) search result
      */
-    private function searchRequest($query,$filter, $start, $num) 
+    private function searchRequest($query, $start, $num) 
     {
     	
     	$q = $query;
+    	
     	//	build request url
     	$url = "http://www.google.com/cse?cx=".$this->cx."&client=".$this->client."&output=".$this->output."&q=".$q."&hl=en&start=".$start."&num=".$num;
-    	//echo $url;
     	
     	//	curl setup
     	$ch = curl_init();
@@ -106,20 +106,29 @@ class Extension extends \Bolt\BaseExtension
    		$start = ( ($page-1) * $this->resultsPerPage );
    		
    		$q = $_GET['q'];
-   		$query = urlencode($query);
-   		$query .= $filter;
+   		$defaultFilter = $_GET['filter'];
+   		$query = urlencode($q);
    		
-   		
-   		$currentFilterOptions = array();
-   		foreach ($this->filterOptions as $filter) {
-   			if ($_GET[($filter)])
-   				$currentFilterOptions[] = $filter;
+		// 	search with the header search bar   		
+   		if ($defaultFilter) {
+   			$currentFilterOptions = $this->filterOptions;
+   		}
+   		else {
+	   		$currentFilterOptions = array();
+	   		foreach ($this->filterOptions as $filter) {
+ 	   			if ( isset($_GET[($filter)]) )
+	   				$currentFilterOptions[] = $filter;
+	   		}
    		}
    		
-   		$filter =  $this->filter . join(',', $currentFilterOptions);
    		
+   		
+   		
+   		$filter =  $this->filter . join(',', $currentFilterOptions);
+   		$query .= $filter;
+   		 
    		//	call search api
-   		$resultsRaw = $this->searchRequest($query, $filter, $start, $this->resultsPerPage);
+   		$resultsRaw = $this->searchRequest($query, $start, $this->resultsPerPage);
    		
    		//	start xml parsing
    		$resultsXML = simplexml_load_string($resultsRaw);
@@ -162,12 +171,11 @@ class Extension extends \Bolt\BaseExtension
    			}
    		}
    		
-   		
    		//	set bolt pager
    		$pager = array(
    			totalpages 	=> (int) ceil( $resultsNum / $this->resultsPerPage ),
    			current 	=> $page,
-   			link		=> '?q=' . $query . '&page='
+   			link		=> '?q=' . $q . '&' . join('&',$currentFilterOptions) .  '&page='
    		);
    		
    		
@@ -176,7 +184,7 @@ class Extension extends \Bolt\BaseExtension
    		 
    		//	set result filter
    		foreach ($this->filterOptions as $filter) {
-   			$this->searchOptions[($filter)] = ($_GET[($filter)]) ? 'checked' : $default;
+   			$this->searchOptions[($filter)] = (isset($_GET[($filter)])) ? 'checked' : $default;
    		}
    		
    		
@@ -188,7 +196,7 @@ class Extension extends \Bolt\BaseExtension
 		$this->app['twig']->addGlobal('searchresults', $records);
 		$this->app['twig']->addGlobal('resultsnum', $resultsNum);
 		$this->app['twig']->addGlobal('suggestion', $suggestion);
-		$this->app['twig']->addGlobal('query', $query);
+		$this->app['twig']->addGlobal('query', $q);
 		$this->app['twig']->addGlobal('searchoptions', $this->searchOptions);
 		$this->app['twig']->addGlobal('filteroptions', $this->filterOptions);
 		
