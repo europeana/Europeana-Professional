@@ -77,7 +77,7 @@ class Extension extends \Bolt\BaseExtension
     	
     	//	build request url
     	$url = "http://www.google.com/cse?cx=".$this->cx."&client=".$this->client."&output=".$this->output."&q=".$q."&hl=en&start=".$start."&num=".$num;
-    	echo $url;
+    	//echo $url;
     	
     	//	curl setup
     	$ch = curl_init();
@@ -116,10 +116,7 @@ class Extension extends \Bolt\BaseExtension
    				$currentFilterOptions[] = $filter;
    		}
    		
-   		
    		$filter =  $this->filter . join(',', $currentFilterOptions);
-   		echo $filter . '<br>';
-   		//'+more:pagemap:metatags-contenttype:blogpost,event';
    		
    		//	call search api
    		$resultsRaw = $this->searchRequest($query, $filter, $start, $this->resultsPerPage);
