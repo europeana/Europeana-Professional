@@ -63,7 +63,7 @@ class Extension extends \Bolt\BaseExtension
     	$this->addTwigFunction('breadcrumb', 'breadCrumb');
     	$this->addTwigFunction('subsite', 'subSite');
     	$this->addTwigFunction('sitemap', 'renderSitemap');
-    	$this->addTwigFunction('sortRecords', 'sortRecords');
+    	$this->addTwigFunction('sortRecords', 'sortObject');
     	$this->addTwigFunction('getContenttype', 'getContenttype');
 
     	
@@ -355,34 +355,47 @@ class Extension extends \Bolt\BaseExtension
     
     
     
-    
-    
-    public function sortRecords( $records, $sortby, $col=null) 
+    public function sortObjectRecords( $records, $sortby, $col=null)
     {
-    	
+    	 
     	if (!$sortby) return $records;
-
+    
     	$callbackArraySortDESC = function($a, $b) use ($sortby, $col) {
     		return strcmp($a->{($col)}[$sortby], $b->{($col)}[$sortby]);
     	};
-    	
-    	
+    	 
+    	 
     	$callbackArraySortASC = function($a, $b) use ($sortby, $col) {
     		return strcmp($a->{($col)}[$sortby], $b->{($col)}[$sortby]);
     	};
-    	
-    	
+    	 
+    	 
     	if ($col) {
     		//if ( strpos($sortby,'-') === false ) {
-    			
-    			echo usort($records, $callbackArraySortDESC );
+    		 
+    		echo usort($records, $callbackArraySortASC );
     		//}
     		//else {
     		//	echo usort($rec, $callbackArraySortASC );
-    		//} 
-    			
+    		//}
+    		 
     	}
+    	 
+    	$records = usort($records, $callbackArraySortASC );
+    
+    	return $records;
+    }
+    
+    
+    
+    public function sortObject( $records, $sortby) 
+    {
     	
+    	$callbackArraySort = function($a, $b) use ($sortby, $col) {
+    		return strcmp($a->{($sortby)}, $b->{($sortby)});
+    	};
+    	
+    	usort($records, $callbackArraySort);
     		
     	return $records;
     }

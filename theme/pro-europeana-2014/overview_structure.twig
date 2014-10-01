@@ -5,15 +5,12 @@
 {% set contenttype = structurecontenttype(record.slug) %}
 
 {% if contenttype %}
-
 	{# get assigned structures and contenttype #}
 	{% setcontent records = '(Structures, ' ~ contenttype['name'] ~ ')' where { tree : record.slug } %}
-	{% set records = records|order('sortorder') %}
-	
+	{% set records = sortRecords(records, 'sortorder') %}
 {% else %}
 	{# get assigned structures #}
-	{% setcontent records = 'Structures' where { tree : record.slug } %}
-
+	{% setcontent records = 'Structures' where { tree : record.slug, orderby: 'sortorder' } %}
 {% endif %}
 
 {% set contacts = record.related('persons') %}
@@ -23,7 +20,6 @@
 <div class="lc">
     <!-- Start grid -->
     <div class="grid-main">
-
 
         <div class="l-content">
             
