@@ -1312,7 +1312,7 @@ structures:
     subclass: 
       type: select
       label: "Subsite theme"
-      values: ['none', 'europeana_pro_subsite']
+      values: ['none', 'europeana_subsite_cloud', 'europeana_subsite_creative']
       prefix: "<hr><h2>Subsite Settings</h2>"
     footer: 
       type: select
