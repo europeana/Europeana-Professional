@@ -423,7 +423,7 @@ persons:
     contact_job:
       type: checkbox
       label: "Main contact of the jobs page"
-    contact_staff:
+    contact_person:
       type: checkbox
       label: "Main contact of the staff page"
     contact_publication:
