@@ -3,8 +3,9 @@
 {% set contenttype = structurecontenttype(record.slug) %}
 
 {% if contenttype %}
-	{% setcontent records = '(Structures, ' ~ contenttype['name'] ~ ')' where { tree : record.slug } %}
-	{% set records = sortRecords(records, 'sortorder') %}
+	{# get assigned structures and contenttype #}
+	{% setcontent mixedRecords = '(Structures, ' ~ contenttype['name'] ~ ')' where { tree : record.slug } %}
+	{% set records = sortRecords(mixedRecords, 'sortorder') %}
 {% else %}
 	{% setcontent records = 'Structures' where { tree : record.slug, orderby: 'sortorder'  } %}
 {% endif %}
@@ -34,7 +35,7 @@
 	
 				{% if records|length %}
                 <ul class="l-next_options"><!--
-             -->{% for record in records|order('position') if (record.hide_list != 1) %}<!--
+             -->{% for record in records if (record.hide_list != 1) %}<!--
                 -->{% include 'items/_item-lineblock.twig' with {child : record} %}<!--
              -->{% endfor %}
                 </ul>
