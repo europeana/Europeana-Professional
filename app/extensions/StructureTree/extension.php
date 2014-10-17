@@ -298,7 +298,6 @@ class Extension extends \Bolt\BaseExtension
     /**
      * 	search subsite in parents by parentid
      * 	@param $record (object)
-     * 	@param $parent (object)
      * 	@return $parent (object)
      */
     public function subSite($record) 
@@ -306,9 +305,18 @@ class Extension extends \Bolt\BaseExtension
     	
     	$parents = self::getTreeParents();
     	$parentSlug = $record->group['slug'];
+    	$contenttype = $record->contenttype['name'];
     	
-    	if ($record->contenttype['name'] == 'Structures')
+    	if ($contenttype == 'Structures')
     		$parentSlug = $record['slug'];
+    	
+    	//	find structure with content by contenttype
+    	if (!$parentSlug)
+    		foreach ($parents as $parent) {
+    			if ( !$parentSlug && $parent['content'] == $contenttype ) {
+    				$parentSlug = $parent['slug'];
+    			}
+    		}
     	
     	while ($parentSlug) {
     		
@@ -357,7 +365,7 @@ class Extension extends \Bolt\BaseExtension
     public function sortObject( $records, $sortby) 
     {
     	
-    	$callbackArraySort = function($a, $b) use ($sortby, $col) {
+    	$callbackArraySort = function($a, $b) use ($sortby) {
     		return strcmp($a->{($sortby)}, $b->{($sortby)});
     	};
     	
