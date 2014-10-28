@@ -1,6 +1,4 @@
 {% include '_header.twig' %}
-
-
 {% set contacts = record.related('persons') %}
 
 <!-- Start content -->
@@ -16,19 +14,13 @@
             </div>
 
             <div class="maincontent">
-
                 <div class="textcontent prose">
-
                     <h1 class="title">{{ record.title }}</h1>
-
                     <p class="intro">{{ record.intro }}</p>
-
                     {{ record.body|raw }}
-
                     {% if record.filelist_downloads|length > 3 %}
                         {{ file_browser({'mode': 'list', 'root': record.filelist_downloads}) }}
                     {% endif %}
-
                 </div>
 
                 {#
@@ -59,15 +51,6 @@
              <div class="inner">
 
                 {% include 'items/_item-help.twig' with { records: contacts, title: "Need help?", use_secondary_mail: record.secondary_mail } %}
-
-                {# -- Note by Bob: We don't need this anymore, right? --
-                {% if record.filelist_downloads|length %}
-                <div class="downloads">
-                    <h2>{{ record.contenttype.fields.filelist_downloads.label }}</h2>
-                    {% include 'items/_item-filelist-detail.twig' with { filelist: record.filelist_downloads, owner: 'hide' } %}
-                </div>
-                {% endif %}
-                #}
 
                 {% if record.support_navigation != "" %}
                 <ul class="nav_tertiary">
