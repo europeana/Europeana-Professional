@@ -150,10 +150,9 @@
 
      --><div class="l-sidebar">
             <div class="inner">
-                {% setcontent contacts = 'persons' where { contact_staff : '1' } orderby 'datepublish'  %}
+                 {% set contacts = [ record ] %}
                  {% include 'items/_item-help.twig' with { records: contacts} %}
             </div>
-
         </div>
     </div>
     <!-- End grid -->
