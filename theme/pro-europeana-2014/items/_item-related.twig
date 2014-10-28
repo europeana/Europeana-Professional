@@ -83,7 +83,7 @@
                         </div>
                         <div class="b-text">
                             <h2 class="item-title">{{ related.title }}</h2>
-                            <p>{{ related.excerpt(app.config.get('general/excerpt_length')) }}</p>
+                            <p>{{ related.teaser|default(related.excerpt(app.config.get('general/excerpt_length'))) }}</p>
                         </div>
                     </a>
                 </div>
