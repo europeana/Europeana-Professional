@@ -1,6 +1,6 @@
 
 {#
-	sort list view by url param 'url' or default contenttype sort setting 
+    sort list view by url param 'url' or default contenttype sort setting
 #}
 
 {# get current sort option by url param 'order' #}
@@ -8,13 +8,13 @@
 
 {# otherwise get default sort option of the contenttype #}
 {% if currentsortoption is empty %}
-	{# default sort option for stucture content #}
-	{% if contenttype['sort'] is defined %}
-		{% set currentsortoption = contenttype['sort'] %}
-	{# default sort option for bolt lising #}
-	{% else %}
-		{% set currentsortoption = records|first.contenttype.sort %}
-	{% endif %}
+    {# default sort option for stucture content #}
+    {% if contenttype['sort'] is defined %}
+        {% set currentsortoption = contenttype['sort'] %}
+    {# default sort option for bolt lising #}
+    {% else %}
+        {% set currentsortoption = records|first.contenttype.sort %}
+    {% endif %}
 {% endif %}
 
 {# get sort options (contenttypeslugs) #}
@@ -23,21 +23,21 @@
 {# set default or contenttype specific options #}
 {% set sortoptions = defaultSortOptions['default'] %}
 {% if defaultSortOptions[(contenttype['slug'])] is defined  %}
-	{% set sortoptions = defaultSortOptions[(contenttype['slug'])] %}
+    {% set sortoptions = defaultSortOptions[(contenttype['slug'])] %}
 {% endif %}
 
 
 <div class="sortby">
-	<form method="get">
-	    <label for="list_sortby">Sort by:</label>
-	    <select id="list_sortby" name="order" javascript: onchange="this.form.submit()">
-	    	{% for key, value in sortoptions %}
-	    		{% if key == currentsortoption %}
-	    			<option value="{{ key }}" selected>{{ value }}</option>
-	    		{% else %}
-	    			<option value="{{ key}}">{{ value }}</option>
-	    		{% endif %}
-	    	{% endfor %}
-	    </select>
+    <form method="get">
+        <label for="list_sortby">Sort by:</label>
+        <select id="list_sortby" name="order" javascript: onchange="this.form.submit()">
+            {% for key, value in sortoptions %}
+                {% if key == currentsortoption %}
+                    <option value="{{ key }}" selected>{{ value }}</option>
+                {% else %}
+                    <option value="{{ key}}">{{ value }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
     </form>
 </div>

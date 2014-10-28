@@ -1,49 +1,49 @@
-{#  
-	render one or more contact items.
-	params:
-		- title
-	  	- use_secondary_mail
+{#
+    render one or more contact items.
+    params:
+        - title
+          - use_secondary_mail
 #}
 
 {% if records|length %}
 
-	<div class="help-contact">
+    <div class="help-contact">
 
-	{#
-	{% if records|length %}
-		{% set records = [records] %}
-	{% endif %}
+    {#
+    {% if records|length %}
+        {% set records = [records] %}
+    {% endif %}
 #}
 
 
-		<h4>QUESTIONS?</h4>
-		{% for person in records %}
-	
-			{% set personlink = structurelink(person) %}
-			
-			<a href="{{ personlink }}">
-				<img src="{{ person.image|image(600,600,"c") }}" alt="{{ person.image|title }}" />
-			</a>
-			
-			<h5>Contact:</h5>	
-		
-			<div class="vcard">
-				<div class="fn">{{ person.first_name }} {{ person.last_name }}</div>
-			
-				{% if person.telephone_number != "" %}
-				<div class="tel">{{ person.telephone_number }}</div>
-				{% endif %}
-				{# show person.secondary_mail if event.secondary_mail is checked #}
-				{% if (record.secondary_mail is defined and record.secondary_mail == "1" ) %}
-					<a class="email" href="mailto:{{ person.secondary_email }}">{{ person.secondary_email }}</a>
-				{% else %}
-					<a class="email" href="mailto:{{ person.email }}">{{ person.email }}</a>
-				{% endif %}
-				
-			</div>
-		
-		{% endfor %}
-	
-	</div>
+        <h4>QUESTIONS?</h4>
+        {% for person in records %}
+
+            {% set personlink = structurelink(person) %}
+
+            <a href="{{ personlink }}">
+                <img src="{{ person.image|image(600,600,"c") }}" alt="{{ person.image|title }}" />
+            </a>
+
+            <h5>Contact:</h5>
+
+            <div class="vcard">
+                <div class="fn">{{ person.first_name }} {{ person.last_name }}</div>
+
+                {% if person.telephone_number != "" %}
+                <div class="tel">{{ person.telephone_number }}</div>
+                {% endif %}
+                {# show person.secondary_mail if event.secondary_mail is checked #}
+                {% if (record.secondary_mail is defined and record.secondary_mail == "1" ) %}
+                    <a class="email" href="mailto:{{ person.secondary_email }}">{{ person.secondary_email }}</a>
+                {% else %}
+                    <a class="email" href="mailto:{{ person.email }}">{{ person.email }}</a>
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
 
 {% endif %}

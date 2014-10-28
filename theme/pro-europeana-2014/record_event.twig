@@ -10,142 +10,142 @@
 
 
 <div class="lc">
-	<!-- Start grid -->
-	<div class="grid-main">
-		
-
-		<div class="l-content">
-
-		<div class="l-breadcrumbs">
-			{% include 'items/_item-breadcrumb.twig' %}
-		</div>
-		
-		
-
-		{# google map #}
-		{% if location %}
-		{#	"default" Bolt map include
-			<img src="http://maps.googleapis.com/maps/api/staticmap?center={{ location.geolocation.latitude }},{{ location.geolocation.longitude }}&zoom=14&size=617x300&sensor=false&markers={{ location.geolocation.latitude }},{{ location.geolocation.longitude }}">
-		#}
-		
-		<script src='https://maps.googleapis.com/maps/api/js?key=&sensor=false&extension=.js'></script> 
-		 
-		<script> 
-			google.maps.event.addDomListener(window, 'load', init);
-
-		    var map, mapLat, mapLon,
-		    marker_Lat = {{ location.geolocation.latitude }},
-		    marker_Lon = {{ location.geolocation.longitude }},
-		    offset_Lat = 0.004,
-		    offset_Lon = -0.12;
-
-		    // apply the offset so the marker appears to the right of the text in wide viewports. 
-		    // its' centred on narrow ones.
-		    if(window.innerWidth <= 1050){
-		        mapLat = marker_Lat,
-		        mapLon = marker_Lon;
-		    }else{
-		        mapLat = marker_Lat + offset_Lat,
-		        mapLon = marker_Lon + offset_Lon;
-		    }
-		    
+    <!-- Start grid -->
+    <div class="grid-main">
 
 
-		    function init() {
-		        var mapOptions = {
-		            center: new google.maps.LatLng(mapLat,mapLon),
-		            zoom: 12,
-		            zoomControl: true,
-		            disableDoubleClickZoom: false,
-		            mapTypeControl: false,
-		            scaleControl: false,
-		            scrollwheel: false,
-		            panControl: false,
-		            streetViewControl: false,
-		            draggable : true,
-		            overviewMapControl: false,
-		            overviewMapControlOptions: {
-		                opened: false,
-		            },
-		            mapTypeId: google.maps.MapTypeId.ROADMAP,
-		        }
-		        var mapElement = document.getElementById('map');
-		        var map = new google.maps.Map(mapElement, mapOptions);
-		        var locations = [
-					['Event name', 'undefined', 'undefined', 'undefined', 'undefined', marker_Lat, marker_Lon]
-		        ];
-		        for (i = 0; i < locations.length; i++) {
-					if (locations[i][1] =='undefined'){ description ='';} else { description = locations[i][1];}
-					if (locations[i][2] =='undefined'){ telephone ='';} else { telephone = locations[i][2];}
-					if (locations[i][3] =='undefined'){ email ='';} else { email = locations[i][3];}
-					if (locations[i][4] =='undefined'){ web ='';} else { web = locations[i][4];}
-		            marker = new google.maps.Marker({
-		                position: new google.maps.LatLng(locations[i][5], locations[i][6]),
-		                map: map,
-		                title: locations[i][0],
-		                desc: description,
-		                tel: telephone,
-		                email: email,
-		                web: web
-		            });
-		        }
-			}
-		</script>
-		{% endif %}
-		
-		<div id='map' class="map"></div>
-		<div class="maincontent">
-			<div class="textcontent">
+        <div class="l-content">
 
-				<div class="articleheader">
-					<div class="cf">
-						{% include 'items/_item-date-event.twig' %}
-						<h1 class="title">{{ event.title }}</h1>
-					</div>
-					{% if (location and contacts) %}
-					{% include 'items/_item-address.twig' with {location: location} %}
-					{% endif %}
-				</div>
-
-				<div class="prose">
-					<!-- cms wysiwyg page content starts -->
-					{{ event.body|raw }}
-					<!-- cms wysiwyg page content ends -->
-				</div>
+        <div class="l-breadcrumbs">
+            {% include 'items/_item-breadcrumb.twig' %}
+        </div>
 
 
-			</div>
 
-			{% if speakers %}
-			<div class="section speakers">
-				<h2>Speakers</h2>
-				<ul class="people-list">
-					{% for speaker in speakers %}<!--
-					--><li>{% include 'items/_item-person.twig' with { record: speaker } %}</li><!--
-				-->{% endfor %}
-				</ul>
-			</div>
-			{% endif %}
+        {# google map #}
+        {% if location %}
+        {#    "default" Bolt map include
+            <img src="http://maps.googleapis.com/maps/api/staticmap?center={{ location.geolocation.latitude }},{{ location.geolocation.longitude }}&zoom=14&size=617x300&sensor=false&markers={{ location.geolocation.latitude }},{{ location.geolocation.longitude }}">
+        #}
 
-			{% if event.filelist %}
-			<div class="section files">
-				<h2>{{ event.contenttype.fields.filelist.label }}</h2>
-				{% include 'items/_item-filelist-detail.twig' with { filelist: event.filelist } %}
-			</div>
-			{% endif %}
+        <script src='https://maps.googleapis.com/maps/api/js?key=&sensor=false&extension=.js'></script>
+
+        <script>
+            google.maps.event.addDomListener(window, 'load', init);
+
+            var map, mapLat, mapLon,
+            marker_Lat = {{ location.geolocation.latitude }},
+            marker_Lon = {{ location.geolocation.longitude }},
+            offset_Lat = 0.004,
+            offset_Lon = -0.12;
+
+            // apply the offset so the marker appears to the right of the text in wide viewports.
+            // its' centred on narrow ones.
+            if(window.innerWidth <= 1050){
+                mapLat = marker_Lat,
+                mapLon = marker_Lon;
+            }else{
+                mapLat = marker_Lat + offset_Lat,
+                mapLon = marker_Lon + offset_Lon;
+            }
 
 
-		</div>
-		</div><!--
 
-	 --><div class="l-sidebar">
-	 		<div class="inner">
-	 			{% include 'items/_item-help.twig' with { records: contacts, title: "Need help?", use_secondary_mail: event.secondary_mail } %}
-			</div>
+            function init() {
+                var mapOptions = {
+                    center: new google.maps.LatLng(mapLat,mapLon),
+                    zoom: 12,
+                    zoomControl: true,
+                    disableDoubleClickZoom: false,
+                    mapTypeControl: false,
+                    scaleControl: false,
+                    scrollwheel: false,
+                    panControl: false,
+                    streetViewControl: false,
+                    draggable : true,
+                    overviewMapControl: false,
+                    overviewMapControlOptions: {
+                        opened: false,
+                    },
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                }
+                var mapElement = document.getElementById('map');
+                var map = new google.maps.Map(mapElement, mapOptions);
+                var locations = [
+                    ['Event name', 'undefined', 'undefined', 'undefined', 'undefined', marker_Lat, marker_Lon]
+                ];
+                for (i = 0; i < locations.length; i++) {
+                    if (locations[i][1] =='undefined'){ description ='';} else { description = locations[i][1];}
+                    if (locations[i][2] =='undefined'){ telephone ='';} else { telephone = locations[i][2];}
+                    if (locations[i][3] =='undefined'){ email ='';} else { email = locations[i][3];}
+                    if (locations[i][4] =='undefined'){ web ='';} else { web = locations[i][4];}
+                    marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(locations[i][5], locations[i][6]),
+                        map: map,
+                        title: locations[i][0],
+                        desc: description,
+                        tel: telephone,
+                        email: email,
+                        web: web
+                    });
+                }
+            }
+        </script>
+        {% endif %}
 
-		</div>
-	</div>
-	<!-- End grid -->
+        <div id='map' class="map"></div>
+        <div class="maincontent">
+            <div class="textcontent">
+
+                <div class="articleheader">
+                    <div class="cf">
+                        {% include 'items/_item-date-event.twig' %}
+                        <h1 class="title">{{ event.title }}</h1>
+                    </div>
+                    {% if (location and contacts) %}
+                    {% include 'items/_item-address.twig' with {location: location} %}
+                    {% endif %}
+                </div>
+
+                <div class="prose">
+                    <!-- cms wysiwyg page content starts -->
+                    {{ event.body|raw }}
+                    <!-- cms wysiwyg page content ends -->
+                </div>
+
+
+            </div>
+
+            {% if speakers %}
+            <div class="section speakers">
+                <h2>Speakers</h2>
+                <ul class="people-list">
+                    {% for speaker in speakers %}<!--
+                    --><li>{% include 'items/_item-person.twig' with { record: speaker } %}</li><!--
+                -->{% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if event.filelist %}
+            <div class="section files">
+                <h2>{{ event.contenttype.fields.filelist.label }}</h2>
+                {% include 'items/_item-filelist-detail.twig' with { filelist: event.filelist } %}
+            </div>
+            {% endif %}
+
+
+        </div>
+        </div><!--
+
+     --><div class="l-sidebar">
+             <div class="inner">
+                 {% include 'items/_item-help.twig' with { records: contacts, title: "Need help?", use_secondary_mail: event.secondary_mail } %}
+            </div>
+
+        </div>
+    </div>
+    <!-- End grid -->
 </div>
 
 

@@ -13,7 +13,7 @@
 
 
 {% if "sort" in app.request.query.all|keys %}
-	{% set sort = "sort=" ~ app.request.query.all.sort ~ "&" %}
+    {% set sort = "sort=" ~ app.request.query.all.sort ~ "&" %}
 {% else %}
     {% set sort = "" %}
 {% endif %}

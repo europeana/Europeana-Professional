@@ -1,100 +1,100 @@
 {#  related content view
-	params:
-		- short :  is true, render a short version without image
-		- title
-		
+    params:
+        - short :  is true, render a short version without image
+        - title
+
   used in:
-	- record_blogpost
-	- record_event
-	- record_publication
-	- record_page
-	
+    - record_blogpost
+    - record_event
+    - record_publication
+    - record_page
+
 #}
 
 
-{# 
-	get all related content objects
-	excepts PERSONS
+{#
+    get all related content objects
+    excepts PERSONS
 #}
 
 {% if record %}
-	{% set allRelatedContent = record.related() %}
-	{% set relatedExceptions = ['persons', 'location'] %}
-	{% set relatedContents = [] %}
-	
-	{# collect all related content objects #}
-	{% for key, value in allRelatedContent %}
-		 {% if value.contenttype.slug not in relatedExceptions %}
-			{% set relatedContents = relatedContents|merge({ (key) : value}) %}
-		{% endif %}
-	{% endfor %}	
-	{# if no related content get content by tag #}
-	{% if relatedContents|length < 3  %}
-	
-		{# build tag query #}
-		{% set relatedTags = '' %}
-		{% if record.taxonomy.tags is defined %}
-				{% for tag in record.taxonomy.tags %}
-					{% set relatedTags = relatedTags ~ tag %}
-					{% if not loop.last %}
-						{% set relatedTags = relatedTags ~ ' || ' %}
-					{% endif %}
-				{% endfor %}
-		{% endif %}
-		{# get content objects by tag query for the same contenttype #}
-		{% setcontent relatedContentsByTag = record.contenttype.name  where { tags: relatedTags, id: '!' ~ record.id, 'hide_related' : '!1' } orderby 'datepublish DESC' limit 3 %}
-	
-		{% if relatedContents|length > 0 %}
-			{% set relatedContents = relatedContents|merge(relatedContentsByTag ) %}
-		{% else %}
-			{% set relatedContents = relatedContentsByTag %}
-		{% endif %}
-		
-	{% endif %}
-					
-	{% set records = relatedContents %}
-	{% set title = 'RELATED CONTENT:' %}
+    {% set allRelatedContent = record.related() %}
+    {% set relatedExceptions = ['persons', 'location'] %}
+    {% set relatedContents = [] %}
+
+    {# collect all related content objects #}
+    {% for key, value in allRelatedContent %}
+         {% if value.contenttype.slug not in relatedExceptions %}
+            {% set relatedContents = relatedContents|merge({ (key) : value}) %}
+        {% endif %}
+    {% endfor %}
+    {# if no related content get content by tag #}
+    {% if relatedContents|length < 3  %}
+
+        {# build tag query #}
+        {% set relatedTags = '' %}
+        {% if record.taxonomy.tags is defined %}
+                {% for tag in record.taxonomy.tags %}
+                    {% set relatedTags = relatedTags ~ tag %}
+                    {% if not loop.last %}
+                        {% set relatedTags = relatedTags ~ ' || ' %}
+                    {% endif %}
+                {% endfor %}
+        {% endif %}
+        {# get content objects by tag query for the same contenttype #}
+        {% setcontent relatedContentsByTag = record.contenttype.name  where { tags: relatedTags, id: '!' ~ record.id, 'hide_related' : '!1' } orderby 'datepublish DESC' limit 3 %}
+
+        {% if relatedContents|length > 0 %}
+            {% set relatedContents = relatedContents|merge(relatedContentsByTag ) %}
+        {% else %}
+            {% set relatedContents = relatedContentsByTag %}
+        {% endif %}
+
+    {% endif %}
+
+    {% set records = relatedContents %}
+    {% set title = 'RELATED CONTENT:' %}
 {% else %}
-	{% setcontent records = 'blogposts/latest/3' %}
-	{% set title = 'Things you may find interesting:' %}
+    {% setcontent records = 'blogposts/latest/3' %}
+    {% set title = 'Things you may find interesting:' %}
 {% endif %}
-				
+
 
 {% if (records) %}
 
-	{% if short %}
-	<div class="related-items noimages">
-	{% else %}
-	<div class="related-items">
-	{% endif %}
-	
-		<h4>{{ title }}</h4>
-		<ul class="l-relatedlinks">
-		{% for related in records|slice(0,3) %}<!--
-		--><li class="related-item">
-		
-				{% if short %}
-						<a href="{{ structurelink(related) }}">{{ related.title }}</a>
-				{% else %}
-				<div class="link-block block">
-				    <a href="{{ structurelink(related) }}" class="b-inner">
-						<div class="b-thumb">
-							<img src="{{ related.image|thumbnail() }}" alt="{{ related.image|title }}" />
-						</div>
-						<div class="b-text">
-							<h2 class="item-title">{{ related.title }}</h2>
-							<p>{{ related.excerpt(app.config.get('general/excerpt_length')) }}</p>
-						</div>
-					</a>
-				</div>
-				{% endif %}
-		
-				
-			</li><!--
-		-->{% endfor %}
-		</ul>
-		
-	</div>
+    {% if short %}
+    <div class="related-items noimages">
+    {% else %}
+    <div class="related-items">
+    {% endif %}
+
+        <h4>{{ title }}</h4>
+        <ul class="l-relatedlinks">
+        {% for related in records|slice(0,3) %}<!--
+        --><li class="related-item">
+
+                {% if short %}
+                        <a href="{{ structurelink(related) }}">{{ related.title }}</a>
+                {% else %}
+                <div class="link-block block">
+                    <a href="{{ structurelink(related) }}" class="b-inner">
+                        <div class="b-thumb">
+                            <img src="{{ related.image|thumbnail() }}" alt="{{ related.image|title }}" />
+                        </div>
+                        <div class="b-text">
+                            <h2 class="item-title">{{ related.title }}</h2>
+                            <p>{{ related.excerpt(app.config.get('general/excerpt_length')) }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+
+
+            </li><!--
+        -->{% endfor %}
+        </ul>
+
+    </div>
 
 {% endif %}
 

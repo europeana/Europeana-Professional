@@ -1,19 +1,19 @@
-{# 
+{#
   used in:
-	- record_blogpost
-	- listing_list
+    - record_blogpost
+    - listing_list
 #}
 
 {% if record.taxonomy.tags is defined  %}
 <span class="item-tags">
-	<svg class="icon icon-bookmark">
-		<use xlink:href="#icon-bookmark"></use>
-	</svg>
-	<ul class="inline-list">
-	{% for k,v in record.taxonomy.tags %}
-		<li class="item-tag"><a href="{{ k }}">{{ v }}</a></li>
-	{% endfor %}
-	</ul>
+    <svg class="icon icon-bookmark">
+        <use xlink:href="#icon-bookmark"></use>
+    </svg>
+    <ul class="inline-list">
+    {% for k,v in record.taxonomy.tags %}
+        <li class="item-tag"><a href="{{ k }}">{{ v }}</a></li>
+    {% endfor %}
+    </ul>
 </span>
 {% endif %}
 

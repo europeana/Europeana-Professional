@@ -7,78 +7,78 @@
 <!-- Start content -->
 <main role="main" class="l-page">
 <div class="lc">
-	<!-- Start grid -->
-	<div class="grid-main">
+    <!-- Start grid -->
+    <div class="grid-main">
 
-		<div class="l-content">
+        <div class="l-content">
 
-		<div class="l-breadcrumbs">
-			{% include 'items/_item-breadcrumb.twig' %}
-		</div>
-		
-		<article class="maincontent">
-			<div class="textcontent">
+        <div class="l-breadcrumbs">
+            {% include 'items/_item-breadcrumb.twig' %}
+        </div>
 
-				<div class="articleheader">
+        <article class="maincontent">
+            <div class="textcontent">
 
-					<h1 class="title">{{ job.position }}</h1>
+                <div class="articleheader">
 
-					<div class="item-meta-primary">
-						<span class="item-payscale">
-						{# EUR #}
-						{% if (job.salary_eur or job.scale_eur) %}
-							{% if job.salary_eur != "" %}	
-								&euro;{{ job.salary_eur }} p/m 
-							{% endif %}
-							{% if job.scale_eur != "" %}
-								{{ job.scale_eur }}
-							{% endif %}
-						{% endif %}
-						</span>
-						{# set location #}
-						{% include 'items/_item-location.twig' with {record : location } %}
-						
-					</div>
+                    <h1 class="title">{{ job.position }}</h1>
 
-					<div class="item-meta-secondary">
-						{# set date #}
-						{% include 'items/_item-date.twig' %}
-						{# set department #}
-						{% include 'items/_item-department.twig' %}
-					</div>
+                    <div class="item-meta-primary">
+                        <span class="item-payscale">
+                        {# EUR #}
+                        {% if (job.salary_eur or job.scale_eur) %}
+                            {% if job.salary_eur != "" %}
+                                &euro;{{ job.salary_eur }} p/m
+                            {% endif %}
+                            {% if job.scale_eur != "" %}
+                                {{ job.scale_eur }}
+                            {% endif %}
+                        {% endif %}
+                        </span>
+                        {# set location #}
+                        {% include 'items/_item-location.twig' with {record : location } %}
 
-					{# set deadline #}
-					{% include 'items/_item-deadline.twig' %}
-					
-				</div>
+                    </div>
 
-				<div class="prose">
-					{{ job.body|raw }}
-				</div>
-			</div>
+                    <div class="item-meta-secondary">
+                        {# set date #}
+                        {% include 'items/_item-date.twig' %}
+                        {# set department #}
+                        {% include 'items/_item-department.twig' %}
+                    </div>
 
-		</article>
-		</div><!--
+                    {# set deadline #}
+                    {% include 'items/_item-deadline.twig' %}
 
-	 --><div class="l-sidebar">
-	 		<div class="inner">
-				
-				{# set contacts #}
-				{% include 'items/_item-help.twig' with { records: contacts, title: "Need Help?" } %}
-				
-				{# set filelist #}
-				{% if job.filelist %}
-				<div class="downloads">
-					<h4>{{ job.contenttype.fields.filelist.label }}</h4>
-					{% include 'items/_item-filelist-detail.twig' with {filelist : job.filelist, owner: 'hide' } %}
-				</div>
-				{% endif %}
-				
-			</div>
+                </div>
 
-		</div>
-	</div>
-	<!-- End grid -->
+                <div class="prose">
+                    {{ job.body|raw }}
+                </div>
+            </div>
+
+        </article>
+        </div><!--
+
+     --><div class="l-sidebar">
+             <div class="inner">
+
+                {# set contacts #}
+                {% include 'items/_item-help.twig' with { records: contacts, title: "Need Help?" } %}
+
+                {# set filelist #}
+                {% if job.filelist %}
+                <div class="downloads">
+                    <h4>{{ job.contenttype.fields.filelist.label }}</h4>
+                    {% include 'items/_item-filelist-detail.twig' with {filelist : job.filelist, owner: 'hide' } %}
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+    <!-- End grid -->
 </div>
 </main>
 <!-- End Content -->

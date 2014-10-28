@@ -1,13 +1,13 @@
 <li><div class="link-block block">
-	<a href="{{ structurelink(record) }}" title="{{ child.title }}" class="b-inner">
-		{% if child.image|length %}
-		<div class="b-thumb">
-			<img src="{{ child.image|image(400,300,"c") }}" alt="{{ child.image|title }}" />
-		</div>
-		{% endif %}
-		<div class="b-text">
-			<h2 class="item-title">{{ child.title }}</h2>
-		<p>{{ child.teaser }}</p>
-		</div>
-	</a>
+    <a href="{{ structurelink(record) }}" title="{{ child.title }}" class="b-inner">
+        {% if child.image|length %}
+        <div class="b-thumb">
+            <img src="{{ child.image|image(400,300,"c") }}" alt="{{ child.image|title }}" />
+        </div>
+        {% endif %}
+        <div class="b-text">
+            <h2 class="item-title">{{ child.title }}</h2>
+        <p>{{ child.teaser }}</p>
+        </div>
+    </a>
 </div></li>

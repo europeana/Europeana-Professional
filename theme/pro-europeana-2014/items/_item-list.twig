@@ -1,127 +1,127 @@
 {#
   used in:
-  	- listing.twig
-  	- search
+      - listing.twig
+      - search
 #}
 
 {% if record is defined %}
 
-	{% set listItem = record %}
-	{% set contenttype = record.contenttype.name %}
-	{% set listItemLink = structurelink(record) %}
+    {% set listItem = record %}
+    {% set contenttype = record.contenttype.name %}
+    {% set listItemLink = structurelink(record) %}
 
 <li class="list-item">
-	
-		<div class="item-supplementary">
-		{% if (contenttype == "Publications" or contenttype == "PressReleases" or contenttype == "BlogPosts") %}
-			<div class="item-image">
-				<a href="{{ listItemLink }}"><img src="{{ listItem.values['image']|thumbnail() }}" alt="{{ listItem.image|title }}" /></a>
-			</div>
-		{% elseif (contenttype == "Projects" ) %}
-			<div class="item-image">
-				<a href="{{ listItemLink }}"><img src="{{ listItem.values['logo']|thumbnail() }}" alt="{{ listItem.image|title }}" /></a>
-			</div>
-		{# get footer logo for subsite in projects list view #}			
-		{% elseif 'subsite' in listItem.template %}
-			{% setcontent footer = 'Footer' where {id: listItem.footer, order: 'id', limit: 1} %}
-			<div class="item-image">
-				<a href="{{ listItemLink }}"><img src="{{ footer.values['image']|thumbnail() }}" alt="{{ footer.image|title }}" /></a>
-			</div>
-		{% elseif contenttype == "Events" %}
-			<div class="item-bigdate">
-				{% include 'items/_item-date-event.twig' with {record : listItem} %}
-			</div>
-		{% endif %}
-			
-		</div><!--
-	
-	 --><div class="item-details">
-		{% if contenttype == 'Structures' %}
-			<h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
-		{% elseif contenttype == 'Pages' %}
-			<h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
-		{% else %}
-			<h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
-		{% endif %}
-			
-			
-		{% if (contenttype == "Publications" or contenttype == "PressReleases" ) %}
-			<div class="item-meta-primary">
-				{# set authors #}
-				{% include 'items/_item-author.twig' %}
-			</div>
-		{% elseif contenttype == "BlogPosts" %}
-			<div class="item-meta-primary">
-				{# set author #}
-				{% include 'items/_item-author.twig' %}
-				{% include 'items/_item-readtime.twig' %}
-			</div>
-		{% endif %}
-			
-			
-			<div class="item-meta-secondary">
-			
-			{% if (contenttype == "Publications" or contenttype == "PressReleases") %}
-				{# set date #}
-				{% include 'items/_item-date.twig' %}
-				{# set tags#}
-				{% include 'items/_item-tags.twig' %}
-				
-			{% elseif contenttype == "BlogPosts" %}
-				{# set date #}
-				{% include 'items/_item-date.twig' %}
-				{# set tags #}
-				{% include 'items/_item-tags.twig' %}
-				{# set discus comments #}
-				{% include 'items/_item-comments-link.twig' %}
-				
-			{% elseif contenttype == "Events" %}
-				{# set location #}
-				{% include 'items/_item-location.twig' %}
-				{# set tags #}
-				{% include 'items/_item-tags.twig' %}
-			
-			{% elseif contenttype == "Jobs" %}
-				{# set date #}
-				{% include 'items/_item-date.twig' %}
-				{# set location #}
-				{% include 'items/_item-location.twig' %}
-				{# set department #}
-				{% include 'items/_item-department.twig' %}
-				
-			{% elseif contenttype == "TaskForces" %}
-				{# set tags #}
-				{% include 'items/_item-tags.twig' %}
-				
-			{% elseif (contenttype == "Projects" or contenttype == 'Structures') %}
-				{% include 'items/_item-date.twig' with { date: listItem.date_start } %}
-				<span>to: </span> 
-				{% include 'items/_item-date.twig' with { date: listItem.date_end } %}
-				<br />
-				{# set tags #}
-				{% include 'items/_item-tags.twig' %}
-			{% endif %}
-	
-			</div>
-	
-			<div class="item-preview">
-				
-				{% if (contenttype == "Publications" or contenttype == "PressReleases" or contenttype == "BlogPosts") %}
-					{{ listItem.excerpt(app.config.get('general/excerpt_length')) }}
-				{% else %}
-					{{ listItem.teaser }}
-				{% endif %}
-				
-			</div>
-			
-			{% if (contenttype == "Publications" or contenttype == "PressReleases" ) %}
-				{% include 'items/_item-filelist.twig' with {records: listItem.filelist} %}
-			{% endif %}
-			
-		
-		</div>
-	
-	</li>
+
+        <div class="item-supplementary">
+        {% if (contenttype == "Publications" or contenttype == "PressReleases" or contenttype == "BlogPosts") %}
+            <div class="item-image">
+                <a href="{{ listItemLink }}"><img src="{{ listItem.values['image']|thumbnail() }}" alt="{{ listItem.image|title }}" /></a>
+            </div>
+        {% elseif (contenttype == "Projects" ) %}
+            <div class="item-image">
+                <a href="{{ listItemLink }}"><img src="{{ listItem.values['logo']|thumbnail() }}" alt="{{ listItem.image|title }}" /></a>
+            </div>
+        {# get footer logo for subsite in projects list view #}
+        {% elseif 'subsite' in listItem.template %}
+            {% setcontent footer = 'Footer' where {id: listItem.footer, order: 'id', limit: 1} %}
+            <div class="item-image">
+                <a href="{{ listItemLink }}"><img src="{{ footer.values['image']|thumbnail() }}" alt="{{ footer.image|title }}" /></a>
+            </div>
+        {% elseif contenttype == "Events" %}
+            <div class="item-bigdate">
+                {% include 'items/_item-date-event.twig' with {record : listItem} %}
+            </div>
+        {% endif %}
+
+        </div><!--
+
+     --><div class="item-details">
+        {% if contenttype == 'Structures' %}
+            <h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
+        {% elseif contenttype == 'Pages' %}
+            <h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
+        {% else %}
+            <h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
+        {% endif %}
+
+
+        {% if (contenttype == "Publications" or contenttype == "PressReleases" ) %}
+            <div class="item-meta-primary">
+                {# set authors #}
+                {% include 'items/_item-author.twig' %}
+            </div>
+        {% elseif contenttype == "BlogPosts" %}
+            <div class="item-meta-primary">
+                {# set author #}
+                {% include 'items/_item-author.twig' %}
+                {% include 'items/_item-readtime.twig' %}
+            </div>
+        {% endif %}
+
+
+            <div class="item-meta-secondary">
+
+            {% if (contenttype == "Publications" or contenttype == "PressReleases") %}
+                {# set date #}
+                {% include 'items/_item-date.twig' %}
+                {# set tags#}
+                {% include 'items/_item-tags.twig' %}
+
+            {% elseif contenttype == "BlogPosts" %}
+                {# set date #}
+                {% include 'items/_item-date.twig' %}
+                {# set tags #}
+                {% include 'items/_item-tags.twig' %}
+                {# set discus comments #}
+                {% include 'items/_item-comments-link.twig' %}
+
+            {% elseif contenttype == "Events" %}
+                {# set location #}
+                {% include 'items/_item-location.twig' %}
+                {# set tags #}
+                {% include 'items/_item-tags.twig' %}
+
+            {% elseif contenttype == "Jobs" %}
+                {# set date #}
+                {% include 'items/_item-date.twig' %}
+                {# set location #}
+                {% include 'items/_item-location.twig' %}
+                {# set department #}
+                {% include 'items/_item-department.twig' %}
+
+            {% elseif contenttype == "TaskForces" %}
+                {# set tags #}
+                {% include 'items/_item-tags.twig' %}
+
+            {% elseif (contenttype == "Projects" or contenttype == 'Structures') %}
+                {% include 'items/_item-date.twig' with { date: listItem.date_start } %}
+                <span>to: </span>
+                {% include 'items/_item-date.twig' with { date: listItem.date_end } %}
+                <br />
+                {# set tags #}
+                {% include 'items/_item-tags.twig' %}
+            {% endif %}
+
+            </div>
+
+            <div class="item-preview">
+
+                {% if (contenttype == "Publications" or contenttype == "PressReleases" or contenttype == "BlogPosts") %}
+                    {{ listItem.excerpt(app.config.get('general/excerpt_length')) }}
+                {% else %}
+                    {{ listItem.teaser }}
+                {% endif %}
+
+            </div>
+
+            {% if (contenttype == "Publications" or contenttype == "PressReleases" ) %}
+                {% include 'items/_item-filelist.twig' with {records: listItem.filelist} %}
+            {% endif %}
+
+
+        </div>
+
+    </li>
 
 {% endif %}
 

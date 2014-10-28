@@ -1,14 +1,14 @@
 <!-- start subnav -->
 <ul class="nav">
-	{% for item in menu %}
-    	<li>
-    		{# add class="current" to active menu item #}
-    		{% if item|current %}
-    			<a class="current" href="{{ item.link }}">{{item.label}}</a>
-    		{% else %}
-    			<a href="{{ item.link }}">{{item.label}}</a>
-    		{% endif %}
-    	</li>
-		{% endfor %}
+    {% for item in menu %}
+        <li>
+            {# add class="current" to active menu item #}
+            {% if item|current %}
+                <a class="current" href="{{ item.link }}">{{item.label}}</a>
+            {% else %}
+                <a href="{{ item.link }}">{{item.label}}</a>
+            {% endif %}
+        </li>
+        {% endfor %}
 </ul>
 <!-- end subnav-->

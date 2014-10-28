@@ -3,74 +3,74 @@
 <!-- Start content -->
 <main role="main" class="l-page">
 <div class="lc">
-	<!-- Start grid -->
-	<div class="grid-main">
+    <!-- Start grid -->
+    <div class="grid-main">
 
-		<div class="l-content">
+        <div class="l-content">
 
-			<div class="l-breadcrumbs">
-				{% include 'items/_item-breadcrumb.twig' %}
-			</div>
+            <div class="l-breadcrumbs">
+                {% include 'items/_item-breadcrumb.twig' %}
+            </div>
 
-			<div class="maincontent">
-				{% if ( record is defined and record.title != "") %}
-					<h1 class="title">{{ record.title }}</h1>
-				{% else %}
-					<h1 class="title">Who works at Europeana</h1>
-				{% endif %}
-				
-				{% set currentTeam = 'empty' %}
-				{# if record.checkbox_europeana #}
-				{% for record in records %}
-					{% if ( record.team != currentTeam ) %}
-						{% set currentTeam = records|first.team %}
-						<div class="team">
-							<h2>{{ record.team }}</h2>
-							<ul class="results-list"><!--
-							-->{% for person in records if record.team == person.team  %}<!--
-								--><li>{% include 'items/_item-person-list.twig' with { record: person} %}</li><!--
-							-->{% endfor %}<!--
-						--></ul>
-						</div>
-					{% set currentTeam = record.team %}
-					{% endif %}
-				{% endfor %}
+            <div class="maincontent">
+                {% if ( record is defined and record.title != "") %}
+                    <h1 class="title">{{ record.title }}</h1>
+                {% else %}
+                    <h1 class="title">Who works at Europeana</h1>
+                {% endif %}
 
-			</div>
-		</div><!--
+                {% set currentTeam = 'empty' %}
+                {# if record.checkbox_europeana #}
+                {% for record in records %}
+                    {% if ( record.team != currentTeam ) %}
+                        {% set currentTeam = records|first.team %}
+                        <div class="team">
+                            <h2>{{ record.team }}</h2>
+                            <ul class="results-list"><!--
+                            -->{% for person in records if record.team == person.team  %}<!--
+                                --><li>{% include 'items/_item-person-list.twig' with { record: person} %}</li><!--
+                            -->{% endfor %}<!--
+                        --></ul>
+                        </div>
+                    {% set currentTeam = record.team %}
+                    {% endif %}
+                {% endfor %}
 
-	 --><div class="l-sidebar">
-	 		<div class="inner">
+            </div>
+        </div><!--
 
-	 			{#
-	 				get main contacts. definied in contenttype 'person'
-	 				example: field "contact_blog" -> main contact of the blogposts
-	 			#}
-	 			
-	 			{% if ( record.relation.persons is defined and record.relation.persons|length ) %}
-		 			{% setcontent contacts = 'persons' where { id: record.relation.persons|join(' || ') } orderby 'last_name' %}
-		 			{% if( contacts|length and contacts is not iterable) %}
-		 				{% set contacts = [contacts] %}
-		 			{% endif %}
-	 				{% include 'items/_item-help.twig' with { records: contacts} %}
-		 		{% elseif contenttype.singular_slug is defined %}
-		 			{% set contacttype = ('contact_'~(contenttype.singular_slug))  %}
-	 				{% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
-	 				{% if( contacts|length and contacts is not iterable) %}
-		 				{% set contacts = [contacts] %}
-		 			{% endif %}
-	 				{% include 'items/_item-help.twig' with { records: contacts} %}
-	 			{% endif %}
-	 			
-	 			{#
-	 			{% setcontent contacts = 'persons' where { contact_staff : '1' } orderby 'datepublish'  %}
-	 			{% include 'items/_item-help.twig' with { records: contacts} %}
-				#}
-			</div>
+     --><div class="l-sidebar">
+             <div class="inner">
 
-		</div>
-	</div>
-	<!-- End grid -->
+                 {#
+                     get main contacts. definied in contenttype 'person'
+                     example: field "contact_blog" -> main contact of the blogposts
+                 #}
+
+                 {% if ( record.relation.persons is defined and record.relation.persons|length ) %}
+                     {% setcontent contacts = 'persons' where { id: record.relation.persons|join(' || ') } orderby 'last_name' %}
+                     {% if( contacts|length and contacts is not iterable) %}
+                         {% set contacts = [contacts] %}
+                     {% endif %}
+                     {% include 'items/_item-help.twig' with { records: contacts} %}
+                 {% elseif contenttype.singular_slug is defined %}
+                     {% set contacttype = ('contact_'~(contenttype.singular_slug))  %}
+                     {% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
+                     {% if( contacts|length and contacts is not iterable) %}
+                         {% set contacts = [contacts] %}
+                     {% endif %}
+                     {% include 'items/_item-help.twig' with { records: contacts} %}
+                 {% endif %}
+
+                 {#
+                 {% setcontent contacts = 'persons' where { contact_staff : '1' } orderby 'datepublish'  %}
+                 {% include 'items/_item-help.twig' with { records: contacts} %}
+                #}
+            </div>
+
+        </div>
+    </div>
+    <!-- End grid -->
 </div>
 </main>
 <!-- End Content -->

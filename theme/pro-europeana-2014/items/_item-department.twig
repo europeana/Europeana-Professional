@@ -1,15 +1,15 @@
-{# 
+{#
   used in:
-	- record_job
-	- listing_list
+    - record_job
+    - listing_list
 #}
 
 {% if record.department %}
 <span class="item-department">
-	<svg class="icon icon-users">
-		<use xlink:href="#icon-users"></use>
-	</svg>
-	{{ record.department }}
+    <svg class="icon icon-users">
+        <use xlink:href="#icon-users"></use>
+    </svg>
+    {{ record.department }}
 </span>
 {% endif %}
 

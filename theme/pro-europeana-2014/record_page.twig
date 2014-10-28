@@ -6,80 +6,80 @@
 <!-- Start content -->
 <main role="main" class="l-page">
 <div class="lc">
-	<!-- Start grid -->
-	<div class="grid-main">
+    <!-- Start grid -->
+    <div class="grid-main">
 
-		<div class="l-content">
+        <div class="l-content">
 
-			<div class="l-breadcrumbs">
-				{% include 'items/_item-breadcrumb.twig' %}
-			</div>
-		
-			<div class="maincontent">
-				
-				<div class="textcontent prose">
-	
-					<h1 class="title">{{ record.title }}</h1>
-					
-					<p class="intro">{{ record.intro }}</p>
-	
-					{{ record.body|raw }}
-					
-					{% if record.filelist_downloads|length > 3 %}
-						{{ file_browser({'mode': 'list', 'root': record.filelist_downloads}) }}
-					{% endif %}
+            <div class="l-breadcrumbs">
+                {% include 'items/_item-breadcrumb.twig' %}
+            </div>
 
-				</div>
+            <div class="maincontent">
 
-				{#
-					filelist section
-				#}
-				{% if record.filelist_files %}
-				<div class="section files">
-					<h2>{{ record.contenttype.fields.filelist_files.label }}</h2>
-					{% include 'items/_item-filelist-detail.twig' with { filelist: record.filelist_files } %}
-				</div>
-				{% endif %}
-				
-				{#
-					include image grid with page record
-				#}
-				{% include 'items/_item-imagegrid.twig' with { record: record} %}
-				
-				{#
-					include related items
-				#}
-				{% if not record.hide_related_section %}
-					{% include 'items/_item-related.twig' with {title: "Next steps", short: false} %}
-				{% endif %}
-			</div>
-		</div><!--
+                <div class="textcontent prose">
 
-	 --><div class="l-sidebar">
-	 		<div class="inner">
-	 			
-				{% include 'items/_item-help.twig' with { records: contacts, title: "Need help?", use_secondary_mail: record.secondary_mail } %}
-				
-				{# -- Note by Bob: We don't need this anymore, right? -- 
-				{% if record.filelist_downloads|length %}
-				<div class="downloads">
-					<h2>{{ record.contenttype.fields.filelist_downloads.label }}</h2>
-					{% include 'items/_item-filelist-detail.twig' with { filelist: record.filelist_downloads, owner: 'hide' } %}
-				</div>
-				{% endif %}
-				#}
+                    <h1 class="title">{{ record.title }}</h1>
 
-				{% if record.support_navigation != "" %}
-				<ul class="nav_tertiary">
-					{{ record.support_navigation|raw }}
-				</ul>
-				{% endif %}
-				
-			</div>
+                    <p class="intro">{{ record.intro }}</p>
 
-		</div>
-	</div>
-	<!-- End grid -->
+                    {{ record.body|raw }}
+
+                    {% if record.filelist_downloads|length > 3 %}
+                        {{ file_browser({'mode': 'list', 'root': record.filelist_downloads}) }}
+                    {% endif %}
+
+                </div>
+
+                {#
+                    filelist section
+                #}
+                {% if record.filelist_files %}
+                <div class="section files">
+                    <h2>{{ record.contenttype.fields.filelist_files.label }}</h2>
+                    {% include 'items/_item-filelist-detail.twig' with { filelist: record.filelist_files } %}
+                </div>
+                {% endif %}
+
+                {#
+                    include image grid with page record
+                #}
+                {% include 'items/_item-imagegrid.twig' with { record: record} %}
+
+                {#
+                    include related items
+                #}
+                {% if not record.hide_related_section %}
+                    {% include 'items/_item-related.twig' with {title: "Next steps", short: false} %}
+                {% endif %}
+            </div>
+        </div><!--
+
+     --><div class="l-sidebar">
+             <div class="inner">
+
+                {% include 'items/_item-help.twig' with { records: contacts, title: "Need help?", use_secondary_mail: record.secondary_mail } %}
+
+                {# -- Note by Bob: We don't need this anymore, right? --
+                {% if record.filelist_downloads|length %}
+                <div class="downloads">
+                    <h2>{{ record.contenttype.fields.filelist_downloads.label }}</h2>
+                    {% include 'items/_item-filelist-detail.twig' with { filelist: record.filelist_downloads, owner: 'hide' } %}
+                </div>
+                {% endif %}
+                #}
+
+                {% if record.support_navigation != "" %}
+                <ul class="nav_tertiary">
+                    {{ record.support_navigation|raw }}
+                </ul>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+    <!-- End grid -->
 </div>
 </main>
 <!-- End Content -->

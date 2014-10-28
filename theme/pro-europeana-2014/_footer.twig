@@ -1,21 +1,21 @@
 <!-- Start Footer -->
 
 {% if record is defined %}
-	{# set possible subsite class #}
-	{% set subsite = subsite(record)  %}
+    {# set possible subsite class #}
+    {% set subsite = subsite(record)  %}
 {% endif %}
 
 {# set subsite footer #}
 {% if subsite['footer'] is defined %}
-	{% setcontent footer = 'footer' where { id: subsite['footer'], order: 'title'} %}
-	{% setcontent location = 'location' where {id: footer.relation.locations|first, order: 'title' } returnsingle %}
-	{% set logolink = subsite.path %}
+    {% setcontent footer = 'footer' where { id: subsite['footer'], order: 'title'} %}
+    {% setcontent location = 'location' where {id: footer.relation.locations|first, order: 'title' } returnsingle %}
+    {% set logolink = subsite.path %}
 {# set default footer #}
 {% else %}
-	{% setcontent home = 'homepage' where { id: 1, order: 'title'}  %}
-	{% setcontent footer = 'footer' where { id: home.relation.footers|first, order: 'title'} %}
-	{% setcontent location = 'location' where {id: footer.relation.locations|first, 'europeana_office' : '1', order: 'title' } returnsingle %}
-	{% set logolink = paths.root %}
+    {% setcontent home = 'homepage' where { id: 1, order: 'title'}  %}
+    {% setcontent footer = 'footer' where { id: home.relation.footers|first, order: 'title'} %}
+    {% setcontent location = 'location' where {id: footer.relation.locations|first, 'europeana_office' : '1', order: 'title' } returnsingle %}
+    {% set logolink = paths.root %}
 {% endif %}
 
 
@@ -25,18 +25,18 @@
         <div class="grid">
             <div class="l-contact">
                 <div>
-                	<a href="{{ logolink }}" title="{{ footer.image|title }}">
-	                	<img src="{{ footer.image|image }}" alt="{{ footer.values['image'].title }}">
-                	</a>
-                	
+                    <a href="{{ logolink }}" title="{{ footer.image|title }}">
+                        <img src="{{ footer.image|image }}" alt="{{ footer.values['image'].title }}">
+                    </a>
+
                 </div>
 
                 <div class="address">
                 {% if location %}
-                	{{ location.title }}
-                	{% for addressitem in location.geolocation.formatted_address|split(',')  %}
-                		<br /> {{ addressitem }} 
-                	{% endfor %}
+                    {{ location.title }}
+                    {% for addressitem in location.geolocation.formatted_address|split(',')  %}
+                        <br /> {{ addressitem }}
+                    {% endfor %}
                 {% endif %}
                 </div>
 
@@ -46,15 +46,15 @@
 
                 <div class="l-sitemap grid">
                 <div class="l-linklist">
-                	<div class="inner">
-                		{{ footer.linklist_left}}
-                	</div>
-                	</div><!--
+                    <div class="inner">
+                        {{ footer.linklist_left}}
+                    </div>
+                    </div><!--
              --><div class="l-linklist">
-             		<div class="inner">
-                		{{ footer.linklist_right}}
-                	</div>
-                	</div>
+                     <div class="inner">
+                        {{ footer.linklist_right}}
+                    </div>
+                    </div>
                 </div>
 
                 <div class="grid">
@@ -63,9 +63,9 @@
                     </div><!--
 
                  --><div class="l-othersites">
-                	 	<div class="l-linklist inline-list">
-						{{ footer.linklist_other }}
-						</div>
+                         <div class="l-linklist inline-list">
+                        {{ footer.linklist_other }}
+                        </div>
                     </div>
                 </div>
             </div><!--
@@ -73,7 +73,7 @@
         --><div class="l-nextsteps">
 
                 <div class="social-links">
-                	{{ footer.socialmedia|raw }}
+                    {{ footer.socialmedia|raw }}
                 </div>
             </div>
         </div>
@@ -94,20 +94,20 @@
 
 
 {#
-	JS scripts includes
+    JS scripts includes
 #}
 
 <script src="{{ paths.theme }}js/minRead.js"></script>
 <script src="{{ paths.theme }}js/init.js"></script>
 
 {% if sharethis is defined %}
-	<script type="text/javascript">var switchTo5x=true;</script>
-	<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
-	<script type="text/javascript">stLight.options({publisher: "{{ app.config.get('general/sharethis') }}", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
+    <script type="text/javascript">var switchTo5x=true;</script>
+    <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+    <script type="text/javascript">stLight.options({publisher: "{{ app.config.get('general/sharethis') }}", doNotHash: false, doNotCopy: false, hashAddressBar: false});</script>
 {% endif %}
 
-{# 
-	google search snippet
+{#
+    google search snippet
 #}
 <script type="text/javascript" src="//www.google.com/jsapi"></script>
 <script type="text/javascript">

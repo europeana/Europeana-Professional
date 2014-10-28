@@ -2,109 +2,109 @@
 
 {% if records|length %}
 
-	{# show/hide sortby item and pager #}
-	{% set showsortby = false %}
-	
-	{# default list views #}
-	{% if record is not defined %}
-	
-		{# tags #}
-		{% if taxonomy is defined %}
-			{% set showsortby = false %}
-			{% set contenttype = taxonomy %}
-			
-		{% else %}
-			{% set contenttype = getContenttype(records|first.contenttype.name) %}
-			{% set showsortby = true %}
-			{% set contenttypePager = contenttype['slug'] %}
-		{% endif %}
-		
-	{# structure content #}
-	{% elseif contenttype['name'] is defined %}
-		{% if (contenttype['slug'] in app.config.get('general/sort_options/disabled')|keys ) %}
-			{% set contenttypePager = contenttype['slug'] %}
-			{% set showsortby = true %}
-		{% endif %}
-	{% endif %}
-	
+    {# show/hide sortby item and pager #}
+    {% set showsortby = false %}
 
-	
+    {# default list views #}
+    {% if record is not defined %}
+
+        {# tags #}
+        {% if taxonomy is defined %}
+            {% set showsortby = false %}
+            {% set contenttype = taxonomy %}
+
+        {% else %}
+            {% set contenttype = getContenttype(records|first.contenttype.name) %}
+            {% set showsortby = true %}
+            {% set contenttypePager = contenttype['slug'] %}
+        {% endif %}
+
+    {# structure content #}
+    {% elseif contenttype['name'] is defined %}
+        {% if (contenttype['slug'] in app.config.get('general/sort_options/disabled')|keys ) %}
+            {% set contenttypePager = contenttype['slug'] %}
+            {% set showsortby = true %}
+        {% endif %}
+    {% endif %}
+
+
+
 <!-- Start content -->
 <main role="main" class="l-page">
 <div class="lc">
-	<!-- Start grid -->
-	<div class="grid-main">
+    <!-- Start grid -->
+    <div class="grid-main">
 
-		<div class="l-content">
+        <div class="l-content">
 
-			<div class="l-breadcrumbs">
-				{% include 'items/_item-breadcrumb.twig' %}
-				
-				{# hide sortby template for tag- and structure listing #}
-				{% if showsortby %}
-					{% include 'items/_item-sortby.twig' %}
-				{% endif %}
-			</div>
+            <div class="l-breadcrumbs">
+                {% include 'items/_item-breadcrumb.twig' %}
 
-		<div class="maincontent">
-		
-			<div class="results">
-				
-				{# show title and intro for structrure listview #}
-				{% if record is defined %}
-				<div class="page-intro">
-					
-                 	<h1 class="title">{{ record.title }}</h1>
+                {# hide sortby template for tag- and structure listing #}
+                {% if showsortby %}
+                    {% include 'items/_item-sortby.twig' %}
+                {% endif %}
+            </div>
+
+        <div class="maincontent">
+
+            <div class="results">
+
+                {# show title and intro for structrure listview #}
+                {% if record is defined %}
+                <div class="page-intro">
+
+                     <h1 class="title">{{ record.title }}</h1>
                     <p>{{ record.teaser|raw }}</p>
                 </div>
                 {% endif %}
-                
-				<ul class="results-list">
-					{% for listItem in records %}
-						{% include 'items/_item-list.twig' with { record: listItem } %}
-					{% endfor %}
-				</ul>
-				
-				
-				{% if pager is defined %}
-					{% include '_sub_pager.twig' with { class: '', surr: 2, pager: pager } %}
-				{% elseif showsortby and taxonomy is not defined %}
-					{{ pager(contenttypePager) }}
-				{% elseif taxonomy is defined %}
-					{{ pager() }}
-				{% endif %}
-			</div>
 
-		</div>
-		</div><!--
+                <ul class="results-list">
+                    {% for listItem in records %}
+                        {% include 'items/_item-list.twig' with { record: listItem } %}
+                    {% endfor %}
+                </ul>
 
-	 --><div class="l-sidebar">
-	 		<div class="inner">
-	 			{#
-	 				get main contacts. definied in contenttype 'person'
-	 				example: field "contact_blog" -> main contact of the blogposts
-	 			#}
-	 			
-	 			{% if ( record.relation.persons is defined and record.relation.persons|length ) %}
-		 			{% setcontent contacts = 'persons' where { id: record.relation.persons|join(' || ') } orderby 'last_name' %}
-		 			{% if( contacts|length and contacts is not iterable) %}
-		 				{% set contacts = [contacts] %}
-		 			{% endif %}
-	 				{% include 'items/_item-help.twig' with { records: contacts} %}
-		 		{% elseif contenttype.singular_slug is defined %}
-		 			{% set contacttype = ('contact_'~(contenttype.singular_slug))  %}
-	 				{% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
-	 				{% if( contacts|length and contacts is not iterable) %}
-		 				{% set contacts = [contacts] %}
-		 			{% endif %}
-	 				{% include 'items/_item-help.twig' with { records: contacts} %}
-	 			{% endif %}
-	 			
-			</div>
 
-		</div>
-	</div>
-	<!-- End grid -->
+                {% if pager is defined %}
+                    {% include '_sub_pager.twig' with { class: '', surr: 2, pager: pager } %}
+                {% elseif showsortby and taxonomy is not defined %}
+                    {{ pager(contenttypePager) }}
+                {% elseif taxonomy is defined %}
+                    {{ pager() }}
+                {% endif %}
+            </div>
+
+        </div>
+        </div><!--
+
+     --><div class="l-sidebar">
+             <div class="inner">
+                 {#
+                     get main contacts. definied in contenttype 'person'
+                     example: field "contact_blog" -> main contact of the blogposts
+                 #}
+
+                 {% if ( record.relation.persons is defined and record.relation.persons|length ) %}
+                     {% setcontent contacts = 'persons' where { id: record.relation.persons|join(' || ') } orderby 'last_name' %}
+                     {% if( contacts|length and contacts is not iterable) %}
+                         {% set contacts = [contacts] %}
+                     {% endif %}
+                     {% include 'items/_item-help.twig' with { records: contacts} %}
+                 {% elseif contenttype.singular_slug is defined %}
+                     {% set contacttype = ('contact_'~(contenttype.singular_slug))  %}
+                     {% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
+                     {% if( contacts|length and contacts is not iterable) %}
+                         {% set contacts = [contacts] %}
+                     {% endif %}
+                     {% include 'items/_item-help.twig' with { records: contacts} %}
+                 {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+    <!-- End grid -->
 </div>
 </main>
 <!-- End Content -->

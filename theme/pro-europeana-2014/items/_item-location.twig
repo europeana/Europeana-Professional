@@ -1,20 +1,20 @@
-{# 
+{#
   used in:
-	- record_job
-	- listing_list
+    - record_job
+    - listing_list
 #}
 
 {% if record.relation.locations is defined %}
-	{% setcontent location = 'locations' where {id: record.relation.locations|first, order: 'title'  } returnsingle %}
-	<span class="item-location">
-		<svg class="icon icon-location">
-			<use xlink:href="#icon-location"></use>
-		</svg>
-		{% set geolocation = location.geolocation.formatted_address|split(',') %}
-		{# city #}
-		{{ geolocation[1] }},
-		{# country #}
-		{{ geolocation|last }}
-	</span>
+    {% setcontent location = 'locations' where {id: record.relation.locations|first, order: 'title'  } returnsingle %}
+    <span class="item-location">
+        <svg class="icon icon-location">
+            <use xlink:href="#icon-location"></use>
+        </svg>
+        {% set geolocation = location.geolocation.formatted_address|split(',') %}
+        {# city #}
+        {{ geolocation[1] }},
+        {# country #}
+        {{ geolocation|last }}
+    </span>
 {% endif %}
 

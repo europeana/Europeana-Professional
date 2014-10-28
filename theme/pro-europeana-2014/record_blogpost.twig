@@ -7,90 +7,90 @@
 <!-- Start content -->
 <main role="main" class="l-page">
 <div class="lc">
-	<!-- Start grid -->
-	<div class="grid-main">
+    <!-- Start grid -->
+    <div class="grid-main">
 
-		<div class="l-content">
-		
-		<div class="l-breadcrumbs">
-			{% include 'items/_item-breadcrumb.twig' %}
-		</div>
-		
-		<article class="maincontent">
-			<div class="textcontent">
+        <div class="l-content">
 
-				<div class="articleheader">
+        <div class="l-breadcrumbs">
+            {% include 'items/_item-breadcrumb.twig' %}
+        </div>
 
-					<h1 class="title">{{ blogpost.title }}</h1>
+        <article class="maincontent">
+            <div class="textcontent">
 
-					
-					<div class="item-meta-primary">
-					
-						{# set authors #}
-						{% if authors %}
-							{% include 'items/_item-author.twig' with {records : authors} %}
-						{% endif %}
-						
-						{# set readtime #}
-						{#  todo: where did that came from? -> update contenttype "blogpost" #}
-						{% include 'items/_item-readtime.twig' %}
-						
-					</div>
-					
-					<div class="item-meta-secondary">
-						{# set date #}
-						{% include 'items/_item-date.twig' %}
-						
-						{# set tags #}
-						{% include 'items/_item-tags.twig' %}
-						
-						{# set discus comments #}
-						{% include 'items/_item-comments-link.twig' %}
-					</div>
+                <div class="articleheader">
 
-				</div>
-
-				<div class="prose">
-					{{ blogpost.body|raw }}
-				</div>
-			</div>
-			
-			<div id="sharethis">
-				<span class='st_facebook_large' displayText='Facebook'></span>
-				<span class='st_twitter_large' st_via='EuropeanaEU Professional' displayText='Tweet'></span>
-				<span class='st_sharethis_large' displayText='ShareThis'></span>
-			</div>
-
-			{# related content #}
-			{% include 'items/_item-related.twig' with {title: "You might also like:", short: false} %}
-			
-			<aside>
-				{% include 'items/_item-comments.twig' %}
-			</aside>
+                    <h1 class="title">{{ blogpost.title }}</h1>
 
 
-		</article>
-		</div><!--
+                    <div class="item-meta-primary">
 
-	 --><div class="l-sidebar">
-	 		<div class="inner">
+                        {# set authors #}
+                        {% if authors %}
+                            {% include 'items/_item-author.twig' with {records : authors} %}
+                        {% endif %}
 
-	 			{# set author #}
-				{% include 'items/_item-help.twig' with { records: contacts } %}
+                        {# set readtime #}
+                        {#  todo: where did that came from? -> update contenttype "blogpost" #}
+                        {% include 'items/_item-readtime.twig' %}
 
-				{# set Downloads #}
-				{% if blogpost.attachments %}
-				<div class="downloads">
-					<h4>{{ blogpost.contenttype['fields']['attachments'].label }}</h4>
-					{% include 'items/_item-filelist.twig' with {record : blogpost.attachments} %}
-				</div>
-				{% endif %}
-				
-			</div>
+                    </div>
 
-		</div>
-	</div>
-	<!-- End grid -->
+                    <div class="item-meta-secondary">
+                        {# set date #}
+                        {% include 'items/_item-date.twig' %}
+
+                        {# set tags #}
+                        {% include 'items/_item-tags.twig' %}
+
+                        {# set discus comments #}
+                        {% include 'items/_item-comments-link.twig' %}
+                    </div>
+
+                </div>
+
+                <div class="prose">
+                    {{ blogpost.body|raw }}
+                </div>
+            </div>
+
+            <div id="sharethis">
+                <span class='st_facebook_large' displayText='Facebook'></span>
+                <span class='st_twitter_large' st_via='EuropeanaEU Professional' displayText='Tweet'></span>
+                <span class='st_sharethis_large' displayText='ShareThis'></span>
+            </div>
+
+            {# related content #}
+            {% include 'items/_item-related.twig' with {title: "You might also like:", short: false} %}
+
+            <aside>
+                {% include 'items/_item-comments.twig' %}
+            </aside>
+
+
+        </article>
+        </div><!--
+
+     --><div class="l-sidebar">
+             <div class="inner">
+
+                 {# set author #}
+                {% include 'items/_item-help.twig' with { records: contacts } %}
+
+                {# set Downloads #}
+                {% if blogpost.attachments %}
+                <div class="downloads">
+                    <h4>{{ blogpost.contenttype['fields']['attachments'].label }}</h4>
+                    {% include 'items/_item-filelist.twig' with {record : blogpost.attachments} %}
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+    <!-- End grid -->
 </div>
 </main>
 <!-- End Content -->

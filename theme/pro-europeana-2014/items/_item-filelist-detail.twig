@@ -1,8 +1,8 @@
 {#
   used in:
-	- record_publication
-	- record_event
-	- generic
+    - record_publication
+    - record_event
+    - generic
 #}
 
 
@@ -11,16 +11,16 @@
 
 <form {{ fileDownloadAction() }} >
 
-	{% for file in filelist %}
-		{% set fileinfo = fileInfo(file) %}
-		<li>
-			<span class="file-name">
-				<a href="{{ paths.files }}{{ file.filename }}" >{{ fileinfo.filename }}</a>
-				<span class="file-info">{{ fileinfo.filetype }} {{ fileinfo.filesize }}</span>
-				<a href="#" class="download" data-downloadFile="{{ file.filename }}">Download</a>
-			</span>
-		</li>
-	{% endfor %}
+    {% for file in filelist %}
+        {% set fileinfo = fileInfo(file) %}
+        <li>
+            <span class="file-name">
+                <a href="{{ paths.files }}{{ file.filename }}" >{{ fileinfo.filename }}</a>
+                <span class="file-info">{{ fileinfo.filetype }} {{ fileinfo.filesize }}</span>
+                <a href="#" class="download" data-downloadFile="{{ file.filename }}">Download</a>
+            </span>
+        </li>
+    {% endfor %}
 
 </form>
 

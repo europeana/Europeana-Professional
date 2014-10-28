@@ -10,153 +10,153 @@
 <!-- Start content -->
 <main role="main" class="l-page">
 <div class="lc">
-	<!-- Start grid -->
-	<div class="grid-main">
+    <!-- Start grid -->
+    <div class="grid-main">
 
-		<div class="l-content">
+        <div class="l-content">
 
-		<div class="l-breadcrumbs">
-			{% include 'items/_item-breadcrumb.twig' %}
-		</div>
-		
-
-		<div class="maincontent">
-
-			{% if record.department is iterable %}
-			<h1 class="title">Europeana Staff</h1>
-			{% else %}
-			<h1 class="title">{{ record.department }}</h1>
-			{% endif %}
-
-			<div class="section contact-detail">
-			
-				<div class="l-contact-photo">
-					<img src="{{ record.image|image(300,400) }}" alt="{{ record.first_name }} {{ record.last_name }}" class="photo" />
-			
-				</div><!--
-
-			 --><div class="l-contact">
-
-					<div class="contact-methods cf">
-
-						<h2 class="fn">{{record.first_name}} {{record.last_name}}</h2>
-
-						<div class="contact-internal">
-							<div class="jobdetails">
-								<div class="job-title">{{record.job_title}}</div>
-								<div class="job-department">{{record.team}}</div>
-							</div>
-
-							<a class="email" href="mailto:{{ record.email }}">{{record.email}}</a>
-
-							{% if record.telephone_number != '' %}
-							<div class="item-phone-work">
-								<svg class="icon icon-phone-work">
-									<use xlink:href="#icon-phone-work"></use>
-								</svg>
-								<span class="tel">{{ record.telephone_number }}</span>
-							</div>
-							{% endif %}
-							
-							{% if record.other_number != '' %}
-							<div class="item-phone-mobile">
-								<svg class="icon icon-phone-mobile">
-									<use xlink:href="#icon-phone-mobile"></use>
-								</svg>
-								<span class="tel">{{ record.other_number }}</span>
-							</div>
-							{% endif %}
-							
-						</div>
-
-						<ul class="contact-external">
-							{% if record.twitter != '' %}
-							<li><a href="{{ record.twitter }}"><svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>{{ record.twitter|split('/')|last }}</a></li>
-							{% endif %}
-							{% if record.skype != '' %}
-							<li><a href="skype:{{ record.skype }}"><svg class="icon icon-skype"><use xlink:href="#icon-skype"></use></svg>{{ record.skype }}</a></li>
-							{% endif %}
-							{% if record.linkedin != '' %}
-							<li><a href="{{ record.linkedin }}"><svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>{{ record.first_name }} {{ record.last_name }}</a></li>
-							{% endif %}
-						</ul>
-						
-						
-
-					</div>
-
-					<div class="contact-additional">
-						{{ record.introduction }}
-
-						{% if (record.other_links_1 or record.other_links_2 or record.other_links_3 ) %}
-						<ul class="nav">
-							{% if record.other_links_1 %}
-							<li><a href="{{ record.other_links_1 }}">{{ record.other_links_1 }}</a></li>
-							{% endif %}
-							{% if record.other_links_2 %}
-							<li><a href="{{ record.other_links_2 }}">{{ record.other_links_2 }}</a></li>
-							{% endif %}
-							{% if record.other_links_3 %}
-							<li><a href="{{ record.other_links_3 }}">{{ record.other_links_3 }}</a></li>
-							{% endif %}
-						</ul>
-						{% endif %}
-					</div>
-					
+        <div class="l-breadcrumbs">
+            {% include 'items/_item-breadcrumb.twig' %}
+        </div>
 
 
-				</div>
-			</div>
+        <div class="maincontent">
 
-			{% if events %}
-			<div class="section">
-				<h2>Speaking at</h2>
-				<div class="results">
-					<ul class="results-list">
-						{% for event in events %}
-							{% include 'items/_item-list.twig' with {record: event} %}
-						{% endfor %}
-					</ul>
-				</div>
-			</div>
-			{% endif %}
+            {% if record.department is iterable %}
+            <h1 class="title">Europeana Staff</h1>
+            {% else %}
+            <h1 class="title">{{ record.department }}</h1>
+            {% endif %}
 
-			{% if publications %}
-			<div class="section">
-				<h2>Publications</h2>
-				<ul class="results-list">
-					{% for publication in publications %}
-						{% include 'items/_item-list.twig' with {record: publication} %}
-					{% endfor %}
-				</ul>
-			</div>
-			{% endif %}
-			
-			{% if blogposts %}
-			<div class="section">
-				<h2>Blog posts</h2>
-				<ul class="results-list">
-					{% for blogpost in blogposts %}
-						{% include 'items/_item-list.twig' with {record: blogpost} %}
-					{% endfor %}
-				</ul>
-			</div>
-			{% endif %}
+            <div class="section contact-detail">
 
-			
+                <div class="l-contact-photo">
+                    <img src="{{ record.image|image(300,400) }}" alt="{{ record.first_name }} {{ record.last_name }}" class="photo" />
 
-		</div>
-		</div><!--
+                </div><!--
 
-	 --><div class="l-sidebar">
-			<div class="inner">
-				{% setcontent contacts = 'persons' where { contact_staff : '1' } orderby 'datepublish'  %}
-	 			{% include 'items/_item-help.twig' with { records: contacts} %}
-			</div>
+             --><div class="l-contact">
 
-		</div>
-	</div>
-	<!-- End grid -->
+                    <div class="contact-methods cf">
+
+                        <h2 class="fn">{{record.first_name}} {{record.last_name}}</h2>
+
+                        <div class="contact-internal">
+                            <div class="jobdetails">
+                                <div class="job-title">{{record.job_title}}</div>
+                                <div class="job-department">{{record.team}}</div>
+                            </div>
+
+                            <a class="email" href="mailto:{{ record.email }}">{{record.email}}</a>
+
+                            {% if record.telephone_number != '' %}
+                            <div class="item-phone-work">
+                                <svg class="icon icon-phone-work">
+                                    <use xlink:href="#icon-phone-work"></use>
+                                </svg>
+                                <span class="tel">{{ record.telephone_number }}</span>
+                            </div>
+                            {% endif %}
+
+                            {% if record.other_number != '' %}
+                            <div class="item-phone-mobile">
+                                <svg class="icon icon-phone-mobile">
+                                    <use xlink:href="#icon-phone-mobile"></use>
+                                </svg>
+                                <span class="tel">{{ record.other_number }}</span>
+                            </div>
+                            {% endif %}
+
+                        </div>
+
+                        <ul class="contact-external">
+                            {% if record.twitter != '' %}
+                            <li><a href="{{ record.twitter }}"><svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>{{ record.twitter|split('/')|last }}</a></li>
+                            {% endif %}
+                            {% if record.skype != '' %}
+                            <li><a href="skype:{{ record.skype }}"><svg class="icon icon-skype"><use xlink:href="#icon-skype"></use></svg>{{ record.skype }}</a></li>
+                            {% endif %}
+                            {% if record.linkedin != '' %}
+                            <li><a href="{{ record.linkedin }}"><svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>{{ record.first_name }} {{ record.last_name }}</a></li>
+                            {% endif %}
+                        </ul>
+
+
+
+                    </div>
+
+                    <div class="contact-additional">
+                        {{ record.introduction }}
+
+                        {% if (record.other_links_1 or record.other_links_2 or record.other_links_3 ) %}
+                        <ul class="nav">
+                            {% if record.other_links_1 %}
+                            <li><a href="{{ record.other_links_1 }}">{{ record.other_links_1 }}</a></li>
+                            {% endif %}
+                            {% if record.other_links_2 %}
+                            <li><a href="{{ record.other_links_2 }}">{{ record.other_links_2 }}</a></li>
+                            {% endif %}
+                            {% if record.other_links_3 %}
+                            <li><a href="{{ record.other_links_3 }}">{{ record.other_links_3 }}</a></li>
+                            {% endif %}
+                        </ul>
+                        {% endif %}
+                    </div>
+
+
+
+                </div>
+            </div>
+
+            {% if events %}
+            <div class="section">
+                <h2>Speaking at</h2>
+                <div class="results">
+                    <ul class="results-list">
+                        {% for event in events %}
+                            {% include 'items/_item-list.twig' with {record: event} %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if publications %}
+            <div class="section">
+                <h2>Publications</h2>
+                <ul class="results-list">
+                    {% for publication in publications %}
+                        {% include 'items/_item-list.twig' with {record: publication} %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if blogposts %}
+            <div class="section">
+                <h2>Blog posts</h2>
+                <ul class="results-list">
+                    {% for blogpost in blogposts %}
+                        {% include 'items/_item-list.twig' with {record: blogpost} %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+
+
+        </div>
+        </div><!--
+
+     --><div class="l-sidebar">
+            <div class="inner">
+                {% setcontent contacts = 'persons' where { contact_staff : '1' } orderby 'datepublish'  %}
+                 {% include 'items/_item-help.twig' with { records: contacts} %}
+            </div>
+
+        </div>
+    </div>
+    <!-- End grid -->
 </div>
 </main>
 <!-- End Content -->
