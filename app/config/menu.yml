@@ -2,9 +2,9 @@ primary:
   - title: 'Get involved'
     path: /get-involved
     label: 'Get involved'
-  - title: 'Share your data'
+  - title: 'Provide your data'
     path: /share-your-data
-    label: 'Share your data'
+    label: 'Provide your data'
   - title: 'Use our data'
     path: /use-our-data
     label: 'Use our data'
