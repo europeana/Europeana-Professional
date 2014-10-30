@@ -65,14 +65,14 @@ class Extension extends \Bolt\BaseExtension
         $this->app['dispatcher']->addListener(\Bolt\StorageEvents::POST_SAVE, array($this, 'updateStructureTaxonomy'));
         $this->app['dispatcher']->addListener(\Bolt\StorageEvents::POST_DELETE, array($this, 'updateStructureTaxonomy'));
 
-        // Add snippets, since this is a Frontend route.
-        $this->app['htmlsnippets'] = true;
-
         $this->contenttypeslugs = $this->config['contenttypes'];
 
     }
 
     public function slugTreeRecord($slug) {
+        // Add snippets, since this is a Frontend route.
+        $this->app['htmlsnippets'] = true;
+
         $parents= self::getTreeParents();
         $slug = makeSlug($slug, -1);
 
@@ -94,6 +94,9 @@ class Extension extends \Bolt\BaseExtension
      * @param (string) slug
      */
     public function structureTreeRecord($structureSlugs, $slug) {
+        // Add snippets, since this is a Frontend route.
+        $this->app['htmlsnippets'] = true;
+
         $parents = self::getTreeParents();
 
         // slug is strucutre
