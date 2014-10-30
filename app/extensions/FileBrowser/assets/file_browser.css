@@ -1,11 +1,9 @@
 .file-browser {
     position: relative;
-    margin: 0 !important;
-    font-size: 13px;
 }
 
 .file-browser-list {
-    height: 600px;
+    height: 400px;
     overflow-y: scroll;
     overflow-x: auto;
     margin: 0;
@@ -20,15 +18,14 @@
 .file-browser-list-icons .file-browser-item {
     display: inline-block;
     width: 100px;
-    min-height: 80px;
+    height: 80px;
     text-align: center;
-    margin: 10px 5px !important;
+    margin: 10px 5px;
     vertical-align: bottom;
 }
 
 .file-browser-list .file-browser-item > a {
     display: block;
-    border: 0 !important;
 }
 
 .file-browser-list-icons .file-browser-item .file-browser-label {
@@ -37,7 +34,6 @@
 
 .file-browser-list a:hover {
     text-decoration: none;
-    border: 0;
 }
 
 .file-browser-list a:hover .file-browser-filename {
@@ -49,13 +45,11 @@
 }
 
 .file-browser-list-list .file-browser-item > a {
-    display: block;
-    margin-bottom: 4px !important;
+    display: block
 }
 
 .file-browser-list-list .file-browser-item > a > * {
     display: inline-block;
-    vertical-align: bottom;
 }
 
 .file-browser-list-list .file-browser-item > a > .file-browser-label {
@@ -63,7 +57,7 @@
 }
 
 .file-browser-list-list .file-browser-item > a > .file-browser-filename {
-    width: 25em;
+    width: 15em;
 }
 
 .file-browser-list-list .file-browser-item > a > .file-browser-filesize {

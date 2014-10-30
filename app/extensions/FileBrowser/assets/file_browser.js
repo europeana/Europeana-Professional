@@ -1,10 +1,28 @@
 $(document).ready(function(){
+    var buildQueryString = function(data) {
+        var keys = Object.getOwnPropertyNames(data);
+        var i;
+        var queryStringItems = [];
+        var key;
+        var value;
+
+        for (i = 0; i < keys.length; ++i) {
+            key = keys[i];
+            value = data[key];
+            queryStringItems.push(
+                encodeURIComponent(key) +
+                '=' +
+                encodeURIComponent(value));
+        }
+
+        return '?' + queryStringItems.join('&');
+    };
+
     var navigate = function(targetPath, mode, container) {
         var listElem = $('.file-browser-list', container);
         var rootPath = listElem.data('fb-root');
         var currentPath = listElem.data('fb-cp');
         var currentMode = listElem.data('fb-mode');
-        // console.log(targetPath, mode, typeof(mode), currentMode);
         if (typeof(mode) !== typeof('') || mode === '') {
             mode = currentMode;
         }
@@ -15,17 +33,23 @@ $(document).ready(function(){
         listElem.append(
             $('<li class="file-browser file-browser-loading" />')
                 .text('Loading...'));
-        $.get('/async/file_browser?fb_cp=' + targetPath + '&fb_mode=' + mode + '&fb_root=' + rootPath,
+        $.get('/async/file_browser' +
+            buildQueryString({
+                fb_cp: targetPath,
+                fb_mode: mode,
+                fb_root: rootPath}),
             function(html) {
                 container.html(html);
             });
     };
 
     // make sure we don't have duplicate events bound.. Doesn't work unfortunately.
-    $('.file-browser-container').off('click.filebrowser');
+    // $('.file-browser-container').off('click.filebrowser');
+    //
+    // Of course this doesn't work - this code only runs once on startup, and
+    // at that point, nothing is bound to this event yet.
 
     $('.file-browser-container').on('click.filebrowser', '.file-browser-dir a, a.file-browser-up', function(e){
-        console.log('click');
         var container = $(this).closest('.file-browser-container');
         var targetPath = $(this).data('fb-cp');
         navigate(targetPath, null, container);

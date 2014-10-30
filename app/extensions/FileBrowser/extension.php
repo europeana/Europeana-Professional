@@ -55,25 +55,18 @@ class Extension extends \Bolt\BaseExtension
         $this->iconsPath = $this->expandConfigPath($path);
         $this->configPathSearchReplace['%icons%'] = $this->iconsPath;
 
-        // Only add snippets if we're in the frontend.
-        if ($this->app['end'] == "frontend") {
-
-            $this->addJquery();
-            $this->app['extensions']->addJavascript($this->expandConfigPath("%assets%/file_browser.js"), false);
-            $cssFiles = isset($this->config['stylesheets']) ? $this->config['stylesheets'] : null;
-            if (is_array($cssFiles)) {
-                foreach ($cssFiles as $cssFile) {
-                    $this->app['extensions']->addCSS($this->expandConfigPath($cssFile), false);
-                }
+        $this->addJquery();
+        $this->app['extensions']->addJavascript($this->expandConfigPath("%assets%/file_browser.js"), false);
+        $cssFiles = isset($this->config['stylesheets']) ? $this->config['stylesheets'] : null;
+        if (is_array($cssFiles)) {
+            foreach ($cssFiles as $cssFile) {
+                $this->app['extensions']->addCSS($this->expandConfigPath($cssFile), false);
             }
-            else {
-                $this->app['extensions']->addCSS($this->expandConfigPath("%assets%/file_browser.css"), false);
-            }
-
         }
-
+        else {
+            $this->app['extensions']->addCSS($this->expandConfigPath("%assets%/file_browser.css"), false);
+        }
         $this->app->get("/async/file_browser", array($this, "asyncGetFiles"))->bind("file_browser_get");
-
         $this->addTwigFunction('file_browser', 'twigFileBrowser');
         $this->addTwigFunction('file_browser_icon', 'twigFileBrowserIcon');
 
@@ -156,7 +149,7 @@ class Extension extends \Bolt\BaseExtension
             'allowedModes' => $this->getAllowedModes(),
             'paths' => $paths,
             'icons' => $iconsPath,
-            'filebrowsetitle' => $title,
+            'title' => $title,
             'files' => $this->listFiles($rootPath, $currentPath));
     }
 
