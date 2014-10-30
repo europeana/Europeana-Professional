@@ -13,7 +13,28 @@ tree:
     slug: tree
     singular_slug: tree
     behaves_like: grouping
-    options: { about-us: 'About us', blog: Blog, case-studies: 'Case studies', europeana-tech: 'Europeana Tech', events: Events, get-involved: 'Get involved', how-to-contribute: 'How to contribute', our-network: 'Our Network', own-your-data: 'own your data', ppersons: PPersons, press: Press, projects: Projects, projects-list: 'Projects List', share-your-data: 'Share your data', staff: Staff, sub-sub-1: 'Sub Sub #1', subsite-test: 'Subsite Test', task-force-home: 'Task Force HOME', task-forces-1: 'Task Forces', use-our-api: 'Use our API', use-our-data: 'Use our data' }
+    options:
+        about-us: 'About us'
+        blog: 'Blog'
+        case-studies: 'Case studies'
+        europeana-tech: 'Europeana Tech'
+        events: 'Events'
+        get-involved: 'Get involved'
+        how-to-contribute: 'How to contribute'
+        our-network: 'Our Network'
+        own-your-data: 'own your data'
+        ppersons: 'PPersons'
+        press: 'Press'
+        projects: 'Projects'
+        projects-list: 'Projects List'
+        share-your-data: 'Share your data'
+        staff: 'Staff'
+        sub-sub-1: 'Sub Sub #1'
+        subsite-test: 'Subsite Test'
+        task-force-home: 'Task Force HOME'
+        task-forces-1: 'Task Forces'
+        use-our-api: 'Use our API'
+        use-our-data: 'Use our data'
     multiple: false
     has_sortorder: true
 chapters:
