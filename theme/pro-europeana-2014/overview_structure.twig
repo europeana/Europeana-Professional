@@ -1,6 +1,5 @@
 {% include '_header.twig' %}
 
-
 {# get contenttype of assigned content by taxonomy slug #}
 {% set contenttype = structurecontenttype(record.slug) %}
 
@@ -20,9 +19,7 @@
 <div class="lc">
     <!-- Start grid -->
     <div class="grid-main">
-
         <div class="l-content">
-
             <div class="l-breadcrumbs">
                 {% include 'items/_item-breadcrumb.twig' %}
             </div>
@@ -39,18 +36,13 @@
              -->{% endfor %}
                 </ul>
                 {% endif %}
-
             </div>
         </div><!--
-
      --><div class="l-sidebar">
             <div class="inner">
-
                 {# import contact snippet #}
                 {% include 'items/_item-help.twig' with { records: contacts, title: "",  use_secondary_mail: record.secondary_mail } %}
-
             </div>
-
         </div>
     </div>
     <!-- End grid -->
