@@ -24,7 +24,7 @@
 
     {# collect all related content objects #}
     {% for key, value in allRelatedContent %}
-         {% if value.contenttype.slug not in relatedExceptions %}
+         {% if value.contenttype.slug not in relatedExceptions and not value.hide_related|default(false) %}
             {% set relatedContents = relatedContents|merge({ (key) : value}) %}
         {% endif %}
     {% endfor %}
