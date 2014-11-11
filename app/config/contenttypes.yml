@@ -357,16 +357,16 @@ persons:
       required: false
       label: "Telephone number:"
       variant: inline
-      prefix: "<em>Allowed values are numbers, spaces, + and - </em>"
-      pattern: ^[0-9+ -]*$
+      prefix: "<em>Allowed values are numbers, spaces, (, ), + and - </em>"
+      pattern: '^[0-9+ -()]*$'
       class: narrow
     other_number:
       type: text
       required: false
       label: "Other number:"
       variant: inline
-      prefix: "<em>Allowed values are numbers, spaces, + and - </em>"
-      pattern: ^[0-9+ -]*$
+      prefix: "<em>Allowed values are numbers, spaces, (, ), + and - </em>"
+      pattern: '^[0-9+ -]*$'
       class: narrow
     linkedin:
       type: text
