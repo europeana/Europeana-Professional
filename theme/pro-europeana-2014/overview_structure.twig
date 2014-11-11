@@ -31,7 +31,7 @@
                 </div>
                 {% if records is defined %}
                 <ul class="l-next_options"><!--
-             -->{% for record in records if (record.hide_list != 1) %}<!--
+             -->{% for record in records[0:6] if (record.hide_list != 1) %}<!--
                 -->{% include 'items/_item-lineblock.twig' with {child : record} %}<!--
              -->{% endfor %}
                 </ul>
