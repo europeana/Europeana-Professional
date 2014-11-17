@@ -1,0 +1,24 @@
+{
+    "name": "europeana/file-helper",
+    "description": "Helper functions for handling files",
+    "type": "bolt-extension",
+    "require": {
+        "bolt/bolt": ">=2.0.0,<3.0.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {"name": "Europeana", "email": "info@europeana.eu"}
+    ],
+    "autoload": {
+        "files": [
+            "init.php"
+        ],
+        "psr-4": {
+            "Bolt\\Extension\\Europeana\\FileHelper": ""
+        }
+    },
+
+    "extra": {
+        "bolt-assets": "assets"
+    }
+}

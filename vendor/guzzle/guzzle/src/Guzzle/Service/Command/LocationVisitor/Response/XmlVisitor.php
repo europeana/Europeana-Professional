@@ -11,20 +11,19 @@ use Guzzle\Service\Command\CommandInterface;
  */
 class XmlVisitor extends AbstractResponseVisitor
 {
-    /**
-     * {@inheritdoc}
-     */
     public function before(CommandInterface $command, array &$result)
     {
         // Set the result of the command to the array conversion of the XML body
         $result = json_decode(json_encode($command->getResponse()->xml()), true);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function visit(CommandInterface $command, Response $response, Parameter $param, &$value, $context =  null)
-    {
+    public function visit(
+        CommandInterface $command,
+        Response $response,
+        Parameter $param,
+        &$value,
+        $context =  null
+    ) {
         $sentAs = $param->getWireName();
         $name = $param->getName();
         if (isset($value[$sentAs])) {
@@ -56,6 +55,8 @@ class XmlVisitor extends AbstractResponseVisitor
             $this->processObject($param, $value);
         } elseif ($type == 'array') {
             $this->processArray($param, $value);
+        } elseif ($type == 'string' && gettype($value) == 'array') {
+            $value = '';
         }
 
         if ($value !== null) {
@@ -107,9 +108,11 @@ class XmlVisitor extends AbstractResponseVisitor
     {
         // Ensure that the array is associative and not numerically indexed
         if (!isset($value[0]) && ($properties = $param->getProperties())) {
+            $knownProperties = array();
             foreach ($properties as $property) {
                 $name = $property->getName();
                 $sentAs = $property->getWireName();
+                $knownProperties[$name] = 1;
                 if ($property->getData('xmlAttribute')) {
                     $this->processXmlAttribute($property, $value);
                 } elseif (isset($value[$sentAs])) {
@@ -119,6 +122,11 @@ class XmlVisitor extends AbstractResponseVisitor
                         unset($value[$sentAs]);
                     }
                 }
+            }
+
+            // Remove any unknown and potentially unsafe properties
+            if ($param->getAdditionalProperties() === false) {
+                $value = array_intersect_key($value, $knownProperties);
             }
         }
     }

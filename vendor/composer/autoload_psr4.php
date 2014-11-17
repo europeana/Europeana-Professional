@@ -6,4 +6,11 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Seld\\JsonLint\\' => array($vendorDir . '/seld/jsonlint/src/Seld/JsonLint'),
+    'League\\Flysystem\\' => array($vendorDir . '/rossriley/flysystem53/src'),
+    'Eloquent\\Pathogen\\' => array($vendorDir . '/bolt/pathogen/src'),
+    'Bolt\\Thumbs\\Tests\\' => array($vendorDir . '/bolt/thumbs/tests'),
+    'Bolt\\Thumbs\\' => array($vendorDir . '/bolt/thumbs/src'),
+    'Bolt\\Tests\\' => array($baseDir . '/tests/Bolt/Tests'),
+    'Bolt\\' => array($baseDir . '/src'),
 );

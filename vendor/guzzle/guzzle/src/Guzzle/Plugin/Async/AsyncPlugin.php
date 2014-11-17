@@ -12,9 +12,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class AsyncPlugin implements EventSubscriberInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents()
     {
         return array(
@@ -45,18 +42,17 @@ class AsyncPlugin implements EventSubscriberInterface
      */
     public function onCurlProgress(Event $event)
     {
-        if (!$event['handle']) {
-            return;
-        }
-
-        if ($event['downloaded'] || ($event['uploaded'] || $event['upload_size'] === $event['uploaded'])) {
-            $event['handle']->getOptions()
-                ->set(CURLOPT_TIMEOUT_MS, 1)
-                ->set(CURLOPT_NOBODY, true);
+        if ($event['handle'] &&
+            ($event['downloaded'] || (isset($event['uploaded']) && $event['upload_size'] === $event['uploaded']))
+        ) {
             // Timeout after 1ms
-            curl_setopt($event['handle']->getHandle(), CURLOPT_TIMEOUT_MS, 1);
-            // Even if the response is quick, tell curl not to download the body
-            curl_setopt($event['handle']->getHandle(), CURLOPT_NOBODY, true);
+            curl_setopt($event['handle'], CURLOPT_TIMEOUT_MS, 1);
+            // Even if the response is quick, tell curl not to download the body.
+            // - Note that we can only perform this shortcut if the request transmitted a body so as to ensure that the
+            //   request method is not converted to a HEAD request before the request was sent via curl.
+            if ($event['uploaded']) {
+                curl_setopt($event['handle'], CURLOPT_NOBODY, true);
+            }
         }
     }
 

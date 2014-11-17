@@ -6,8 +6,8 @@ use Guzzle\Common\Event;
 use Guzzle\Common\AbstractHasDispatcher;
 use Guzzle\Http\Message\EntityEnclosingRequestInterface;
 use Guzzle\Http\Message\RequestInterface;
-use Guzzle\Http\Message\Response;
 use Guzzle\Http\Curl\CurlMultiInterface;
+use Guzzle\Http\Exception\CurlException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -19,9 +19,7 @@ class BackoffPlugin extends AbstractHasDispatcher implements EventSubscriberInte
     const RETRY_PARAM = 'plugins.backoff.retry_count';
     const RETRY_EVENT = 'plugins.backoff.retry';
 
-    /**
-     * @var BackoffStrategyInterface Backoff strategy
-     */
+    /** @var BackoffStrategyInterface Backoff strategy */
     protected $strategy;
 
     /**
@@ -56,17 +54,11 @@ class BackoffPlugin extends AbstractHasDispatcher implements EventSubscriberInte
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getAllEvents()
     {
         return array(self::RETRY_EVENT);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents()
     {
         return array(
@@ -100,7 +92,7 @@ class BackoffPlugin extends AbstractHasDispatcher implements EventSubscriberInte
             $this->dispatch(self::RETRY_EVENT, array(
                 'request'  => $request,
                 'response' => $response,
-                'handle'   => $exception ? $exception->getCurlHandle() : null,
+                'handle'   => ($exception && $exception instanceof CurlException) ? $exception->getCurlHandle() : null,
                 'retries'  => $retries,
                 'delay'    => $delay
             ));
@@ -128,7 +120,7 @@ class BackoffPlugin extends AbstractHasDispatcher implements EventSubscriberInte
             }
             $multi = $event['curl_multi'];
             $multi->remove($request);
-            $multi->add($request, true);
+            $multi->add($request);
         }
     }
 }

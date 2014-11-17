@@ -3,6 +3,8 @@
 namespace Guzzle\Http;
 
 use Guzzle\Common\Collection;
+use Guzzle\Common\Exception\RuntimeException;
+use Guzzle\Http\QueryAggregator\DuplicateAggregator;
 use Guzzle\Http\QueryAggregator\QueryAggregatorInterface;
 use Guzzle\Http\QueryAggregator\PhpAggregator;
 
@@ -11,45 +13,29 @@ use Guzzle\Http\QueryAggregator\PhpAggregator;
  */
 class QueryString extends Collection
 {
-    /**
-     * @var string Used to URL encode with rawurlencode
-     */
+    /** @var string Used to URL encode with rawurlencode */
     const RFC_3986 = 'RFC 3986';
 
-    /**
-     * @var string Used to encode with urlencode
-     */
+    /** @var string Used to encode with urlencode */
     const FORM_URLENCODED = 'application/x-www-form-urlencoded';
 
-    /**
-     * @var string Constant used to create blank query string values (e.g. ?foo)
-     */
+    /** @var string Constant used to create blank query string values (e.g. ?foo) */
     const BLANK = "_guzzle_blank_";
 
-    /**
-     * @var string The query string field separator (e.g. '&')
-     */
+    /** @var string The query string field separator (e.g. '&') */
     protected $fieldSeparator = '&';
 
-    /**
-     * @var string The query string value separator (e.g. '=')
-     */
+    /** @var string The query string value separator (e.g. '=') */
     protected $valueSeparator = '=';
 
-    /**
-     * @var bool URL encode fields and values?
-     */
+    /** @var bool URL encode fields and values */
     protected $urlEncode = 'RFC 3986';
 
-    /**
-     * @var QueryAggregatorInterface
-     */
+    /** @var QueryAggregatorInterface */
     protected $aggregator;
 
-    /**
-     * @var array Cached PHP aggregator
-     */
-    protected static $defaultAggregator = null;
+    /** @var array Cached PHP aggregator */
+    private static $defaultAggregator = null;
 
     /**
      * Parse a query string into a QueryString object
@@ -61,25 +47,38 @@ class QueryString extends Collection
     public static function fromString($query)
     {
         $q = new static();
+        if ($query === '') {
+            return $q;
+        }
 
-        if (0 !== strlen($query)) {
-            if ($query[0] == '?') {
-                $query = substr($query, 1);
+        $foundDuplicates = $foundPhpStyle = false;
+
+        foreach (explode('&', $query) as $kvp) {
+            $parts = explode('=', $kvp, 2);
+            $key = rawurldecode($parts[0]);
+            if ($paramIsPhpStyleArray = substr($key, -2) == '[]') {
+                $foundPhpStyle = true;
+                $key = substr($key, 0, -2);
             }
-            foreach (explode('&', $query) as $kvp) {
-                $parts = explode('=', $kvp, 2);
-                $key = rawurldecode($parts[0]);
-
-                if (substr($key, -2) == '[]') {
-                    $key = substr($key, 0, -2);
-                }
-
-                if (array_key_exists(1, $parts)) {
-                    $q->add($key, rawurldecode(str_replace('+', '%20', $parts[1])));
+            if (isset($parts[1])) {
+                $value = rawurldecode(str_replace('+', '%20', $parts[1]));
+                if (isset($q[$key])) {
+                    $q->add($key, $value);
+                    $foundDuplicates = true;
+                } elseif ($paramIsPhpStyleArray) {
+                    $q[$key] = array($value);
                 } else {
-                    $q->add($key, '');
+                    $q[$key] = $value;
                 }
+            } else {
+                // Uses false by default to represent keys with no trailing "=" sign.
+                $q->add($key, false);
             }
+        }
+
+        // Use the duplicate aggregator if duplicates were found and not using PHP style arrays
+        if ($foundDuplicates && !$foundPhpStyle) {
+            $q->setAggregator(new DuplicateAggregator());
         }
 
         return $q;
@@ -89,32 +88,20 @@ class QueryString extends Collection
      * Convert the query string parameters to a query string string
      *
      * @return string
+     * @throws RuntimeException
      */
     public function __toString()
     {
-        if (empty($this->data)) {
+        if (!$this->data) {
             return '';
         }
 
-        $queryString = '';
-        $firstValue = true;
-
+        $queryList = array();
         foreach ($this->prepareData($this->data) as $name => $value) {
-            $value = $value === null ? array('') : (array) $value;
-            foreach ($value as $v) {
-                if ($firstValue) {
-                    $firstValue = false;
-                } else {
-                    $queryString .= $this->fieldSeparator;
-                }
-                $queryString .= $name;
-                if ($v !== self::BLANK) {
-                    $queryString .= $this->valueSeparator . $v;
-                }
-            }
+            $queryList[] = $this->convertKvp($name, $value);
         }
 
-        return $queryString;
+        return implode($this->fieldSeparator, $queryList);
     }
 
     /**
@@ -271,7 +258,10 @@ class QueryString extends Collection
 
         $temp = array();
         foreach ($data as $key => $value) {
-            if (is_array($value)) {
+            if ($value === false || $value === null) {
+                // False and null will not include the "=". Use an empty string to include the "=".
+                $temp[$this->encodeValue($key)] = $value;
+            } elseif (is_array($value)) {
                 $temp = array_merge($temp, $this->aggregator->aggregate($key, $value, $this));
             } else {
                 $temp[$this->encodeValue($key)] = $this->encodeValue($value);
@@ -279,5 +269,29 @@ class QueryString extends Collection
         }
 
         return $temp;
+    }
+
+    /**
+     * Converts a key value pair that can contain strings, nulls, false, or arrays
+     * into a single string.
+     *
+     * @param string $name  Name of the field
+     * @param mixed  $value Value of the field
+     * @return string
+     */
+    private function convertKvp($name, $value)
+    {
+        if ($value === self::BLANK || $value === null || $value === false) {
+            return $name;
+        } elseif (!is_array($value)) {
+            return $name . $this->valueSeparator . $value;
+        }
+
+        $result = '';
+        foreach ($value as $v) {
+            $result .= $this->convertKvp($name, $v) . $this->fieldSeparator;
+        }
+
+        return rtrim($result, $this->fieldSeparator);
     }
 }

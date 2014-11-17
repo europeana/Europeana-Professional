@@ -8,11 +8,10 @@ use Guzzle\Http\Message\Response;
 /**
  * Never performs cache revalidation and just assumes the request is invalid
  */
-class DenyRevalidation implements RevalidationInterface
+class DenyRevalidation extends DefaultRevalidation
 {
-    /**
-     * {@inheritdoc}
-     */
+    public function __construct() {}
+
     public function revalidate(RequestInterface $request, Response $response)
     {
         return false;

@@ -9,9 +9,7 @@ use Guzzle\Common\Exception\InvalidArgumentException;
  */
 class SchemaFormatter
 {
-    /**
-     * @var \DateTimeZone
-     */
+    /** @var \DateTimeZone */
     protected static $utcTimeZone;
 
     /**
@@ -111,7 +109,7 @@ class SchemaFormatter
      */
     public static function formatTimestamp($value)
     {
-        return self::dateFormatter($value, 'U');
+        return (int) self::dateFormatter($value, 'U');
     }
 
     /**
@@ -141,12 +139,15 @@ class SchemaFormatter
      */
     protected static function dateFormatter($dateTime, $format)
     {
-        if (is_string($dateTime)) {
-            $dateTime = new \DateTime($dateTime, self::getUtcTimeZone());
-            return $dateTime->format($format);
-        } elseif (is_numeric($dateTime)) {
+        if (is_numeric($dateTime)) {
             return gmdate($format, (int) $dateTime);
-        } elseif ($dateTime instanceof \DateTime) {
+        }
+
+        if (is_string($dateTime)) {
+            $dateTime = new \DateTime($dateTime);
+        }
+
+        if ($dateTime instanceof \DateTime) {
             return $dateTime->setTimezone(self::getUtcTimeZone())->format($format);
         }
 

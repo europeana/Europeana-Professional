@@ -13,14 +13,10 @@ use Guzzle\Plugin\Cookie\Exception\InvalidCookieException;
  */
 class ArrayCookieJar implements CookieJarInterface, \Serializable
 {
-    /**
-     * @var array Loaded cookie data
-     */
+    /** @var array Loaded cookie data */
     protected $cookies = array();
 
-    /**
-     * @var bool Whether or not strict mode is enabled. When enabled, exceptions will be thrown for invalid cookies
-     */
+    /** @var bool Whether or not strict mode is enabled. When enabled, exceptions will be thrown for invalid cookies */
     protected $strictMode;
 
     /**
@@ -43,9 +39,6 @@ class ArrayCookieJar implements CookieJarInterface, \Serializable
         $this->strictMode = $strictMode;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function remove($domain = null, $path = null, $name = null)
     {
         $cookies = $this->all($domain, $path, $name, false, false);
@@ -56,9 +49,6 @@ class ArrayCookieJar implements CookieJarInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function removeTemporary()
     {
         $this->cookies = array_filter($this->cookies, function (Cookie $cookie) {
@@ -68,9 +58,6 @@ class ArrayCookieJar implements CookieJarInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function removeExpired()
     {
         $currentTime = time();
@@ -81,9 +68,6 @@ class ArrayCookieJar implements CookieJarInterface, \Serializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function all($domain = null, $path = null, $name = null, $skipDiscardable = false, $skipExpired = true)
     {
         return array_values(array_filter($this->cookies, function (Cookie $cookie) use (
@@ -101,9 +85,6 @@ class ArrayCookieJar implements CookieJarInterface, \Serializable
         }));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function add(Cookie $cookie)
     {
         // Only allow cookies with set and valid domain, name, value
@@ -112,6 +93,7 @@ class ArrayCookieJar implements CookieJarInterface, \Serializable
             if ($this->strictMode) {
                 throw new InvalidCookieException($result);
             } else {
+                $this->removeCookieIfEmpty($cookie);
                 return false;
             }
         }
@@ -203,13 +185,9 @@ class ArrayCookieJar implements CookieJarInterface, \Serializable
         return new \ArrayIterator($this->cookies);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addCookiesFromResponse(Response $response)
+    public function addCookiesFromResponse(Response $response, RequestInterface $request = null)
     {
-        if ($cookieHeader = $response->getSetCookie()) {
-            $request = $response->getRequest();
+        if ($cookieHeader = $response->getHeader('Set-Cookie')) {
             $parser = ParserRegistry::getInstance()->getParser('cookie');
             foreach ($cookieHeader as $cookie) {
                 if ($parsed = $request
@@ -229,9 +207,6 @@ class ArrayCookieJar implements CookieJarInterface, \Serializable
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getMatchingCookies(RequestInterface $request)
     {
         // Find cookies that match this request
@@ -244,5 +219,19 @@ class ArrayCookieJar implements CookieJarInterface, \Serializable
         };
 
         return $cookies;
+    }
+
+    /**
+     * If a cookie already exists and the server asks to set it again with a null value, the
+     * cookie must be deleted.
+     *
+     * @param \Guzzle\Plugin\Cookie\Cookie $cookie
+     */
+    private function removeCookieIfEmpty(Cookie $cookie)
+    {
+        $cookieValue = $cookie->getValue();
+        if ($cookieValue === null || $cookieValue === '') {
+            $this->remove($cookie->getDomain(), $cookie->getPath(), $cookie->getName());
+        }
     }
 }

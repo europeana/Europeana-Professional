@@ -12,14 +12,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class CommandContentMd5Plugin  implements EventSubscriberInterface
 {
-    /**
-     * @var string Parameter used to check if the ContentMD5 value is being added
-     */
+    /** @var string Parameter used to check if the ContentMD5 value is being added */
     protected $contentMd5Param;
 
-    /**
-     * @var string Parameter used to check if validation should occur on the response
-     */
+    /** @var string Parameter used to check if validation should occur on the response */
     protected $validateMd5Param;
 
     /**
@@ -32,17 +28,11 @@ class CommandContentMd5Plugin  implements EventSubscriberInterface
         $this->validateMd5Param = $validateMd5Param;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents()
     {
         return array('command.before_send' => array('onCommandBeforeSend', -255));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function onCommandBeforeSend(Event $event)
     {
         $command = $event['command'];
@@ -53,7 +43,9 @@ class CommandContentMd5Plugin  implements EventSubscriberInterface
             && $command->getOperation()->hasParam($this->contentMd5Param)) {
             // Check if an MD5 checksum value should be passed along to the request
             if ($command[$this->contentMd5Param] === true) {
-                $request->setHeader('Content-MD5', $request->getBody()->getContentMd5(true, true));
+                if (false !== ($md5 = $request->getBody()->getContentMd5(true, true))) {
+                    $request->setHeader('Content-MD5', $md5);
+                }
             }
         }
 

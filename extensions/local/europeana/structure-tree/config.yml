@@ -1,0 +1,76 @@
+##   StructureTree config
+ 
+
+# widget visibility
+widget: 1
+
+# tree contenttype for tree building
+treetype: structures
+
+# child contenttypes
+contenttypes: [ pages, blogposts, publications, pressreleases, events, projects, taskforces, jobs, persons]
+
+
+# sitemap settings
+# 
+# source options to specify the content
+# every source is listed in a seperate list. except 'menu' option
+# three 'types':
+#   - type:     'menu' get menu by name and seach childs recursively
+#   - type:     'list' 
+#     - link:     simple link with label + link
+#       - label
+#       - link
+#     - link:     slug link with label + slug
+#       - label
+#       - slug
+# 
+# todo: cleanup
+#
+sitemap:
+  sources:
+    source_1:
+      type: 'menu'
+      data:
+        menu: 'primary'
+    source_2:
+      type: 'list'
+      label: 'More info'
+      data:
+        blog:
+          label: 'Blog'
+          link: '/blogposts'
+        publications:
+          label: 'Publications'
+          link: '/publications'
+        events:
+          label: 'Events'
+          link: '/events'
+        jobs:
+          label: 'Jobs'
+          link: '/jobs'
+        about:
+          label: 'About Us'
+          slug: 'about-us'
+        press:
+          label: 'Press'
+          slug: 'press'
+    source_3:
+      type: 'list'
+      label: 'Explore Europeana'
+      data:
+        search_portal:
+          label: 'Search Portal'
+          link: '#'
+        labs:
+          label: Labs'
+          link: '#'
+        1914-1918:
+          label: '1914-1918'
+          link: '#'
+        end_user_blog:
+          label: 'End user blog'
+          link: '#'
+  contenttypes: ['structures', 'pages']
+  template: 'sitemap.twig'
+  xml_template: 'sitemap_xml.twig'

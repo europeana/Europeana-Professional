@@ -1,6 +1,352 @@
 CHANGELOG
 =========
 
+3.9.2 (2014-09-10)
+------------------
+
+* Retrying "Connection died, retrying a fresh connect" curl errors.
+* Automatically extracting the cacert from the phar in client constructor.
+* Added EntityBody support for OPTIONS requests.
+
+3.9.1 (2014-05-07)
+------------------
+
+* Added a fix to ReadLimitEntityBody to ensure it doesn't infinitely loop.
+* Added a fix to the stream checksum function so that when the first read
+  returns a falsey value, it still continues to consume the stream until EOF.
+
+3.9.0 (2014-04-23)
+------------------
+
+* `null`, `false`, and `"_guzzle_blank_"` all now serialize as an empty value
+  with no trailing "=". See dc1d824277.
+* No longer performing an MD5 check on the cacert each time the phar is used,
+  but rather copying the cacert to the temp directory.
+* `"0"` can now be added as a URL path
+* Deleting cookies that are set to empty
+* If-Modified-Since is no longer unnecessarily added to the CachePlugin
+* Cookie path matching now follows RFC 6265 s5.1.4
+* Updated service descriptions are now added to a service client's composite
+  factory.
+* MockPlugin now throws an exception if the queue is empty.
+* Properly parsing URLs that start with "http" but are not absolute
+* Added the ability to configure the curl_multi_select timeout setting
+* OAuth parameters are now sorted using lexicographical byte value ordering
+* Fixing invalid usage of an out of range PHP feature in the ErrorResponsePlugin
+
+3.8.1 (2014-01-28)
+------------------
+
+* Bug: Always using GET requests when redirecting from a 303 response
+* Bug: CURLOPT_SSL_VERIFYHOST is now correctly set to false when setting `$certificateAuthority` to false in
+  `Guzzle\Http\ClientInterface::setSslVerification()`
+* Bug: RedirectPlugin now uses strict RFC 3986 compliance when combining a base URL with a relative URL
+* Bug: The body of a request can now be set to `"0"`
+* Sending PHP stream requests no longer forces `HTTP/1.0`
+* Adding more information to ExceptionCollection exceptions so that users have more context, including a stack trace of
+  each sub-exception
+* Updated the `$ref` attribute in service descriptions to merge over any existing parameters of a schema (rather than
+  clobbering everything).
+* Merging URLs will now use the query string object from the relative URL (thus allowing custom query aggregators)
+* Query strings are now parsed in a way that they do no convert empty keys with no value to have a dangling `=`.
+  For example `foo&bar=baz` is now correctly parsed and recognized as `foo&bar=baz` rather than `foo=&bar=baz`.
+* Now properly escaping the regular expression delimiter when matching Cookie domains.
+* Network access is now disabled when loading XML documents
+
+3.8.0 (2013-12-05)
+------------------
+
+* Added the ability to define a POST name for a file
+* JSON response parsing now properly walks additionalProperties
+* cURL error code 18 is now retried automatically in the BackoffPlugin
+* Fixed a cURL error when URLs contain fragments
+* Fixed an issue in the BackoffPlugin retry event where it was trying to access all exceptions as if they were
+  CurlExceptions
+* CURLOPT_PROGRESS function fix for PHP 5.5 (69fcc1e)
+* Added the ability for Guzzle to work with older versions of cURL that do not support `CURLOPT_TIMEOUT_MS`
+* Fixed a bug that was encountered when parsing empty header parameters
+* UriTemplate now has a `setRegex()` method to match the docs
+* The `debug` request parameter now checks if it is truthy rather than if it exists
+* Setting the `debug` request parameter to true shows verbose cURL output instead of using the LogPlugin
+* Added the ability to combine URLs using strict RFC 3986 compliance
+* Command objects can now return the validation errors encountered by the command
+* Various fixes to cache revalidation (#437 and 29797e5)
+* Various fixes to the AsyncPlugin
+* Cleaned up build scripts
+
+3.7.4 (2013-10-02)
+------------------
+
+* Bug fix: 0 is now an allowed value in a description parameter that has a default value (#430)
+* Bug fix: SchemaFormatter now returns an integer when formatting to a Unix timestamp
+  (see https://github.com/aws/aws-sdk-php/issues/147)
+* Bug fix: Cleaned up and fixed URL dot segment removal to properly resolve internal dots
+* Minimum PHP version is now properly specified as 5.3.3 (up from 5.3.2) (#420)
+* Updated the bundled cacert.pem (#419)
+* OauthPlugin now supports adding authentication to headers or query string (#425)
+
+3.7.3 (2013-09-08)
+------------------
+
+* Added the ability to get the exception associated with a request/command when using `MultiTransferException` and
+  `CommandTransferException`.
+* Setting `additionalParameters` of a response to false is now honored when parsing responses with a service description
+* Schemas are only injected into response models when explicitly configured.
+* No longer guessing Content-Type based on the path of a request. Content-Type is now only guessed based on the path of
+  an EntityBody.
+* Bug fix: ChunkedIterator can now properly chunk a \Traversable as well as an \Iterator.
+* Bug fix: FilterIterator now relies on `\Iterator` instead of `\Traversable`.
+* Bug fix: Gracefully handling malformed responses in RequestMediator::writeResponseBody()
+* Bug fix: Replaced call to canCache with canCacheRequest in the CallbackCanCacheStrategy of the CachePlugin
+* Bug fix: Visiting XML attributes first before visting XML children when serializing requests
+* Bug fix: Properly parsing headers that contain commas contained in quotes
+* Bug fix: mimetype guessing based on a filename is now case-insensitive
+
+3.7.2 (2013-08-02)
+------------------
+
+* Bug fix: Properly URL encoding paths when using the PHP-only version of the UriTemplate expander
+  See https://github.com/guzzle/guzzle/issues/371
+* Bug fix: Cookie domains are now matched correctly according to RFC 6265
+  See https://github.com/guzzle/guzzle/issues/377
+* Bug fix: GET parameters are now used when calculating an OAuth signature
+* Bug fix: Fixed an issue with cache revalidation where the If-None-Match header was being double quoted
+* `Guzzle\Common\AbstractHasDispatcher::dispatch()` now returns the event that was dispatched
+* `Guzzle\Http\QueryString::factory()` now guesses the most appropriate query aggregator to used based on the input.
+  See https://github.com/guzzle/guzzle/issues/379
+* Added a way to add custom domain objects to service description parsing using the `operation.parse_class` event. See
+  https://github.com/guzzle/guzzle/pull/380
+* cURL multi cleanup and optimizations
+
+3.7.1 (2013-07-05)
+------------------
+
+* Bug fix: Setting default options on a client now works
+* Bug fix: Setting options on HEAD requests now works. See #352
+* Bug fix: Moving stream factory before send event to before building the stream. See #353
+* Bug fix: Cookies no longer match on IP addresses per RFC 6265
+* Bug fix: Correctly parsing header parameters that are in `<>` and quotes
+* Added `cert` and `ssl_key` as request options
+* `Host` header can now diverge from the host part of a URL if the header is set manually
+* `Guzzle\Service\Command\LocationVisitor\Request\XmlVisitor` was rewritten to change from using SimpleXML to XMLWriter
+* OAuth parameters are only added via the plugin if they aren't already set
+* Exceptions are now thrown when a URL cannot be parsed
+* Returning `false` if `Guzzle\Http\EntityBody::getContentMd5()` fails
+* Not setting a `Content-MD5` on a command if calculating the Content-MD5 fails via the CommandContentMd5Plugin
+
+3.7.0 (2013-06-10)
+------------------
+
+* See UPGRADING.md for more information on how to upgrade.
+* Requests now support the ability to specify an array of $options when creating a request to more easily modify a
+  request. You can pass a 'request.options' configuration setting to a client to apply default request options to
+  every request created by a client (e.g. default query string variables, headers, curl options, etc).
+* Added a static facade class that allows you to use Guzzle with static methods and mount the class to `\Guzzle`.
+  See `Guzzle\Http\StaticClient::mount`.
+* Added `command.request_options` to `Guzzle\Service\Command\AbstractCommand` to pass request options to requests
+      created by a command (e.g. custom headers, query string variables, timeout settings, etc).
+* Stream size in `Guzzle\Stream\PhpStreamRequestFactory` will now be set if Content-Length is returned in the
+  headers of a response
+* Added `Guzzle\Common\Collection::setPath($path, $value)` to set a value into an array using a nested key
+  (e.g. `$collection->setPath('foo/baz/bar', 'test'); echo $collection['foo']['bar']['bar'];`)
+* ServiceBuilders now support storing and retrieving arbitrary data
+* CachePlugin can now purge all resources for a given URI
+* CachePlugin can automatically purge matching cached items when a non-idempotent request is sent to a resource
+* CachePlugin now uses the Vary header to determine if a resource is a cache hit
+* `Guzzle\Http\Message\Response` now implements `\Serializable`
+* Added `Guzzle\Cache\CacheAdapterFactory::fromCache()` to more easily create cache adapters
+* `Guzzle\Service\ClientInterface::execute()` now accepts an array, single command, or Traversable
+* Fixed a bug in `Guzzle\Http\Message\Header\Link::addLink()`
+* Better handling of calculating the size of a stream in `Guzzle\Stream\Stream` using fstat() and caching the size
+* `Guzzle\Common\Exception\ExceptionCollection` now creates a more readable exception message
+* Fixing BC break: Added back the MonologLogAdapter implementation rather than extending from PsrLog so that older
+  Symfony users can still use the old version of Monolog.
+* Fixing BC break: Added the implementation back in for `Guzzle\Http\Message\AbstractMessage::getTokenizedHeader()`.
+  Now triggering an E_USER_DEPRECATED warning when used. Use `$message->getHeader()->parseParams()`.
+* Several performance improvements to `Guzzle\Common\Collection`
+* Added an `$options` argument to the end of the following methods of `Guzzle\Http\ClientInterface`:
+  createRequest, head, delete, put, patch, post, options, prepareRequest
+* Added an `$options` argument to the end of `Guzzle\Http\Message\Request\RequestFactoryInterface::createRequest()`
+* Added an `applyOptions()` method to `Guzzle\Http\Message\Request\RequestFactoryInterface`
+* Changed `Guzzle\Http\ClientInterface::get($uri = null, $headers = null, $body = null)` to
+  `Guzzle\Http\ClientInterface::get($uri = null, $headers = null, $options = array())`. You can still pass in a
+  resource, string, or EntityBody into the $options parameter to specify the download location of the response.
+* Changed `Guzzle\Common\Collection::__construct($data)` to no longer accepts a null value for `$data` but a
+  default `array()`
+* Added `Guzzle\Stream\StreamInterface::isRepeatable`
+* Removed `Guzzle\Http\ClientInterface::setDefaultHeaders(). Use
+  $client->getConfig()->setPath('request.options/headers/{header_name}', 'value')`. or
+  $client->getConfig()->setPath('request.options/headers', array('header_name' => 'value'))`.
+* Removed `Guzzle\Http\ClientInterface::getDefaultHeaders(). Use $client->getConfig()->getPath('request.options/headers')`.
+* Removed `Guzzle\Http\ClientInterface::expandTemplate()`
+* Removed `Guzzle\Http\ClientInterface::setRequestFactory()`
+* Removed `Guzzle\Http\ClientInterface::getCurlMulti()`
+* Removed `Guzzle\Http\Message\RequestInterface::canCache`
+* Removed `Guzzle\Http\Message\RequestInterface::setIsRedirect`
+* Removed `Guzzle\Http\Message\RequestInterface::isRedirect`
+* Made `Guzzle\Http\Client::expandTemplate` and `getUriTemplate` protected methods.
+* You can now enable E_USER_DEPRECATED warnings to see if you are using a deprecated method by setting
+  `Guzzle\Common\Version::$emitWarnings` to true.
+* Marked `Guzzle\Http\Message\Request::isResponseBodyRepeatable()` as deprecated. Use
+      `$request->getResponseBody()->isRepeatable()` instead.
+* Marked `Guzzle\Http\Message\Request::canCache()` as deprecated. Use
+  `Guzzle\Plugin\Cache\DefaultCanCacheStrategy->canCacheRequest()` instead.
+* Marked `Guzzle\Http\Message\Request::canCache()` as deprecated. Use
+  `Guzzle\Plugin\Cache\DefaultCanCacheStrategy->canCacheRequest()` instead.
+* Marked `Guzzle\Http\Message\Request::setIsRedirect()` as deprecated. Use the HistoryPlugin instead.
+* Marked `Guzzle\Http\Message\Request::isRedirect()` as deprecated. Use the HistoryPlugin instead.
+* Marked `Guzzle\Cache\CacheAdapterFactory::factory()` as deprecated
+* Marked 'command.headers', 'command.response_body' and 'command.on_complete' as deprecated for AbstractCommand.
+  These will work through Guzzle 4.0
+* Marked 'request.params' for `Guzzle\Http\Client` as deprecated. Use [request.options][params].
+* Marked `Guzzle\Service\Client::enableMagicMethods()` as deprecated. Magic methods can no longer be disabled on a Guzzle\Service\Client.
+* Marked `Guzzle\Service\Client::getDefaultHeaders()` as deprecated. Use $client->getConfig()->getPath('request.options/headers')`.
+* Marked `Guzzle\Service\Client::setDefaultHeaders()` as deprecated. Use $client->getConfig()->setPath('request.options/headers/{header_name}', 'value')`.
+* Marked `Guzzle\Parser\Url\UrlParser` as deprecated. Just use PHP's `parse_url()` and percent encode your UTF-8.
+* Marked `Guzzle\Common\Collection::inject()` as deprecated.
+* Marked `Guzzle\Plugin\CurlAuth\CurlAuthPlugin` as deprecated. Use `$client->getConfig()->setPath('request.options/auth', array('user', 'pass', 'Basic|Digest');`
+* CacheKeyProviderInterface and DefaultCacheKeyProvider are no longer used. All of this logic is handled in a
+  CacheStorageInterface. These two objects and interface will be removed in a future version.
+* Always setting X-cache headers on cached responses
+* Default cache TTLs are now handled by the CacheStorageInterface of a CachePlugin
+* `CacheStorageInterface::cache($key, Response $response, $ttl = null)` has changed to `cache(RequestInterface
+  $request, Response $response);`
+* `CacheStorageInterface::fetch($key)` has changed to `fetch(RequestInterface $request);`
+* `CacheStorageInterface::delete($key)` has changed to `delete(RequestInterface $request);`
+* Added `CacheStorageInterface::purge($url)`
+* `DefaultRevalidation::__construct(CacheKeyProviderInterface $cacheKey, CacheStorageInterface $cache, CachePlugin
+  $plugin)` has changed to `DefaultRevalidation::__construct(CacheStorageInterface $cache,
+  CanCacheStrategyInterface $canCache = null)`
+* Added `RevalidationInterface::shouldRevalidate(RequestInterface $request, Response $response)`
+
+3.6.0 (2013-05-29)
+------------------
+
+* ServiceDescription now implements ToArrayInterface
+* Added command.hidden_params to blacklist certain headers from being treated as additionalParameters
+* Guzzle can now correctly parse incomplete URLs
+* Mixed casing of headers are now forced to be a single consistent casing across all values for that header.
+* Messages internally use a HeaderCollection object to delegate handling case-insensitive header resolution
+* Removed the whole changedHeader() function system of messages because all header changes now go through addHeader().
+* Specific header implementations can be created for complex headers. When a message creates a header, it uses a
+  HeaderFactory which can map specific headers to specific header classes. There is now a Link header and
+  CacheControl header implementation.
+* Removed from interface: Guzzle\Http\ClientInterface::setUriTemplate
+* Removed from interface: Guzzle\Http\ClientInterface::setCurlMulti()
+* Removed Guzzle\Http\Message\Request::receivedRequestHeader() and implemented this functionality in
+  Guzzle\Http\Curl\RequestMediator
+* Removed the optional $asString parameter from MessageInterface::getHeader(). Just cast the header to a string.
+* Removed the optional $tryChunkedTransfer option from Guzzle\Http\Message\EntityEnclosingRequestInterface
+* Removed the $asObjects argument from Guzzle\Http\Message\MessageInterface::getHeaders()
+* Removed Guzzle\Parser\ParserRegister::get(). Use getParser()
+* Removed Guzzle\Parser\ParserRegister::set(). Use registerParser().
+* All response header helper functions return a string rather than mixing Header objects and strings inconsistently
+* Removed cURL blacklist support. This is no longer necessary now that Expect, Accept, etc are managed by Guzzle
+  directly via interfaces
+* Removed the injecting of a request object onto a response object. The methods to get and set a request still exist
+  but are a no-op until removed.
+* Most classes that used to require a ``Guzzle\Service\Command\CommandInterface` typehint now request a
+  `Guzzle\Service\Command\ArrayCommandInterface`.
+* Added `Guzzle\Http\Message\RequestInterface::startResponse()` to the RequestInterface to handle injecting a response
+  on a request while the request is still being transferred
+* The ability to case-insensitively search for header values
+* Guzzle\Http\Message\Header::hasExactHeader
+* Guzzle\Http\Message\Header::raw. Use getAll()
+* Deprecated cache control specific methods on Guzzle\Http\Message\AbstractMessage. Use the CacheControl header object
+  instead.
+* `Guzzle\Service\Command\CommandInterface` now extends from ToArrayInterface and ArrayAccess
+* Added the ability to cast Model objects to a string to view debug information.
+
+3.5.0 (2013-05-13)
+------------------
+
+* Bug: Fixed a regression so that request responses are parsed only once per oncomplete event rather than multiple times
+* Bug: Better cleanup of one-time events accross the board (when an event is meant to fire once, it will now remove
+  itself from the EventDispatcher)
+* Bug: `Guzzle\Log\MessageFormatter` now properly writes "total_time" and "connect_time" values
+* Bug: Cloning an EntityEnclosingRequest now clones the EntityBody too
+* Bug: Fixed an undefined index error when parsing nested JSON responses with a sentAs parameter that reference a
+  non-existent key
+* Bug: All __call() method arguments are now required (helps with mocking frameworks)
+* Deprecating Response::getRequest() and now using a shallow clone of a request object to remove a circular reference
+  to help with refcount based garbage collection of resources created by sending a request
+* Deprecating ZF1 cache and log adapters. These will be removed in the next major version.
+* Deprecating `Response::getPreviousResponse()` (method signature still exists, but it'sdeprecated). Use the
+  HistoryPlugin for a history.
+* Added a `responseBody` alias for the `response_body` location
+* Refactored internals to no longer rely on Response::getRequest()
+* HistoryPlugin can now be cast to a string
+* HistoryPlugin now logs transactions rather than requests and responses to more accurately keep track of the requests
+  and responses that are sent over the wire
+* Added `getEffectiveUrl()` and `getRedirectCount()` to Response objects
+
+3.4.3 (2013-04-30)
+------------------
+
+* Bug fix: Fixing bug introduced in 3.4.2 where redirect responses are duplicated on the final redirected response
+* Added a check to re-extract the temp cacert bundle from the phar before sending each request
+
+3.4.2 (2013-04-29)
+------------------
+
+* Bug fix: Stream objects now work correctly with "a" and "a+" modes
+* Bug fix: Removing `Transfer-Encoding: chunked` header when a Content-Length is present
+* Bug fix: AsyncPlugin no longer forces HEAD requests
+* Bug fix: DateTime timezones are now properly handled when using the service description schema formatter
+* Bug fix: CachePlugin now properly handles stale-if-error directives when a request to the origin server fails
+* Setting a response on a request will write to the custom request body from the response body if one is specified
+* LogPlugin now writes to php://output when STDERR is undefined
+* Added the ability to set multiple POST files for the same key in a single call
+* application/x-www-form-urlencoded POSTs now use the utf-8 charset by default
+* Added the ability to queue CurlExceptions to the MockPlugin
+* Cleaned up how manual responses are queued on requests (removed "queued_response" and now using request.before_send)
+* Configuration loading now allows remote files
+
+3.4.1 (2013-04-16)
+------------------
+
+* Large refactoring to how CurlMulti handles work. There is now a proxy that sits in front of a pool of CurlMulti
+  handles. This greatly simplifies the implementation, fixes a couple bugs, and provides a small performance boost.
+* Exceptions are now properly grouped when sending requests in parallel
+* Redirects are now properly aggregated when a multi transaction fails
+* Redirects now set the response on the original object even in the event of a failure
+* Bug fix: Model names are now properly set even when using $refs
+* Added support for PHP 5.5's CurlFile to prevent warnings with the deprecated @ syntax
+* Added support for oauth_callback in OAuth signatures
+* Added support for oauth_verifier in OAuth signatures
+* Added support to attempt to retrieve a command first literally, then ucfirst, the with inflection
+
+3.4.0 (2013-04-11)
+------------------
+
+* Bug fix: URLs are now resolved correctly based on http://tools.ietf.org/html/rfc3986#section-5.2. #289
+* Bug fix: Absolute URLs with a path in a service description will now properly override the base URL. #289
+* Bug fix: Parsing a query string with a single PHP array value will now result in an array. #263
+* Bug fix: Better normalization of the User-Agent header to prevent duplicate headers. #264.
+* Bug fix: Added `number` type to service descriptions.
+* Bug fix: empty parameters are removed from an OAuth signature
+* Bug fix: Revalidating a cache entry prefers the Last-Modified over the Date header
+* Bug fix: Fixed "array to string" error when validating a union of types in a service description
+* Bug fix: Removed code that attempted to determine the size of a stream when data is written to the stream
+* Bug fix: Not including an `oauth_token` if the value is null in the OauthPlugin.
+* Bug fix: Now correctly aggregating successful requests and failed requests in CurlMulti when a redirect occurs.
+* The new default CURLOPT_TIMEOUT setting has been increased to 150 seconds so that Guzzle works on poor connections.
+* Added a feature to EntityEnclosingRequest::setBody() that will automatically set the Content-Type of the request if
+  the Content-Type can be determined based on the entity body or the path of the request.
+* Added the ability to overwrite configuration settings in a client when grabbing a throwaway client from a builder.
+* Added support for a PSR-3 LogAdapter.
+* Added a `command.after_prepare` event
+* Added `oauth_callback` parameter to the OauthPlugin
+* Added the ability to create a custom stream class when using a stream factory
+* Added a CachingEntityBody decorator
+* Added support for `additionalParameters` in service descriptions to define how custom parameters are serialized.
+* The bundled SSL certificate is now provided in the phar file and extracted when running Guzzle from a phar.
+* You can now send any EntityEnclosingRequest with POST fields or POST files and cURL will handle creating bodies
+* POST requests using a custom entity body are now treated exactly like PUT requests but with a custom cURL method. This
+  means that the redirect behavior of POST requests with custom bodies will not be the same as POST requests that use
+  POST fields or files (the latter is only used when emulating a form POST in the browser).
+* Lots of cleanup to CurlHandle::factory and RequestFactory::createRequest
+
 3.3.1 (2013-03-10)
 ------------------
 

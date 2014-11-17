@@ -5,9 +5,8 @@ namespace Guzzle\Log;
 use Monolog\Logger;
 
 /**
- * Monolog log adapter
- *
- * @link https://github.com/Seldaek/monolog
+ * @deprecated
+ * @codeCoverageIgnore
  */
 class MonologLogAdapter extends AbstractLogAdapter
 {
@@ -23,19 +22,13 @@ class MonologLogAdapter extends AbstractLogAdapter
         LOG_ALERT   => Logger::ALERT
     );
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(Logger $logObject)
     {
         $this->log = $logObject;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function log($message, $priority = LOG_INFO, $extras = null)
+    public function log($message, $priority = LOG_INFO, $extras = array())
     {
-        $this->log->addRecord(self::$mapping[$priority], $message);
+        $this->log->addRecord(self::$mapping[$priority], $message, $extras);
     }
 }

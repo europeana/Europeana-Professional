@@ -7,60 +7,50 @@ namespace Guzzle\Iterator;
  */
 class ChunkedIterator extends \IteratorIterator
 {
-    /**
-     * @var int Size of each chunk
-     */
+    /** @var int Size of each chunk */
     protected $chunkSize;
 
-    /**
-     * @var array Current chunk
-     */
+    /** @var array Current chunk */
     protected $chunk;
 
     /**
      * @param \Traversable $iterator  Traversable iterator
      * @param int          $chunkSize Size to make each chunk
+     * @throws \InvalidArgumentException
      */
     public function __construct(\Traversable $iterator, $chunkSize)
     {
+        $chunkSize = (int) $chunkSize;
+        if ($chunkSize < 0 ) {
+            throw new \InvalidArgumentException("The chunk size must be equal or greater than zero; $chunkSize given");
+        }
+
         parent::__construct($iterator);
         $this->chunkSize = $chunkSize;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rewind()
     {
+        parent::rewind();
         $this->next();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function next()
     {
         $this->chunk = array();
-        $inner = $this->getInnerIterator();
-        for ($i = 0; $i < $this->chunkSize && $inner->valid(); $i++) {
-            $this->chunk[] = $inner->current();
-            $inner->next();
+        for ($i = 0; $i < $this->chunkSize && parent::valid(); $i++) {
+            $this->chunk[] = parent::current();
+            parent::next();
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function current()
     {
         return $this->chunk;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function valid()
     {
-        return !empty($this->chunk);
+        return (bool) $this->chunk;
     }
 }

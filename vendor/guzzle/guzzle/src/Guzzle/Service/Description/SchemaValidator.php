@@ -9,24 +9,16 @@ use Guzzle\Common\ToArrayInterface;
  */
 class SchemaValidator implements ValidatorInterface
 {
-    /**
-     * @var self Cache instance of the object
-     */
+    /** @var self Cache instance of the object */
     protected static $instance;
 
-    /**
-     * @var bool Whether or not integers are converted to strings when an integer is received for a string input
-     */
+    /** @var bool Whether or not integers are converted to strings when an integer is received for a string input */
     protected $castIntegerToStringType;
 
-    /**
-     * @var array Errors encountered while validating
-     */
+    /** @var array Errors encountered while validating */
     protected $errors;
 
     /**
-     * Get a cached instance
-     *
      * @return self
      * @codeCoverageIgnore
      */
@@ -48,9 +40,6 @@ class SchemaValidator implements ValidatorInterface
         $this->castIntegerToStringType = $castIntegerToStringType;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validate(Parameter $param, &$value)
     {
         $this->errors = array();
@@ -147,7 +136,7 @@ class SchemaValidator implements ValidatorInterface
                             $current = null;
                             $this->recursiveProcess($property, $current, $path, $depth + 1);
                             // Only set the value if it was populated with something
-                            if ($current) {
+                            if (null !== $current) {
                                 $value[$name] = $current;
                             }
                         }
@@ -168,8 +157,9 @@ class SchemaValidator implements ValidatorInterface
                             }
                         } else {
                             // if additionalProperties is set to false and there are additionalProperties in the values, then fail
-                            $keys = array_keys($value);
-                            $this->errors[] = sprintf('%s[%s] is not an allowed property', $path, reset($keys));
+                            foreach ($diff as $prop) {
+                                $this->errors[] = sprintf('%s[%s] is not an allowed property', $path, $prop);
+                            }
                         }
                     }
                 }
@@ -192,7 +182,7 @@ class SchemaValidator implements ValidatorInterface
 
         // If the value is required and the type is not null, then there is an error if the value is not set
         if ($required && $value === null && $type != 'null') {
-            $message = "{$path} is " . ($param->getType() ? ('a required ' . $param->getType()) : 'required');
+            $message = "{$path} is " . ($param->getType() ? ('a required ' . implode(' or ', (array) $param->getType())) : 'required');
             if ($param->getDescription()) {
                 $message .= ': ' . $param->getDescription();
             }
@@ -252,7 +242,7 @@ class SchemaValidator implements ValidatorInterface
                 }
             }
 
-        } elseif ($type == 'integer' || $type == 'numeric') {
+        } elseif ($type == 'integer' || $type == 'number' || $type == 'numeric') {
             if (($min = $param->getMinimum()) && $value < $min) {
                 $this->errors[] = "{$path} must be greater than or equal to {$min}";
             }
@@ -285,6 +275,8 @@ class SchemaValidator implements ValidatorInterface
                 return 'integer';
             } elseif ($t == 'boolean' && is_bool($value)) {
                 return 'boolean';
+            } elseif ($t == 'number' && is_numeric($value)) {
+                return 'number';
             } elseif ($t == 'numeric' && is_numeric($value)) {
                 return 'numeric';
             } elseif ($t == 'null' && !$value) {

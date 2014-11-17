@@ -9,13 +9,10 @@ use Guzzle\Http\Message\Response;
  */
 class DefaultResponseParser implements ResponseParserInterface
 {
-    /**
-     * @var self
-     */
+    /** @var self */
     protected static $instance;
 
     /**
-     * Get a cached instance of the default response parser
      * @return self
      * @codeCoverageIgnore
      */
@@ -28,15 +25,12 @@ class DefaultResponseParser implements ResponseParserInterface
         return self::$instance;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function parse(CommandInterface $command)
     {
         $response = $command->getRequest()->getResponse();
 
         // Account for hard coded content-type values specified in service descriptions
-        if ($contentType = $command->get('command.expects')) {
+        if ($contentType = $command['command.expects']) {
             $response->setHeader('Content-Type', $contentType);
         } else {
             $contentType = (string) $response->getHeader('Content-Type');
@@ -45,16 +39,13 @@ class DefaultResponseParser implements ResponseParserInterface
         return $this->handleParsing($command, $response, $contentType);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function handleParsing(AbstractCommand $command, Response $response, $contentType)
+    protected function handleParsing(CommandInterface $command, Response $response, $contentType)
     {
         $result = $response;
         if ($result->getBody()) {
             if (stripos($contentType, 'json') !== false) {
                 $result = $result->json();
-            } if (stripos($contentType, 'xml') !== false) {
+            } elseif (stripos($contentType, 'xml') !== false) {
                 $result = $result->xml();
             }
         }

@@ -2,6 +2,7 @@
 
 namespace Guzzle\Http\Message;
 
+use Guzzle\Common\Version;
 use Guzzle\Common\Event;
 use Guzzle\Common\Collection;
 use Guzzle\Common\Exception\RuntimeException;
@@ -11,6 +12,7 @@ use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\ClientInterface;
 use Guzzle\Http\EntityBody;
 use Guzzle\Http\EntityBodyInterface;
+use Guzzle\Http\Message\Header\HeaderInterface;
 use Guzzle\Http\Url;
 use Guzzle\Parser\ParserRegistry;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -22,59 +24,39 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class Request extends AbstractMessage implements RequestInterface
 {
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     protected $eventDispatcher;
 
-    /**
-     * @var Url HTTP Url
-     */
+    /** @var Url HTTP Url */
     protected $url;
 
-    /**
-     * @var string HTTP method (GET, PUT, POST, DELETE, HEAD, OPTIONS, TRACE)
-     */
+    /** @var string HTTP method (GET, PUT, POST, DELETE, HEAD, OPTIONS, TRACE) */
     protected $method;
 
-    /**
-     * @var ClientInterface
-     */
+    /** @var ClientInterface */
     protected $client;
 
-    /**
-     * @var Response Response of the request
-     */
+    /** @var Response Response of the request */
     protected $response;
 
-    /**
-     * @var EntityBodyInterface Response body
-     */
+    /** @var EntityBodyInterface Response body */
     protected $responseBody;
 
-    /**
-     * @var string State of the request object
-     */
+    /** @var string State of the request object */
     protected $state;
 
-    /**
-     * @var string Authentication username
-     */
+    /** @var string Authentication username */
     protected $username;
 
-    /**
-     * @var string Auth password
-     */
+    /** @var string Auth password */
     protected $password;
 
-    /**
-     * @var Collection cURL specific transfer options
-     */
+    /** @var Collection cURL specific transfer options */
     protected $curlOptions;
 
-    /**
-     * {@inheritdoc}
-     */
+    /** @var bool */
+    protected $isRedirect = false;
+
     public static function getAllEvents()
     {
         return array(
@@ -91,15 +73,11 @@ class Request extends AbstractMessage implements RequestInterface
             // An exception is being thrown because of an unsuccessful response
             'request.exception',
             // Received response status line
-            'request.receive.status_line',
-            // Manually set a response
-            'request.set_response'
+            'request.receive.status_line'
         );
     }
 
     /**
-     * Create a new request
-     *
      * @param string           $method  HTTP method
      * @param string|Url       $url     HTTP URL to connect to. The URI scheme, host header, and URI are parsed from the
      *                                  full URL. If query string parameters are present they will be parsed as well.
@@ -107,26 +85,19 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function __construct($method, $url, $headers = array())
     {
+        parent::__construct();
         $this->method = strtoupper($method);
         $this->curlOptions = new Collection();
-        $this->params = new Collection();
         $this->setUrl($url);
 
         if ($headers) {
             // Special handling for multi-value headers
             foreach ($headers as $key => $value) {
-                $lkey = strtolower($key);
                 // Deal with collisions with Host and Authorization
-                if ($lkey == 'host') {
+                if ($key == 'host' || $key == 'Host') {
                     $this->setHeader($key, $value);
-                } elseif ($lkey == 'authorization') {
-                    $parts = explode(' ', $value);
-                    if ($parts[0] == 'Basic' && isset($parts[1])) {
-                        list($user, $pass) = explode(':', base64_decode($parts[1]));
-                        $this->setAuth($user, $pass);
-                    } else {
-                        $this->setHeader($key, $value);
-                    }
+                } elseif ($value instanceof HeaderInterface) {
+                    $this->addHeader($key, $value);
                 } else {
                     foreach ((array) $value as $v) {
                         $this->addHeader($key, $v);
@@ -138,10 +109,6 @@ class Request extends AbstractMessage implements RequestInterface
         $this->setState(self::STATE_NEW);
     }
 
-    /**
-     * Clone the request object, leaving off any response that was received
-     * @see Guzzle\Plugin\Redirect\RedirectPlugin::cloneRequestWithGetMethod
-     */
     public function __clone()
     {
         if ($this->eventDispatcher) {
@@ -149,15 +116,9 @@ class Request extends AbstractMessage implements RequestInterface
         }
         $this->curlOptions = clone $this->curlOptions;
         $this->params = clone $this->params;
-        // Remove state based parameters from the cloned request
-        $this->params->remove('curl_handle')->remove('queued_response')->remove('curl_multi');
         $this->url = clone $this->url;
         $this->response = $this->responseBody = null;
-
-        // Clone each header
-        foreach ($this->headers as $key => &$value) {
-            $value = clone $value;
-        }
+        $this->headers = clone $this->headers;
 
         $this->setState(RequestInterface::STATE_NEW);
         $this->dispatch('request.clone', array('request' => $this));
@@ -174,8 +135,7 @@ class Request extends AbstractMessage implements RequestInterface
     }
 
     /**
-     * Default method that will throw exceptions if an unsuccessful response
-     * is received.
+     * Default method that will throw exceptions if an unsuccessful response is received.
      *
      * @param Event $event Received
      * @throws BadResponseException if the response is not successful
@@ -183,18 +143,10 @@ class Request extends AbstractMessage implements RequestInterface
     public static function onRequestError(Event $event)
     {
         $e = BadResponseException::factory($event['request'], $event['response']);
-        $event['request']->dispatch('request.exception', array(
-            'request'   => $event['request'],
-            'response'  => $event['response'],
-            'exception' => $e
-        ));
-
+        $event['request']->setState(self::STATE_ERROR, array('exception' => $e) + $event->toArray());
         throw $e;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setClient(ClientInterface $client)
     {
         $this->client = $client;
@@ -202,17 +154,11 @@ class Request extends AbstractMessage implements RequestInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getClient()
     {
         return $this->client;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getRawHeaders()
     {
         $protocolVersion = $this->protocolVersion ?: '1.1';
@@ -222,9 +168,6 @@ class Request extends AbstractMessage implements RequestInterface
             . '/' . $protocolVersion . "\r\n" . implode("\r\n", $this->getHeaderLines());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setUrl($url)
     {
         if ($url instanceof Url) {
@@ -246,9 +189,6 @@ class Request extends AbstractMessage implements RequestInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function send()
     {
         if (!$this->client) {
@@ -258,17 +198,11 @@ class Request extends AbstractMessage implements RequestInterface
         return $this->client->send($this);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResponse()
     {
         return $this->response;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getQuery($asString = false)
     {
         return $asString
@@ -276,25 +210,16 @@ class Request extends AbstractMessage implements RequestInterface
             : $this->url->getQuery();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getMethod()
     {
         return $this->method;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getScheme()
     {
         return $this->url->getScheme();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setScheme($scheme)
     {
         $this->url->setScheme($scheme);
@@ -302,17 +227,11 @@ class Request extends AbstractMessage implements RequestInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHost()
     {
         return $this->url->getHost();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setHost($host)
     {
         $this->url->setHost($host);
@@ -321,17 +240,11 @@ class Request extends AbstractMessage implements RequestInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getProtocolVersion()
     {
         return $this->protocolVersion;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setProtocolVersion($protocol)
     {
         $this->protocolVersion = $protocol;
@@ -339,17 +252,11 @@ class Request extends AbstractMessage implements RequestInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPath()
     {
         return '/' . ltrim($this->url->getPath(), '/');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPath($path)
     {
         $this->url->setPath($path);
@@ -357,78 +264,77 @@ class Request extends AbstractMessage implements RequestInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPort()
     {
         return $this->url->getPort();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setPort($port)
     {
         $this->url->setPort($port);
 
         // Include the port in the Host header if it is not the default port for the scheme of the URL
         $scheme = $this->url->getScheme();
-        if (($scheme == 'http' && $port != 80) || ($scheme == 'https' && $port != 443)) {
-            $this->headers['host'] = new Header('Host', $this->url->getHost() . ':' . $port);
+        if ($port && (($scheme == 'http' && $port != 80) || ($scheme == 'https' && $port != 443))) {
+            $this->headers['host'] = $this->headerFactory->createHeader('Host', $this->url->getHost() . ':' . $port);
         } else {
-            $this->headers['host'] = new Header('Host', $this->url->getHost());
+            $this->headers['host'] = $this->headerFactory->createHeader('Host', $this->url->getHost());
         }
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getUsername()
     {
         return $this->username;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPassword()
     {
         return $this->password;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setAuth($user, $password = '', $scheme = CURLAUTH_BASIC)
     {
+        static $authMap = array(
+            'basic'  => CURLAUTH_BASIC,
+            'digest' => CURLAUTH_DIGEST,
+            'ntlm'   => CURLAUTH_NTLM,
+            'any'    => CURLAUTH_ANY
+        );
+
         // If we got false or null, disable authentication
         if (!$user) {
             $this->password = $this->username = null;
             $this->removeHeader('Authorization');
             $this->getCurlOptions()->remove(CURLOPT_HTTPAUTH);
-        } else {
-            $this->username = $user;
-            $this->password = $password;
-            // Bypass CURL when using basic auth to promote connection reuse
-            if ($scheme == CURLAUTH_BASIC) {
-                $this->getCurlOptions()->remove(CURLOPT_HTTPAUTH);
-                $this->setHeader('Authorization', 'Basic ' . base64_encode($this->username . ':' . $this->password));
-            } else {
-                $this->getCurlOptions()
-                    ->set(CURLOPT_HTTPAUTH, $scheme)
-                    ->set(CURLOPT_USERPWD, $this->username . ':' . $this->password);
+            return $this;
+        }
+
+        if (!is_numeric($scheme)) {
+            $scheme = strtolower($scheme);
+            if (!isset($authMap[$scheme])) {
+                throw new InvalidArgumentException($scheme . ' is not a valid authentication type');
             }
+            $scheme = $authMap[$scheme];
+        }
+
+        $this->username = $user;
+        $this->password = $password;
+
+        // Bypass CURL when using basic auth to promote connection reuse
+        if ($scheme == CURLAUTH_BASIC) {
+            $this->getCurlOptions()->remove(CURLOPT_HTTPAUTH);
+            $this->setHeader('Authorization', 'Basic ' . base64_encode($this->username . ':' . $this->password));
+        } else {
+            $this->getCurlOptions()
+                ->set(CURLOPT_HTTPAUTH, $scheme)
+                ->set(CURLOPT_USERPWD, $this->username . ':' . $this->password);
         }
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResource()
     {
         $resource = $this->getPath();
@@ -439,111 +345,91 @@ class Request extends AbstractMessage implements RequestInterface
         return $resource;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getUrl($asObject = false)
     {
         return $asObject ? clone $this->url : (string) $this->url;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getState()
     {
         return $this->state;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setState($state, array $context = array())
     {
+        $oldState = $this->state;
         $this->state = $state;
-        if ($this->state == self::STATE_NEW) {
-            $this->response = null;
-        } elseif ($this->state == self::STATE_COMPLETE) {
-            $this->processResponse($context);
-            $this->responseBody = null;
+
+        switch ($state) {
+            case self::STATE_NEW:
+                $this->response = null;
+                break;
+            case self::STATE_TRANSFER:
+                if ($oldState !== $state) {
+                    // Fix Content-Length and Transfer-Encoding collisions
+                    if ($this->hasHeader('Transfer-Encoding') && $this->hasHeader('Content-Length')) {
+                        $this->removeHeader('Transfer-Encoding');
+                    }
+                    $this->dispatch('request.before_send', array('request' => $this));
+                }
+                break;
+            case self::STATE_COMPLETE:
+                if ($oldState !== $state) {
+                    $this->processResponse($context);
+                    $this->responseBody = null;
+                }
+                break;
+            case self::STATE_ERROR:
+                if (isset($context['exception'])) {
+                    $this->dispatch('request.exception', array(
+                        'request'   => $this,
+                        'response'  => isset($context['response']) ? $context['response'] : $this->response,
+                        'exception' => isset($context['exception']) ? $context['exception'] : null
+                    ));
+                }
         }
 
-        return $this;
+        return $this->state;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCurlOptions()
     {
         return $this->curlOptions;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function receiveResponseHeader($data)
+    public function startResponse(Response $response)
     {
-        static $normalize = array("\r", "\n");
         $this->state = self::STATE_TRANSFER;
-        $length = strlen($data);
-        $data = str_replace($normalize, '', $data);
-
-        if (strpos($data, 'HTTP/') === 0) {
-
-            $startLine = explode(' ', $data, 3);
-            $code = $startLine[1];
-            $status = isset($startLine[2]) ? $startLine[2] : '';
-
-            // Only download the body of the response to the specified response
-            // body when a successful response is received.
-            $body = $code >= 200 && $code < 300 ? $this->getResponseBody() : EntityBody::factory();
-
-            $this->response = new Response($code, null, $body);
-            $this->response->setStatus($code, $status)->setRequest($this);
-            $this->dispatch('request.receive.status_line', array(
-                'request'       => $this,
-                'line'          => $data,
-                'status_code'   => $code,
-                'reason_phrase' => $status
-            ));
-
-        } elseif (strpos($data, ':') !== false) {
-
-            list($header, $value) = explode(':', $data, 2);
-            $this->response->addHeader(trim($header), trim($value));
-        }
-
-        return $length;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setResponse(Response $response, $queued = false)
-    {
-        // Never overwrite the request associated with the response (useful for redirect history)
-        if (!$response->getRequest()) {
-            $response->setRequest($this);
-        }
-
-        if ($queued) {
-            $this->getParams()->set('queued_response', $response);
-        } else {
-            $this->getParams()->remove('queued_response');
-            $this->response = $response;
-            $this->responseBody = $response->getBody();
-            $this->processResponse();
-        }
-
-        $this->dispatch('request.set_response', $this->getEventArray());
+        $response->setEffectiveUrl((string) $this->getUrl());
+        $this->response = $response;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function setResponse(Response $response, $queued = false)
+    {
+        $response->setEffectiveUrl((string) $this->url);
+
+        if ($queued) {
+            $ed = $this->getEventDispatcher();
+            $ed->addListener('request.before_send', $f = function ($e) use ($response, &$f, $ed) {
+                $e['request']->setResponse($response);
+                $ed->removeListener('request.before_send', $f);
+            }, -9999);
+        } else {
+            $this->response = $response;
+            // If a specific response body is specified, then use it instead of the response's body
+            if ($this->responseBody && !$this->responseBody->getCustomData('default') && !$response->isRedirect()) {
+                $this->getResponseBody()->write((string) $this->response->getBody());
+            } else {
+                $this->responseBody = $this->response->getBody();
+            }
+            $this->setState(self::STATE_COMPLETE);
+        }
+
+        return $this;
+    }
+
     public function setResponseBody($body)
     {
         // Attempt to open a file for writing if a string was passed
@@ -560,29 +446,28 @@ class Request extends AbstractMessage implements RequestInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResponseBody()
     {
         if ($this->responseBody === null) {
-            $this->responseBody = EntityBody::factory();
+            $this->responseBody = EntityBody::factory()->setCustomData('default', true);
         }
 
         return $this->responseBody;
     }
 
     /**
-     * {@inheritdoc}
+     * Determine if the response body is repeatable (readable + seekable)
+     *
+     * @return bool
+     * @deprecated Use getResponseBody()->isSeekable()
+     * @codeCoverageIgnore
      */
     public function isResponseBodyRepeatable()
     {
-        return !$this->responseBody ? true : $this->responseBody->isSeekable() && $this->responseBody->isReadable();
+        Version::warn(__METHOD__ . ' is deprecated. Use $request->getResponseBody()->isRepeatable()');
+        return !$this->responseBody ? true : $this->responseBody->isRepeatable();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCookies()
     {
         if ($cookie = $this->getHeader('Cookie')) {
@@ -593,9 +478,6 @@ class Request extends AbstractMessage implements RequestInterface
         return array();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCookie($name)
     {
         $cookies = $this->getCookies();
@@ -603,9 +485,6 @@ class Request extends AbstractMessage implements RequestInterface
         return isset($cookies[$name]) ? $cookies[$name] : null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function addCookie($name, $value)
     {
         if (!$this->hasHeader('Cookie')) {
@@ -615,14 +494,11 @@ class Request extends AbstractMessage implements RequestInterface
         }
 
         // Always use semicolons to separate multiple cookie headers
-        $this->getHeader('Cookie')->setGlue('; ');
+        $this->getHeader('Cookie')->setGlue(';');
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function removeCookie($name)
     {
         if ($cookie = $this->getHeader('Cookie')) {
@@ -636,27 +512,6 @@ class Request extends AbstractMessage implements RequestInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function canCache()
-    {
-        // Only GET and HEAD requests can be cached
-        if ($this->method != RequestInterface::GET && $this->method != RequestInterface::HEAD) {
-            return false;
-        }
-
-        // Never cache requests when using no-store
-        if ($this->hasCacheControlDirective('no-store')) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
@@ -665,9 +520,6 @@ class Request extends AbstractMessage implements RequestInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getEventDispatcher()
     {
         if (!$this->eventDispatcher) {
@@ -677,37 +529,18 @@ class Request extends AbstractMessage implements RequestInterface
         return $this->eventDispatcher;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function dispatch($eventName, array $context = array())
     {
         $context['request'] = $this;
-        $this->getEventDispatcher()->dispatch($eventName, new Event($context));
+
+        return $this->getEventDispatcher()->dispatch($eventName, new Event($context));
     }
 
-    /**
-     * {@inheritdoc}
-     * @codeCoverageIgnore
-     */
     public function addSubscriber(EventSubscriberInterface $subscriber)
     {
         $this->getEventDispatcher()->addSubscriber($subscriber);
 
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function changedHeader($header)
-    {
-        parent::changedHeader($header);
-
-        if ($header == 'host') {
-            // If the Host header was changed, be sure to update the internal URL
-            $this->setHost((string) $this->getHeader('Host'));
-        }
     }
 
     /**
@@ -727,17 +560,11 @@ class Request extends AbstractMessage implements RequestInterface
      * Process a received response
      *
      * @param array $context Contextual information
-     *
-     * @throws BadResponseException on unsuccessful responses
+     * @throws RequestException|BadResponseException on unsuccessful responses
      */
     protected function processResponse(array $context = array())
     {
-        // Use the queued response if one is set
-        if ($this->getParams()->get('queued_response')) {
-            $this->response = $this->getParams()->get('queued_response');
-            $this->responseBody = $this->response->getBody();
-            $this->getParams()->remove('queued_response');
-        } elseif (!$this->response) {
+        if (!$this->response) {
             // If no response, then processResponse shouldn't have been called
             $e = new RequestException('Error completing request');
             $e->setRequest($this);
@@ -771,7 +598,41 @@ class Request extends AbstractMessage implements RequestInterface
                 $this->dispatch('request.success', $this->getEventArray());
             }
         }
+    }
+
+    /**
+     * @deprecated Use Guzzle\Plugin\Cache\DefaultCanCacheStrategy
+     * @codeCoverageIgnore
+     */
+    public function canCache()
+    {
+        Version::warn(__METHOD__ . ' is deprecated. Use Guzzle\Plugin\Cache\DefaultCanCacheStrategy.');
+        if (class_exists('Guzzle\Plugin\Cache\DefaultCanCacheStrategy')) {
+            $canCache = new \Guzzle\Plugin\Cache\DefaultCanCacheStrategy();
+            return $canCache->canCacheRequest($this);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @deprecated Use the history plugin (not emitting a warning as this is built-into the RedirectPlugin for now)
+     * @codeCoverageIgnore
+     */
+    public function setIsRedirect($isRedirect)
+    {
+        $this->isRedirect = $isRedirect;
 
         return $this;
+    }
+
+    /**
+     * @deprecated Use the history plugin
+     * @codeCoverageIgnore
+     */
+    public function isRedirect()
+    {
+        Version::warn(__METHOD__ . ' is deprecated. Use the HistoryPlugin to track this.');
+        return $this->isRedirect;
     }
 }

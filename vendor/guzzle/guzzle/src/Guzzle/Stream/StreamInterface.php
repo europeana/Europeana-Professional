@@ -46,6 +46,13 @@ interface StreamInterface
     public function setStream($stream, $size = null);
 
     /**
+     * Detach the current stream resource
+     *
+     * @return self
+     */
+    public function detachStream();
+
+    /**
      * Get the stream wrapper type
      *
      * @return string
@@ -88,6 +95,13 @@ interface StreamInterface
     public function isReadable();
 
     /**
+     * Check if the stream is repeatable
+     *
+     * @return bool
+     */
+    public function isRepeatable();
+
+    /**
      * Check if the stream is writable
      *
      * @return bool
@@ -127,7 +141,7 @@ interface StreamInterface
      *
      * @param int $size Size of the stream contents in bytes
      *
-     * @return Stream
+     * @return self
      */
     public function setSize($size);
 

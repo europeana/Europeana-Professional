@@ -8,7 +8,6 @@ use Guzzle\Log\MessageFormatter;
 use Guzzle\Log\ClosureLogAdapter;
 use Guzzle\Http\EntityBody;
 use Guzzle\Http\Message\EntityEnclosingRequestInterface;
-use Guzzle\Http\Message\Response;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -20,24 +19,16 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class LogPlugin implements EventSubscriberInterface
 {
-    /**
-     * @var LogAdapterInterface Adapter responsible for writing log data
-     */
-    private $logAdapter;
+    /** @var LogAdapterInterface Adapter responsible for writing log data */
+    protected $logAdapter;
 
-    /**
-     * @var MessageFormatter Formatter used to format messages before logging
-     */
+    /** @var MessageFormatter Formatter used to format messages before logging */
     protected $formatter;
 
-    /**
-     * @var bool Whether or not to wire request and response bodies
-     */
+    /** @var bool Whether or not to wire request and response bodies */
     protected $wireBodies;
 
     /**
-     * Construct a new LogPlugin
-     *
      * @param LogAdapterInterface     $logAdapter Adapter object used to log message
      * @param string|MessageFormatter $formatter  Formatter used to format log messages or the formatter template
      * @param bool                    $wireBodies Set to true to track request and response bodies using a temporary
@@ -57,20 +48,25 @@ class LogPlugin implements EventSubscriberInterface
      * Get a log plugin that outputs full request, response, and curl error information to stderr
      *
      * @param bool     $wireBodies Set to false to disable request/response body output when they use are not repeatable
-     * @param resource $stream     Stream to write to when logging
+     * @param resource $stream     Stream to write to when logging. Defaults to STDERR when it is available
      *
      * @return self
      */
-    public static function getDebugPlugin($wireBodies = true, $stream = STDERR)
+    public static function getDebugPlugin($wireBodies = true, $stream = null)
     {
+        if ($stream === null) {
+            if (defined('STDERR')) {
+                $stream = STDERR;
+            } else {
+                $stream = fopen('php://output', 'w');
+            }
+        }
+
         return new self(new ClosureLogAdapter(function ($m) use ($stream) {
             fwrite($stream, $m . PHP_EOL);
         }), "# Request:\n{request}\n\n# Response:\n{response}\n\n# Errors: {curl_code} {curl_error}", $wireBodies);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents()
     {
         return array(
@@ -125,7 +121,7 @@ class LogPlugin implements EventSubscriberInterface
                 // The body of the request cannot be recalled so logging the body will require us to buffer it
                 $request->getParams()->set('request_wire', EntityBody::factory());
             }
-            if (!$request->isResponseBodyRepeatable()) {
+            if (!$request->getResponseBody()->isRepeatable()) {
                 // The body of the response cannot be recalled so logging the body will require us to buffer it
                 $request->getParams()->set('response_wire', EntityBody::factory());
             }
@@ -154,7 +150,7 @@ class LogPlugin implements EventSubscriberInterface
         }
 
         // Send the log message to the adapter, adding a category and host
-        $priority = $response && !$response->isSuccessful() ? LOG_ERR : LOG_DEBUG;
+        $priority = $response && $response->isError() ? LOG_ERR : LOG_DEBUG;
         $message = $this->formatter->format($request, $response, $handle);
         $this->logAdapter->log($message, $priority, array(
             'request'  => $request,

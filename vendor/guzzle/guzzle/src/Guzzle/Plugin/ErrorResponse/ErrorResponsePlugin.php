@@ -14,9 +14,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class ErrorResponsePlugin implements EventSubscriberInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function getSubscribedEvents()
     {
         return array('command.before_send' => array('onCommandBeforeSend', -1));
@@ -45,6 +42,7 @@ class ErrorResponsePlugin implements EventSubscriberInterface
      * @param Operation        $operation Operation that defines the request and errors
      *
      * @return \Closure Returns a closure
+     * @throws ErrorResponseException
      */
     protected function getErrorClosure(RequestInterface $request, CommandInterface $command, Operation $operation)
     {
@@ -63,8 +61,8 @@ class ErrorResponsePlugin implements EventSubscriberInterface
                 $className = $error['class'];
                 $errorClassInterface = __NAMESPACE__ . '\\ErrorResponseExceptionInterface';
                 if (!class_exists($className)) {
-                    throw new ErrorResponseException("{$className} does not exist");;
-                } elseif (!is_subclass_of($className, $errorClassInterface)) {
+                    throw new ErrorResponseException("{$className} does not exist");
+                } elseif (!(in_array($errorClassInterface, class_implements($className)))) {
                     throw new ErrorResponseException("{$className} must implement {$errorClassInterface}");
                 }
                 throw $className::fromCommand($command, $response);

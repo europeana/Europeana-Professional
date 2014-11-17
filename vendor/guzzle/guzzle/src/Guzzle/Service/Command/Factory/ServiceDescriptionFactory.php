@@ -10,14 +10,10 @@ use Guzzle\Inflection\InflectorInterface;
  */
 class ServiceDescriptionFactory implements FactoryInterface
 {
-    /**
-     * @var ServiceDescriptionInterface
-     */
+    /** @var ServiceDescriptionInterface */
     protected $description;
 
-    /**
-     * @var InflectorInterface
-     */
+    /** @var InflectorInterface */
     protected $inflector;
 
     /**
@@ -54,16 +50,17 @@ class ServiceDescriptionFactory implements FactoryInterface
         return $this->description;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function factory($name, array $args = array())
     {
         $command = $this->description->getOperation($name);
 
-        // If an inflector was passed, then attempt to get the command using snake_case inflection
-        if (!$command && $this->inflector) {
-            $command = $this->description->getOperation($this->inflector->snake($name));
+        // If a command wasn't found, then try to uppercase the first letter and try again
+        if (!$command) {
+            $command = $this->description->getOperation(ucfirst($name));
+            // If an inflector was passed, then attempt to get the command using snake_case inflection
+            if (!$command && $this->inflector) {
+                $command = $this->description->getOperation($this->inflector->snake($name));
+            }
         }
 
         if ($command) {

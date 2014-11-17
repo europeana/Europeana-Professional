@@ -2,16 +2,43 @@
 
 namespace Guzzle\Cache;
 
-use Guzzle\Common\FromConfigInterface;
+use Doctrine\Common\Cache\Cache;
+use Guzzle\Common\Version;
 use Guzzle\Common\Exception\InvalidArgumentException;
 use Guzzle\Common\Exception\RuntimeException;
+use Guzzle\Common\FromConfigInterface;
+use Zend\Cache\Storage\StorageInterface;
 
 /**
- * Generates cache adapters and cache providers objects using an array of configuration data.  This can be useful for
- * creating cache adapters in client builder configuration files.
+ * Generates cache adapters from any number of known cache implementations
  */
 class CacheAdapterFactory implements FromConfigInterface
 {
+    /**
+     * Create a Guzzle cache adapter based on an array of options
+     *
+     * @param mixed $cache Cache value
+     *
+     * @return CacheAdapterInterface
+     * @throws InvalidArgumentException
+     */
+    public static function fromCache($cache)
+    {
+        if (!is_object($cache)) {
+            throw new InvalidArgumentException('Cache must be one of the known cache objects');
+        }
+
+        if ($cache instanceof CacheAdapterInterface) {
+            return $cache;
+        } elseif ($cache instanceof Cache) {
+            return new DoctrineCacheAdapter($cache);
+        } elseif ($cache instanceof StorageInterface) {
+            return new Zf2CacheAdapter($cache);
+        } else {
+            throw new InvalidArgumentException('Unknown cache type: ' . get_class($cache));
+        }
+    }
+
     /**
      * Create a Guzzle cache adapter based on an array of options
      *
@@ -19,9 +46,12 @@ class CacheAdapterFactory implements FromConfigInterface
      *
      * @return CacheAdapterInterface
      * @throws InvalidArgumentException
+     * @deprecated This will be removed in a future version
+     * @codeCoverageIgnore
      */
     public static function factory($config = array())
     {
+        Version::warn(__METHOD__ . ' is deprecated');
         if (!is_array($config)) {
             throw new InvalidArgumentException('$config must be an array');
         }
@@ -68,8 +98,10 @@ class CacheAdapterFactory implements FromConfigInterface
      *
      * @return mixed
      * @throws RuntimeException
+     * @deprecated
+     * @codeCoverageIgnore
      */
-    protected static function createObject($className, array $args = null)
+    private static function createObject($className, array $args = null)
     {
         try {
             if (!$args) {
