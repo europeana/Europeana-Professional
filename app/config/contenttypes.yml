@@ -1341,7 +1341,7 @@ structures:
   taxonomy: [ tags, tree ]
   record_template: overview_structure.twig
   recordsperpage: 1000
-  viewless: true
+  # viewless: true
 
 
 
