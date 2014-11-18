@@ -31,6 +31,9 @@ roles:
     guest:
         description: This user can log on, but is not allowed to edit any content.
         label: Guest Editor
+    blog-editor:
+        description: This user can edit blogs in the system.
+        label: Blog Editor        
 
 # Now we'll define some permissions. Each permission comes with a list of roles
 # that grant access.
@@ -44,7 +47,7 @@ roles:
 # Also note that the 'editcontent' and 'overview' routes are special-cased
 # inside the code, so they don't appear here.
 global:
-    about: [ editor, admin, developer ] # view the 'About Bolt' page
+    about: [ editor, admin, developer, blog-editor ] # view the 'About Bolt' page
     activitylog: [ admin, developer ]
     clearcache: [ admin, developer ]
     contentaction: [ editor, admin, developer ]
@@ -56,8 +59,8 @@ global:
     fileedit: [ admin, developer ]
     files:config: [ developer ]
     files:theme: [ developer ]
-    files:uploads: [ admin, developer ]
-    files: [ editor, admin, developer ]
+    files:uploads: [ admin, developer, chief-editor, blog-editor ]
+    files: [ editor, admin, developer, chief-editor, blog-editor ]
     prefill: [ developer ]
     settings: [ admin, developer, everyone ]
     translation: [ developer ]
@@ -115,16 +118,36 @@ contenttype-all:
     create: [ developer, admin, chief-editor ]
     publish: [ developer, admin, chief-editor ]
     depublish: [ developer, admin, chief-editor ]
-    delete: [ developer, admin ]
+    delete: [ developer, admin, chief-editor ]
     change-ownership: [ developer, admin ]
 
 contenttype-default:
-    edit: [ editor ]
-    create: [ editor ]
+    edit: [ editor, chief-editor ]
+    create: [ editor, chief-editor ]
     change-ownership: [ owner ]
-    view: [ anonymous ]
+    view: [ editor, chief-editor ]
 
 contenttypes:
+    structures: 
+        edit: [ developer, admin ]
+        create: [ developer, admin ]
+        change-ownership: [ developer, admin ]
+        view: [ developer, admin ]
+    homepage: 
+        edit: [ developer, admin ]
+        create: [ developer, admin ]
+        change-ownership: [ developer, admin ]
+        view: [ developer, admin ]        
+    footers: 
+        edit: [ developer, admin ]
+        create: [ developer, admin ]
+        change-ownership: [ developer, admin ]
+        view: [ developer, admin ]        
+    blogposts: 
+        edit: [ developer, admin, chief-editor, blog-editor ]
+        create: [ developer, admin, chief-editor, blog-editor ]
+        change-ownership: [ developer, admin, chief-editor, blog-editor ]
+        view: [ developer, admin, chief-editor, blog-editor ]        
 
 # This is an example of how to define Contenttype specific 
 #    kitchensink:                                 # The name of the content type in contenttypes.yml

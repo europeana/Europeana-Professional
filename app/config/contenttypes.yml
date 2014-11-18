@@ -1341,6 +1341,7 @@ structures:
   taxonomy: [ tags, tree ]
   record_template: overview_structure.twig
   recordsperpage: 1000
+  viewless: true
 
 
 
@@ -1432,6 +1433,8 @@ homepage:
     footers:
       label: "Footer"
       multiple: false
+  viewless: true
+
 
 
 
@@ -1486,4 +1489,5 @@ footers:
     locations:
       label: "Location:"
       multiple: false
+  viewless: true
 
