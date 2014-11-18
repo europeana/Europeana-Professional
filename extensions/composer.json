@@ -1,0 +1,30 @@
+{
+    "require": {
+        "bolt/disqus": "v1.2",
+        "europeana/filebrowser": "dev-master"
+    },
+    "repositories": {
+        "bolt": {
+            "type": "composer",
+            "url": "https://extensions.bolt.cm/satis/"
+        },
+        "packagist": false
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "provide": {
+        "bolt/bolt": "2.0.0"
+    },
+    "scripts": {
+        "post-package-install": "Bolt\\Composer\\ExtensionInstaller::handle",
+        "post-package-update": "Bolt\\Composer\\ExtensionInstaller::handle"
+    },
+    "extra": {
+        "bolt-web-path": ".././"
+    },
+    "autoload": {
+        "files": [
+            "installer.php"
+        ]
+    }
+}

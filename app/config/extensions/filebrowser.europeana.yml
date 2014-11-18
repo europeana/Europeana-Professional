@@ -1,0 +1,48 @@
+# Override template path to point to your own Twig templates for the file
+# browser, relative to the Bolt installation's root directory. The
+# placeholder '%self%' can be used to insert the path to the FileBrowser
+# extension's own root directory, and the %theme% path doubles for the
+# currently selected Bolt theme.
+# Instead of just one path, a list of paths can be specified to provide more
+# than one search location for templates; this allows you to override templates
+# individually.
+#
+# templates:
+#     - '%theme%/filebrowser'
+#     - '%self%/templates'
+
+# Provide a list of CSS stylesheets to include, overriding the default
+# stylesheet, relative to the Bolt installation's root directory. The
+# placeholder '%assets%' can be used to insert the path to the FileBrowser
+# extension's own assets directory.
+# Provide an empty list to not include any stylesheets at all; provide null
+# or comment out the `stylesheets` field to use the default stylesheet that
+# comes with the FileBrowser extension.
+#
+# stylesheets:
+#     - '%assets%/file_browser.css'
+
+# A list of display modes for the file browser widget. Note that your template
+# must be prepared to handle each of them, otherwise you won't see a useful
+# effect.
+# The first mode in the list will be used as the default mode.
+#
+# modes: [ 'list', 'icons' ]
+
+# Icon configuration. Use this to override the root path for icons and/or
+# mappings for individual icons.
+#
+# icons:
+#     # path points to the root path for icons (from the client's perspective).
+#     path: '%assets%/icons'
+#     # Maps file extensions (without a leading dot) to icon filenames, relative
+#     # to the icon path.
+#     # Three "magic" extensions are recognized for special kinds of files:
+#     # - '@up' is used for "up one level" entries
+#     # - '@dir' is used for subdirectories
+#     # - '@default' is used as a fallback when no other entry matches
+#     # Note that image files (png, jpg, gif) are always rendered as thumbnails.
+#     mapping:
+#         '@up': folder_up.svg
+#         '@dir': folder.svg
+#         '@default': document.svg

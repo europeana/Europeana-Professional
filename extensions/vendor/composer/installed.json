@@ -1,0 +1,102 @@
+[
+    {
+        "name": "bolt/disqus",
+        "version": "v1.2",
+        "version_normalized": "1.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/bolt/Disqus.git",
+            "reference": "d9fe2210df8d8973fbb5ac767ddc074b1c19e5d0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/bolt/Disqus/zipball/d9fe2210df8d8973fbb5ac767ddc074b1c19e5d0",
+            "reference": "d9fe2210df8d8973fbb5ac767ddc074b1c19e5d0",
+            "shasum": ""
+        },
+        "require": {
+            "bolt/bolt": ">=2.0.0,<3.0.0"
+        },
+        "time": "2014-08-18 07:29:50",
+        "type": "bolt-extension",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.7.*"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "init.php"
+            ],
+            "psr-4": {
+                "Disqus\\": ""
+            }
+        },
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Bob den Otter",
+                "email": "bob@twokings.nl"
+            }
+        ],
+        "keywords": [
+            "comments",
+            "disqus"
+        ],
+        "support": {
+            "source": "https://github.com/bolt/Disqus/tree/v1.2",
+            "issues": "https://github.com/bolt/Disqus/issues"
+        }
+    },
+    {
+        "name": "europeana/filebrowser",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/europeana/filebrowser.git",
+            "reference": "7a73bbbe5bc650bd78aa835028d97c9906574008"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/europeana/filebrowser/zipball/7a73bbbe5bc650bd78aa835028d97c9906574008",
+            "reference": "7a73bbbe5bc650bd78aa835028d97c9906574008",
+            "shasum": ""
+        },
+        "require": {
+            "bolt/bolt": ">=2.0,<3.0"
+        },
+        "time": "2014-11-18 08:40:38",
+        "type": "bolt-extension",
+        "installation-source": "source",
+        "autoload": {
+            "files": [
+                "init.php"
+            ],
+            "psr-4": {
+                "FileBrowser\\": "."
+            }
+        },
+        "authors": [
+            {
+                "name": "Bolt",
+                "email": "info@bolt.cm",
+                "homepage": "http://bolt.cm"
+            }
+        ],
+        "description": "Exposes the /files directory on the front end through a file browser widget.",
+        "keywords": [
+            "europeana",
+            "file-browser",
+            "files",
+            "frontend"
+        ],
+        "support": {
+            "source": "https://github.com/europeana/filebrowser/tree/master",
+            "issues": "https://github.com/europeana/filebrowser/issues"
+        }
+    }
+]
