@@ -283,14 +283,17 @@ persons:
     first_name:
       type: text
       required: true
-      label: "First name (required):"
+      label: "First name"
       variant: inline
       class: narrow
+      postfix: "<em><small>(required)</small></em>"      
+      group: "personal details"
     # Show on Staff list page, Staff page, Events page (speakers), Contact info block
     last_name:
       type: text
       required: true
-      label: "Last name (required):"
+      label: "Last name"
+      postfix: "<em><small>(required)</small></em>"
       variant: inline
       class: narrow
     slug:
@@ -344,6 +347,7 @@ persons:
       variant: inline
       pattern: email
       class: narrow
+      group: contact
     # This is only used if the checkbox is checked on the page - it will override the email address and show the secondary email address instead
     secondary_email:
       type: text
@@ -357,7 +361,7 @@ persons:
       required: false
       label: "Telephone number:"
       variant: inline
-      prefix: "<em>Allowed values are numbers, spaces, (, ), + and - </em>"
+      postfix: "<em>Allowed values are numbers, spaces, (, ), + and - </em>"
       pattern: '^[0-9+ -()]*$'
       class: narrow
     other_number:
@@ -365,7 +369,7 @@ persons:
       required: false
       label: "Other number:"
       variant: inline
-      prefix: "<em>Allowed values are numbers, spaces, (, ), + and - </em>"
+      postfix: "<em>Allowed values are numbers, spaces, (, ), + and - </em>"
       pattern: '^[0-9+ -]*$'
       class: narrow
     linkedin:
@@ -373,7 +377,7 @@ persons:
       required: false
       label: "Linkedin URL:"
       variant: inline
-      prefix: "<em>URL has to start with http:// or https://</em>"
+      postfix: "<em>URL has to start with http:// or https://</em>"
       pattern: url
       class: narrow
     twitter:
@@ -395,7 +399,7 @@ persons:
       required: false
       label: "Other link:"
       variant: inline
-      prefix: "<em>URL has to start with http:// or https://</em>"
+      postfix: "<em>URL has to start with http:// or https://</em>"
       pattern: url
       class: narrow
     other_links_2:
@@ -403,7 +407,7 @@ persons:
       required: false
       label: "Other link:"
       variant: inline
-      prefix: "<em>URL has to start with http:// or https://</em>"
+      postfix: "<em>URL has to start with http:// or https://</em>"
       pattern: url
       class: narrow
     other_links_3:
@@ -411,12 +415,13 @@ persons:
       required: false
       label: "Other link:"
       variant: inline
-      prefix: "<em>URL has to start with http:// or https://</em>"
+      postfix: "<em>URL has to start with http:// or https://</em>"
       pattern: url
       class: narrow
     contact_blogpost:
       type: checkbox
       label: "Main contact of the blog"
+      group: "Main Contact Options"
     contact_event:
       type: checkbox
       label: "Main contact of events"

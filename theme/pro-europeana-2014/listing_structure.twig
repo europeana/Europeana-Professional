@@ -62,7 +62,7 @@
     {% set records = records|merge(recordsStruture)|order(order) %}
 
     {# set pager properties. totalpages always round up #}
-    {% set pager = { totalpages :  (records|length/amount)|ceil,  current : page }  %}
+    {% set pager = { totalpages :  (records|length/amount)|round(0, 'ceil'),  current : page }  %}
 
     {# get items to display #}
     {% set records = records|slice(amount*(page-1),amount) %}
