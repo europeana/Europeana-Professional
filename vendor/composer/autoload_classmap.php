@@ -116,6 +116,7 @@ return array(
     'Bolt\\Thumbs\\ThumbnailCreator' => $vendorDir . '/bolt/thumbs/src/ThumbnailCreator.php',
     'Bolt\\Thumbs\\ThumbnailProvider' => $vendorDir . '/bolt/thumbs/src/ThumbnailProvider.php',
     'Bolt\\Thumbs\\ThumbnailResponder' => $vendorDir . '/bolt/thumbs/src/ThumbnailResponder.php',
+    'Bolt\\Translation\\ContenttypesKeygen' => $baseDir . '/src/Translation/ContenttypesKeygen.php',
     'Bolt\\Translation\\TranslationFile' => $baseDir . '/src/Translation/TranslationFile.php',
     'Bolt\\Translation\\Translator' => $baseDir . '/src/Translation/Translator.php',
     'Bolt\\TwigExtension' => $baseDir . '/src/TwigExtension.php',

@@ -40,23 +40,110 @@ class Translator
     private static function translate(Application $app, $fn, $args, $key, $replace, $domain = 'contenttypes')
     {
         if ($fn == 'transChoice') {
-            $trans = $app['translator']->transChoice(
+            $trans = static::transChoice(
                 $key,
                 $args[1],
-                self::htmlencodeParams($replace),
+                static::htmlencodeParams($replace),
                 isset($args[3]) ? $args[3] : $domain,
                 isset($args[4]) ? $args[4] : $app['request']->getLocale()
             );
         } else {
-            $trans = $app['translator']->trans(
+            $trans = static::trans(
                 $key,
-                self::htmlencodeParams($replace),
+                static::htmlencodeParams($replace),
                 isset($args[2]) ? $args[2] : $domain,
                 isset($args[3]) ? $args[3] : $app['request']->getLocale()
             );
         }
 
         return ($trans == $key) ? false : $trans;
+    }
+
+    /**
+     * Low level translation
+     *
+     * @return string
+     */
+    public static function trans()
+    {
+        $app = ResourceManager::getApp();
+        $args = func_get_args();
+
+        try {
+            return call_user_func_array(array($app['translator'], 'trans'), $args);
+        } catch (\Symfony\Component\Translation\Exception\InvalidResourceException $e) {
+            if (!isset($app['translationyamlerror']) && $app['request']->isXmlHttpRequest() == false) {
+                $app['session']->getFlashBag()->add(
+                    'warning',
+                    '<strong>Error: You should fix this now, before continuing!</strong><br>' . $e->getMessage()
+                );
+            }
+
+            $app['translationyamlerror'] = true;
+
+            if (isset($args[1]) && is_array($args[1])) {
+                return strtr($args[0], $args[1]);
+            } else {
+                return $args[0];
+            }
+
+        }
+    }
+
+    /**
+     * Low level translation (perhaps unused)
+     *
+     * @return string
+     */
+    public static function transChoice()
+    {
+        $app = ResourceManager::getApp();
+        $args = func_get_args();
+
+        try {
+            return call_user_func_array(array($app['translator'], 'transChoice'), $args);
+        } catch (\Symfony\Component\Translation\Exception\InvalidResourceException $e) {
+            if (!isset($app['translationyamlerror']) && $app['request']->isXmlHttpRequest() == false) {
+                $app['session']->getFlashBag()->add(
+                    'warning',
+                    '<strong>Error: You should fix this now, before continuing!</strong><br>' . $e->getMessage()
+                );
+            }
+
+            $app['translationyamlerror'] = true;
+
+            return $args[0];
+        }
+    }
+
+    /**
+     * Return translation selected by dynamically generated key based on contenttype
+     *
+     * @param \Bolt\Application $app
+     * @param string $keyPattern A key template, like 'contenttypes.%%.select.key'
+     * @param string $Contenttype The contentype to select
+     * @param string $Default Optional default translation
+     * @return string
+     */
+    private static function dynamicContenttype(\Bolt\Application $app, $keyPattern, $Contenttype, $Default = null)
+    {
+        if (is_array($Contenttype)) {
+            $key = $keyPattern;
+            foreach ($Contenttype as $rep) {
+                $key = preg_replace('/%%/', preg_replace('/[^a-z-]/', '', strtolower($rep)), $key, 1);
+            }
+        } else {
+            $key = str_replace('%%', preg_replace('/[^a-z-]/', '', strtolower($Contenttype)), $keyPattern);
+        }
+        $trans = static::trans($key, array(), 'contenttypes', $app['request']->getLocale());
+
+        if ($trans !== $key) {
+            return $trans;
+        } elseif ($Default !== null) {
+            return $Default;
+        } else {
+            return $key;
+        }
     }
 
     /**
@@ -74,11 +161,14 @@ class Translator
         $app = ResourceManager::getApp();
 
         $num_args = func_num_args();
-        if (0 == $num_args) {
+        if ($num_args == 0) {
             return null;
         }
+
         $args = func_get_args();
-        if ($num_args > 4) {
+        if ($num_args == 3 && is_string($args[0]) && substr($args[0], 0, 16) === 'contenttypes.%%.') {
+            return static::dynamicContenttype($app, $args[0], $args[1], isset($args[2]) ? $args[2] : null);
+        } elseif ($num_args > 4) {
             $fn = 'transChoice';
         } elseif ($num_args == 1 || is_array($args[1])) {
             // If only 1 arg or 2nd arg is an array call trans
@@ -117,14 +207,14 @@ class Translator
                     $key_name = 'contenttypes.' . $ctype . '.name.' . (($key_arg == '%contenttype%') ? 'singular' : 'plural');
                     $key_ctname = ($key_arg == '%contenttype%') ? 'singular_name' : 'name';
 
-                    $ctname = $app['translator']->trans($key_name, array(), 'contenttypes', $app['request']->getLocale());
+                    $ctname = static::trans($key_name, array(), 'contenttypes', $app['request']->getLocale());
                     if ($ctname === $key_name) {
                         $ctypes = $app['config']->get('contenttypes');
                         $ctname = empty($ctypes[$ctype][$key_ctname]) ? ucfirst($ctype) : $ctypes[$ctype][$key_ctname];
                     }
                     // Get generic translation with name replaced
                     $tr_args[$key_arg] = $ctname;
-                    $trans = self::translate($app, $fn, $args, $key_generic, $tr_args, 'messages');
+                    $trans = static::translate($app, $fn, $args, $key_generic, $tr_args, 'messages');
                 }
 
                 return $trans;
@@ -132,19 +222,9 @@ class Translator
         }
 
         if (isset($args[1])) {
-            $args[1] = self::htmlencodeParams($args[1]);
+            $args[1] = static::htmlencodeParams($args[1]);
         }
 
-        try {
-            return call_user_func_array(array($app['translator'], $fn), $args);
-        } catch (\Symfony\Component\Translation\Exception\InvalidResourceException $e) {
-            $app['session']->getFlashBag()->set(
-                'warning',
-                '<strong>Error: You should fix this now, before continuing!</strong><br> ' . $e->getMessage()
-            );
-
-            return $args[0];//$app->abort(500, 'Error reading locale files, Translation files misformed');
-        }
-
+        return call_user_func_array(array(__NAMESPACE__ . '\Translator', $fn), $args);
     }
 }
