@@ -18,17 +18,12 @@ php-cs-fixer.phar
 /tags
 .swp
 *.lock
-.gitignore
-
 tests/_log
 tests/*/*Guy.php
 .buildpath
 .project
-
 app/view/config.codekit
 app/view/.sass-cache
 app/view/node_modules
 /bolt.log
-
-
 app/config/config_local.yml
