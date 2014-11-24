@@ -1,0 +1,77 @@
+{% from 'macros.twig' import linkto, format_filesize, format_filetime %}
+
+{% set title = title|default("Files in: %path%")|replace({"%path%": paths.current|default('/')}) %}
+
+<h1>{{ title }}</h1>
+{% spaceless %}
+<div class="file-browser file-browser-buttons">
+    {% for bmode in allowedModes %}
+        <a class="file-browser file-browser-button file-browser-mode-button {% if bmode == mode %}file-browser-button-active{% endif %}"
+            href="{{ linkto(paths.current, bmode) }}"
+            data-fb-mode="{{bmode}}"
+        >
+            {{ bmode }}
+        </a>
+    {% endfor %}
+</div>
+{% endspaceless %}
+<ul class="file-browser file-browser-list file-browser-list-{{ mode }}"
+    data-fb-root="{{ paths.root }}"
+    data-fb-cp="{{ paths.current }}"
+    data-fb-mode="{{ mode }}"
+>
+    {% if paths.up is not null %}
+        {% set relative_pathname = paths.up %}
+        {% set absolute_pathname = paths.up %}
+        {% set type = 'dir' %}
+
+        {% if mode == 'icons' %}
+            {% set icon_size = 64 %}
+        {% else %}
+            {% set icon_size = 32 %}
+        {% endif %}
+        {% set thumb_src = file_browser_icon('@up') %}
+        {% set link = linkto(paths.up, mode) %}
+        {% set icon_type = 'default' %}
+
+        {% include 'item.twig' %}
+    {% endif %}
+    {% for file in files %}
+        {% set relative_pathname = file.relativePathname %}
+        {% set absolute_pathname = paths.current ~ '/' ~ relative_pathname %}
+        {% set type = file.type %}
+        {% if type == 'file' %}
+            {% set link = "/files/" ~ paths.root ~ '/' ~ absolute_pathname %}
+        {% elseif type == 'dir' %}
+            {% set link = linkto(absolute_pathname, mode) %}
+        {% endif %}
+
+        {% if mode == 'icons' %}
+            {% set icon_size = 64 %}
+        {% else %}
+            {% set icon_size = 32 %}
+        {% endif %}
+
+        {% if type == 'file' %}
+            {% if file.getExtension() in [ 'png', 'jpg', 'jpeg', 'gif' ] %}
+                {% set thumb_src = thumbnail(paths.root ~ '/' ~ absolute_pathname, icon_size, icon_size) %}
+                {% set icon_type = "thumbnail" %}
+                {% set icon_size = icon_size * 7 / 8 %}
+            {% else %}
+                {% set thumb_src = file_browser_icon(file.getExtension()) %}
+                {% set icon_type = "default" %}
+            {% endif %}
+            {% set file_size = file.getSize() %}
+            {% set file_ctime = file.getCTime() %}
+        {% else %}
+            {% set thumb_src = file_browser_icon('@dir') %}
+            {% set icon_type = "default" %}
+        {% endif %}
+
+        {% include 'item.twig' %}
+    {% else %}
+    <li class="file-browser file-browser-empty">
+        {{ __("No files found") }}
+    </li>
+    {% endfor %}
+</ul>

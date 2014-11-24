@@ -1,0 +1,24 @@
+{
+    "name": "europeana/filebrowser",
+    "description": "Exposes the /files directory on the front end through a file browser widget.",
+    "type": "bolt-extension",
+    "keywords": ["europeana", "files", "file-browser", "frontend"],
+    "require": {
+        "bolt/bolt": ">=2.0,<3.0"
+    },
+    "authors": [
+        {
+            "name": "Bolt",
+            "email": "info@bolt.cm",
+            "homepage": "http://bolt.cm"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "init.php"
+        ],
+        "psr-4": {
+            "FileBrowser\\": "."
+        }
+    }
+}
