@@ -72,6 +72,7 @@ publications:
       variant: inline
       postfix: "(max. 50 characters)"
       pattern: "^.{1,50}$"
+      group: Publications
     slug:
       type: slug
       uses: title
@@ -86,11 +87,6 @@ publications:
       required: false
       label: "Body:"
       height: 150px
-    isbn:
-      type: text
-      required: false
-      label: "ISBN:"
-      variant: inline
     filelist:
       type: filelist
       required: true
@@ -101,6 +97,12 @@ publications:
       label: "Image:"
       attrib: title
       extensions: [ gif, jpg, png ]
+    isbn:
+      type: text
+      required: false
+      label: "ISBN:"
+      variant: inline
+      group: "Secondary options"
   taxonomy: [ tags, tree ]
   relations:
     persons:
@@ -179,6 +181,7 @@ pressreleases:
       variant: inline
       postfix: "(max. 50 characters)"
       pattern: "^.{1,50}$"
+      group: "Press releases"
     slug:
       type: slug
       uses: title
@@ -193,11 +196,6 @@ pressreleases:
       required: false
       label: "Body:"
       height: 150px
-    isbn:
-      type: text
-      required: false
-      label: "ISBN:"
-      variant: inline
     filelist:
       type: filelist
       required: true
@@ -287,7 +285,7 @@ persons:
       variant: inline
       class: narrow
       postfix: "<em><small>(required)</small></em>"      
-      group: "personal details"
+      group: "Personal details"
     # Show on Staff list page, Staff page, Events page (speakers), Contact info block
     last_name:
       type: text
@@ -347,7 +345,7 @@ persons:
       variant: inline
       pattern: email
       class: narrow
-      group: contact
+      group: Contact
     # This is only used if the checkbox is checked on the page - it will override the email address and show the secondary email address instead
     secondary_email:
       type: text
@@ -480,6 +478,7 @@ events:
       postfix: "<hr>"
       postfix: "(max. 50 characters)"
       pattern: "^.{1,50}$"
+      group: "Event information"
     slug:
       type: slug
       uses: title
@@ -613,6 +612,7 @@ Jobs:
       label: "Position (required):"
       variant: inline
       class: wide
+      group: "Job information"
     slug:
       type: slug
       uses: position
@@ -663,6 +663,7 @@ Jobs:
       type: filelist
       required: false
       label: "Attachments:"
+      group: "Secondary information"
   relations:
     persons:
       multiple: true
@@ -742,6 +743,7 @@ blogposts:
       variant: inline
       postfix: "(max. 50 characters)"
       pattern: "^.{1,50}$"
+      group: "Blog post"
     slug:
       type: slug
       uses: title
@@ -752,11 +754,6 @@ blogposts:
       label: "Body (required):"
       height: 150px
     # multiselect from dms
-    # Show on Blog page
-    attachments:
-      type: filelist
-      required: false
-      label: "Attachments:"
     # Show on Blog list page, Related items snippet, Home page
     image:
       type: image
@@ -764,6 +761,12 @@ blogposts:
       label: "Teaser image:"
       attrib: title
       extensions: [ gif, jpg, png ]
+    # Show on Blog page
+    attachments:
+      type: filelist
+      required: false
+      label: "Attachments:"
+      group: "Secondary information"
   # Show on Blog page
   taxonomy: [ tags, tree ]
   # every contenttype?
@@ -862,6 +865,7 @@ pages:
       variant: inline
       postfix: "(max. 50 characters)"
       pattern: "^.{1,50}$"
+      group: Page
     slug:
       type: slug
       uses: title
@@ -884,9 +888,17 @@ pages:
       type: image
       required: false
       label: "Teaser image:"
+    secondary_mail:
+      type: checkbox
+      label: "Show secondary email instead:"
+    hide_list:
+      type: checkbox
+      label: "Hide from list views:"
+      postfix: "Check to hide this page from overview. The page is linked in the sidebar."
     filelist_files:
       type: filelist
       label: "Attachments:"
+      group: "Secondary information"
     filelist_downloads:
       type: text
       class: narrow
@@ -898,16 +910,6 @@ pages:
       label: "This page should be shown on the site, and is not an internal page:"
     # These links & titles will show in the right bar if populated - external links should have the external link icon
     # appended, documents on the DMS should have another visual representation present.
-    support_navigation:
-      type: markdown
-      label: "Support navigation:"
-    secondary_mail:
-      type: checkbox
-      label: "Show secondary email instead:"
-    hide_list:
-      type: checkbox
-      label: "Hide from list views:"
-      postfix: "Check to hide this page from overview. The page is linked in the sidebar."
     hide_related:
       type: checkbox
       label: "Hide from related content:"
@@ -929,6 +931,10 @@ pages:
       type: select
       label: "Style modifier"
       values: ['default', 'fivecols']
+    support_navigation:
+      type: markdown
+      label: "Support navigation:"
+      group: "Support navigation"
   relations:
     persons:
       label: "Contact(s)"
@@ -1004,6 +1010,7 @@ locations:
       postfix : "(max. 72 characters)"
       variant: inline
       pattern: "^.{1,72}$"
+      group: Location
     slug:
       type: slug
       uses: title
@@ -1018,6 +1025,7 @@ locations:
       prefix: "<hr>"
       required: false
       label: "This is a Europeana place of work:"
+      group: "Secondary information"
     # If checked, then this will be the official office address used in the footer
     europeana_office:
       type: checkbox
@@ -1046,6 +1054,7 @@ projects:
       variant: inline
       postfix: "(max. 50 characters)"
       pattern: "^.{1,50}$"
+      group: Projects
     slug:
       type: slug
       uses: title
@@ -1092,6 +1101,7 @@ projects:
       type: filelist
       required: true
       label: "Downloads:"
+      group: "Secondary information"
   taxonomy: [ tags, tree ]
   relations:
     person:
@@ -1163,6 +1173,7 @@ taskforces:
       variant: inline
       postfix: "(max. 50 characters)"
       pattern: "^.{1,50}$"
+      group: "Task force"
     slug:
       type: slug
       uses: title
@@ -1281,6 +1292,7 @@ structures:
       variant: inline
       postfix: "(max. 50 characters)"
       pattern: "^.{1,50}$"
+      group: Structure
     # The permalink should be /parent URL/title - eg pro.europeana.eu/share-your-data/getting-started.html
     slug:
       type: slug
@@ -1312,6 +1324,7 @@ structures:
       label: 'Contenttype'
       values: ['default', 'Events', 'BlogPosts', 'Persons', 'PressReleases', 'Projects', 'Publications', 'TaskForces', 'Jobs']
       postfix: 'Set content by contenttype'
+      group: "Content type"
     # subclass get a own body class
     # -> change name to 'theme'
     subclass:
@@ -1319,6 +1332,7 @@ structures:
       label: "Subsite theme"
       values: ['none', 'europeana_subsite_cloud', 'europeana_subsite_creative']
       prefix: "<hr><h2>Subsite Settings</h2>"
+      group: "Subsite settings"
     footer:
       type: select
       label: 'Subsite footer'
