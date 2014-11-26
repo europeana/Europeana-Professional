@@ -105,6 +105,7 @@
                     {% if (location and contacts) %}
                     {% include 'items/_item-address.twig' with {location: location} %}
                     {% endif %}
+                    {% include 'items/_item-teaser-image.twig' with {record: event} %}
                 </div>
 
                 <div class="prose">

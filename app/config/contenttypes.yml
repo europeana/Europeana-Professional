@@ -516,6 +516,11 @@ events:
       required: true
       label: "Body (required):"
       height: 150px
+    # Shown on Individual pages, Lists, Overviews, Teasers
+    teaser_image:
+      type: image
+      required: false
+      label: "Teaser image:"
     filelist:
       type: filelist
       required: true
