@@ -1195,6 +1195,7 @@ taskforces:
       type: date
       required: false
       label: "Expected timeframe end:"
+      format: "{{d.Y}}"
     teaser:
       type: html
       label: "Teaser (required):"
@@ -1265,7 +1266,7 @@ taskforces:
       label: "Jobs"
       order: -id
       format: "{{ item.title|escape }}"
-  sort: -datepublish
+  sort: date_end
   record_template: record_taskforce.twig
 
 
