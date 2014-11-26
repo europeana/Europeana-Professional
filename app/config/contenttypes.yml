@@ -76,6 +76,11 @@ publications:
     slug:
       type: slug
       uses: title
+    teaser:
+      type: html
+      required: true
+      label: "Teaser:"
+      height: 150px
     introduction:
       type: html
       required: false
