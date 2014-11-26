@@ -1,1 +1,3 @@
-<img src="{{ record.teaser_image|image(600,600,"c") }}" alt="{{ record.teaser_image|title }}" />
+{% if record.teaser_image %}
+    <img src="{{ record.teaser_image|image(600,600,"c") }}" alt="{{ record.teaser_image|title }}" />
+{% endif %}
