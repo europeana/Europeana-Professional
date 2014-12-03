@@ -53,6 +53,9 @@
                 <div class="prose">
                     <p class="intro">{{ record.intro }}</p>
                     {{ record.body|raw }}
+                    {% if record.filelist_downloads|length > 3 %}
+                        {{ file_browser({'mode': 'list', 'root': record.filelist_downloads}) }}
+                    {% endif %}
                 </div>
 
 
