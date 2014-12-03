@@ -1222,6 +1222,14 @@ taskforces:
       type: image
       required: false
       label: "Teaser image:"
+    filelist_files:
+      type: filelist
+      label: "Attachments:"
+    filelist_downloads:
+      type: text
+      class: narrow
+      label: "Document folder:"
+      postfix: "Add the name of the folder to show as a 'File browser' listing, relative to the base 'files/' folder. If left blank, no file-browser will be shown."
   taxonomy: [ tags, tree ]
   relations:
     person:
