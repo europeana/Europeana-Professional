@@ -904,7 +904,7 @@ pages:
     hide_list:
       type: checkbox
       label: "Hide from list views:"
-      postfix: "Check to hide this page from overview. The page is linked in the sidebar."
+      postfix: "Check to hide this page from overview."
     filelist_files:
       type: filelist
       label: "Attachments:"
@@ -914,10 +914,10 @@ pages:
       class: narrow
       label: "Document folder:"
       postfix: "Add the name of the folder to show as a 'File browser' listing, relative to the base 'files/' folder. If left blank, no file-browser will be shown."
-    show_page:
-      type: checkbox
-      required: false
-      label: "This page should be shown on the site, and is not an internal page:"
+    # show_page:
+    #  type: checkbox
+    #  required: false
+    #  label: "This page should be shown on the site, and is not an internal page:"
     # These links & titles will show in the right bar if populated - external links should have the external link icon
     # appended, documents on the DMS should have another visual representation present.
     hide_related:
