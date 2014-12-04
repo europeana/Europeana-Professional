@@ -46,7 +46,6 @@ class Extension extends \Bolt\BaseExtension
         $this->filterOptions = $this->config['filter_options'];
     }
 
-
     /**
      * google api call
      *
@@ -55,15 +54,12 @@ class Extension extends \Bolt\BaseExtension
      */
     private function searchRequest($query, $start, $num)
     {
-
         $q = $query;
 
-        //    build request url
+        // build request url
         $url = "http://www.google.com/cse?cx=".$this->cx."&client=".$this->client."&output=".$this->output."&q=".$q."&hl=en&start=".$start."&num=".$num;
-        //echo $url;
 
-
-        //    curl setup
+        // curl setup
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL,$url);
         curl_setopt($ch, CURLOPT_FAILONERROR, 1);
@@ -71,13 +67,12 @@ class Extension extends \Bolt\BaseExtension
         curl_setopt($ch, CURLOPT_RETURNTRANSFER,1); // return into a variable
         curl_setopt($ch, CURLOPT_TIMEOUT, 3); // times out after 4s
 
-        //    submit xml request and get the response
+        // submit xml request and get the response
         $result = curl_exec($ch);
         curl_close($ch);
 
         return $result;
     }
-
 
     /**
      * build the search result
@@ -105,9 +100,6 @@ class Extension extends \Bolt\BaseExtension
             }
         }
 
-
-
-
         $filter =  $this->filter . join(',', $currentFilterOptions);
         $query .= $filter;
 
@@ -124,13 +116,10 @@ class Extension extends \Bolt\BaseExtension
         $suggestionRaw = ( $resultsXML->Spelling->Suggestion ) ? (string) $resultsXML->Spelling->Suggestion : null;
         $suggestion = trim(explode('more:', $suggestionRaw)[0]);
 
-
         // extract information
         $resultsRecords = [];
         if ($resultsXML->RES->R) {
-
             foreach ($resultsXML->RES->R as $item) {
-
                 $title = (string) $item->T;
                 $link = (string) $item->U;
                 $snippet = (string) $item->S;
@@ -191,6 +180,5 @@ class Extension extends \Bolt\BaseExtension
         $body = $this->app['render']->render($this->template);
 
         return new Response($body, 200);
-
     }
 }
