@@ -1,0 +1,26 @@
+{
+    "name": "europeana/google-search",
+    "description": "Add Google Search to a Bolt site",
+    "type": "bolt-extension",
+    "require": {
+        "bolt/bolt": ">=2.0.0,<3.0.0"
+    },
+    "license": "MIT",
+    "authors": [
+        { "name": "Europeana", "email": "info@europeana.eu" },
+        { "name": "Patrick Tettenborn", "url": "http://nexum.de" },
+        { "name": "Tobias Dammers", "email": "tobias@twokings.nl" }
+    ],
+    "autoload": {
+        "files": [
+            "init.php"
+        ],
+        "psr-4": {
+            "Bolt\\Extension\\Europeana\\GoogleSearch": ""
+        }
+    },
+
+    "extra": {
+        "bolt-assets": "assets"
+    }
+}
