@@ -75,14 +75,14 @@
      --><div class="l-sidebar">
              <div class="inner">
 
-                 {# set author #}
+                {# set author #}
                 {% include 'items/_item-help.twig' with { records: contacts } %}
 
                 {# set Downloads #}
-                {% if blogpost.attachments %}
+                {% if record.attachments %}
                 <div class="downloads">
-                    <h4>{{ blogpost.contenttype['fields']['attachments'].label }}</h4>
-                    {% include 'items/_item-filelist.twig' with {record : blogpost.attachments} %}
+                    <h4>{{ record.contenttype['fields']['attachments'].label }}</h4>
+                    {% include 'items/_item-filelist.twig' with { records : record.attachments } %}
                 </div>
                 {% endif %}
 
