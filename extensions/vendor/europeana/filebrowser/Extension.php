@@ -101,7 +101,10 @@ class Extension extends \Bolt\BaseExtension
         $extensionRegex = '/^[^\.]*$|\\.' . implode('|',
             array_map('preg_quote',
                 $this->app['config']->get('general/accept_file_types'))) . '$/';
-        error_log($extensionRegex);
+        $rootDir = $this->app['paths']['filespath'] . "/$path";
+        if (!is_dir($rootDir)) {
+            return array();
+        }
         $files =
             $finder
                 ->depth('== 0')
@@ -112,7 +115,7 @@ class Extension extends \Bolt\BaseExtension
                 ->notName('*.js')
                 ->sortByName()
                 ->sortByType()
-                ->in($this->app['paths']['filespath'] . "/$path");
+                ->in($rootDir);
         return iterator_to_array($files);
     }
 
