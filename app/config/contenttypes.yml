@@ -176,8 +176,10 @@ publications:
 #
 #################################
 pressreleases:
-  name: PressReleases
-  singular_name: PressRelease
+  name: 'Press Releases'
+  singular_name: 'Press Release'
+  slug: 'pressreleases'
+  singular_slug: 'pressrelease'
   fields:
     title:
       type: text
@@ -741,9 +743,11 @@ Jobs:
 #
 #################################
 blogposts:
-  name: BlogPosts
-  singular_name: BlogPost
+  name: 'Blog Posts'
+  singular_name: 'BlogPost'
   display_name: 'Blog Posts'
+  slug: 'blogposts'
+  singular_slug: 'blogpost'
   fields:
     # Show on Blog list page, Blog page, Related items snippet, Home page
     title:

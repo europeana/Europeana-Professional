@@ -7,17 +7,17 @@
 {% if record is defined %}
 
     {% set listItem = record %}
-    {% set contenttype = record.contenttype.name %}
+    {% set contenttype = record.contenttype %}
     {% set listItemLink = structurelink(record) %}
 
 <li class="list-item">
 
         <div class="item-supplementary">
-        {% if (contenttype == "Publications" or contenttype == "PressReleases" or contenttype == "BlogPosts") %}
+        {% if (contenttype.slug in [ 'publication', 'pressreleases', 'press-releases', 'blogposts', 'blog-posts' ]) %}
             <div class="item-image">
                 <a href="{{ listItemLink }}"><img src="{{ listItem.values['image']|thumbnail() }}" alt="{{ listItem.image|title }}" /></a>
             </div>
-        {% elseif (contenttype == "Projects" ) %}
+        {% elseif (contenttype.slug == "projects" ) %}
             <div class="item-image">
                 <a href="{{ listItemLink }}"><img src="{{ listItem.values['logo']|thumbnail() }}" alt="{{ listItem.image|title }}" /></a>
             </div>
@@ -27,7 +27,7 @@
             <div class="item-image">
                 <a href="{{ listItemLink }}"><img src="{{ footer.values['image']|thumbnail() }}" alt="{{ footer.image|title }}" /></a>
             </div>
-        {% elseif contenttype == "Events" %}
+        {% elseif contenttype.slug == "events" %}
             <div class="item-bigdate">
                 {% include 'items/_item-date-event.twig' with {record : listItem} %}
             </div>
@@ -36,21 +36,14 @@
         </div><!--
 
      --><div class="item-details">
-        {% if contenttype == 'Structures' %}
-            <h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
-        {% elseif contenttype == 'Pages' %}
-            <h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
-        {% else %}
-            <h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
-        {% endif %}
+        <h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
 
-
-        {% if (contenttype == "Publications" or contenttype == "PressReleases" ) %}
+        {% if (contenttype.slug in [ 'publications', 'pressreleases', 'press-releases' ]) %}
             <div class="item-meta-primary">
                 {# set authors #}
                 {% include 'items/_item-author.twig' %}
             </div>
-        {% elseif contenttype == "BlogPosts" %}
+        {% elseif contenttype.slug in [ "blogposts", "blog-posts" ] %}
             <div class="item-meta-primary">
                 {# set author #}
                 {% include 'items/_item-author.twig' %}
@@ -61,13 +54,13 @@
 
             <div class="item-meta-secondary">
 
-            {% if (contenttype == "Publications" or contenttype == "PressReleases") %}
+            {% if (contenttype.slug in [ "publications", "pressreleases", "press-releases" ]) %}
                 {# set date #}
                 {% include 'items/_item-date.twig' %}
                 {# set tags#}
                 {% include 'items/_item-tags.twig' %}
 
-            {% elseif contenttype == "BlogPosts" %}
+            {% elseif contenttype.slug in [ "blogposts", "blog-posts" ] %}
                 {# set date #}
                 {% include 'items/_item-date.twig' %}
                 {# set tags #}
@@ -75,13 +68,13 @@
                 {# set discus comments #}
                 {% include 'items/_item-comments-link.twig' %}
 
-            {% elseif contenttype == "Events" %}
+            {% elseif contenttype.slug == "events" %}
                 {# set location #}
                 {% include 'items/_item-location.twig' %}
                 {# set tags #}
                 {% include 'items/_item-tags.twig' %}
 
-            {% elseif contenttype == "Jobs" %}
+            {% elseif contenttype.slug == "jobs" %}
                 {# set date #}
                 {% include 'items/_item-date.twig' %}
                 {# set location #}
@@ -89,11 +82,11 @@
                 {# set department #}
                 {% include 'items/_item-department.twig' %}
 
-            {% elseif contenttype == "TaskForces" %}
+            {% elseif contenttype.slug == "taskforces" %}
                 {# set tags #}
                 {% include 'items/_item-tags.twig' %}
 
-            {% elseif (contenttype == "Projects" or contenttype == 'Structures') %}
+            {% elseif (contenttype.slug in [ "projects", "structures" ]) %}
                 {% include 'items/_item-date.twig' with { date: listItem.date_start } %}
                 <span>to: </span>
                 {% include 'items/_item-date.twig' with { date: listItem.date_end } %}
@@ -106,7 +99,7 @@
 
             <div class="item-preview">
 
-                {% if (contenttype == "Publications" or contenttype == "PressReleases" or contenttype == "BlogPosts") %}
+                {% if (contenttype.slug in [ "publications", "pressreleases", "blogposts", "blog-posts" ]) %}
                     {{ listItem.excerpt(app.config.get('general/excerpt_length')) }}
                 {% else %}
                     {{ listItem.teaser }}
@@ -114,14 +107,9 @@
 
             </div>
 
-            {% if (contenttype == "Publications" or contenttype == "PressReleases" ) %}
+            {% if (contenttype.slug in [ "publications", "pressreleases" ] ) %}
                 {% include 'items/_item-filelist.twig' with {records: listItem.filelist} %}
             {% endif %}
-
-
         </div>
-
     </li>
-
 {% endif %}
-
