@@ -532,6 +532,7 @@ events:
       type: checkbox
       required: false
       label: "Show secondary email instead:"
+  taxonomy: [ tags, tree ]
   relations:
     locations:
       multiple: false
@@ -588,7 +589,6 @@ events:
       label: "Jobs"
       order: -id
       format: "{{ item.title|escape }}"
-  taxonomy: [ tags, tree ]
   sort: -datepublish
   record_template : record_event.twig
 
@@ -676,6 +676,7 @@ Jobs:
       required: false
       label: "Attachments:"
       group: "Secondary information"
+  taxonomy: [ tree ]
   relations:
     persons:
       multiple: true
@@ -725,7 +726,6 @@ Jobs:
       label: "Jobs"
       order: -id
       format: "{{ item.title|escape }}"
-  taxonomy: [ tree ]
   sort: -datepublish
   record_template: record_job.twig
 
@@ -783,7 +783,6 @@ blogposts:
       group: "Secondary information"
   # Show on Blog page
   taxonomy: [ tags, tree ]
-  # every contenttype?
   relations:
     persons:
       label: "Author(s)"
@@ -949,6 +948,7 @@ pages:
       type: markdown
       label: "Support navigation:"
       group: "Support navigation"
+  taxonomy: [ tags, tree ]
   relations:
     persons:
       label: "Contact(s)"
@@ -995,7 +995,6 @@ pages:
       label: "Jobs"
       order: -id
       format: "{{ item.title|escape }}"
-  taxonomy: [ tags, tree ]
   record_template: record_page.twig
 
 
@@ -1375,12 +1374,12 @@ structures:
       required: false
       label: "Project end:"
       variant: inline
+  taxonomy: [ tags, tree ]
   relations:
     persons:
       label: "Contact(s)"
       multiple: true
       format: "{{ item.last_name }}, {{ item.first_name }}"
-  taxonomy: [ tags, tree ]
   record_template: overview_structure.twig
   recordsperpage: 1000
   # viewless: true
