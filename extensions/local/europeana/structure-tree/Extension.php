@@ -78,24 +78,8 @@ class Extension extends \Bolt\BaseExtension
     public function structureTreeRecord($structureSlugs, $slug) {
         // Add snippets, since this is a Frontend route.
         $this->app['htmlsnippets'] = true;
-
-        $parents = self::getTreeParents();
-
-        // slug is strucutre
-        if ( isset($parents[$slug]) ) {
-            $parent = $parents[$parents[$slug]['parentslug']];
-
-            // validate url
-            if ( !isset($parent) || $parent['testpath'] != $structureSlugs)
-                self::abort($slug);
-
-            $contenttype = 'structures';
-            return Bolt\Controllers\Frontend::record($this->app , $contenttype, $slug);
-        }
-        else {
-            $contenttype = self::getContenttypeBySlug($slug);
-            return Bolt\Controllers\Frontend::record($this->app , $contenttype, $slug);
-        }
+        $contenttype = self::getContenttypeBySlug($slug);
+        return Bolt\Controllers\Frontend::record($this->app , $contenttype, $slug);
     }
 
     public function getContenttypeBySlug($slug) {
