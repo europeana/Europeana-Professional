@@ -108,8 +108,12 @@ publications:
       label: "ISBN:"
       variant: inline
       group: "Secondary options"
-  taxonomy: [ tags, tree ]
+  taxonomy: [ tags ]
   relations:
+    structures:
+      label: "Tree parent"
+      multiple: false
+      order: title
     persons:
       label: "Author(s)"
       multiple: true
@@ -213,8 +217,12 @@ pressreleases:
       label: "Image:"
       attrib: title
       extensions: [ gif, jpg, png ]
-  taxonomy: [ tags, tree ]
+  taxonomy: [ tags ]
   relations:
+    structures:
+      label: "Tree parent"
+      multiple: false
+      order: title
     persons:
       label: "Author(s)"
       multiple: true
@@ -459,7 +467,12 @@ persons:
     contact_tag:
       type: checkbox
       label: "Main contact of tag page"
-  taxonomy: [ tags, tree ]
+  taxonomy: [ tags ]
+  relations:
+    structures:
+      label: "Tree parent"
+      multiple: false
+      order: title
   sort: team
   # no pager for person, mabe there is a better solution
   listing_records: 10000
@@ -543,8 +556,12 @@ events:
       type: checkbox
       required: false
       label: "Show secondary email instead:"
-  taxonomy: [ tags, tree ]
+  taxonomy: [ tags ]
   relations:
+    structures:
+      label: "Tree parent"
+      multiple: false
+      order: title
     locations:
       multiple: false
       label: "Location"
@@ -687,8 +704,12 @@ Jobs:
       required: false
       label: "Attachments:"
       group: "Secondary information"
-  taxonomy: [ tree ]
+  taxonomy: [ ]
   relations:
+    structures:
+      label: "Tree parent"
+      multiple: false
+      order: title
     persons:
       multiple: true
       label: "Contact(s)"
@@ -793,8 +814,12 @@ blogposts:
       label: "Attachments:"
       group: "Secondary information"
   # Show on Blog page
-  taxonomy: [ tags, tree ]
+  taxonomy: [ tags ]
   relations:
+    structures:
+      label: "Tree parent"
+      multiple: false
+      order: title
     persons:
       label: "Author(s)"
       multiple: true
@@ -963,8 +988,12 @@ pages:
       type: markdown
       label: "Support navigation:"
       group: "Support navigation"
-  taxonomy: [ tags, tree ]
+  taxonomy: [ tags ]
   relations:
+    structures:
+      label: "Tree parent"
+      multiple: false
+      order: title
     persons:
       label: "Contact(s)"
       multiple: true
@@ -1135,8 +1164,12 @@ projects:
       class: narrow
       label: "Document folder:"
       postfix: "Add the name of the folder to show as a 'File browser' listing, relative to the base 'files/' folder. If left blank, no file-browser will be shown."
-  taxonomy: [ tags, tree ]
+  taxonomy: [ tags ]
   relations:
+    structures:
+      label: "Tree parent"
+      multiple: false
+      order: title
     person:
       multiple: true
       label: "Contact(s)"
@@ -1253,8 +1286,12 @@ taskforces:
       class: narrow
       label: "Document folder:"
       postfix: "Add the name of the folder to show as a 'File browser' listing, relative to the base 'files/' folder. If left blank, no file-browser will be shown."
-  taxonomy: [ tags, tree ]
+  taxonomy: [ tags ]
   relations:
+    structures:
+      label: "Tree parent"
+      multiple: false
+      order: title
     person:
       multiple: true
       label: "Contact(s)"
@@ -1388,8 +1425,12 @@ structures:
       required: false
       label: "Project end:"
       variant: inline
-  taxonomy: [ tags, tree ]
+  taxonomy: [ tags ]
   relations:
+    structures:
+      label: "Tree parent"
+      multiple: false
+      order: title
     persons:
       label: "Contact(s)"
       multiple: true
