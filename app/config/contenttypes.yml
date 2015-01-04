@@ -755,8 +755,8 @@ blogposts:
       required: true
       label: "Title (required):"
       variant: inline
-      postfix: "(max. 50 characters)"
-      pattern: "^.{1,50}$"
+      postfix: "(max. 200 characters)"
+      pattern: "^.{1,200}$"
       group: "Blog post"
     slug:
       type: slug
