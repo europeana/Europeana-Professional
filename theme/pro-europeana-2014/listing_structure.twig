@@ -33,10 +33,30 @@
 
 {% endif %}
 
+{# listing for blog content  #}
+{% if record.content == 'BlogPosts'  %}
+
+    {% if "Europeana Cloud" in record.taxonomy.tree %}
+
+        {# Europeana Cloud blog posts. #}
+        {% setcontent records = record.content where { limit : amount, order : order, page : page, tree: "Europeana Cloud Blog" } allowpaging %}
+
+    {% elseif "Europeana Creative" in record.taxonomy.tree %}
+
+        {# Europeana Cloud blog posts. #}
+        {% setcontent records = record.content where { limit : amount, order : order, page : page, tree: "Europeana Creative Blog" } allowpaging %}
+
+    {% else %}
+
+        {# all blog posts. #}
+        {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page } allowpaging %}
+
+    {% endif %} 
 
 {# listing for stucture with fixed content  #}
-{% if (record.content != '' and record.content != 'default' )  %}
-    {% setcontent records = record.content where { limit : amount, order : order, page : page }  %}
+{% elseif (record.content != '' and record.content != 'default' )  %}
+
+    {% setcontent records = record.content where { limit : amount, order : order, page : page } %}
 
 {# listing for mixed content (structure + contenttype) #}
 {% elseif contenttype %}
@@ -52,25 +72,28 @@
     {# get content for current structure #}
     {% set recordsStruture = [] %}
     {% if (order in record.values|keys) or ( order|slice(1,order|length) in record.values|keys ) %}
-        {% setcontent recordsStruture = 'Structures' where { tree : record.slug, order : order }  %}
+      {% setcontent recordsStruture = 'Structures' where { tree : record.slug, order : order }  %}
     {% endif %}
 
     {# get content assigned contenttype #}
-    {% setcontent records = contenttype['name'] where { tree : record.slug, order : order}  %}
+    {% setcontent records = contenttype['name'] where { limit: amount, tree : record.slug, order : order} allowpaging %}
 
     {# merge content #}
     {% set records = records|merge(recordsStruture)|order(order) %}
 
-    {# set pager properties. totalpages always round up #}
+    {# ------- Bob notes: I don't think we should manipulate pager here and/or slice the results. 
+    Removing that here, fixes https://www.assembla.com/spaces/europeana-professional/tickets/160 
+
+    {# set pager properties. totalpages always round up # }
     {% set pager = { totalpages :  (records|length/amount)|round(0, 'ceil'),  current : page }  %}
 
-    {# get items to display #}
+    {# get items to display # }
     {% set records = records|slice(amount*(page-1),amount) %}
-
+    ---- #} 
 
 {# listing for structure content #}
 {% else %}
-    {% setcontent records = 'Structures' where { tree : record.slug } %}
+    [d] {% setcontent records = 'Structures' where { tree : record.slug } %}
 {% endif %}
 
 
@@ -84,7 +107,9 @@
 
     {# for the other content use the default listing #}
     {% else %}
-        {% include 'listing.twig' with {records: records} %}
+
+        {% include 'listing.twig' with { records: records } %}
+
     {% endif %}
 
 {% endif %}

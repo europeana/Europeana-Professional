@@ -1,5 +1,21 @@
 {% include '_header.twig' %}
 
+{# set order #}
+{% set order = contenttype['sort'] %}
+{% if app.request.get('order') %}
+    {% set order = app.request.get('order') %}
+{% endif %}
+
+{# set page number #}
+{% set page = app.request.get('page', 1) %}
+
+{# set amount #}
+{% if contenttype['listing_records'] is defined %}
+    {% set amount = contenttype['listing_records'] %}
+{% else %}
+    {% set amount = app.config.get('general/listing_records') %}
+{% endif %}
+
 {% if records|length %}
 
     {# show/hide sortby item and pager #}
@@ -65,14 +81,18 @@
                     {% endfor %}
                 </ul>
 
-
                 {% if pager is defined %}
-                    {% include '_sub_pager.twig' with { class: '', surr: 2, pager: pager } %}
+                    {# ----- Bob notes: Don't manually get a pager. Let Bolt handle it. 
+                    See related ticket: https://www.assembla.com/spaces/europeana-professional/tickets/160 -- #} 
+                    {{ pager() }}
                 {% elseif showsortby and taxonomy is not defined %}
-                    {{ pager(contenttypePager) }}
+                    {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page } allowpaging %}
+                    {{ pager() }}
                 {% elseif taxonomy is defined %}
                     {{ pager() }}
                 {% endif %}
+
+
             </div>
 
         </div>
