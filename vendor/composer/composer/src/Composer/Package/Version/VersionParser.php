@@ -89,7 +89,7 @@ class VersionParser
      * @param  string                    $version
      * @param  string                    $fullVersion optional complete version string to give more context
      * @throws \UnexpectedValueException
-     * @return array
+     * @return string
      */
     public function normalize($version, $fullVersion = null)
     {
@@ -122,6 +122,12 @@ class VersionParser
         } elseif (preg_match('{^v?(\d{4}(?:[.:-]?\d{2}){1,6}(?:[.:-]?\d{1,3})?)'.self::$modifierRegex.'$}i', $version, $matches)) { // match date-based versioning
             $version = preg_replace('{\D}', '-', $matches[1]);
             $index = 2;
+        } elseif (preg_match('{^v?(\d{4,})(\.\d+)?(\.\d+)?(\.\d+)?'.self::$modifierRegex.'$}i', $version, $matches)) {
+            $version = $matches[1]
+                .(!empty($matches[2]) ? $matches[2] : '.0')
+                .(!empty($matches[3]) ? $matches[3] : '.0')
+                .(!empty($matches[4]) ? $matches[4] : '.0');
+            $index = 5;
         }
 
         // add version modifiers if a version was matched
@@ -144,7 +150,8 @@ class VersionParser
         if (preg_match('{(.*?)[.-]?dev$}i', $version, $match)) {
             try {
                 return $this->normalizeBranch($match[1]);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         $extraMessage = '';
@@ -161,7 +168,7 @@ class VersionParser
      * Normalizes a branch name to be able to perform comparisons on it
      *
      * @param  string $name
-     * @return array
+     * @return string
      */
     public function normalizeBranch($name)
     {
@@ -359,7 +366,8 @@ class VersionParser
                 }
 
                 return array(new VersionConstraint($matches[1] ?: '=', $version));
-            } catch (\Exception $e) { }
+            } catch (\Exception $e) {
+            }
         }
 
         $message = 'Could not parse version constraint '.$constraint;

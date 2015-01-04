@@ -21,8 +21,8 @@ class Extend implements ControllerProviderInterface, ServiceProviderInterface
 
     public function register(Silex\Application $app)
     {
-        $app['extend.site'] = 'https://extensions.bolt.cm/';
-        $app['extend.repo'] = 'https://extensions.bolt.cm/list.json';
+        $app['extend.site'] = $app['config']->get('general/extensions/site', 'https://extensions.bolt.cm/');
+        $app['extend.repo'] = $app['extend.site'] . "list.json";
         $app['extend'] = $this;
         $extensionsPath = $app['resources']->getPath('extensions');
         $this->readWriteMode = is_dir("$extensionsPath/") && is_writable("$extensionsPath/");
@@ -39,8 +39,6 @@ class Extend implements ControllerProviderInterface, ServiceProviderInterface
     public function connect(Silex\Application $app)
     {
         $ctr = $app['controllers_factory'];
-
-        $app['twig']->addGlobal('title', Trans::trans('Extend Bolt'));
 
         $ctr->get('', array($this, 'overview'))
             ->before(array($this, 'before'))
@@ -219,9 +217,9 @@ class Extend implements ControllerProviderInterface, ServiceProviderInterface
                     $filesystem->copy($destination . "/config.yml.dist", $destination . "/config.yml");
                 }
 
-                return new Response(Trans::trans('Theme successfully generated. You can now edit it directly from your theme folder.'));
+                return new Response(Trans::__('Theme successfully generated. You can now edit it directly from your theme folder.'));
             } catch (\Exception $e) {
-                return new Response(Trans::trans('We were unable to generate the theme. It is likely that your theme directory is not writable by Bolt. Check the permissions and try reinstalling.'));
+                return new Response(Trans::__('We were unable to generate the theme. It is likely that your theme directory is not writable by Bolt. Check the permissions and try reinstalling.'));
             }
         }
     }

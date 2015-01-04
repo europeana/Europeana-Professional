@@ -20,6 +20,7 @@ use Composer\Repository\RepositoryManager;
 use Composer\Repository\RepositoryInterface;
 use Composer\Util\ProcessExecutor;
 use Composer\Util\RemoteFilesystem;
+use Composer\Util\Filesystem;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Composer\EventDispatcher\EventDispatcher;
 use Composer\Autoload\AutoloadGenerator;
@@ -36,14 +37,12 @@ use Composer\Package\Version\VersionParser;
 class Factory
 {
     /**
+     * @return string
      * @throws \RuntimeException
-     * @return Config
      */
-    public static function createConfig()
+    protected static function getHomeDir()
     {
-        // determine home and cache dirs
         $home = getenv('COMPOSER_HOME');
-        $cacheDir = getenv('COMPOSER_CACHE_DIR');
         if (!$home) {
             if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
                 if (!getenv('APPDATA')) {
@@ -57,6 +56,18 @@ class Factory
                 $home = rtrim(getenv('HOME'), '/') . '/.composer';
             }
         }
+
+        return $home;
+    }
+
+    /**
+     * @param string $home
+     *
+     * @return string
+     */
+    protected static function getCacheDir($home)
+    {
+        $cacheDir = getenv('COMPOSER_CACHE_DIR');
         if (!$cacheDir) {
             if (defined('PHP_WINDOWS_VERSION_MAJOR')) {
                 if ($cacheDir = getenv('LOCALAPPDATA')) {
@@ -69,6 +80,19 @@ class Factory
                 $cacheDir = $home.'/cache';
             }
         }
+
+        return $cacheDir;
+    }
+
+    /**
+     * @param  IOInterface|null $io
+     * @return Config
+     */
+    public static function createConfig(IOInterface $io = null)
+    {
+        // determine home and cache dirs
+        $home     = self::getHomeDir();
+        $cacheDir = self::getCacheDir($home);
 
         // Protect directory against web access. Since HOME could be
         // the www-data's user home and be web-accessible it is a
@@ -87,43 +111,25 @@ class Factory
         // add dirs to the config
         $config->merge(array('config' => array('home' => $home, 'cache-dir' => $cacheDir)));
 
+        // load global config
         $file = new JsonFile($home.'/config.json');
         if ($file->exists()) {
+            if ($io && $io->isDebug()) {
+                $io->write('Loading config file ' . $file->getPath());
+            }
             $config->merge($file->read());
         }
         $config->setConfigSource(new JsonConfigSource($file));
 
-        // move old cache dirs to the new locations
-        $legacyPaths = array(
-            'cache-repo-dir' => array('/cache' => '/http*', '/cache.svn' => '/*', '/cache.github' => '/*'),
-            'cache-vcs-dir' => array('/cache.git' => '/*', '/cache.hg' => '/*'),
-            'cache-files-dir' => array('/cache.files' => '/*'),
-        );
-        foreach ($legacyPaths as $key => $oldPaths) {
-            foreach ($oldPaths as $oldPath => $match) {
-                $dir = $config->get($key);
-                if ('/cache.github' === $oldPath) {
-                    $dir .= '/github.com';
-                }
-                $oldPath = $config->get('home').$oldPath;
-                $oldPathMatch = $oldPath . $match;
-                if (is_dir($oldPath) && $dir !== $oldPath) {
-                    if (!is_dir($dir)) {
-                        if (!@mkdir($dir, 0777, true)) {
-                            continue;
-                        }
-                    }
-                    if (is_array($children = glob($oldPathMatch))) {
-                        foreach ($children as $child) {
-                            @rename($child, $dir.'/'.basename($child));
-                        }
-                    }
-                    if ($config->get('cache-dir') != $oldPath) {
-                        @rmdir($oldPath);
-                    }
-                }
+        // load global auth file
+        $file = new JsonFile($config->get('home').'/auth.json');
+        if ($file->exists()) {
+            if ($io && $io->isDebug()) {
+                $io->write('Loading config file ' . $file->getPath());
             }
+            $config->merge(array('config' => $file->read()));
         }
+        $config->setAuthConfigSource(new JsonConfigSource($file, true));
 
         return $config;
     }
@@ -146,7 +152,7 @@ class Factory
         $repos = array();
 
         if (!$config) {
-            $config = static::createConfig();
+            $config = static::createConfig($io);
         }
         if (!$rm) {
             if (!$io) {
@@ -176,9 +182,9 @@ class Factory
     /**
      * Creates a Composer instance
      *
-     * @param IOInterface       $io          IO instance
-     * @param array|string|null $localConfig either a configuration array or a filename to read from, if null it will
-     *                                       read from the default filename
+     * @param  IOInterface               $io             IO instance
+     * @param  array|string|null         $localConfig    either a configuration array or a filename to read from, if null it will
+     *                                                   read from the default filename
      * @param  bool                      $disablePlugins Whether plugins should not be loaded
      * @throws \InvalidArgumentException
      * @throws \UnexpectedValueException
@@ -209,9 +215,24 @@ class Factory
             $localConfig = $file->read();
         }
 
-        // Configuration defaults
-        $config = static::createConfig();
+        // Load config and override with local config/auth config
+        $config = static::createConfig($io);
         $config->merge($localConfig);
+        if (isset($composerFile)) {
+            if ($io && $io->isDebug()) {
+                $io->write('Loading config file ' . $composerFile);
+            }
+            $localAuthFile = new JsonFile(dirname(realpath($composerFile)) . '/auth.json');
+            if ($localAuthFile->exists()) {
+                if ($io && $io->isDebug()) {
+                    $io->write('Loading config file ' . $localAuthFile->getPath());
+                }
+                $config->merge(array('config' => $localAuthFile->read()));
+                $config->setAuthConfigSource(new JsonConfigSource($localAuthFile, true));
+            }
+        }
+
+        // load auth configs into the IO instance
         $io->loadConfiguration($config);
 
         $vendorDir = $config->get('vendor-dir');
@@ -253,7 +274,7 @@ class Factory
         $composer->setEventDispatcher($dispatcher);
 
         // initialize autoload generator
-        $generator = new AutoloadGenerator($dispatcher);
+        $generator = new AutoloadGenerator($dispatcher, $io);
         $composer->setAutoloadGenerator($generator);
 
         // add installers to the manager
@@ -275,7 +296,7 @@ class Factory
             $lockFile = "json" === pathinfo($composerFile, PATHINFO_EXTENSION)
                 ? substr($composerFile, 0, -4).'lock'
                 : $composerFile . '.lock';
-            $locker = new Package\Locker($io, new JsonFile($lockFile, new RemoteFilesystem($io)), $rm, $im, md5_file($composerFile));
+            $locker = new Package\Locker($io, new JsonFile($lockFile, new RemoteFilesystem($io, $config)), $rm, $im, md5_file($composerFile));
             $composer->setLocker($locker);
         }
 
@@ -314,8 +335,9 @@ class Factory
     }
 
      /**
-     * @param Config $config
-     * @param string $vendorDir
+     * @param  Config                                        $config
+     * @param  string                                        $vendorDir
+     * @return Repository\InstalledFilesystemRepository|null
      */
     protected function createGlobalRepository(Config $config, $vendorDir)
     {
@@ -344,7 +366,7 @@ class Factory
             $cache = new Cache($io, $config->get('cache-files-dir'), 'a-z0-9_./');
         }
 
-        $dm = new Downloader\DownloadManager();
+        $dm = new Downloader\DownloadManager($io);
         switch ($config->get('preferred-install')) {
             case 'dist':
                 $dm->setPreferDist(true);
@@ -365,6 +387,7 @@ class Factory
         $dm->setDownloader('zip', new Downloader\ZipDownloader($io, $config, $eventDispatcher, $cache));
         $dm->setDownloader('rar', new Downloader\RarDownloader($io, $config, $eventDispatcher, $cache));
         $dm->setDownloader('tar', new Downloader\TarDownloader($io, $config, $eventDispatcher, $cache));
+        $dm->setDownloader('gzip', new Downloader\GzipDownloader($io, $config, $eventDispatcher, $cache));
         $dm->setDownloader('phar', new Downloader\PharDownloader($io, $config, $eventDispatcher, $cache));
         $dm->setDownloader('file', new Downloader\FileDownloader($io, $config, $eventDispatcher, $cache));
 
@@ -392,6 +415,9 @@ class Factory
     }
 
     /**
+     * @param  Composer             $composer
+     * @param  IOInterface          $io
+     * @param  RepositoryInterface  $globalRepository
      * @return Plugin\PluginManager
      */
     protected function createPluginManager(Composer $composer, IOInterface $io, RepositoryInterface $globalRepository = null)
@@ -435,10 +461,10 @@ class Factory
     }
 
     /**
-     * @param IOInterface $io     IO instance
-     * @param mixed       $config either a configuration array or a filename to read from, if null it will read from
-     *                             the default filename
-     * @param  bool     $disablePlugins Whether plugins should not be loaded
+     * @param  IOInterface $io             IO instance
+     * @param  mixed       $config         either a configuration array or a filename to read from, if null it will read from
+     *                                     the default filename
+     * @param  bool        $disablePlugins Whether plugins should not be loaded
      * @return Composer
      */
     public static function create(IOInterface $io, $config = null, $disablePlugins = false)

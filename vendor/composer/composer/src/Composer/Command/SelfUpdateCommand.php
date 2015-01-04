@@ -21,6 +21,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * @author Igor Wiedler <igor@wiedler.ch>
@@ -57,8 +58,8 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $baseUrl = (extension_loaded('openssl') ? 'https' : 'http') . '://' . self::HOMEPAGE;
-        $remoteFilesystem = new RemoteFilesystem($this->getIO());
         $config = Factory::createConfig();
+        $remoteFilesystem = new RemoteFilesystem($this->getIO(), $config);
         $cacheDir = $config->get('cache-dir');
         $rollbackDir = $config->get('home');
         $localFilename = realpath($_SERVER['argv'][0]) ?: $_SERVER['argv'][0];
@@ -106,22 +107,20 @@ EOT
         $remoteFilename = $baseUrl . (preg_match('{^[0-9a-f]{40}$}', $updateVersion) ? '/composer.phar' : "/download/{$updateVersion}/composer.phar");
         $remoteFilesystem->copy(self::HOMEPAGE, $remoteFilename, $tempFilename);
         if (!file_exists($tempFilename)) {
-            $output->writeln('<error>The download of the new composer version failed for an unexpected reason');
+            $output->writeln('<error>The download of the new composer version failed for an unexpected reason</error>');
 
             return 1;
         }
 
         // remove saved installations of composer
         if ($input->getOption('clean-backups')) {
-            $files = $this->getOldInstallationFiles($rollbackDir);
+            $finder = $this->getOldInstallationFinder($rollbackDir);
 
-            if (!empty($files)) {
-                $fs = new Filesystem;
-
-                foreach ($files as $file) {
-                    $output->writeln('<info>Removing: '.$file);
-                    $fs->remove($file);
-                }
+            $fs = new Filesystem;
+            foreach ($finder as $file) {
+                $file = (string) $file;
+                $output->writeln('<info>Removing: '.$file.'</info>');
+                $fs->remove($file);
             }
         }
 
@@ -174,17 +173,18 @@ EOT
     {
         try {
             @chmod($newFilename, 0777 & ~umask());
-            // test the phar validity
-            $phar = new \Phar($newFilename);
-            // free the variable to unlock the file
-            unset($phar);
+            if (!ini_get('phar.readonly')) {
+                // test the phar validity
+                $phar = new \Phar($newFilename);
+                // free the variable to unlock the file
+                unset($phar);
+            }
 
             // copy current file into installations dir
             if ($backupTarget && file_exists($localFilename)) {
                 @copy($localFilename, $backupTarget);
             }
 
-            unset($phar);
             rename($newFilename, $localFilename);
         } catch (\Exception $e) {
             if ($backupTarget) {
@@ -200,18 +200,25 @@ EOT
 
     protected function getLastBackupVersion($rollbackDir)
     {
-        $files = $this->getOldInstallationFiles($rollbackDir);
-        if (empty($files)) {
-            return false;
+        $finder = $this->getOldInstallationFinder($rollbackDir);
+        $finder->sortByName();
+        $files = iterator_to_array($finder);
+
+        if (count($files)) {
+            return basename(end($files), self::OLD_INSTALL_EXT);
         }
 
-        sort($files);
-
-        return basename(end($files), self::OLD_INSTALL_EXT);
+        return false;
     }
 
-    protected function getOldInstallationFiles($rollbackDir)
+    protected function getOldInstallationFinder($rollbackDir)
     {
-        return glob($rollbackDir . '/*' . self::OLD_INSTALL_EXT) ?: array();
+        $finder = Finder::create()
+            ->depth(0)
+            ->files()
+            ->name('*' . self::OLD_INSTALL_EXT)
+            ->in($rollbackDir);
+
+        return $finder;
     }
 }

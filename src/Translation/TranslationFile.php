@@ -105,12 +105,12 @@ class TranslationFile
     /**
      * Adds a string to the internal list of translatable strings
      *
-     * @param string $Text
+     * @param string $text
      */
-    private function addTranslatable($Text)
+    private function addTranslatable($text)
     {
-        if (strlen($Text) > 1 && !isset($this->translatables[$Text])) {
-            $this->translatables[$Text] = '';
+        if (strlen($text) > 1 && !isset($this->translatables[$text])) {
+            $this->translatables[$text] = '';
         }
     }
 
@@ -165,12 +165,12 @@ class TranslationFile
 
         foreach ($finder as $file) {
             $tokens = token_get_all($file->getContents());
-            $num_tokens = count($tokens);
+            $numTokens = count($tokens);
 
             // Skip whitespace and comments
-            $next = function () use (&$x, $tokens, $num_tokens) {
+            $next = function () use (&$x, $tokens, $numTokens) {
                 $token = $tokens[++$x];
-                while ($x < $num_tokens && is_array($token) && ($token[0] == T_WHITESPACE || $token[0] == T_COMMENT)) {
+                while ($x < $numTokens && is_array($token) && ($token[0] == T_WHITESPACE || $token[0] == T_COMMENT)) {
                     $token = $tokens[++$x];
                 }
 
@@ -192,7 +192,7 @@ class TranslationFile
                 return false;
             };
 
-            for ($x = 0; $x < $num_tokens; $x++) {
+            for ($x = 0; $x < $numTokens; $x++) {
                 $token = $tokens[$x];
                 // Found function __()
                 if (is_array($token) && $token[0] == T_STRING && $token[1] == '__') {
@@ -200,14 +200,14 @@ class TranslationFile
                     $token = $next();
 
                     // Found "("?
-                    if ($x < $num_tokens && !is_array($token) && $token == '(') {
+                    if ($x < $numTokens && !is_array($token) && $token == '(') {
                         // Skip whitespace and comments between "__()" and first function argument
                         $token = $next();
                         // Found String?
                         if (is_array($token) && $token[0] == T_CONSTANT_ENCAPSED_STRING) {
                             $string = '';
                             // Get string, also if concatenated
-                            while ($x < $num_tokens && $isArg($token)) {
+                            while ($x < $numTokens && $isArg($token)) {
                                 if (is_array($token) && $token[0] == T_CONSTANT_ENCAPSED_STRING) {
                                     $raw = substr($token[1], 1, strlen($token[1]) - 2);
                                     if (substr($token[1], 0, 1) == '"') {
@@ -357,8 +357,10 @@ class TranslationFile
             foreach ($translations as $key => $tdata) {
                 // Key
                 if ($type == 'DoneKey') {
+                    $differs = false;
                     for ($level = 0, $end = count($tdata['key']) - 1; $level < $end; $level++) {
-                        if ($level >= count($lastKey) - 1 || $lastKey[$level] != $tdata['key'][$level]) {
+                        if ($differs || $level >= count($lastKey) - 1 || $lastKey[$level] != $tdata['key'][$level]) {
+                            $differs = true;
                             if ($level == 0) {
                                 $content .= $linebreak;
                                 $linebreak = "\n";
@@ -373,7 +375,7 @@ class TranslationFile
                 }
                 // Value
                 if ($tdata['trans'] === '') {
-                    $thint = Trans::trans($key);
+                    $thint = Trans::__($key);
                     if ($thint == $key) {
                         $thint = isset($hinting[$key]) ? $hinting[$key] : '';
                     }

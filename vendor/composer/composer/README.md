@@ -1,11 +1,11 @@
 Composer - Dependency Management for PHP
 ========================================
 
-Composer is a dependency manager tracking local dependencies of your projects and libraries.
+Composer helps you declare, manage and install dependencies of PHP projects, ensuring you have the right stack everywhere.
 
 See [https://getcomposer.org/](https://getcomposer.org/) for more information and documentation.
 
-[![Build Status](https://secure.travis-ci.org/composer/composer.png?branch=master)](http://travis-ci.org/composer/composer)
+[![Build Status](https://travis-ci.org/composer/composer.svg?branch=master)](https://travis-ci.org/composer/composer)
 
 Installation / Usage
 --------------------
@@ -65,7 +65,7 @@ merged. This is to ensure proper review of all the code.
 Fork the project, create a feature branch, and send us a pull request.
 
 To ensure a consistent code base, you should make sure the code follows
-the [Coding Standards](http://symfony.com/doc/2.0/contributing/code/standards.html)
+the [Coding Standards](http://symfony.com/doc/current/contributing/code/standards.html)
 which we borrowed from Symfony.
 
 If you would like to help take a look at the [list of issues](http://github.com/composer/composer/issues).

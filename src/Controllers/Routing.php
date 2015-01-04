@@ -116,8 +116,8 @@ class Routing implements ControllerProviderInterface
                 }
 
                 foreach ($requirements as $variable => $regexp) {
-                    $proper_regexp = $this->getProperRegexp($regexp);
-                    $route->assert($variable, $proper_regexp);
+                    $properRegexp = $this->getProperRegexp($regexp);
+                    $route->assert($variable, $properRegexp);
                 }
                 foreach ($defaults as $variable => $default) {
                     $route->value($variable, $default);
@@ -191,13 +191,13 @@ class Routing implements ControllerProviderInterface
         $taxonomyValues = self::$app['config']->get('taxonomy/' . $taxonomyName . '/options');
 
         // If by accident, someone uses a "tags" taxonomy.
-        if ($taxonomyValues == null) {
+        if (empty($taxonomyValues)) {
             return "[a-z0-9-_]+";
         }
         $taxonomyValues = array_keys($taxonomyValues);
         $requirements = implode('|', $taxonomyValues);
 
-        if ($emptyValue != null) {
+        if ($emptyValue !== null) {
             $requirements .= '|' . $emptyValue;
         }
 

@@ -19,9 +19,9 @@ use Composer\Installer\ProjectInstaller;
 use Composer\Installer\InstallationManager;
 use Composer\IO\IOInterface;
 use Composer\Package\BasePackage;
-use Composer\Package\LinkConstraint\VersionConstraint;
 use Composer\DependencyResolver\Pool;
 use Composer\DependencyResolver\Operation\InstallOperation;
+use Composer\Package\Version\VersionSelector;
 use Composer\Repository\ComposerRepository;
 use Composer\Repository\CompositeRepository;
 use Composer\Repository\FilesystemRepository;
@@ -56,7 +56,7 @@ class CreateProjectCommand extends Command
             ->setDefinition(array(
                 new InputArgument('package', InputArgument::OPTIONAL, 'Package name to be installed'),
                 new InputArgument('directory', InputArgument::OPTIONAL, 'Directory where the files should be created'),
-                new InputArgument('version', InputArgument::OPTIONAL, 'Version, will defaults to latest'),
+                new InputArgument('version', InputArgument::OPTIONAL, 'Version, will default to latest'),
                 new InputOption('stability', 's', InputOption::VALUE_REQUIRED, 'Minimum-stability allowed (unless a version is specified).'),
                 new InputOption('prefer-source', null, InputOption::VALUE_NONE, 'Forces installation from package sources when possible, including VCS information.'),
                 new InputOption('prefer-dist', null, InputOption::VALUE_NONE, 'Forces installation from package dist even for dev versions.'),
@@ -102,22 +102,7 @@ EOT
 
         $preferSource = false;
         $preferDist = false;
-        switch ($config->get('preferred-install')) {
-            case 'source':
-                $preferSource = true;
-                break;
-            case 'dist':
-                $preferDist = true;
-                break;
-            case 'auto':
-            default:
-                // noop
-                break;
-        }
-        if ($input->getOption('prefer-source') || $input->getOption('prefer-dist')) {
-            $preferSource = $input->getOption('prefer-source');
-            $preferDist = $input->getOption('prefer-dist');
-        }
+        $this->updatePreferredOptions($config, $input, $preferSource, $preferDist);
 
         if ($input->getOption('no-custom-installers')) {
             $output->writeln('<warning>You are using the deprecated option "no-custom-installers". Use "no-plugins" instead.</warning>');
@@ -139,13 +124,17 @@ EOT
             $input->getOption('no-scripts'),
             $input->getOption('keep-vcs'),
             $input->getOption('no-progress'),
-            $input->getOption('no-install')
+            $input->getOption('no-install'),
+            $input
         );
     }
 
-    public function installProject(IOInterface $io, $config, $packageName, $directory = null, $packageVersion = null, $stability = 'stable', $preferSource = false, $preferDist = false, $installDevPackages = false, $repositoryUrl = null, $disablePlugins = false, $noScripts = false, $keepVcs = false, $noProgress = false, $noInstall = false)
+    public function installProject(IOInterface $io, Config $config, $packageName, $directory = null, $packageVersion = null, $stability = 'stable', $preferSource = false, $preferDist = false, $installDevPackages = false, $repositoryUrl = null, $disablePlugins = false, $noScripts = false, $keepVcs = false, $noProgress = false, $noInstall = false, InputInterface $input)
     {
         $oldCwd = getcwd();
+
+        // we need to manually load the configuration to pass the auth credentials to the io interface!
+        $io->loadConfiguration($config);
 
         if ($packageName !== null) {
             $installedFromVcs = $this->installRootPackage($io, $config, $packageName, $directory, $packageVersion, $stability, $preferSource, $preferDist, $installDevPackages, $repositoryUrl, $disablePlugins, $noScripts, $keepVcs, $noProgress);
@@ -160,6 +149,9 @@ EOT
             // dispatch event
             $composer->getEventDispatcher()->dispatchCommandEvent(ScriptEvents::POST_ROOT_PACKAGE_INSTALL, $installDevPackages);
         }
+
+        $rootPackageConfig = $composer->getConfig();
+        $this->updatePreferredOptions($rootPackageConfig, $input, $preferSource, $preferDist);
 
         // install dependencies of the created project
         if ($noInstall === false) {
@@ -238,12 +230,12 @@ EOT
         return 0;
     }
 
-    protected function installRootPackage(IOInterface $io, $config, $packageName, $directory = null, $packageVersion = null, $stability = 'stable', $preferSource = false, $preferDist = false, $installDevPackages = false, $repositoryUrl = null, $disablePlugins = false, $noScripts = false, $keepVcs = false, $noProgress = false)
+    protected function installRootPackage(IOInterface $io, Config $config, $packageName, $directory = null, $packageVersion = null, $stability = 'stable', $preferSource = false, $preferDist = false, $installDevPackages = false, $repositoryUrl = null, $disablePlugins = false, $noScripts = false, $keepVcs = false, $noProgress = false)
     {
         if (null === $repositoryUrl) {
             $sourceRepo = new CompositeRepository(Factory::createDefaultRepositories($io, $config));
         } elseif ("json" === pathinfo($repositoryUrl, PATHINFO_EXTENSION)) {
-            $sourceRepo = new FilesystemRepository(new JsonFile($repositoryUrl, new RemoteFilesystem($io)));
+            $sourceRepo = new FilesystemRepository(new JsonFile($repositoryUrl, new RemoteFilesystem($io, $config)));
         } elseif (0 === strpos($repositoryUrl, 'http')) {
             $sourceRepo = new ComposerRepository(array('url' => $repositoryUrl), $io, $config);
         } else {
@@ -251,7 +243,6 @@ EOT
         }
 
         $parser = new VersionParser();
-        $candidates = array();
         $requirements = $parser->parseNameVersionPairs(array($packageName));
         $name = strtolower($requirements[0]['name']);
         if (!$packageVersion && isset($requirements[0]['version'])) {
@@ -275,15 +266,11 @@ EOT
         $pool = new Pool($stability);
         $pool->addRepository($sourceRepo);
 
-        $constraint = $packageVersion ? $parser->parseConstraints($packageVersion) : null;
-        $candidates = $pool->whatProvides($name, $constraint);
-        foreach ($candidates as $key => $candidate) {
-            if ($candidate->getName() !== $name) {
-                unset($candidates[$key]);
-            }
-        }
+        // find the latest version if there are multiple
+        $versionSelector = new VersionSelector($pool);
+        $package = $versionSelector->findBestCandidate($name, $packageVersion);
 
-        if (!$candidates) {
+        if (!$package) {
             throw new \InvalidArgumentException("Could not find package $name" . ($packageVersion ? " with version $packageVersion." : " with stability $stability."));
         }
 
@@ -291,15 +278,6 @@ EOT
             $parts = explode("/", $name, 2);
             $directory = getcwd() . DIRECTORY_SEPARATOR . array_pop($parts);
         }
-
-        // select highest version if we have many
-        $package = reset($candidates);
-        foreach ($candidates as $candidate) {
-            if (version_compare($package->getVersion(), $candidate->getVersion(), '<')) {
-                $package = $candidate;
-            }
-        }
-        unset($candidates);
 
         $io->write('<info>Installing ' . $package->getName() . ' (' . VersionParser::formatVersion($package, false) . ')</info>');
 
@@ -342,5 +320,35 @@ EOT
     protected function createInstallationManager()
     {
         return new InstallationManager();
+    }
+
+    /**
+     * Updated preferSource or preferDist based on the preferredInstall config option
+     * @param Config         $config
+     * @param InputInterface $input
+     * @param boolean        $preferSource
+     * @param boolean        $preferDist
+     */
+    protected function updatePreferredOptions(Config $config, InputInterface $input, &$preferSource, &$preferDist)
+    {
+        switch ($config->get('preferred-install')) {
+            case 'source':
+                $preferSource = true;
+                $preferDist = false;
+                break;
+            case 'dist':
+                $preferSource = false;
+                $preferDist = true;
+                break;
+            case 'auto':
+            default:
+                // noop
+                break;
+        }
+
+        if ($input->getOption('prefer-source') || $input->getOption('prefer-dist')) {
+            $preferSource = $input->getOption('prefer-source');
+            $preferDist = $input->getOption('prefer-dist');
+        }
     }
 }

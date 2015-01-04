@@ -17,6 +17,7 @@ use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -43,7 +44,9 @@ class InstallCommand extends Command
                 new InputOption('no-scripts', null, InputOption::VALUE_NONE, 'Skips the execution of all scripts defined in composer.json file.'),
                 new InputOption('no-progress', null, InputOption::VALUE_NONE, 'Do not output download progress.'),
                 new InputOption('verbose', 'v|vv|vvv', InputOption::VALUE_NONE, 'Shows more details including new commits pulled in when updating packages.'),
-                new InputOption('optimize-autoloader', 'o', InputOption::VALUE_NONE, 'Optimize autoloader during autoloader dump')
+                new InputOption('optimize-autoloader', 'o', InputOption::VALUE_NONE, 'Optimize autoloader during autoloader dump'),
+                new InputOption('ignore-platform-reqs', null, InputOption::VALUE_NONE, 'Ignore platform requirements (php & ext- packages).'),
+                new InputArgument('packages', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Should not be provided, use composer require instead to add a given package to composer.json.'),
             ))
             ->setHelp(<<<EOT
 The <info>install</info> command reads the composer.lock file from
@@ -60,6 +63,12 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($args = $input->getArgument('packages')) {
+            $output->writeln('<error>Invalid argument '.implode(' ', $args).'. Use "composer require '.implode(' ', $args).'" instead to add packages to your composer.json.</error>');
+
+            return 1;
+        }
+
         if ($input->getOption('no-custom-installers')) {
             $output->writeln('<warning>You are using the deprecated option "no-custom-installers". Use "no-plugins" instead.</warning>');
             $input->setOption('no-plugins', true);
@@ -76,7 +85,10 @@ EOT
 
         $preferSource = false;
         $preferDist = false;
-        switch ($composer->getConfig()->get('preferred-install')) {
+
+        $config = $composer->getConfig();
+
+        switch ($config->get('preferred-install')) {
             case 'source':
                 $preferSource = true;
                 break;
@@ -93,6 +105,8 @@ EOT
             $preferDist = $input->getOption('prefer-dist');
         }
 
+        $optimize = $input->getOption('optimize-autoloader') || $config->get('optimize-autoloader');
+
         $install
             ->setDryRun($input->getOption('dry-run'))
             ->setVerbose($input->getOption('verbose'))
@@ -100,7 +114,8 @@ EOT
             ->setPreferDist($preferDist)
             ->setDevMode(!$input->getOption('no-dev'))
             ->setRunScripts(!$input->getOption('no-scripts'))
-            ->setOptimizeAutoloader($input->getOption('optimize-autoloader'))
+            ->setOptimizeAutoloader($optimize)
+            ->setIgnorePlatformRequirements($input->getOption('ignore-platform-reqs'))
         ;
 
         if ($input->getOption('no-plugins')) {

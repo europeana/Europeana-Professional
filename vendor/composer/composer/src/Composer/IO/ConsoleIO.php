@@ -15,6 +15,7 @@ namespace Composer\IO;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Process\ExecutableFinder;
 
 /**
  * The Input/Output helper.
@@ -171,6 +172,18 @@ class ConsoleIO extends BaseIO
     {
         // handle windows
         if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $finder = new ExecutableFinder();
+
+            // use bash if it's present
+            if ($finder->find('bash') && $finder->find('stty')) {
+                $this->write($question, false);
+                $value = rtrim(shell_exec('bash -c "stty -echo; read -n0 discard; read -r mypassword; stty echo; echo $mypassword"'));
+                $this->write('');
+
+                return $value;
+            }
+
+            // fallback to hiddeninput executable
             $exe = __DIR__.'\\hiddeninput.exe';
 
             // handle code running from a phar

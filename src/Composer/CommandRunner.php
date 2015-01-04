@@ -5,7 +5,6 @@ use Silex;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Filesystem\Filesystem;
 use Composer\Console\Application as ComposerApp;
 use Guzzle\Http\Client as GuzzleClient;
 use Guzzle\Http\Exception\RequestException;
@@ -24,7 +23,6 @@ class CommandRunner
     public $packageFile;
     public $installer;
     public $basedir;
-    private $cachedir;
 
     public function __construct(Silex\Application $app, $packageRepo = null, $readWriteMode = false)
     {
@@ -36,7 +34,6 @@ class CommandRunner
         $this->packageRepo = $packageRepo;
         $this->packageFile = $app['resources']->getPath('root') . '/extensions/composer.json';
         $this->installer = $app['resources']->getPath('root') . '/extensions/installer.php';
-        $this->cachedir = $this->app['resources']->getPath('cache') . '/composer';
 
         // Set up composer
         if ($readWriteMode) {
@@ -197,7 +194,7 @@ class CommandRunner
         // @see https://github.com/composer/composer/issues/2146#issuecomment-35478940
         putenv("DYLD_LIBRARY_PATH=''");
 
-        $command .= ' -d ' . $this->basedir . ' -n --no-ansi';
+        $command .= ' -d "' . $this->basedir . '" -n --no-ansi';
         $this->writeLog('command', $command);
 
         // Create an InputInterface object to pass to Composer
@@ -262,14 +259,14 @@ class CommandRunner
         }
 
         // flatten the composer array one level to make working easier
-        $initialized_extensions = array();
+        $initializedExtensions = array();
         foreach ($this->app['extensions']->composer as $val) {
-            $initialized_extensions += $val;
+            $initializedExtensions += $val;
         }
 
         // For Bolt, we also need to know if the extension has a 'README' and a 'config.yml' file.
         // Note we only do this for successfully loaded extensions.
-        if (isset($initialized_extensions[$name])) {
+        if (isset($initializedExtensions[$name])) {
             $paths = $this->app['resources']->getPaths();
 
             if (is_readable($paths['extensionspath'] . '/vendor/' . $pack['name'] . '/README.md')) {
@@ -293,8 +290,8 @@ class CommandRunner
             }
 
             // as a bonus we add the extension title to the pack
-            $pack['title'] = $initialized_extensions[$name]['name'];
-            $pack['authors'] = $initialized_extensions[$name]['json']['authors'];
+            $pack['title'] = $initializedExtensions[$name]['name'];
+            $pack['authors'] = $initializedExtensions[$name]['json']['authors'];
         }
 
         return $pack;
@@ -392,7 +389,7 @@ class CommandRunner
         $jsonfile = file_get_contents($this->packageFile);
         $json = json_decode($jsonfile);
         $json->repositories->packagist = false;
-        $json->{'minimum-stability'} = "dev";
+        $json->{'minimum-stability'} = $this->app['config']->get('general/extensions/stability', 'stable');
         $json->{'prefer-stable'} = true;
         $json->config = array('discard-changes' => true, 'preferred-install' => 'dist');
         $basePackage = "bolt/bolt";
@@ -404,7 +401,6 @@ class CommandRunner
         );
 
         $pathToWeb = $this->app['resources']->findRelativePath($this->app['resources']->getPath('extensions'), $this->app['resources']->getPath('web'));
-        $pathToRoot = $this->app['resources']->findRelativePath($this->app['resources']->getPath('extensions'), $this->app['resources']->getPath('root'));
         $json->extra = array('bolt-web-path' => $pathToWeb);
         $json->autoload = array('files' => array("installer.php"));
 
@@ -417,9 +413,9 @@ class CommandRunner
             $json = json_decode((file_get_contents($this->packageRepo)));
             $this->available = $json->packages;
         } catch (\Exception $e) {
-            $this->messages[] = sprintf(
-                Trans::trans("The Bolt extensions Repo at %s is currently unavailable. Check your connection and try again shortly."),
-                $this->packageRepo
+            $this->messages[] = Trans::__(
+                'The Bolt extensions Repo at %repository% is currently unavailable. Check your connection and try again shortly.',
+                array('%repository%' => $this->packageRepo)
             );
             $this->available = array();
         }
@@ -442,12 +438,13 @@ class CommandRunner
      */
     private function ping($site, $uri = '', $addquery = false)
     {
+        $www = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : 'unknown';
         if ($addquery) {
             $query = array(
                 'bolt_ver'  => $this->app['bolt_version'],
                 'bolt_name' => $this->app['bolt_name'],
                 'php'       => phpversion(),
-                'www'       => $_SERVER['SERVER_SOFTWARE']
+                'www'       => $www
             );
         } else {
             $query = array();

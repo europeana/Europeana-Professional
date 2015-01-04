@@ -48,7 +48,22 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->rfs = new RemoteFilesystem($this->getIO());
+        $composer = $this->getComposer(false);
+        if ($composer) {
+            $commandEvent = new CommandEvent(PluginEvents::COMMAND, 'diagnose', $input, $output);
+            $composer->getEventDispatcher()->dispatch($commandEvent->getName(), $commandEvent);
+
+            $output->write('Checking composer.json: ');
+            $this->outputResult($output, $this->checkComposerSchema());
+        }
+
+        if ($composer) {
+            $config = $composer->getConfig();
+        } else {
+            $config = Factory::createConfig();
+        }
+
+        $this->rfs = new RemoteFilesystem($this->getIO(), $config);
         $this->process = new ProcessExecutor($this->getIO());
 
         $output->write('Checking platform settings: ');
@@ -68,21 +83,6 @@ EOT
             $this->outputResult($output, $this->checkHttpProxyFullUriRequestParam());
             $output->write('Checking HTTPS proxy support for request_fulluri: ');
             $this->outputResult($output, $this->checkHttpsProxyFullUriRequestParam());
-        }
-
-        $composer = $this->getComposer(false);
-        if ($composer) {
-            $commandEvent = new CommandEvent(PluginEvents::COMMAND, 'diagnose', $input, $output);
-            $composer->getEventDispatcher()->dispatch($commandEvent->getName(), $commandEvent);
-
-            $output->write('Checking composer.json: ');
-            $this->outputResult($output, $this->checkComposerSchema());
-        }
-
-        if ($composer) {
-            $config = $composer->getConfig();
-        } else {
-            $config = Factory::createConfig();
         }
 
         if ($oauth = $config->get('github-oauth')) {
@@ -183,7 +183,7 @@ EOT
             try {
                 $this->rfs->getContents('packagist.org', $url, false, array('http' => array('request_fulluri' => false)));
             } catch (TransportException $e) {
-                return 'Unable to assert the situation, maybe packagist.org is down ('.$e->getMessage().')';
+                return 'Unable to assess the situation, maybe packagist.org is down ('.$e->getMessage().')';
             }
 
             return 'It seems there is a problem with your proxy server, try setting the "HTTP_PROXY_REQUEST_FULLURI" and "HTTPS_PROXY_REQUEST_FULLURI" environment variables to "false"';
@@ -207,12 +207,12 @@ EOT
 
         $url = 'https://api.github.com/repos/Seldaek/jsonlint/zipball/1.0.0';
         try {
-            $rfcResult = $this->rfs->getContents('api.github.com', $url, false);
+            $rfcResult = $this->rfs->getContents('github.com', $url, false);
         } catch (TransportException $e) {
             try {
-                $this->rfs->getContents('api.github.com', $url, false, array('http' => array('request_fulluri' => false)));
+                $this->rfs->getContents('github.com', $url, false, array('http' => array('request_fulluri' => false)));
             } catch (TransportException $e) {
-                return 'Unable to assert the situation, maybe github is down ('.$e->getMessage().')';
+                return 'Unable to assess the situation, maybe github is down ('.$e->getMessage().')';
             }
 
             return 'It seems there is a problem with your proxy server, try setting the "HTTPS_PROXY_REQUEST_FULLURI" environment variable to "false"';
@@ -255,7 +255,7 @@ EOT
         $latest = trim($this->rfs->getContents('getcomposer.org', $protocol . '://getcomposer.org/version', false));
 
         if (Composer::VERSION !== $latest && Composer::VERSION !== '@package_version@') {
-            return '<warning>Your are not running the latest version</warning>';
+            return '<warning>You are not running the latest version</warning>';
         }
 
         return true;
@@ -312,7 +312,7 @@ EOT
             $warnings['openssl'] = true;
         }
 
-        if (ini_get('apc.enable_cli')) {
+        if (!defined('HHVM_VERSION') && !extension_loaded('apcu') && ini_get('apc.enable_cli')) {
             $warnings['apc_cli'] = true;
         }
 

@@ -1,6 +1,16 @@
 <?php
 
+/*
+ * This file is part of the JsonSchema package.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace JsonSchema\Constraints;
+
+use JsonSchema\Exception\InvalidArgumentException;
+use UnexpectedValueException as StandardUnexpectedValueException;
 
 /**
  * The Type Constraints, validates an element against a given type
@@ -11,15 +21,30 @@ namespace JsonSchema\Constraints;
 class Type extends Constraint
 {
     /**
-     * {inheritDoc}
+     * @var array|string[] type wordings for validation error messages
      */
-    function check($value = null, $schema = null, $path = null, $i = null)
+    static $wording = array(
+        'integer' => 'an integer',
+        'number'  => 'a number',
+        'boolean' => 'a boolean',
+        'object'  => 'an object',
+        'array'   => 'an array',
+        'string'  => 'a string',
+        'null'    => 'a null',
+        'any'     => NULL, // validation of 'any' is always true so is not needed in message wording
+        0         => NULL, // validation of a false-y value is always true, so not needed as well
+    );
+
+    /**
+     * {@inheritDoc}
+     */
+    public function check($value = null, $schema = null, $path = null, $i = null)
     {
         $type = isset($schema->type) ? $schema->type : null;
         $isValid = true;
 
         if (is_array($type)) {
-            //TODO refactor
+            // @TODO refactor
             $validatedOneType = false;
             $errors = array();
             foreach ($type as $tp) {
@@ -32,10 +57,11 @@ class Type extends Constraint
                 if (!count($error)) {
                     $validatedOneType = true;
                     break;
-                } else {
-                    $errors = $error;
                 }
+
+                $errors = $error;
             }
+
             if (!$validatedOneType) {
                 return $this->addErrors($errors);
             }
@@ -46,17 +72,27 @@ class Type extends Constraint
         }
 
         if ($isValid === false) {
-            $this->addError($path, gettype($value) . " value found, but a " . $type . " is required");
+            if (!isset(self::$wording[$type])) {
+                throw new StandardUnexpectedValueException(
+                    sprintf(
+                        "No wording for %s available, expected wordings are: [%s]",
+                        var_export($type, true),
+                        implode(', ', array_filter(self::$wording)))
+                );
+            }
+            $this->addError($path, gettype($value) . " value found, but " . self::$wording[$type] . " is required");
         }
     }
 
     /**
-     * verifies that a given value is of a certain type
+     * Verifies that a given value is of a certain type
      *
-     * @param string $type
-     * @param mixed $value
+     * @param mixed  $value Value to validate
+     * @param string $type  Type to check against
+     *
      * @return boolean
-     * @throws \InvalidArgumentException
+     *
+     * @throws InvalidArgumentException
      */
     protected function validateType($value, $type)
     {
@@ -65,26 +101,39 @@ class Type extends Constraint
             return true;
         }
 
-        switch ($type) {
-            case 'integer' :
-                return (integer)$value == $value ? true : is_int($value);
-            case 'number' :
-                return is_numeric($value);
-            case 'boolean' :
-                return is_bool($value);
-            case 'object' :
-                return is_object($value);
-            //return ($this::CHECK_MODE_TYPE_CAST == $this->checkMode) ? is_array($value) : is_object($value);
-            case 'array' :
-                return is_array($value);
-            case 'string' :
-                return is_string($value);
-            case 'null' :
-                return is_null($value);
-            case 'any' :
-                return true;
-            default:
-                throw new \InvalidArgumentException((is_object($value) ? 'object' : $value) . ' is a invalid type for ' . $type);
+        if ('integer' === $type) {
+            return is_int($value);
         }
+
+        if ('number' === $type) {
+            return is_numeric($value) && !is_string($value);
+        }
+
+        if ('boolean' === $type) {
+            return is_bool($value);
+        }
+
+        if ('object' === $type) {
+            return is_object($value);
+            //return ($this::CHECK_MODE_TYPE_CAST == $this->checkMode) ? is_array($value) : is_object($value);
+        }
+
+        if ('array' === $type) {
+            return is_array($value);
+        }
+
+        if ('string' === $type) {
+            return is_string($value);
+        }
+
+        if ('null' === $type) {
+            return is_null($value);
+        }
+
+        if ('any' === $type) {
+            return true;
+        }
+
+        throw new InvalidArgumentException((is_object($value) ? 'object' : $value) . ' is an invalid type for ' . $type);
     }
 }

@@ -9,6 +9,6 @@ return array(
     $vendorDir . '/symfony/intl/Symfony/Component/Intl/Resources/stubs/functions.php',
     $vendorDir . '/swiftmailer/swiftmailer/lib/swift_required.php',
     $vendorDir . '/rossriley/validation/autoload.php',
-    $vendorDir . '/bolt/dumper/class.dumper.php',
     $vendorDir . '/rossriley/upload/autoload.php',
+    $vendorDir . '/bolt/dumper/class.dumper.php',
 );

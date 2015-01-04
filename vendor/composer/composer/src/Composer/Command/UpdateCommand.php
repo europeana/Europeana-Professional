@@ -45,7 +45,8 @@ class UpdateCommand extends Command
                 new InputOption('no-progress', null, InputOption::VALUE_NONE, 'Do not output download progress.'),
                 new InputOption('with-dependencies', null, InputOption::VALUE_NONE, 'Add also all dependencies of whitelisted packages to the whitelist.'),
                 new InputOption('verbose', 'v|vv|vvv', InputOption::VALUE_NONE, 'Shows more details including new commits pulled in when updating packages.'),
-                new InputOption('optimize-autoloader', 'o', InputOption::VALUE_NONE, 'Optimize autoloader during autoloader dump.')
+                new InputOption('optimize-autoloader', 'o', InputOption::VALUE_NONE, 'Optimize autoloader during autoloader dump.'),
+                new InputOption('ignore-platform-reqs', null, InputOption::VALUE_NONE, 'Ignore platform requirements (php & ext- packages).'),
             ))
             ->setHelp(<<<EOT
 The <info>update</info> command reads the composer.json file from the
@@ -58,6 +59,11 @@ To limit the update operation to a few packages, you can list the package(s)
 you want to update as such:
 
 <info>php composer.phar update vendor/package1 foo/mypackage [...]</info>
+
+You may also use an asterisk (*) pattern to limit the update operation to package(s)
+from a specific vendor:
+
+<info>php composer.phar update vendor/package1 foo/* [...]</info>
 EOT
             )
         ;
@@ -81,7 +87,10 @@ EOT
 
         $preferSource = false;
         $preferDist = false;
-        switch ($composer->getConfig()->get('preferred-install')) {
+
+        $config = $composer->getConfig();
+
+        switch ($config->get('preferred-install')) {
             case 'source':
                 $preferSource = true;
                 break;
@@ -98,6 +107,8 @@ EOT
             $preferDist = $input->getOption('prefer-dist');
         }
 
+        $optimize = $input->getOption('optimize-autoloader') || $config->get('optimize-autoloader');
+
         $install
             ->setDryRun($input->getOption('dry-run'))
             ->setVerbose($input->getOption('verbose'))
@@ -105,10 +116,11 @@ EOT
             ->setPreferDist($preferDist)
             ->setDevMode(!$input->getOption('no-dev'))
             ->setRunScripts(!$input->getOption('no-scripts'))
-            ->setOptimizeAutoloader($input->getOption('optimize-autoloader'))
+            ->setOptimizeAutoloader($optimize)
             ->setUpdate(true)
             ->setUpdateWhitelist($input->getOption('lock') ? array('lock') : $input->getArgument('packages'))
             ->setWhitelistDependencies($input->getOption('with-dependencies'))
+            ->setIgnorePlatformRequirements($input->getOption('ignore-platform-reqs'))
         ;
 
         if ($input->getOption('no-plugins')) {

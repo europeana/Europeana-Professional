@@ -117,7 +117,7 @@ class Async implements ControllerProviderInterface
         $name = !empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
 
         // If not cached, get fresh news..
-        if ($news == false) {
+        if ($news === false) {
 
             $app['log']->add("News: fetch from remote server..", 1);
 
@@ -225,7 +225,12 @@ class Async implements ControllerProviderInterface
 
     public function makeuri(Silex\Application $app, Request $request)
     {
-        $uri = $app['storage']->getUri($request->query->get('title'), $request->query->get('id'), $request->query->get('contenttypeslug'), $request->query->get('fulluri'));
+        $uri = $app['storage']->getUri(
+            $request->query->get('title'),
+            $request->query->get('id'),
+            $request->query->get('contenttypeslug'),
+            $request->query->get('fulluri')
+        );
 
         return $uri;
     }
@@ -235,8 +240,11 @@ class Async implements ControllerProviderInterface
         $table = $app['config']->get('general/database/prefix', "bolt_");
         $table .= 'taxonomy';
 
-        $query = sprintf("SELECT DISTINCT %s.slug from %s where taxonomytype = ? order by slug ASC;",
-            $table, $table);
+        $query = sprintf(
+            'SELECT DISTINCT %s.slug from %s where taxonomytype = ? order by slug ASC;',
+            $table,
+            $table
+        );
         $query = $app['db']->executeQuery($query, array($taxonomytype));
 
         $results = $query->fetchAll();
@@ -251,8 +259,11 @@ class Async implements ControllerProviderInterface
 
         $limit = $app['request']->get('limit', 20);
 
-        $query = sprintf("SELECT slug , COUNT(slug) as count from  %s where taxonomytype = ? GROUP BY  slug ORDER BY count DESC LIMIT %s",
-            $table, intval($limit));
+        $query = sprintf(
+            'SELECT slug, COUNT(slug) as count from  %s where taxonomytype = ? GROUP BY  slug ORDER BY count DESC LIMIT %s',
+            $table,
+            intval($limit)
+        );
         $query = $app['db']->executeQuery($query, array($taxonomytype));
 
         $results = $query->fetchAll();
@@ -441,7 +452,8 @@ class Async implements ControllerProviderInterface
         $context = array(
             'stack' => $app['stack']->listitems($count),
             'filetypes' => $app['stack']->getFileTypes(),
-            'namespace' => $app['upload.namespace']
+            'namespace' => $app['upload.namespace'],
+            'canUpload' => $app['users']->isAllowed('files:uploads')
         );
 
         switch ($options) {

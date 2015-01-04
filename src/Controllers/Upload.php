@@ -5,17 +5,15 @@ namespace Bolt\Controllers;
 use Silex;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
 use Sirius\Upload\Handler as UploadHandler;
 use Sirius\Upload\Result\File;
 use Sirius\Upload\Result\Collection;
-
 use Bolt\Filesystem\FlysystemContainer;
-
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Bolt\Translation\Translator as Trans;
+use Bolt\Library as Lib;
 
 class Upload implements ControllerProviderInterface, ServiceProviderInterface
 {
@@ -104,7 +102,7 @@ class Upload implements ControllerProviderInterface, ServiceProviderInterface
                         }
                     }
 
-                    return new JsonResponse($result);
+                    return new JsonResponse($result, 200, array('Content-Type' => 'text/plain'));
                 } else {
                     list($namespace, $prefix) = $parser($handler);
                 }
@@ -114,9 +112,14 @@ class Upload implements ControllerProviderInterface, ServiceProviderInterface
                 $namespace = $app['upload.namespace'];
             }
 
-            return new JsonResponse($controller->uploadFile($app, $request, $namespace));
+            return new JsonResponse(
+                $controller->uploadFile($app, $request, $namespace),
+                200,
+                array('Content-Type' => 'text/plain')
+            );
         };
         $ctr->match('/{namespace}', $func)
+            ->before(array($this, 'before'))
             ->value('namespace', 'files')
             ->bind('upload');
 
@@ -193,6 +196,12 @@ class Upload implements ControllerProviderInterface, ServiceProviderInterface
         // If there's no active session, don't do anything..
         if (!$app['users']->isValidSession()) {
             $app->abort(404, "You must be logged in to use this.");
+        }
+
+        if (!$app['users']->isAllowed("files:uploads")) {
+            $app['session']->getFlashBag()->set('error', Trans::__('You do not have the right privileges to upload.'));
+
+            return Lib::redirect('dashboard');
         }
 
         // Stop the 'stopwatch' for the profiler.

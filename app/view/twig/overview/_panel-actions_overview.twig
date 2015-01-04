@@ -23,12 +23,12 @@
         <a class="btn btn-tertiary" href="?" style="margin-top: 15px">{{ __('Clear sort/filter') }}</a>
     {% endif %}
 
-    {% set description = __('contenttypes.%%.description', context.contenttype.slug, context.contenttype.description|default()) %}
-    {% if description %}
-        <div class="description">
+    {% set description = __(['contenttypes', context.contenttype.slug, 'description'], {DEFAULT: context.contenttype.description|default()}) %}
+    <div class="description">
+        {% if description %}
             {{ description|markdown }}
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
 
     <p><strong>{{ __("Details") }}</strong></p>
     <ul>

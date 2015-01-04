@@ -237,6 +237,12 @@ class Frontend
     public static function listing(Silex\Application $app, $contenttypeslug)
     {
         $contenttype = $app['storage']->getContentType($contenttypeslug);
+
+        // If the contenttype is 'viewless', don't show the record page.
+        if (isset($contenttype['viewless']) && $contenttype['viewless'] === true) {
+            $app->abort(404, "Page $contenttypeslug not found.");
+        }
+
         $pagerid = Pager::makeParameterId($contenttypeslug);
         /* @var $query \Symfony\Component\HttpFoundation\ParameterBag */
         $query = $app['request']->query;
@@ -291,17 +297,19 @@ class Frontend
         $order = $app['config']->get('general/listing_sort');
         $content = $app['storage']->getContentByTaxonomy($taxonomytype, $slug, array('limit' => $amount, 'order' => $order, 'page' => $page));
 
-        $taxonomytype = $app['storage']->getTaxonomyType($taxonomytype);
+        $taxonomy = $app['storage']->getTaxonomyType($taxonomytype);
 
         // No taxonomytype, no possible content..
-        if (empty($taxonomytype)) {
+        if (empty($taxonomy)) {
             return false;
         } else {
-            $taxonomyslug = $taxonomytype['slug'];
+            $taxonomyslug = $taxonomy['slug'];
         }
 
-        if (!$content) {
-            $app->abort(404, "Content for '$taxonomyslug/$slug' not found.");
+        // See https://github.com/bolt/bolt/pull/2310
+        if (($taxonomy['behaves_like'] === 'tags' && !$content)
+            || ( in_array($taxonomy['behaves_like'], array('categories', 'grouping')) && !in_array($slug, isset($taxonomy['options']) ? array_keys($taxonomy['options']) : array()))) {
+            $app->abort(404, "No slug '$slug' in taxonomy '$taxonomyslug'");
         }
 
         $template = $app['templatechooser']->taxonomy($taxonomyslug);
@@ -323,11 +331,11 @@ class Frontend
         // Look in taxonomies in 'content', to get a display value for '$slug', perhaps.
         foreach ($content as $record) {
             $flat = \utilphp\util::array_flatten($record->taxonomy);
-            $key = $app['paths']['root'] . $taxonomytype['slug'] . '/' . $slug;
+            $key = $app['paths']['root'] . $taxonomy['slug'] . '/' . $slug;
             if (isset($flat[$key])) {
                 $name = $flat[$key];
             }
-            $key = $app['paths']['root'] . $taxonomytype['singular_slug'] . '/' . $slug;
+            $key = $app['paths']['root'] . $taxonomy['singular_slug'] . '/' . $slug;
             if (isset($flat[$key])) {
                 $name = $flat[$key];
             }
@@ -366,10 +374,10 @@ class Frontend
         $page = ($query) ? $query->get($param, $query->get('page', 1)) : 1;
 
         $config = $app['config'];
-        $page_size = $config->get('general/search_results_records') ?: ($config->get('general/listing_records') ?: 10);
+        $pageSize = $config->get('general/search_results_records') ?: ($config->get('general/listing_records') ?: 10);
 
-        $offset = ($page - 1) * $page_size;
-        $limit = $page_size;
+        $offset = ($page - 1) * $pageSize;
+        $limit = $pageSize;
 
         // set-up filters from URL
         $filters = array();
@@ -397,7 +405,7 @@ class Frontend
         $pager = array(
             'for' => $context,
             'count' => $result['no_of_results'],
-            'totalpages' => ceil($result['no_of_results'] / $page_size),
+            'totalpages' => ceil($result['no_of_results'] / $pageSize),
             'current' => $page,
             'showing_from' => $offset + 1,
             'showing_to' => $offset + count($result['results']),

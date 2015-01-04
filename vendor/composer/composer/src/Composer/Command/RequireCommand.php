@@ -23,6 +23,8 @@ use Composer\Json\JsonManipulator;
 use Composer\Package\Version\VersionParser;
 use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
+use Composer\Repository\CompositeRepository;
+use Composer\Repository\PlatformRepository;
 
 /**
  * @author Jérémy Romey <jeremy@free-agent.fr>
@@ -42,6 +44,9 @@ class RequireCommand extends InitCommand
                 new InputOption('prefer-dist', null, InputOption::VALUE_NONE, 'Forces installation from package dist even for dev versions.'),
                 new InputOption('no-progress', null, InputOption::VALUE_NONE, 'Do not output download progress.'),
                 new InputOption('no-update', null, InputOption::VALUE_NONE, 'Disables the automatic update of the dependencies.'),
+                new InputOption('update-no-dev', null, InputOption::VALUE_NONE, 'Run the dependency update with the --no-dev option.'),
+                new InputOption('update-with-dependencies', null, InputOption::VALUE_NONE, 'Allows inherited dependencies to be updated with explicit dependencies.'),
+                new InputOption('ignore-platform-reqs', null, InputOption::VALUE_NONE, 'Ignore platform requirements (php & ext- packages).'),
             ))
             ->setHelp(<<<EOT
 The require command adds required packages to your composer.json and installs them
@@ -57,6 +62,7 @@ EOT
     {
         $file = Factory::getComposerFile();
 
+        $newlyCreated = !file_exists($file);
         if (!file_exists($file) && !file_put_contents($file, "{\n}\n")) {
             $output->writeln('<error>'.$file.' could not be created.</error>');
 
@@ -74,13 +80,22 @@ EOT
         }
 
         $json = new JsonFile($file);
-        $composer = $json->read();
+        $composerDefinition = $json->read();
         $composerBackup = file_get_contents($json->getPath());
+
+        $composer = $this->getComposer();
+        $repos = $composer->getRepositoryManager()->getRepositories();
+
+        $this->repos = new CompositeRepository(array_merge(
+            array(new PlatformRepository),
+            $repos
+        ));
 
         $requirements = $this->determineRequirements($input, $output, $input->getArgument('packages'));
 
         $requireKey = $input->getOption('dev') ? 'require-dev' : 'require';
-        $baseRequirements = array_key_exists($requireKey, $composer) ? $composer[$requireKey] : array();
+        $removeKey = $input->getOption('dev') ? 'require' : 'require-dev';
+        $baseRequirements = array_key_exists($requireKey, $composerDefinition) ? $composerDefinition[$requireKey] : array();
         $requirements = $this->formatRequirements($requirements);
 
         // validate requirements format
@@ -89,22 +104,28 @@ EOT
             $versionParser->parseConstraints($constraint);
         }
 
-        if (!$this->updateFileCleanly($json, $baseRequirements, $requirements, $requireKey)) {
+        if (!$this->updateFileCleanly($json, $baseRequirements, $requirements, $requireKey, $removeKey)) {
             foreach ($requirements as $package => $version) {
                 $baseRequirements[$package] = $version;
+
+                if (isset($composerDefinition[$removeKey][$package])) {
+                    unset($composerDefinition[$removeKey][$package]);
+                }
             }
 
-            $composer[$requireKey] = $baseRequirements;
-            $json->write($composer);
+            $composerDefinition[$requireKey] = $baseRequirements;
+            $json->write($composerDefinition);
         }
 
-        $output->writeln('<info>'.$file.' has been updated</info>');
+        $output->writeln('<info>'.$file.' has been '.($newlyCreated ? 'created' : 'updated').'</info>');
 
         if ($input->getOption('no-update')) {
             return 0;
         }
+        $updateDevMode = !$input->getOption('update-no-dev');
 
         // Update packages
+        $this->resetComposer();
         $composer = $this->getComposer();
         $composer->getDownloadManager()->setOutputProgress(!$input->getOption('no-progress'));
         $io = $this->getIO();
@@ -118,21 +139,28 @@ EOT
             ->setVerbose($input->getOption('verbose'))
             ->setPreferSource($input->getOption('prefer-source'))
             ->setPreferDist($input->getOption('prefer-dist'))
-            ->setDevMode(true)
+            ->setDevMode($updateDevMode)
             ->setUpdate(true)
-            ->setUpdateWhitelist(array_keys($requirements));
+            ->setUpdateWhitelist(array_keys($requirements))
+            ->setWhitelistDependencies($input->getOption('update-with-dependencies'))
+            ->setIgnorePlatformRequirements($input->getOption('ignore-platform-reqs'))
         ;
 
         $status = $install->run();
         if ($status !== 0) {
-            $output->writeln("\n".'<error>Installation failed, reverting '.$file.' to its original content.</error>');
-            file_put_contents($json->getPath(), $composerBackup);
+            if ($newlyCreated) {
+                $output->writeln("\n".'<error>Installation failed, deleting '.$file.'.</error>');
+                unlink($json->getPath());
+            } else {
+                $output->writeln("\n".'<error>Installation failed, reverting '.$file.' to its original content.</error>');
+                file_put_contents($json->getPath(), $composerBackup);
+            }
         }
 
         return $status;
     }
 
-    private function updateFileCleanly($json, array $base, array $new, $requireKey)
+    private function updateFileCleanly($json, array $base, array $new, $requireKey, $removeKey)
     {
         $contents = file_get_contents($json->getPath());
 
@@ -140,6 +168,9 @@ EOT
 
         foreach ($new as $package => $constraint) {
             if (!$manipulator->addLink($requireKey, $package, $constraint)) {
+                return false;
+            }
+            if (!$manipulator->removeSubNode($removeKey, $package)) {
                 return false;
             }
         }

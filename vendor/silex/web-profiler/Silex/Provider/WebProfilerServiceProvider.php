@@ -50,10 +50,7 @@ class WebProfilerServiceProvider implements ServiceProviderInterface, Controller
     {
         $app['profiler.mount_prefix'] = '/_profiler';
         $app['dispatcher'] = $app->share($app->extend('dispatcher', function ($dispatcher, $app) {
-            $dispatcher = new TraceableEventDispatcher($dispatcher, $app['stopwatch'], $app['logger']);
-            $dispatcher->setProfiler($app['profiler']);
-
-            return $dispatcher;
+            return new TraceableEventDispatcher($dispatcher, $app['stopwatch'], $app['logger']);
         }));
 
         $app['data_collector.templates'] = array(
@@ -73,7 +70,7 @@ class WebProfilerServiceProvider implements ServiceProviderInterface, Controller
                 'config'    => $app->share(function ($app) { return new ConfigDataCollector(); }),
                 'request'   => $app->share(function ($app) { return new RequestDataCollector(); }),
                 'exception' => $app->share(function ($app) { return new ExceptionDataCollector(); }),
-                'events'    => $app->share(function ($app) { return new EventDataCollector(); }),
+                'events'    => $app->share(function ($app) { return new EventDataCollector($app['dispatcher']); }),
                 'logger'    => $app->share(function ($app) { return new LoggerDataCollector($app['logger']); }),
                 'time'      => $app->share(function ($app) { return new TimeDataCollector(null, $app['stopwatch']); }),
                 'router'    => $app->share(function ($app) { return new RouterDataCollector(); }),
@@ -114,7 +111,7 @@ class WebProfilerServiceProvider implements ServiceProviderInterface, Controller
         });
 
         $app['web_profiler.toolbar.listener'] = $app->share(function ($app) {
-            return new WebDebugToolbarListener($app['twig']);
+            return new WebDebugToolbarListener($app['twig'], $app['web_profiler.debug_toolbar.intercept_redirects'], $app['web_profiler.debug_toolbar.position'], $app['url_generator']);
         });
 
         $app['profiler'] = $app->share(function ($app) {
@@ -136,6 +133,7 @@ class WebProfilerServiceProvider implements ServiceProviderInterface, Controller
         $app['profiler.only_master_requests'] = false;
         $app['web_profiler.debug_toolbar.enable'] = true;
         $app['web_profiler.debug_toolbar.position'] = 'bottom';
+        $app['web_profiler.debug_toolbar.intercept_redirects'] = false;
 
         $app['profiler.listener'] = $app->share(function ($app) {
             return new ProfilerListener(
@@ -191,8 +189,6 @@ class WebProfilerServiceProvider implements ServiceProviderInterface, Controller
         $controllers->get('/search_bar', 'web_profiler.controller.profiler:searchBarAction')->bind('_profiler_search_bar');
         $controllers->get('/purge', 'web_profiler.controller.profiler:purgeAction')->bind('_profiler_purge');
         $controllers->get('/info/{about}', 'web_profiler.controller.profiler:infoAction')->bind('_profiler_info');
-        $controllers->get('/import', 'web_profiler.controller.profiler:importAction')->bind('_profiler_import');
-        $controllers->get('/export/{token}.txt', 'web_profiler.controller.profiler:exportAction')->bind('_profiler_export');
         $controllers->get('/phpinfo', 'web_profiler.controller.profiler:phpinfoAction')->bind('_profiler_phpinfo');
         $controllers->get('/{token}/search/results', 'web_profiler.controller.profiler:searchResultsAction')->bind('_profiler_search_results');
         $controllers->get('/{token}', 'web_profiler.controller.profiler:panelAction')->bind('_profiler');

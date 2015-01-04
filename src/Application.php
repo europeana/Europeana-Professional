@@ -24,8 +24,8 @@ class Application extends Silex\Application
 
     public function __construct(array $values = array())
     {
-        $values['bolt_version'] = '2.0.0';
-        $values['bolt_name'] = 'beta 4 pl 2';
+        $values['bolt_version'] = '2.0.2';
+        $values['bolt_name'] = '';
 
         parent::__construct($values);
 
@@ -199,10 +199,15 @@ class Application extends Silex\Application
             $this['config']->get('general/timezone') ?: 'UTC'
         );
 
+        // for javascript datetime calculations, timezone offset. e.g. "+02:00"
+        $this['timezone_offset'] = date('P');
+
         // Set default locale
         $locale = array(
+            $this['locale'] . '.UTF-8',
             $this['locale'] . '.utf8',
             $this['locale'],
+            Application::DEFAULT_LOCALE . '.UTF-8',
             Application::DEFAULT_LOCALE . '.utf8',
             Application::DEFAULT_LOCALE,
             substr(Application::DEFAULT_LOCALE, 0, 2)
@@ -333,27 +338,12 @@ class Application extends Silex\Application
         $this->mount('', new Controllers\Routing());
     }
 
+
     /**
-     * Initializes the Console Application that is responsible for CLI interactions.
+     * Add all the global twig variables, like 'user' and 'theme'
      */
-    public function initConsoleApplication()
+    private function addTwigGlobals()
     {
-        $this['console'] = $this->share(
-            function (Application $app) {
-                $console = new ConsoleApplication();
-                $console->setName('Bolt console tool - Nut');
-                $console->setVersion($app->getVersion());
-
-                return $console;
-            }
-        );
-    }
-
-    public function beforeHandler(Request $request)
-    {
-        // Start the 'stopwatch' for the profiler.
-        $this['stopwatch']->start('bolt.app.before');
-
         $this['twig']->addGlobal('bolt_name', $this['bolt_name']);
         $this['twig']->addGlobal('bolt_version', $this['bolt_version']);
 
@@ -377,6 +367,32 @@ class Application extends Silex\Application
 
         $this['safe_twig']->addGlobal('user', $this['users']->getCurrentUser());
         $this['safe_twig']->addGlobal('theme', $this['config']->get('theme'));
+    }
+
+
+    /**
+     * Initializes the Console Application that is responsible for CLI interactions.
+     */
+    public function initConsoleApplication()
+    {
+        $this['console'] = $this->share(
+            function (Application $app) {
+                $console = new ConsoleApplication();
+                $console->setName('Bolt console tool - Nut');
+                $console->setVersion($app->getVersion());
+
+                return $console;
+            }
+        );
+    }
+
+    public function beforeHandler(Request $request)
+    {
+        // Start the 'stopwatch' for the profiler.
+        $this['stopwatch']->start('bolt.app.before');
+
+        // Set the twig Globals, like 'user' and 'theme'.
+        $this->addTwigGlobals();
 
         if ($response = $this['render']->fetchCachedRequest()) {
             // Stop the 'stopwatch' for the profiler.
@@ -462,6 +478,9 @@ class Application extends Silex\Application
         // Start the 'stopwatch' for the profiler.
         $this['stopwatch']->start('bolt.app.after');
 
+        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+        $response->headers->set('Frame-Options', 'SAMEORIGIN');
+
         // true if we need to consider adding html snippets
         if (isset($this['htmlsnippets']) && ($this['htmlsnippets'] === true)) {
             // only add when content-type is text/html
@@ -528,6 +547,9 @@ class Application extends Silex\Application
         $end = $this['config']->getWhichEnd();
 
         $trace = $exception->getTrace();
+
+        // Set the twig Globals, like 'user' and 'theme'.
+        $this->addTwigGlobals();
 
         foreach ($trace as $key => $value) {
             if (!empty($value['file']) && strpos($value['file'], '/vendor/') > 0) {
