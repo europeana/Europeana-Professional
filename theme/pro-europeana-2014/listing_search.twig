@@ -80,6 +80,11 @@
         {#
             nothing found
         #}
+
+<article class="maincontent">
+Temporarily added by Bob: <a href='{{ searchlink|raw }}'>Used google URL</a>
+</article>
+
         {% if searchresults is empty %}
             <article class="maincontent">
                 <div class="textcontent">
@@ -93,6 +98,8 @@
             </article>
 
         {% else %}
+
+
 
             {#
                 render the search results
