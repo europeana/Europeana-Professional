@@ -82,7 +82,7 @@ publications:
       label: "Teaser:"
       height: 150px
     introduction:
-      type: html
+      type: markdown
       required: false
       label: "Introduction (120 chars MAX):"
       pattern: "^.{1,120}$"
@@ -193,7 +193,7 @@ pressreleases:
       type: slug
       uses: title
     introduction:
-      type: html
+      type: markdown
       required: false
       label: "Introduction (120 chars MAX):"
       pattern: "^.{1,120}$"
