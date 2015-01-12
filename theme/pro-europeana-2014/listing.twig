@@ -82,10 +82,10 @@
                 </ul>
 
                 {% if pager is defined %}
-                    {# ----- Bob notes: Don't manually get a pager. Let Bolt handle it. 
-                    See related ticket: https://www.assembla.com/spaces/europeana-professional/tickets/160 
-                    Change 2015-01-12: Only show the pager for blogposts, if we're actually displaying blogposts. 
-                    -- #} 
+                    {# ----- Bob notes: Don't manually get a pager. Let Bolt handle it.
+                    See related ticket: https://www.assembla.com/spaces/europeana-professional/tickets/160
+                    Change 2015-01-12: Only show the pager for blogposts, if we're actually displaying blogposts.
+                    -- #}
                     {{ pager() }}
                 {% elseif showsortby and taxonomy is not defined and contenttype.slug == "blogposts" %}
                     {% setcontent records = 'BlogPosts' where { limit : amount, order: order, page : page } allowpaging printquery %}
