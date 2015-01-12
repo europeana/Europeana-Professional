@@ -70,16 +70,16 @@
     #}
 
     {# get content for current structure #}
-    {% set recordsStruture = [] %}
+    {% set recordsStructure = [] %}
     {% if (order in record.values|keys) or ( order|slice(1,order|length) in record.values|keys ) %}
-      {% setcontent recordsStruture = 'Structures' where { tree : record.slug, order : order }  %}
+      {% setcontent recordsStructure = 'Structures' where { tree : record.slug, order : order }  %}
     {% endif %}
 
     {# get content assigned contenttype #}
-    {% setcontent records = contenttype['name'] where { limit: amount, tree : record.slug, order : order} allowpaging %}
+    {% setcontent records = contenttype['name'] where { limit: amount, tree : record.slug, order: order} allowpaging %}
 
     {# merge content #}
-    {% set records = records|merge(recordsStruture)|order(order) %}
+    {% set records = records|merge(recordsStructure)|order(order) %}
 
     {# ------- Bob notes: I don't think we should manipulate pager here and/or slice the results. 
     Removing that here, fixes https://www.assembla.com/spaces/europeana-professional/tickets/160 
@@ -93,7 +93,7 @@
 
 {# listing for structure content #}
 {% else %}
-    [d] {% setcontent records = 'Structures' where { tree : record.slug } %}
+    {% setcontent records = 'Structures' where { tree : record.slug } %}
 {% endif %}
 
 
