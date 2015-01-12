@@ -88,7 +88,7 @@
                     -- #}
                     {{ pager() }}
                 {% elseif showsortby and taxonomy is not defined and contenttype.slug == "blogposts" %}
-                    {% setcontent records = 'BlogPosts' where { limit : amount, order: order, page : page } allowpaging printquery %}
+                    {% setcontent records = 'BlogPosts' where { limit : amount, order: order, page : page } allowpaging %}
                     {{ pager() }}
                 {% elseif taxonomy is defined %}
                     {{ pager() }}
