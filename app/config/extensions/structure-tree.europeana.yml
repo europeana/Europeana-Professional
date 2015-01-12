@@ -1,4 +1,4 @@
 # parent structure handle child contenttypes
 parenttype: structures
 # possibles child contenttypes
-contenttypes: [ structures, pages, blogposts, publications, pressreleases, events, projects, jobs, persons, taskforces ]
+contenttypes: [ pages, blogposts, publications, pressreleases, events, projects, jobs, persons, taskforces, structures ]
