@@ -27,7 +27,9 @@
         {% if ((record.contenttype.name == 'Structures' or record.group.slug is defined) and record.contenttype.name not in [ 'Events', 'Publications' ] ) %}
             {% set breadcrumbs = breadcrumb(record) %}
             {% for bc in breadcrumbs %}
+                {% if bc.title %}
                 <li><a href="{{ bc.path }}">{{ bc.title }}</a></li>
+                {% endif %}
             {% endfor %}
 
         {#
