@@ -863,6 +863,11 @@ blogposts:
 # - Where do the contact persons come from? From contenttype person?
 # - Is it possible to define the max amount of choosen entries from the contenttype select, multiple: true? Example: max choose two entries
 # - How will be the exact handling of type support_navigation?
+#   > Currently implemented as a markdown field. This could just as well be an
+#     HTML field; neither is a particularly excellent solution, but the
+#     alternative would be to add yet another contenttype, and a relation - way
+#     too complex.
+#     The field should contain a sequence of list items 
 # - Should related content be shown on the contenttype (shown in prototype demo.deanbirkett but not in excel docs.google.com)?
 #
 #################################
