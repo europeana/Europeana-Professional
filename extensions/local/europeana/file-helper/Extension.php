@@ -29,15 +29,26 @@ class Extension extends BoltExtension
 
         $filePath = ( is_array($file) ) ? $this->absFilePath . $file['filename'] : $this->absFilePath . $file;
 
-        $fileInfo = array(
-            'filename' => $this->fileName($filePath),
-            'filesize' => @$this->fileSize($filePath),
-            'filetype' => @$this->fileType($filePath),
-            'filedate' => @$this->fileLastModified($filePath),
-            'mimetype' => @$this->fileMimeType($filePath)
-        );
-
-        return $fileInfo;
+        if (file_exists($filePath)) {
+            return array(
+                'filename' => $this->fileName($filePath),
+                'filesize' => $this->fileSize($filePath),
+                'filetype' => $this->fileType($filePath),
+                'filedate' => $this->fileLastModified($filePath),
+                'mimetype' => $this->fileMimeType($filePath),
+                'exists' => true
+            );
+        }
+        else {
+            return array(
+                'filename' => $this->fileName($filePath),
+                'filesize' => null,
+                'filetype' => null,
+                'filedate' => null,
+                'mimetype' => null,
+                'exists' => false
+            );
+        }
     }
 
     public function fileDownloadAction()
@@ -94,7 +105,12 @@ class Extension extends BoltExtension
     private function fileLastModified($filePath)
     {
         $format = $this->config['date'];
-        $filedate = date($format, filemtime($filePath));
-        return $filedate;
+        $mtime = filemtime($filePath);
+        if ($mtime) {
+            return date($format, filemtime($filePath));
+        }
+        else {
+            return null;
+        }
     }
 }
