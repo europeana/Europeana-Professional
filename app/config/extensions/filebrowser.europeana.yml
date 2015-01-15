@@ -21,6 +21,7 @@
 #
 # stylesheets:
 #     - '%assets%/file_browser.css'
+stylesheets: []
 
 # A list of display modes for the file browser widget. Note that your template
 # must be prepared to handle each of them, otherwise you won't see a useful
