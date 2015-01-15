@@ -7,23 +7,21 @@
 
 
 {% if filelist %}
-<ul class="item-files moredata">
-
 <form {{ fileDownloadAction() }} >
+    <ul class="item-files moredata">
+        {% for file in filelist %}
+            {% set fileinfo = fileInfo(file) %}
+            <li>
+                <span class="file-name">
+                    <a href="{{ paths.files }}{{ file.filename }}" >{{ fileinfo.filename }}</a>
+                    <span class="file-info">{{ fileinfo.filetype }} {{ fileinfo.filesize }}</span>
+                </span>
 
-    {% for file in filelist %}
-        {% set fileinfo = fileInfo(file) %}
-        <li>
-            <span class="file-name">
-                <a href="{{ paths.files }}{{ file.filename }}" >{{ fileinfo.filename }}</a>
-                <span class="file-info">{{ fileinfo.filetype }} {{ fileinfo.filesize }}</span>
-                <a href="#" class="download" data-downloadFile="{{ file.filename }}">Download</a>
-            </span>
-        </li>
-    {% endfor %}
-
+                <span class="file-owner">{{ file.owner|default('') }}</span>
+                <span class="file-date">{{ fileinfo.filedate }}</span>
+            </li>
+        {% endfor %}
+    </ul>
 </form>
-
-</ul>
 {% endif %}
 
