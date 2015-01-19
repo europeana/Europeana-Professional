@@ -114,11 +114,10 @@ global:
 # contenttype-default; but if the permission is not mentioned, the
 # corresponding entry in contenttype-default applies.
 contenttype-all:
-    edit: [ developer, admin, chief-editor ]
-    create: [ developer, admin, chief-editor ]
-    publish: [ developer, admin, chief-editor ]
-    depublish: [ developer, admin, chief-editor ]
-    delete: [ developer, admin, chief-editor ]
+    edit: [ developer, admin ]
+    create: [ developer, admin ]
+    publish: [ developer, admin ]
+    depublish: [ developer, admin ]
     change-ownership: [ developer, admin ]
 
 contenttype-default:
@@ -126,6 +125,9 @@ contenttype-default:
     create: [ editor, chief-editor ]
     change-ownership: [ owner ]
     view: [ editor, chief-editor ]
+    publish: [ chief-editor ]
+    depublish: [ chief-editor ]
+    delete: [ developer, admin ]
 
 contenttypes:
     structures:
@@ -148,12 +150,3 @@ contenttypes:
         create: [ developer, admin, chief-editor, blog-editor ]
         change-ownership: [ developer, admin, chief-editor, blog-editor ]
         view: [ developer, admin, chief-editor, blog-editor ]
-
-# This is an example of how to define Contenttype specific
-#    kitchensink:                                 # The name of the content type in contenttypes.yml
-#        edit: [ admin, chief-editor ]            # Only the Admin and Chief Editor can work with this Contenttype
-#        create: [ admin, chief-editor ]
-#        publish: [ admin, chief-editor ]
-#        depublish: [ admin, chief-editor ]
-#        delete: [ admin, chief-editor ]
-#        view: [ developer, admin, chief-editor ] # Roles that can see the area in the admin section
