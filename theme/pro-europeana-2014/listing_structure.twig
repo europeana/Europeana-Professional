@@ -51,7 +51,7 @@
         {# all blog posts. #}
         {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page } allowpaging %}
 
-    {% endif %} 
+    {% endif %}
 
 {# listing for stucture with fixed content  #}
 {% elseif (record.content != '' and record.content != 'default' )  %}
@@ -81,15 +81,15 @@
     {# merge content #}
     {% set records = records|merge(recordsStructure)|order(order) %}
 
-    {# ------- Bob notes: I don't think we should manipulate pager here and/or slice the results. 
-    Removing that here, fixes https://www.assembla.com/spaces/europeana-professional/tickets/160 
+    {# ------- Bob notes: I don't think we should manipulate pager here and/or slice the results.
+    Removing that here, fixes https://www.assembla.com/spaces/europeana-professional/tickets/160
 
     {# set pager properties. totalpages always round up # }
     {% set pager = { totalpages :  (records|length/amount)|round(0, 'ceil'),  current : page }  %}
 
     {# get items to display # }
     {% set records = records|slice(amount*(page-1),amount) %}
-    ---- #} 
+    ---- #}
 
 {# listing for structure content #}
 {% else %}
