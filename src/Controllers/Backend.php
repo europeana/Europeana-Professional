@@ -969,14 +969,14 @@ class Backend implements ControllerProviderInterface
 
         $duplicate = $app['request']->query->get('duplicate');
         if (!empty($duplicate)) {
-            $content->setValue('id', "");
-            $content->setValue('slug', "");
-            $content->setValue('datecreated', "");
-            $content->setValue('datepublish', "");
-            $content->setValue('datedepublish', "1900-01-01 00:00:00"); // Not all DB-engines can handle a date like '0000-00-00'
-            $content->setValue('datechanged', "");
-            $content->setValue('username', "");
-            $content->setValue('ownerid', "");
+            $content->setValue('id', '');
+            $content->setValue('slug', '');
+            $content->setValue('datecreated', '');
+            $content->setValue('datepublish', '');
+            $content->setValue('datedepublish', null);
+            $content->setValue('datechanged', '');
+            $content->setValue('username', '');
+            $content->setValue('ownerid', '');
             $app['session']->getFlashBag()->set('info', Trans::__('contenttypes.generic.duplicated-finalize', array('%contenttype%' => $contenttype['slug'])));
         }
 
@@ -1318,10 +1318,18 @@ class Backend implements ControllerProviderInterface
                     $app['session']->getFlashBag()->set('error', Trans::__('page.edit-users.message.saving-user', array('%user%' => $user['displayname'])));
                 }
 
+                $currentuser = $app['users']->getCurrentUser();
+
                 if ($firstuser) {
                     // To the dashboard, where 'login' will be triggered..
                     return Lib::redirect('dashboard');
+                } else if (($user['id'] == $currentuser['id']) && ($user['username'] != $currentuser['username'])) {
+                    // If the current user changed their own login name, the session is effectively
+                    // invalidated. If so, we must redirect to the login page with a flash message.
+                    $app['session']->getFlashBag()->set('error', Trans::__('page.edit-users.message.change-self'));
+                    return Lib::redirect('login');
                 } else {
+                    // Return to the 'Edit users' screen.
                     return Lib::redirect('users');
                 }
 

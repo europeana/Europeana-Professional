@@ -213,7 +213,7 @@ class PropertyAccessor implements PropertyAccessorInterface
      * @return array The values read in the path.
      *
      * @throws UnexpectedTypeException If a value within the path is neither object nor array.
-     * @throws NoSuchIndexException If a non-existing index is accessed
+     * @throws NoSuchIndexException    If a non-existing index is accessed
      */
     private function &readPropertiesUntil(&$objectOrArray, PropertyPathInterface $propertyPath, $lastIndex, $ignoreInvalidIndices = true)
     {
@@ -400,7 +400,7 @@ class PropertyAccessor implements PropertyAccessorInterface
     }
 
     /**
-     * Sets the value of a property in the given object
+     * Sets the value of a property in the given object.
      *
      * @param object $object   The object to write to
      * @param string $property The property to write
@@ -505,11 +505,11 @@ class PropertyAccessor implements PropertyAccessorInterface
         }
 
         foreach ($itemToRemove as $item) {
-            call_user_func(array($object, $removeMethod), $item);
+            $object->{$removeMethod}($item);
         }
 
         foreach ($itemsToAdd as $item) {
-            call_user_func(array($object, $addMethod), $item);
+            $object->{$addMethod}($item);
         }
     }
 
@@ -519,7 +519,7 @@ class PropertyAccessor implements PropertyAccessorInterface
      * @param object $object   The object to write to
      * @param string $property The property to write
      *
-     * @return bool    Whether the property is writable
+     * @return bool Whether the property is writable
      */
     private function isPropertyWritable($object, $property)
     {

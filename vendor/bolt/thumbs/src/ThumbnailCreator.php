@@ -9,6 +9,7 @@ class ThumbnailCreator implements ResizeInterface
     public $defaultSource;
     public $errorSource;
     public $allowUpscale = false;
+    public $exifOrientation = true;
     public $quality = 80;
     public $canvas  = array(255, 255, 255);
 
@@ -173,6 +174,20 @@ class ThumbnailCreator implements ResizeInterface
                 break;
             case 'jpg':
                 $img = imagecreatefromjpeg($src);
+                // Handle exif orientation
+                if ($this->exifOrientation && function_exists('exif_read_data')) {
+                    $exif = @exif_read_data($src);
+                } else {
+                    $exif = false;
+                }
+                $modes = array(2 => 'H-', 3 => '-T', 4 => 'V-', 5 => 'VL', 6 => '-L', 7 => 'HL', 8 => '-R');
+                $orientation = isset($exif['Orientation']) ? $exif['Orientation'] : 0;
+                if (isset($modes[$orientation])) {
+                    $mode = $modes[$orientation];
+                    $img = self::imageFlipRotate($img, $mode[0], $mode[1]);
+                    $w = imagesx($img);
+                    $h = imagesy($img);
+                }
                 break;
             case 'png':
                 $img = imagecreatefrompng($src);
@@ -281,5 +296,61 @@ class ThumbnailCreator implements ResizeInterface
         }
 
         return false;
+    }
+
+    /**
+     * Image flip and rotate
+     *
+     * Based on http://stackoverflow.com/a/10001884/1136593
+     * Thanks Jon Grant
+     *
+     * @param $img (image to flip and/or rotate)
+     * @param $mode ('V' = vertical, 'H' = horizontal, 'HV' = both)
+     * @param $angle ('L' = -90°, 'R' = +90°, 'T' = 180°)
+     *
+     */
+    public static function imageFlipRotate($img, $mode, $angle)
+    {
+        // Flip the image
+        if ($mode === 'V' || $mode === 'H' || $mode === 'HV') {
+            $width = imagesx($img);
+            $height = imagesy($img);
+
+            $srcX = 0;
+            $srcY = 0;
+            $srcWidth = $width;
+            $srcHeight = $height;
+
+            switch ($mode) {
+                case 'V': // Vertical
+                    $srcY = $height - 1;
+                    $srcHeight = -$height;
+                    break;
+                case 'H': // Horizontal
+                    $srcX = $width - 1;
+                    $srcWidth = -$width;
+                    break;
+                case 'HV': // Both
+                    $srcX = $width - 1;
+                    $srcY = $height - 1;
+                    $srcWidth = -$width;
+                    $srcHeight = -$height;
+                    break;
+            }
+
+            $imgdest = imagecreatetruecolor($width, $height);
+
+            if (imagecopyresampled($imgdest, $img, 0, 0, $srcX, $srcY, $width, $height, $srcWidth, $srcHeight)) {
+                $img = $imgdest;
+            }
+        }
+
+        // Rotate the image
+        if ($angle === 'L' || $angle === 'R' || $angle === 'T') {
+            $rotate = array('L' => 270, 'R' => 90, 'T' => 180);
+            $img = imagerotate($img, $rotate[$angle], 0);
+        }
+
+        return $img;
     }
 }

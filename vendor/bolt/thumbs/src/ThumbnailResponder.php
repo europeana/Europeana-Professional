@@ -17,6 +17,9 @@ class ThumbnailResponder
     public $file;
     public $action;
 
+    public $allowCache = false;
+    public $cacheTime = 2592000;
+
     public $filePaths = array();
 
     /**
@@ -48,13 +51,22 @@ class ThumbnailResponder
     public function initialize()
     {
         if (null !== $this->app['config']->get('general/thumbnails/notfound_image')) {
-            $file = $this->app['resources']->getPath('app'). '/' .$this->app['config']->get('general/thumbnails/notfound_image');
+            $file = $this->app['resources']->getPath('app') . '/' . $this->app['config']->get('general/thumbnails/notfound_image');
             $this->resizer->setDefaultSource(new File($file, false));
         }
 
         if (null !== $this->app['config']->get('general/thumbnails/error_image')) {
-            $file = $this->app['resources']->getPath('app'). '/' .$this->app['config']->get('general/thumbnails/error_image');
+            $file = $this->app['resources']->getPath('app') . '/' . $this->app['config']->get('general/thumbnails/error_image');
             $this->resizer->setErrorSource(new File($file, false));
+        }
+
+        if ($this->app['config']->get('general/thumbnails/browser_cache_time')) {
+            $this->allowCache = true;
+            $this->cacheTime = $this->app['config']->get('general/thumbnails/browser_cache_time');
+        }
+
+        if ($this->app['config']->get('general/thumbnails/exif_orientation') !== null) {
+            $this->resizer->exifOrientation = $this->app['config']->get('general/thumbnails/exif_orientation');
         }
 
         if ($this->app['config']->get('general/thumbnails/allow_upscale')) {
@@ -126,6 +138,10 @@ class ThumbnailResponder
         $response->setContent($imageContent);
         $response->headers->set('Content-Type', $this->resizer->getSource()->getMimeType());
 
+        if ($this->allowCache) {
+            $response->headers->set('Cache-Control', 'max-age=' . $this->cacheTime . ', public');
+        }
+
         return $response;
     }
 
@@ -168,11 +184,11 @@ class ThumbnailResponder
         $path = urldecode($this->request->getPathInfo());
         try {
             $webroot = dirname($this->request->server->get('SCRIPT_FILENAME'));
-            $savePath = dirname($webroot.$path);
+            $savePath = dirname($webroot . $path);
             if (!is_dir($savePath)) {
                 mkdir($savePath, 0777, true);
             }
-            file_put_contents($webroot.$path, $imageContent);
+            file_put_contents($webroot . $path, $imageContent);
         } catch (\Exception $e) {
 
         }

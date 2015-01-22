@@ -16,7 +16,7 @@
  */
 class Twig_Environment
 {
-    const VERSION = '1.16.2';
+    const VERSION = '1.17.0';
 
     protected $charset;
     protected $loader;
@@ -72,6 +72,7 @@ class Twig_Environment
      *                  * false: disable auto-escaping
      *                  * true: equivalent to html
      *                  * html, js: set the autoescaping to one of the supported strategies
+     *                  * filename: set the autoescaping strategy based on the template filename extension
      *                  * PHP callback: a PHP callback that returns an escaping strategy based on the template "filename"
      *
      *  * optimizations: A flag that indicates which optimizations to apply
@@ -223,12 +224,12 @@ class Twig_Environment
         return $this->cache;
     }
 
-     /**
-      * Sets the cache directory or false if cache is disabled.
-      *
-      * @param string|false $cache The absolute path to the compiled templates,
-      *                            or false to disable cache
-      */
+    /**
+     * Sets the cache directory or false if cache is disabled.
+     *
+     * @param string|false $cache The absolute path to the compiled templates,
+     *                            or false to disable cache
+     */
     public function setCache($cache)
     {
         $this->cache = $cache ? $cache : false;
@@ -353,7 +354,7 @@ class Twig_Environment
      * not changed.
      *
      * @param string    $name The template name
-     * @param timestamp $time The last modification time of the cached template
+     * @param int       $time The last modification time of the cached template
      *
      * @return bool    true if the template is fresh, false otherwise
      */
@@ -1232,8 +1233,11 @@ class Twig_Environment
     {
         $dir = dirname($file);
         if (!is_dir($dir)) {
-            if (false === @mkdir($dir, 0777, true) && !is_dir($dir)) {
-                throw new RuntimeException(sprintf("Unable to create the cache directory (%s).", $dir));
+            if (false === @mkdir($dir, 0777, true)) {
+                clearstatcache(false, $dir);
+                if (!is_dir($dir)) {
+                    throw new RuntimeException(sprintf("Unable to create the cache directory (%s).", $dir));
+                }
             }
         } elseif (!is_writable($dir)) {
             throw new RuntimeException(sprintf("Unable to write in the cache directory (%s).", $dir));

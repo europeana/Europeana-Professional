@@ -163,7 +163,7 @@ class Omnisearch
             $this->register(
                 array(
                     'keywords' => array('Routing setup', 'Configuration'),
-                    'label' => Trans::__('Configuration') . ' » ' . Trans::__('Routing setup'),
+                    'label' => Trans::__('Configuration') . ' » ' . Trans::__('menu.configuration.routing'),
                     'description' => '',
                     'priority' => self::OMNISEARCH_MENUITEM - 5,
                     'path' => $this->backend . 'file/edit/app/config/routing.yml',
@@ -203,7 +203,7 @@ class Omnisearch
             $this->register(
                 array(
                     'keywords' => array('Activity log', 'Maintenance'),
-                    'label' => Trans::__('Maintenance') . ' » ' . Trans::__('Activity log'),
+                    'label' => Trans::__('Maintenance') . ' » ' . Trans::__('logs.activity-log'),
                     'description' => '',
                     'priority' => self::OMNISEARCH_MENUITEM - 9,
                     'path' => $this->backend . 'activitylog',

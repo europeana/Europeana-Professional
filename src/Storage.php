@@ -146,19 +146,19 @@ class Storage
     private function preFillSingle($key, $contenttype)
     {
         $content = array();
-        $title = "";
+        $title = '';
 
         $content['contenttype'] = $key;
         $content['datecreated'] = date('Y-m-d H:i:s', time() - rand(0, 365 * 24 * 60 * 60));
         $content['datepublish'] = date('Y-m-d H:i:s', time() - rand(0, 365 * 24 * 60 * 60));
-        $content['datedepublish'] = "1900-01-01 00:00:00";
+        $content['datedepublish'] = null;
 
         $username = array_rand($this->app['users']->getUsers());
         $user = $this->app['users']->getUser($username);
 
         $content['ownerid'] = $user['id'];
 
-        $content['status'] = "published";
+        $content['status'] = 'published';
 
         foreach ($contenttype['fields'] as $field => $values) {
 
@@ -170,7 +170,7 @@ class Storage
                     }
                     break;
                 case 'image':
-                    // Get a random image..
+                    // Get a random image
                     if (!empty($this->images)) {
                         $content[$field]['file'] = $this->images[array_rand($this->images)];
                     }
@@ -199,7 +199,7 @@ class Storage
                     $content[$field] = rand(0, 1);
                     break;
                 case 'float':
-                case 'number': // number is deprecated..
+                case 'number': // number is deprecated
                 case 'integer':
                     $content[$field] = rand(-1000, 1000) + (rand(0, 1000) / 1000);
                     break;
@@ -821,7 +821,7 @@ class Storage
 
         if (!empty($oldContent)) {
 
-            // Do the actual update, and log it. 
+            // Do the actual update, and log it.
             $res = $this->app['db']->update($tablename, $content, array('id' => $content['id']));
             if ($res > 0) {
                 $this->logUpdate($contenttype, $content['id'], $content, $oldContent, $comment);
@@ -829,7 +829,7 @@ class Storage
 
         } else {
 
-            // Content didn't exist, so do an insert after all. Log it as an insert.            
+            // Content didn't exist, so do an insert after all. Log it as an insert.
             $res = $this->app['db']->insert($tablename, $content);
             $seq = null;
             if ($this->app['db']->getDatabasePlatform() instanceof PostgreSqlPlatform) {
@@ -1411,7 +1411,7 @@ class Storage
     private function organizeQueryParameters($inParameters = null)
     {
         $ctypeParameters = array();
-        $metaParameters = array('order' => false); // order in meta_parameters check again in line: 1530!
+        $metaParameters = array();
         if (is_array($inParameters)) {
             foreach ($inParameters as $key => $value) {
                 if (in_array($key, array('page', 'limit', 'offset', 'returnsingle', 'printquery', 'paging', 'order'))) {
@@ -1420,11 +1420,6 @@ class Storage
                     $ctypeParameters[$key] = $value;
                 }
             }
-        }
-
-        // if was no 'order' in $in_parameters try to find 'order' parm in req url
-        if ($metaParameters['order'] === false) {
-            $metaParameters['order'] = $this->app['request']->get('order', false);
         }
 
         return array($metaParameters, $ctypeParameters);
@@ -1503,7 +1498,7 @@ class Storage
         } elseif (preg_match('#^/?([a-z0-9_-]+)/(latest|first)/([0-9]+)$#i', $textquery, $match)) {
             // like 'page/latest/5'
             $decoded['contenttypes'] = $this->decodeContentTypesFromText($match[1]);
-            if (!isset($metaParameters['order'])) {
+            if (!isset($metaParameters['order']) || $metaParameters['order'] === false) {
                 $metaParameters['order'] = 'datepublish ' . ($match[2] == 'latest' ? 'DESC' : 'ASC');
             }
             if (!isset($metaParameters['limit'])) {
@@ -1931,7 +1926,11 @@ class Storage
                     $totalResults = $countRow['count'];
                 }
 
-                $offset = ($decoded['parameters']['page'] - 1) * $decoded['parameters']['limit'];
+                if (isset($decoded['parameters']['paging']) && $decoded['parameters']['paging'] == true) {
+                    $offset = ($decoded['parameters']['page'] - 1) * $decoded['parameters']['limit'];
+                } else {
+                    $offset = null;
+                }
                 $limit = $decoded['parameters']['limit'];
 
                 // @todo this will fail when actually using params on certain databases
@@ -2924,10 +2923,14 @@ class Storage
         if ($dboptions['driver'] == 'pdo_sqlite') {
             // For SQLite:
             $query = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='$name';";
-        } else {
-            // For MySQL and Postgres:
+        } elseif ($dboptions['driver'] == 'pdo_pgsql') {
+            // For Postgres
             $databasename = $this->app['config']->get('general/database/databasename');
-            $query = "SELECT count(*) FROM information_schema.tables WHERE (table_schema = '$databasename' OR table_catalog = '$databasename') AND table_name = '$name';";
+            $query = "SELECT count(*) FROM information_schema.tables WHERE table_catalog = '$databasename' AND table_name = '$name';";
+        } else {
+            // For MySQL
+            $databasename = $this->app['config']->get('general/database/databasename');
+            $query = "SELECT count(*) FROM information_schema.tables WHERE table_schema = '$databasename' AND table_name = '$name';";
         }
 
         $res = $this->app['db']->fetchColumn($query);
