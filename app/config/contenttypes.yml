@@ -332,7 +332,17 @@ persons:
       type: select
       required: false
       label: "Team:"
-      values: [ "(not set)", "Aggregation", "Corporate Communication", "Distribution & Engagement", "Facilitation", "Management", "Network & Sustainability", "People & Business Support", "Product Development", "Technology" ]
+      values:
+        "(not set)": "(not set)"
+        "Aggregation": "Aggregation"
+        "Corporate Communication": "Corporate Communication"
+        "Distribution & Engagement": "Distribution & Engagement"
+        "Facilitation": "Facilitation"
+        "Management": "Management"
+        "Network & Sustainability": "Network & Sustainability"
+        "People & Business Support": "People & Business Support"
+        "Product Development": "Product Development"
+        "Technology": "Technology"
     introduction:
       type: html
       required: false

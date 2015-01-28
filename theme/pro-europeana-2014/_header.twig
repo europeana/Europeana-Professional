@@ -148,8 +148,27 @@
 
     <nav class="drawer menu-right">
 
+        {% set placeholder = 'Search Europeana' %}
+        {% if app.request.get('q') != NULL %}
+            {% set placeholder = app.request.get('q') %}
+        {% endif %}
         <div class="searchfield">
-            mini search here
+            <form action="{{ paths.root }}search" class="inline-form">
+                <fieldset>
+                    <legend class="is-vishidden">Search</legend>
+                    <label for="search-field" class="is-vishidden">Search</label>
+
+                    <input type="search" placeholder="{{ placeholder }}" id="search-field" class="search-field" name="q" />
+                    <input type="hidden" id="filter" name="filter" value="on" />
+
+                    <button class="search-submit">
+                        <svg class="icon icon-search">
+                            <use xlink:href="#icon-search"></use>
+                        </svg>
+                        <span class="is-vishidden">Search</span>
+                    </button>
+                </fieldset>
+            </form>
         </div>
 
         {{ menu('primary', '_menu.twig') }}
