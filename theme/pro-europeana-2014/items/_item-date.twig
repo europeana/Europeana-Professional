@@ -8,10 +8,9 @@
 
 
 {% if date is not defined %}
-    {% set date = record.datepublished %}
+    {% set date = record.datepublish %}
 {% endif %}
 {% if date is defined %}
-
 
 <span class="item-date">
     <svg class="icon icon-calendar">
