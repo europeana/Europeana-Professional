@@ -2,172 +2,165 @@
 
 {% set home = record %}
 
-<div class="pro-hero cf" style="background-image: url({{ paths.root ~ 'files/' ~ home.bannerimage }})" >
-<div class="lc">
+{% include '_organisms_components_site-hero.twig' %}
 
-    <div class="hero-text">
-        {{ home.bannertext }}
-    </div>
-
-</div>
-</div>
 
 <!-- Start Main page content -->
 <main role="main" class="pro-home">
 
 
-<div class="promo-abouteuropeana section">
-<div class="lc">
+    <div class="promo-abouteuropeana section">
+        <div class="lc">
 
-    {{ home.subtitle }}
+            {{ home.subtitle }}
 
-</div>
-</div>
-
-<div class="pro-info section">
-<div class="lc">
-
-<div class="grid">
-
-    <div class="l-primaryaction">
-
-        <div class="jointhenetwork">
-            {{ home.callout_1|raw  }}
         </div>
+    </div>
 
-    </div><!--
- --><div class="l-usefulinfo">
-     <div class="usefulinfo">
-
-     <h2>Quick Links</h2>
+    <div class="pro-info section">
+    <div class="lc">
 
     <div class="grid">
-        <div class="l-usefulinfo-item">
 
-            <div class="usefulinfo-item">
-                {{ home.callout_2|raw  }}
+        <div class="l-primaryaction">
+
+            <div class="jointhenetwork">
+                {{ home.callout_1|raw  }}
             </div>
 
         </div><!--
-     --><div class="l-usefulinfo-item">
+     --><div class="l-usefulinfo">
+         <div class="usefulinfo">
 
-            <div class="usefulinfo-item">
-                {{ home.callout_3|raw  }}
+         <h2>Quick Links</h2>
+
+        <div class="grid">
+            <div class="l-usefulinfo-item">
+
+                <div class="usefulinfo-item">
+                    {{ home.callout_2|raw  }}
+                </div>
+
+            </div><!--
+         --><div class="l-usefulinfo-item">
+
+                <div class="usefulinfo-item">
+                    {{ home.callout_3|raw  }}
+                </div>
+
             </div>
-
         </div>
+        </div>
+        </div>
+
     </div>
-    </div>
-    </div>
 
-</div>
-
-
-</div>
-</div>
-
-<div class="section home-news">
-    <div class="lc">
-
-    {{ home.callout_6|raw  }}
-
-    <div class="grid cf">
-
-        <div class="l-news">
-            <div class="grid">
-
-                {#
-                    START - related/latest blogposts.
-                    if related blogposts are not defined, latest blogposts were used
-                    by only one related blogpost, use one latest blogpost
-                #}
-
-                {# get related blogposts #}
-                {% set blogposts = [] %}
-                {% set relatedBlogposts = home.related('blogposts')|slice(0,3) %}
-
-                {# if no related post, get latest posts#}
-                {% if relatedBlogposts|length == 0  %}
-                    {% setcontent relatedBlogposts = "blogposts/latest/3" %}
-                {# if less than 3 related post, merge related with latest posts #}
-                {% elseif relatedBlogposts|length < 3 %}
-                    {% set postQuery = '' %}
-                    {% for post in relatedBlogposts %}
-                        {% set postQuery = postQuery ~ '!' ~ post.id %}
-                        {% if not loop.last %}
-                            {% set postQuery = postQuery ~ ' && ' %}
-                        {% endif %}
-                    {% endfor %}
-
-                    {% setcontent latestBlogposts = "blogposts/latest/" ~ (3-relatedBlogposts|length) where {id: postQuery } %}
-                    {% set relatedBlogposts = relatedBlogposts|merge(latestBlogposts ) %}
-                {% endif %}
-
-                {# render blogposts #}
-                {% for post in relatedBlogposts %}<div class="l-post"><!--
-                 --><div class="block block-inset">
-                        <a href="{{ structurelink(post) }}" class="inner" title="{{ post.title }}">
-                            <div class="b-thumb">
-                                {% if post.image|length %}
-                                    <img src="{{ post.image|thumbnail(400,300,"c") }}" alt="{{ post.image|title }}" />
-                                {% endif %}
-                                <div class="b-text">
-                                    <h2 class="headline">{{ post.title }}</h2>
-                                </div>
-                            </div>
-                            <div class="excerpt">
-                                <p>{{ post.excerpt(app.config.get('general/excerpt_length')) }}</p>
-                            </div>
-                        </a>
-                    </div>
-                </div><!--
-             -->{% endfor %}
-
-                {# END - related/latest blogposts #}
-
-            </div>
-
-            <a class="link-more" href="{{ paths.root }}blogposts">More from the Europeana professional Blog</a>
-        </div><!-- <div class="l-newsfeed">
-
-            {# set twitter feed - disabled #}
-            {#
-            <div class="tweets">
-                {{ twitterfeed() }}
-            </div>
-            #}
-        </div> -->
 
     </div>
     </div>
-</div>
 
-{# get the nearest two EVENTS #}
-{% setcontent events = 'Events' limit 2 orderby 'start_event ASC' %}
-{% if events is defined %}
+    <div class="section home-news">
+        <div class="lc">
 
-<div class="section events-upcoming">
-    <div class="lc">
-
-        <h2 class="section-title">Upcoming Events</h2>
+        {{ home.callout_6|raw  }}
 
         <div class="grid cf">
-            {% for event in events %}<div class="event"><!--
-                 -->{% include 'items/_item-date-event.twig' with {record : event} %}
-                    <div class="event-details">
-                        <h2 class="event-title"><a href="{{ event.link }}">{{ event.title }}</a></h2>
-                        {{ event.teaser }}
-                    </div>
-                </div><!--
+
+            <div class="l-news">
+                <div class="grid">
+
+                    {#
+                        START - related/latest blogposts.
+                        if related blogposts are not defined, latest blogposts were used
+                        by only one related blogpost, use one latest blogpost
+                    #}
+
+                    {# get related blogposts #}
+                    {% set blogposts = [] %}
+                    {% set relatedBlogposts = home.related('blogposts')|slice(0,3) %}
+
+                    {# if no related post, get latest posts#}
+                    {% if relatedBlogposts|length == 0  %}
+                        {% setcontent relatedBlogposts = "blogposts/latest/3" %}
+                    {# if less than 3 related post, merge related with latest posts #}
+                    {% elseif relatedBlogposts|length < 3 %}
+                        {% set postQuery = '' %}
+                        {% for post in relatedBlogposts %}
+                            {% set postQuery = postQuery ~ '!' ~ post.id %}
+                            {% if not loop.last %}
+                                {% set postQuery = postQuery ~ ' && ' %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% setcontent latestBlogposts = "blogposts/latest/" ~ (3-relatedBlogposts|length) where {id: postQuery } %}
+                        {% set relatedBlogposts = relatedBlogposts|merge(latestBlogposts ) %}
+                    {% endif %}
+
+                    {# render blogposts #}
+                    {% for post in relatedBlogposts %}<div class="l-post"><!--
+                     --><div class="block block-inset">
+                            <a href="{{ structurelink(post) }}" class="inner" title="{{ post.title }}">
+                                <div class="b-thumb">
+                                    {% if post.image|length %}
+                                        <img src="{{ post.image|thumbnail(400,300,"c") }}" alt="{{ post.image|title }}" />
+                                    {% endif %}
+                                    <div class="b-text">
+                                        <h2 class="headline">{{ post.title }}</h2>
+                                    </div>
+                                </div>
+                                <div class="excerpt">
+                                    <p>{{ post.excerpt(app.config.get('general/excerpt_length')) }}</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div><!--
                  -->{% endfor %}
 
+                    {# END - related/latest blogposts #}
+
+                </div>
+
+                <a class="link-more" href="{{ paths.root }}blogposts">More from the Europeana professional Blog</a>
+            </div><!-- <div class="l-newsfeed">
+
+                {# set twitter feed - disabled #}
+                {#
+                <div class="tweets">
+                    {{ twitterfeed() }}
+                </div>
+                #}
+            </div> -->
+
         </div>
-
-        <a class="link-more" href="{{ paths.root }}events">More Events</a>
-
+        </div>
     </div>
-</div>
-{% endif %}
+
+    {# get the nearest two EVENTS #}
+    {% setcontent events = 'Events' limit 2 orderby 'start_event ASC' %}
+    {% if events is defined %}
+
+    <div class="section events-upcoming">
+        <div class="lc">
+
+            <h2 class="section-title">Upcoming Events</h2>
+
+            <div class="grid cf">
+                {% for event in events %}<div class="event"><!--
+                     -->{% include 'items/_item-date-event.twig' with {record : event} %}
+                        <div class="event-details">
+                            <h2 class="event-title"><a href="{{ event.link }}">{{ event.title }}</a></h2>
+                            {{ event.teaser }}
+                        </div>
+                    </div><!--
+                     -->{% endfor %}
+
+            </div>
+
+            <a class="link-more" href="{{ paths.root }}events">More Events</a>
+
+        </div>
+    </div>
+    {% endif %}
 
 <!-- End main content -->
 </main>
