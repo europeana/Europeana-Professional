@@ -43,22 +43,28 @@ Various changes in style are applied by adding classes to the main outer site-he
     
     <div class="attribution">
     
+        {{ home.imageattribution }}
+
         {% if home.imagelicense == 'CC0'%}
-            {% set licenselink = 'publicdomain/zero/1.0/' %}
+            <a href="http://creativecommons.org/publicdomain/zero/1.0/" class="license icon-license-zero">CC0</a>
+        
         {% elseif home.imagelicense == 'CC-BY'%}
-            {% set licenselink = 'licenses/by/4.0/' %}
+            <a href="http://creativecommons.org/licenses/by/4.0/" class="license"><span class="icon-license-cc"></span><span class="icon-license-by"></span>CC-BY</a>
+        
         {% elseif home.imagelicense == 'CC-BY-SA'%}
-            {% set licenselink = 'licenses/by-sa/4.0/' %}
+            <a href="http://creativecommons.org/licenses/by-sa/4.0/" class="license"><span class="icon-license-cc"></span><span class="icon-license-by"></span><span class="icon-license-sa"></span>CC-BY-SA</a>
+        
         {% elseif home.imagelicense == 'CC-BY-NC'%}
-            {% set licenselink = 'licenses/by-nc/4.0/' %}
+            <a href="http://creativecommons.org/licenses/by-nc/4.0/" class="license"><span class="icon-license-cc"></span><span class="icon-license-by"></span><span class="icon-license-nc"></span>CC-BY-NC</a>
+        
         {% elseif home.imagelicense == 'CC-BY-NC-SA'%}
-            {% set licenselink = 'licenses/by-nc-sa/4.0/' %}
+            <a href="http://creativecommons.org/licenses/by-nc-nd/4.0/" class="license"><span class="icon-license-cc"></span><span class="icon-license-nd"></span><span class="icon-license-nc"></span><span class="icon-license-sa"></span>CC-ND-NC-SA</a>
+        
         {% elseif home.imagelicense == 'Public Domain'%}
-            {% set licenselink = 'publicdomain/mark/1.0/' %}
+            <a href="http://creativecommons.org/publicdomain/mark/1.0/" class="license icon-license-pd">Public Domain</a>
         {% endif %}
         
-        {{ home.imageattribution }}
-        <a href="http://creativecommons.org/{{licenselink}}" class="license icon-license-zero">{{home.imagelicense}}</a>
+        
 
     </div>
 
