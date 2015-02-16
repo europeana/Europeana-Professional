@@ -7,5 +7,24 @@ template: listing_search.twig
 
 results_per_page: 10
 max_autocompletions: 5
-filter: '+more:pagemap:metatags-contenttype:'
-filter_options: ['pages', 'blogposts', 'events', 'publications', 'pressreleases', 'projects', 'taskforces', 'jobs', 'persons']
+filter:
+  -
+    label: "Pages"
+    name: "pages"
+    filter: "+-more:pagemap:metatags-contenttype:pages"
+    checked: checked
+  -
+    label: "Documents"
+    name: "documents"
+    filter: "+-filetype:pdf"
+    checked: checked
+  -
+    label: "Blog Posts"
+    name: "blogposts"
+    filter: "+-more:pagemap:metatags-contenttype:blogposts"
+    checked: checked
+  -
+    label: "Events"
+    name: "events"
+    filter: "+-more:pagemap:metatags-contenttype:events"
+    checked: checked

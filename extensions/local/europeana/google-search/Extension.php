@@ -16,19 +16,18 @@ class Extension extends \Bolt\BaseExtension
     private $filter;
     private $filterOptions;
 
-    protected function getDefaultConfig() {
-        return array(
-            'client' => 'google-csbe',
-            'cx' => '000000000000000000000:aaaaaaaaaaa',
-            'output' => 'xml_no_dtd',
-            'template' => 'listing_search.twig',
-
-            'results_per_page' => 10,
-            'max_autocompletions' => 5,
-            'filter' => '+more:pagemap:metatags-contenttype:',
-            'filter_options' => ['pages', 'blogposts', 'events', 'publications', 'pressreleases', 'projects', 'taskforces', 'jobs', 'persons'],
-        );
-    }
+    // protected function getDefaultConfig() {
+    //     return array(
+    //         'client' => 'google-csbe',
+    //         'cx' => '000000000000000000000:aaaaaaaaaaa',
+    //         'output' => 'xml_no_dtd',
+    //         'template' => 'listing_search.twig',
+    //         'results_per_page' => 10,
+    //         'max_autocompletions' => 5,
+    //         'filter' => '+more:pagemap:metatags-contenttype:',
+    //         'filter_options' => ['pages', 'blogposts', 'events', 'publications', 'pressreleases', 'projects', 'taskforces', 'jobs', 'persons'],
+    //     );
+    // }
 
     public function initialize()
     {
@@ -42,8 +41,9 @@ class Extension extends \Bolt\BaseExtension
         $this->template = $this->config['template'];
         $this->resultsPerPage = $this->config['results_per_page'];
         $this->searchOptions = array('max_autocompletions' => $this->config['max_autocompletions']);
-        $this->filter = $this->config['filter'];
-        $this->filterOptions = $this->config['filter_options'];
+        // $this->filter = $this->config['filter'];
+        $this->filterOptions = $this->config['filter'];
+
     }
 
     /**
@@ -52,12 +52,12 @@ class Extension extends \Bolt\BaseExtension
      * @params (string) search query
      * @return (XML) search result
      */
-    private function searchRequest($query, $start, $num)
+    private function searchRequest($query, $start, $num, $sort)
     {
         $q = $query;
 
         // build request url
-        $url = "http://www.google.com/cse?cx=".$this->cx."&client=".$this->client."&output=".$this->output."&q=".$q."&hl=en&start=".$start."&num=".$num;
+        $url = "http://www.google.com/cse?cx=".$this->cx."&client=".$this->client."&output=".$this->output."&q=".$q."&hl=en&start=".$start."&num=".$num."&sort=".$sort;
 
         // curl setup
         $ch = curl_init();
@@ -85,28 +85,34 @@ class Extension extends \Bolt\BaseExtension
     public function googleSearch() {
         $page = ( is_null($_GET['page']) ) ? 1 : $_GET['page'];
         $start = ( ($page-1) * $this->resultsPerPage );
+        $sort = ( is_null($_GET['sort']) ) ? '' : $_GET['sort'];
 
         $q = $_GET['q'];
         $defaultFilter = $_GET['filter'];
         $query = urlencode($q);
 
-        // search with the header search bar
-        if ($defaultFilter) {
-            $currentFilterOptions = $this->filterOptions;
-        }
-        else {
-            $currentFilterOptions = array();
-            foreach ($this->filterOptions as $filter) {
-                if ( isset($_GET[($filter)]) )
-                    $currentFilterOptions[] = $filter;
-            }
-        }
+        $filterOptions = '';
+        $activeFilter = [];
 
-        $filter =  $this->filter . join(',', $currentFilterOptions);
-        $query .= $filter;
+
+        // search with the header search bar, all filter enabled
+        if (!$defaultFilter) {
+            foreach ($this->filterOptions as $key => $filter) {
+                if (!isset($_GET[($filter['name'])])) {
+                    $this->filterOptions[$key]['checked'] = '';
+                    $filterOptions .= $filter['filter'];
+                }
+                else $activeFilter[] = $filter['name']; 
+           }
+        }
+        else $activeFilter[] = 'filter=on'; 
+
+
+        //  add search filter to query
+        $query .= $filterOptions;
 
         // call search api
-        $resultsRaw = $this->searchRequest($query, $start, $this->resultsPerPage);
+        $resultsRaw = $this->searchRequest($query, $start, $this->resultsPerPage, $sort);
 
         // start xml parsing
         $resultsXML = simplexml_load_string($resultsRaw);
@@ -116,7 +122,14 @@ class Extension extends \Bolt\BaseExtension
 
         // get suggestion if set
         $suggestionRaw = ( $resultsXML->Spelling->Suggestion ) ? (string) $resultsXML->Spelling->Suggestion : null;
-        $suggestion = trim(explode('more:', $suggestionRaw)[0]);
+
+
+        if ($suggestionRaw) {
+            // $suggestion = trim(explode('-more:', $suggestionRaw)[0]);
+            $suggestion = trim(explode('</b>', $suggestionRaw)[0]);
+            $suggestion .= '</b>';
+        }
+
 
         // extract information
         $resultsRecords = [];
@@ -132,19 +145,19 @@ class Extension extends \Bolt\BaseExtension
                 // try to get content element by contenttype and slug
                 $content = $this->app['storage']->getContent($contenttype, array(slug => $slug, returnsingle => true) );
 
-                if ($content) {
-                    $records[] = $content;
-                }
-                else {
-                    $imageLink = (string) $item->xpath('PageMap/DataObject[@type="metatags"]/Attribute[@name="og:image"]')[0]["value"];
-                    $image = ($imageLink) ? $imageLink : null;
-                    $records[] = array(
-                            'title' => $title,
-                            'link' => $link,
-                            'image' => $image,
-                            'snippet' => $snippet
-                            );
-                }
+                $imageLink = (string) $item->xpath('PageMap/DataObject[@type="cse_image"]/Attribute[@name="src"]')[0]["value"];
+                if (!$imageLink)
+                    $imageLink = (string) $item->xpath('PageMap/DataObject[@type="cse_thumbnail"]/Attribute[@name="src"]')[0]["value"];
+
+
+                $image = ($imageLink) ? $imageLink : null;
+                $records[] = array(
+                        'title' => $title,
+                        'link' => $link,
+                        'image' => $image,
+                        'snippet' => $snippet,
+                        'boltRecord' => $content
+                        );
             }
         }
 
@@ -152,17 +165,12 @@ class Extension extends \Bolt\BaseExtension
         $pager = array(
                 totalpages => (int) ceil( $resultsNum / $this->resultsPerPage ),
                 current => $page,
-                link => '?q=' . $q . '&' . join('&',$currentFilterOptions) .  '&page='
+                link => '?q=' . $q . '&' . join('&',$activeFilter) . '&sort=' . $sort .  '&page='
                 );
 
 
         // params 'filter' is only set in global search
         $default = ($_GET['filter']) ? 'checked' : '';
-
-        // set result filter
-        foreach ($this->filterOptions as $filter) {
-            $this->searchOptions[($filter)] = (isset($_GET[($filter)])) ? 'checked' : $default;
-        }
 
 
         $this->app['twig.loader.filesystem']->addPath(__DIR__);
@@ -176,8 +184,10 @@ class Extension extends \Bolt\BaseExtension
         $this->app['twig']->addGlobal('query', $q);
         $this->app['twig']->addGlobal('searchoptions', $this->searchOptions);
         $this->app['twig']->addGlobal('filteroptions', $this->filterOptions);
-
         $this->app['twig']->addGlobal('pager', $pager);
+        $this->app['twig']->addGlobal('sort', $sort);
+        $this->app['twig']->addGlobal('activeFilter', $activeFilter);
+        
 
         $body = $this->app['render']->render($this->template);
 

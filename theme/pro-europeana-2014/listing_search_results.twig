@@ -1,47 +1,3 @@
-			<div class="l-filter filters">
-                <form id="search_inside" action="{{ paths.root }}search">
-				    <fieldset>
-				    <h4 class="title">Include:</h4>
-				        <ul class="nav">
-                            {% for filter in filteroptions %}
-                            <li><label for="checkbox_{{ filter }}">{{ filter|capitalize }} <input id="checkbox_{{ filter }}" name="{{ filter }}" type="checkbox" {{ searchoptions[(filter)] }}></label></li>
-                            {% endfor %}
-				        </ul>
-				    </fieldset>
-				</form>
-                <script type="text/javascript">
-                {# tobias2k notes:
-                   Injecting template variables into JavaScript like this is dangerous; needs fixing.
-                   (potential XSS vulnerability)
-
-                   Suggest putting dynamic things into data attributes outside the script, and have the script
-                   reference those.
-                 -#}
-
-                $(function() {
-                    var autoCompletionOptions = {
-                      'maxCompletions' : {{ searchoptions.max_autocompletions }},
-                      'styleOptions' : {
-                        'xOffset' : 10
-                    }};
-                    google.setOnLoadCallback(function() {
-                      google.search.CustomSearchControl.attachAutoCompletionWithOptions(
-                        "{{ cx }}", document.getElementById('search_google'), 'search_inside',
-                        autoCompletionOptions);
-                    });
-                });
-                </script>
-
-
-                {% if suggestion %}
-                    <div class="searchterms">
-                        Did you mean "<a href="{{ paths.rooturl }}search?q={{ suggestion|striptags }}&{{ filteroptions|join('&') }}">{{ suggestion|striptags }}</a>"?
-						<div class="resultsnum">Showing <strong>{{ resultsnum }}</strong> results for <strong>"{{ query }}"</strong></div>
-                    </div>
-                {% endif %}
-
-			</div>
-
             {#
                 render the search results
             #}
@@ -49,36 +5,34 @@
                 <div class="results">
                     <ul class="results-list">
                         {% for record in searchresults %}
+                      
+                                
 
-                            {#
-                                render bolt objects
-                            #}
-                            {% if record.values is defined %}
-                                {% if record.contenttype.name == 'Persons' %}
-                                    {% include 'items/_item-person-list.twig' with { record: record} %}
-                                {% else %}
-                                    {% include 'items/_item-list.twig' with { record: record } %}
-                                {% endif %}
-                            {#
-                                render "unknown" content
-                            #}
-                            {% else %}
                                 <li class="list-item">
                                     <div class="item-supplementary">
                                         {% if record.image %}
                                         <div class="item-image">
-                                            <a href="{{ record.link|striptags }}"><img alt="{{ record.title|striptags }}" src="{{ record.image }}"></a>
+                                            <a href="{{ record.link|striptags }}"><img width="268px" height="auto" alt="{{ record.title|striptags }}" src="{{ record.image }}"></a>
                                         </div>
                                         {% endif %}
                                     </div><!--
                                  --><div class="item-details">
                                         <h2 class="title"><a href="{{ record.link|striptags }}">{{ record.title|striptags }}</a></h2>
+
+                                        <div class="item-preview">
+
+                                        {% if record.boltRecord  %}
+                                            {% include 'items/_item-breadcrumb.twig' with {record : record.boltRecord} %}
+                                        {% endif %}
+
+                                        </div>
+
                                         <div class="item-preview">
                                             {{ record.snippet|raw }}
                                         </div>
                                     </div>
                                 </li>
-                            {% endif %}
+                            {# {% endif %} #}
                         {% endfor %}
                     </ul>
 
