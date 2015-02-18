@@ -34,7 +34,16 @@
 
                             <div class="jobdetails">
                                 <div class="job-title">{{record.job_title}}</div>
-                                <div class="job-department">{{record.team}}</div>
+
+                                <div class="job-department">
+                                    {% if record.team != '(not set)' %}
+                                        {{record.team}}
+                                    {% else %}
+                                        {{ record.company }}
+                                    {% endif %}
+                                </div>
+
+
                                 <a class="email" href="mailto:{{ record.email }}">{{record.email}}</a>
                             </div>
 
