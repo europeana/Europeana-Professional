@@ -82,7 +82,7 @@ publications:
       label: "Teaser:"
       height: 150px
     introduction:
-      type: markdown
+      type: text
       required: false
       label: "Introduction (120 chars MAX):"
       pattern: "^.{1,120}$"

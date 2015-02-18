@@ -51,7 +51,6 @@
             </div>
         {% endif %}
 
-
             <div class="item-meta-secondary">
 
             {% if (contenttype.slug in [ "publications", "pressreleases", "press-releases" ]) %}
@@ -83,6 +82,9 @@
                 {% include 'items/_item-department.twig' %}
 
             {% elseif contenttype.slug == "taskforces" %}
+                {% include 'items/_item-date.twig' with { date: listItem.date_start } %}
+                <span>to: </span>
+                {% include 'items/_item-date.twig' with { date: listItem.date_end } %}
                 {# set tags #}
                 {% include 'items/_item-tags.twig' %}
 
