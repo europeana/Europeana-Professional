@@ -54,6 +54,14 @@
                 </div>
             </div>
 
+            {# set Downloads #}
+            {% if record.attachments %}
+            <div class="downloads section files">
+                <h2>{{ record.contenttype['fields']['attachments'].label }}</h2>
+                {% include 'items/_item-filelist.twig' with { records : record.attachments } %}
+            </div>
+            {% endif %}
+
             <div id="sharethis">
                 <span class='st_facebook_large' displayText='Facebook'></span>
                 <span class='st_twitter_large' st_via='EuropeanaEU Professional' displayText='Tweet'></span>
@@ -72,18 +80,10 @@
         </div><!--
 
      --><div class="l-sidebar">
-             <div class="inner">
+            <div class="inner">
 
                 {# set author #}
                 {% include 'items/_item-help.twig' with { records: contacts } %}
-
-                {# set Downloads #}
-                {% if record.attachments %}
-                <div class="downloads">
-                    <h4>{{ record.contenttype['fields']['attachments'].label }}</h4>
-                    {% include 'items/_item-filelist.twig' with { records : record.attachments } %}
-                </div>
-                {% endif %}
 
             </div>
 
