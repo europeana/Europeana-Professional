@@ -20,19 +20,40 @@
                 {% endif %}
 
                 {% set currentTeam = 'empty' %}
+                {% set currentCompany = 'empty' %}
+
                 {# if record.checkbox_europeana #}
-                {% for record in records %}
+                {% for record in records if record.team != "(not set)" %}
                     {% if ( record.team != currentTeam ) %}
                         {% set currentTeam = records|first.team %}
                         <div class="team">
                             <h2>{{ record.team }}</h2>
-                            <ul class="results-list"><!--
-                            -->{% for person in records if record.team == person.team  %}<!--
+                            <ul class="results-list"><!-- 
+                                -->{% for person in records if record.team == person.team  %}<!--
                                 --><li>{% include 'items/_item-person-list.twig' with { record: person} %}</li><!--
                             -->{% endfor %}<!--
                         --></ul>
                         </div>
                         {% set currentTeam = record.team %}
+                    {% endif %}
+                {% endfor %}
+                
+{# If person does not work at europeana, he or she is a prtner #}
+                {% for record in records if record.team == "(not set)" %}
+                    {% if ( record.company != currentCompany ) %}
+                        {% set currentTeam = records|first.company %}
+                        <div class="team">
+                            <h2>{{ record.company }}</h2>
+                            <ul class="results-list"><!--
+                                -->
+                                {% for person in records|order('company') if record.company == person.company  %}
+                               <!--
+                                --><li>{% include 'items/_item-person-list.twig' with { record: person} %}</li><!--
+                            -->{% endfor %}<!--
+                    
+                        --></ul>
+                        </div>
+                        {% set currentCompany = record.company %}
                     {% endif %}
                 {% endfor %}
 
