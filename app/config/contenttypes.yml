@@ -1307,9 +1307,8 @@ taskforces:
       label: "Jobs"
       order: -id
       format: "{{ item.title|escape }}"
-  sort: date_end
   record_template: record_taskforce.twig
-
+  recordsperpage: 1000
 
 
 #################################
@@ -1566,4 +1565,3 @@ footers:
       label: "Location:"
       multiple: false
   viewless: true
-
