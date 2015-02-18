@@ -102,7 +102,12 @@
 
     {# for contenttype "Person" include listing_person #}
     {% if (records|length and records|first.contenttype.name == 'Persons') %}
-        {% set records = records|order('team') %}
+    
+        {% if app.request.get('slug')=='partners/' %}
+            {% set records = records|order('company') %}
+        {% else %}
+            {% set records = records|order('team') %}
+        {% endif %}
         {% include 'listing_person.twig' with {records: records } %}
 
     {# for the other content use the default listing #}
