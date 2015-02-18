@@ -56,7 +56,7 @@
 {# listing for stucture with fixed content  #}
 {% elseif (record.content != '' and record.content != 'default' )  %}
 
-    {% setcontent records = record.content where { limit : amount, order : order, page : page } %}
+    {% setcontent records = record.content where { limit : amount, order : order, page : page } allowpaging %}
 
 {# listing for mixed content (structure + contenttype) #}
 {% elseif contenttype %}
