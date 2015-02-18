@@ -64,7 +64,16 @@
 
         <div class="maincontent">
 
-            <div class="results">
+                {% if (contenttype.slug in ['blogposts', 'events', 'publications', 'pressreleases']) %}
+                <div class="item-rss">
+                    <a href="FIXME/feed.xml">
+                        <svg class="icon icon-rss"><use xlink:href="#icon-rss"></use></svg> 
+                        RSS feed
+                    </a>
+                </div>
+                {% endif %}
+
+                <div class="results">
 
                 {# show title and intro for structrure listview #}
                 {% if record is defined %}
