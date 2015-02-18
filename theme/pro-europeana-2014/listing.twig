@@ -85,6 +85,13 @@
                 {% endif %}
 
                 <ul class="results-list">
+
+                    {# Bob notes: see related ticket #196, #198.. What was patrick thinking when he made this?
+                        Just grab the blog-postings again on this page.. #}
+                    {% if showsortby and taxonomy is not defined and contenttype.slug == "blogposts" %}
+                        {% setcontent records = 'BlogPosts' where { limit : amount, order: order, page : page } allowpaging %}
+                    {% endif %}
+
                     {% for listItem in records %}
                         {% include 'items/_item-list.twig' with { record: listItem } %}
                     {% endfor %}
@@ -97,7 +104,6 @@
                     -- #}
                     {{ pager() }}
                 {% elseif showsortby and taxonomy is not defined and contenttype.slug == "blogposts" %}
-                    {% setcontent records = 'BlogPosts' where { limit : amount, order: order, page : page } allowpaging %}
                     {{ pager() }}
                 {% elseif taxonomy is defined %}
                     {{ pager() }}

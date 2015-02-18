@@ -76,7 +76,8 @@
     {% endif %}
 
     {# get content assigned contenttype #}
-    {% setcontent records = contenttype['name'] where { limit: amount, tree : record.slug, order: order} allowpaging %}
+
+    {% setcontent records = contenttype['name'] where { limit: amount, tree : record.slug, order: order, page : page } allowpaging %}
 
     {# merge content #}
     {% set records = records|merge(recordsStructure)|order(order) %}
