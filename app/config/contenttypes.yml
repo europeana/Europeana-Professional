@@ -1426,7 +1426,7 @@ homepage:
       label: "Banner Image (required):"
     imageattribution:
       label: Image Attribution
-      type: text
+      type: html
     imagelicense:
       label: Image License
       type: select
