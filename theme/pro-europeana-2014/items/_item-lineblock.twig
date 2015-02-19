@@ -6,15 +6,14 @@ fix: Special exception when slug is 'europeana creative'
 AW-20150219
  #}
 {% set linkblocktextclass = 'link-block-text' %}
-{% if app.request.get('slug')=='europeana-creative' %}
+{% if app.request.get('slug')=='europeana-creative' -%}
     {# some special behaviour for the blocks at Ecreative: no line, yes images #}
-    {% set ecreative = '1' %}
-    {% set linkblocktextclass = '' %}
+    {%- set ecreative = '1' %}
+    {%- set linkblocktextclass = '' %}
 {% endif %}<!--
 
 --><li><div class="{{linkblocktextclass}} link-block block">
     <a href="{{ structurelink(record) }}" title="{{ child.title }}" class="b-inner">
-
 {% if ecreative %}
         {% if child.image|length %}
         <div class="b-thumb">
@@ -22,7 +21,6 @@ AW-20150219
         </div>
         {% endif %}
 {% endif %}
-
         <div class="b-text">
             <h2 class="item-title">{{ child.title }}</h2>
         <p>{{ child.teaser }}</p>
