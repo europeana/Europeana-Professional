@@ -16,7 +16,7 @@ filter:
   -
     label: "Documents"
     name: "documents"
-    filter: "+-filetype:pdf"
+    filter: "+-filetype:pdf+-filetype:docx"
     checked: checked
   -
     label: "Blog Posts"
