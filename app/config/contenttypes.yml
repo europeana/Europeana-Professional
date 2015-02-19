@@ -334,15 +334,16 @@ persons:
       label: "Team:"
       values:
         "(not set)": "(not set)"
-        "Aggregation": "Aggregation"
-        "Corporate Communication": "Corporate Communication"
-        "Distribution & Engagement": "Distribution & Engagement"
-        "Facilitation": "Facilitation"
+        "Aggregation": "Data Partner Services"
+        "Corporate Communication": "Communications"
+        "Distribution & Engagement": "End User Services"
+        "Facilitation": "Policy, Research, Knowledge & Programme Management"
         "Management": "Management"
         "Network & Sustainability": "Network & Sustainability"
         "People & Business Support": "People & Business Support"
         "Product Development": "Product Development"
         "Technology": "Technology"
+        "Re-use Services": "Re-use Services"
     introduction:
       type: html
       required: false

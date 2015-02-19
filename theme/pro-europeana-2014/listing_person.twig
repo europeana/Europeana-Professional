@@ -23,11 +23,12 @@
                 {% set currentCompany = 'empty' %}
 
                 {# if record.checkbox_europeana #}
+                {% set teams = app.config.get('contenttypes/persons/fields/team/values') %}
                 {% for record in records if record.team != "(not set)" %}
                     {% if ( record.team != currentTeam ) %}
                         {% set currentTeam = records|first.team %}
                         <div class="team">
-                            <h2>{{ record.team }}</h2>
+                            <h2>{{ teams[record.team]|default(record.team) }}</h2>
                             <ul class="results-list"><!-- 
                                 -->{% for person in records if record.team == person.team  %}<!--
                                 --><li>{% include 'items/_item-person-list.twig' with { record: person} %}</li><!--
