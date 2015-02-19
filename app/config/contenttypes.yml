@@ -845,9 +845,8 @@ blogposts:
       label: "Jobs"
       order: -id
       format: "{{ item.title|escape }}"
-  sort: -datepublish
   record_template: record_blogpost.twig
-
+  recordsperpage: 100
 
 
 #################################
