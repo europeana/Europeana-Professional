@@ -16,7 +16,7 @@ footer:
     path: /about-us
     label: 'About us'
   - title: 'Terms & policies'
-    path: /terms-policies
+    path: /portal/rights/terms-and-policies.html
     label: 'Terms & policies'
   - title: Sitemap
     path: /sitemap
