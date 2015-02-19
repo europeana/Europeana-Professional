@@ -9,6 +9,7 @@ use Symfony\Component\Yaml\Yaml;
 use Bolt;
 use Bolt\StorageEvents;
 use Bolt\Extensions\Snippets\Location as SnippetLocation;
+use \utilphp\util;
 
 class Extension extends \Bolt\BaseExtension
 {
@@ -392,7 +393,7 @@ class Extension extends \Bolt\BaseExtension
             if ($source['type'] == 'menu') {
                 $menu = $this->app['config']->get('menu/'.$source['data']['menu']);
                 foreach ($menu as $entry) {
-                    $slug = makeSlug($entry['path'], -1);
+                    $slug = util::slugify($entry['path'], -1);
                     $itemRaw = $this->app['storage']->getContent('structures', array('slug' => $slug, 'returnsingle' => true));
                     $item = $itemRaw->values;
                     $childsUnsorted = self::getChilds($pages, $itemRaw['slug']);
@@ -415,7 +416,7 @@ class Extension extends \Bolt\BaseExtension
                     }
                     // get slug entries
                     elseif ($entry['slug']) {
-                        $slug = makeSlug($entry['slug'], -1);
+                        $slug = util::slugify($entry['slug'], -1);
                         $itemRaw = [];
                         foreach ($contenttypes as $contenttype ) {
                             $itemRaw = $this->app['storage']->getContent($contenttype, array('slug' => $slug, 'returnsingle' => true));
