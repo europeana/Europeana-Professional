@@ -193,7 +193,7 @@ pressreleases:
       type: slug
       uses: title
     introduction:
-      type: markdown
+      type: text
       required: false
       label: "Introduction (120 chars MAX):"
       pattern: "^.{1,120}$"
@@ -1307,8 +1307,9 @@ taskforces:
       label: "Jobs"
       order: -id
       format: "{{ item.title|escape }}"
+  sort: date_end
   record_template: record_taskforce.twig
-  recordsperpage: 1000
+
 
 
 #################################
@@ -1565,3 +1566,4 @@ footers:
       label: "Location:"
       multiple: false
   viewless: true
+
