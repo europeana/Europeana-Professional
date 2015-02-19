@@ -53,18 +53,21 @@
                     </div>
                 </div>
 
+                {# set filelist #}
+                {% if record.filelist_files|length %}
+                <div class="downloads section files">
+                    <h2>{{ record.contenttype['fields']['filelist_files'].label }}</h2>
+                    {% include 'items/_item-filelist.twig' with { records : record.filelist_files } %}
+                </div>
+                {% endif %}
+
                 {% include 'items/_item-related.twig' with {title: "RELATED:", short: false} %}
             </article>
         </div><!--
         --><div class="l-sidebar">
             <div class="inner">
                 {% include 'items/_item-help.twig' with { records: contacts } %}
-                {% if record.filelist_files|length %}
-                <div class="downloads">
-                    <h4>{{ record.contenttype['fields']['filelist_files'].label }}</h4>
-                    {% include 'items/_item-filelist.twig' with { records : record.filelist_files } %}
-                </div>
-                {% endif %}
+                
             </div>
 
             </div>

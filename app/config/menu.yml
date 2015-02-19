@@ -4,7 +4,7 @@ primary:
     label: 'Get involved'
   - title: 'Provide your data'
     path: /share-your-data
-    label: 'Provide your data'
+    label: 'Share your data'
   - title: 'Use our data'
     path: /use-our-data
     label: 'Use our data'
@@ -16,7 +16,7 @@ footer:
     path: /about-us
     label: 'About us'
   - title: 'Terms & policies'
-    path: /terms-policies
+    link: http://europeana.eu/portal/rights/terms-and-policies.html
     label: 'Terms & policies'
   - title: Sitemap
     path: /sitemap

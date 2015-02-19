@@ -57,6 +57,15 @@
                 </div>
             </div>
 
+            {# set filelist #}
+            {% if job.filelist %}
+            <div class="downloads section files">
+                <h2>{{ job.contenttype.fields.filelist.label }}</h2>
+                {% include 'items/_item-filelist-detail.twig' with {filelist : job.filelist, owner: 'hide' } %}
+            </div>
+            {% endif %}
+
+
         </article>
         </div><!--
 
@@ -65,14 +74,6 @@
 
                 {# set contacts #}
                 {% include 'items/_item-help.twig' with { records: contacts, title: "Need Help?" } %}
-
-                {# set filelist #}
-                {% if job.filelist %}
-                <div class="downloads">
-                    <h4>{{ job.contenttype.fields.filelist.label }}</h4>
-                    {% include 'items/_item-filelist-detail.twig' with {filelist : job.filelist, owner: 'hide' } %}
-                </div>
-                {% endif %}
 
             </div>
 
