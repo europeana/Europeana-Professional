@@ -343,6 +343,7 @@ persons:
         "People & Business Support": "People & Business Support"
         "Product Development": "Product Development"
         "Technology": "Technology"
+        "Re-use Services": "Re-use Services"
     introduction:
       type: html
       required: false
