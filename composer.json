@@ -1,0 +1,55 @@
+{
+    "name": "bolt/bolt",
+    "description": "Sophisticated, lightweight & simple CMS",
+    "homepage": "http://bolt.cm",
+    "keywords": ["CMS", "Silex", "PHP", "Symfony"],
+    "license": "MIT",
+
+    "require": {
+        "bolt/dumper": "~2.0",
+        "bolt/thumbs": "~2.0",
+        "brandonwamboldt/utilphp": "~1.0",
+        "composer/composer": "1.0.*@dev",
+        "doctrine/dbal": "2.5.1",
+        "erusev/parsedown-extra": "~0.2",
+        "filp/whoops": "~1.1",
+        "guzzle/guzzle": "~3.9",
+        "hautelook/phpass": "~0.3",
+        "ircmaxell/random-lib": "dev-master",
+        "jbroadway/urlify": "~1.0",
+        "rossriley/flysystem53": "~0.5",
+        "php": ">=5.3.3",
+        "rossriley/upload": "~1.2",
+        "silex/silex": "~1.2",
+        "silex/web-profiler": "~1.0",
+        "swiftmailer/swiftmailer": "~5.3",
+        "symfony/config": "~2.6",
+        "symfony/console": "~2.6",
+        "symfony/filesystem": "~2.6",
+        "symfony/finder": "~2.6",
+        "symfony/form": "~2.6",
+        "symfony/locale": "~2.6",
+        "symfony/translation": "~2.6",
+        "symfony/twig-bridge": "~2.6",
+        "symfony/validator": "~2.6",
+        "symfony/var-dumper": "~2.6",        
+        "symfony/web-profiler-bundle": "~2.6",
+        "symfony/yaml": "~2.6",
+        "tdammers/htmlmaid": "~0.7",
+        "twig/twig": "~1.16",
+        "bolt/pathogen": "~0.6",
+        "fguillot/picofeed": "0.1.*"
+    },
+    "minimum-stability": "beta",
+    "config": {
+        "preferred-install": "dist"
+    },
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Bolt\\": "src",
+            "Bolt\\Tests\\": "tests/Bolt/Tests"
+        }
+    },
+    "bin": ["app/nut"]
+}

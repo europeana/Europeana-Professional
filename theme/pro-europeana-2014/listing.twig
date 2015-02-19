@@ -86,15 +86,32 @@
 
                 <ul class="results-list">
 
-                    {# Bob notes: see related ticket #196, #198.. What was patrick thinking when he made this?
+                    {# Bob notes: see related ticket #196, #198, #223.. What was patrick thinking when he made this?
                         Just grab the blog-postings again on this page.. #}
                     {% if showsortby and taxonomy is not defined and contenttype.slug == "blogposts" %}
-                        {% setcontent records = 'BlogPosts' where { limit : amount, order: order, page : page } allowpaging %}
+                        {% if "Europeana Cloud" in record.taxonomy.tree %}
+
+                            {# Europeana Cloud blog posts. #}
+                            {% setcontent records = record.content where { limit : amount, order : order, page : page, tree: "Europeana Cloud Blog" } allowpaging %}
+
+                        {% elseif "Europeana Creative" in record.taxonomy.tree %}
+
+                            {# Europeana Cloud blog posts. #}
+                            {% setcontent records = record.content where { limit : amount, order : order, page : page, tree: "Europeana Creative Blog" } allowpaging %}
+
+                        {% else %}
+
+                            {# all blog posts. #}
+                            {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page } allowpaging %}
+
+                        {% endif %}
                     {% endif %}
+
 
                     {% for listItem in records %}
                         {% include 'items/_item-list.twig' with { record: listItem } %}
                     {% endfor %}
+                    
                 </ul>
 
                 {% if pager is defined or taxonomy is defined %}

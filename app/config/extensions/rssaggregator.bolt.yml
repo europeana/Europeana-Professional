@@ -1,0 +1,34 @@
+cacheMaxAge: 30
+itemAmount: 1000
+
+# Set the key, to prevent people from trying to DDOS your server by triggering
+# /bolt/rssaggregate a lot.
+key: lkdstyujkmnbv
+
+contenttype: blogposts
+
+feeds:
+    # europeana:
+    #     name: "Europeana"
+    #     title: "Europeana"
+    #     url: "http://pro.europeana.eu"
+    #     feed: "http://pro.europeana.eu/c/blogs/rss?companyId=10108&max=56"
+    # europeana:
+    #     name: "Europeana"
+    #     title: "Europeana"
+    #     url: "http://pro.europeana.eu"
+    #     feed: "http://europeana.twokings.eu/files/rss/blog-cloud-rss-20.xml"    
+    europeana:
+        name: "Europeana"
+        title: "Europeana"
+        url: "http://pro.europeana.eu"
+        feed: "http://europeana.twokings.eu/files/rss/blog-creative-rss-20.xml"            
+    
+
+# ----------------
+      
+    # europeana:
+    #     name: "Europeana"
+    #     title: "Europeana"
+    #     url: "http://pro.europeana.eu"
+    #     feed: "http://europeana.twokings.eu/files/rss/blog-rss-20.xml"                 
