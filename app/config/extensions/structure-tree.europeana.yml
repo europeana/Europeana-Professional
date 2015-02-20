@@ -62,6 +62,6 @@ sitemap:
         end_user_blog:
           label: 'End user blog'
           link: '#'
-  contenttypes: ['structures', 'pages', 'blogposts']
+  contenttypes: ['persons', 'publications', 'structures', 'pages', 'blogposts', 'pressreleases', 'events', 'taskforces' ]
   template: 'sitemap.twig'
   xml_template: 'sitemap_xml.twig'
