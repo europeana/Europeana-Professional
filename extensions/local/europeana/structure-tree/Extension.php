@@ -13,6 +13,9 @@ use \utilphp\util;
 
 class Extension extends \Bolt\BaseExtension
 {
+
+    public $cachedBaseStructure = array();
+
     public function initialize()
     {
         // listings
@@ -149,6 +152,10 @@ class Extension extends \Bolt\BaseExtension
     {
         $contenttype = $record->contenttype['name'];
 
+        if (isset($this->cachedBaseStructure[$contenttype])) {
+            return $this->cachedBaseStructure[$contenttype]['value'];
+        }
+
         // search structure with assigned contenttype
         foreach ($parents as $parent) {
             if ($parent['content'] == $contenttype) {
@@ -156,6 +163,8 @@ class Extension extends \Bolt\BaseExtension
                 break;
             }
         }
+
+        $this->cachedBaseStructure[$contenttype] = array('done' => true, 'value' => $parentContent);
 
         return $parentContent;
     }
@@ -392,6 +401,7 @@ class Extension extends \Bolt\BaseExtension
             // entry type 'menu'
             if ($source['type'] == 'menu') {
                 $menu = $this->app['config']->get('menu/'.$source['data']['menu']);
+
                 foreach ($menu as $entry) {
                     $slug = util::slugify($entry['path'], -1);
                     $itemRaw = $this->app['storage']->getContent('structures', array('slug' => $slug, 'returnsingle' => true));
@@ -451,24 +461,34 @@ class Extension extends \Bolt\BaseExtension
     }
 
     private function flat($sitemapItem, &$f) {
-        foreach ($sitemapItem as $item) {
-            if (isset($item['childs']) ){
-                $f[] = $item;
-                self::flat($item['childs'], $f);
-            }
-            else {
-                $f[] = $item;
+        
+        if (is_array($sitemapItem)) {
+            foreach ($sitemapItem as $item) {
+                if (isset($item['childs']) ){
+                    $f[] = $item;
+                    self::flat($item['childs'], $f);
+                }
+                else {
+                    $f[] = $item;
+                }
             }
         }
     }
 
-    private function getChilds(&$pages, $parentSlug, $p = [])
+    private function getChilds(&$pages, $parentSlug, $depth = 1)
     {
+
+        if ($depth > 5) {
+            return false;
+        }
+
+        $p = array();
+
         foreach ($pages as $page ) {
             if ( isset($page->group['slug']) && $page->group['slug'] == $parentSlug ) {
                 $temp = $page->values;
                 $temp['link'] = self::getStructureLink($page);
-                $temp['childs'] = self::getChilds($pages, $page['slug'] );
+                $temp['childs'] = self::getChilds($pages, $page['slug'], $depth+1 );
                 $p[] = $temp;
             }
         }
