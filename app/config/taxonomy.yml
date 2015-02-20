@@ -54,6 +54,8 @@ tree:
         tools: 'Tools'
         tools-resources: 'Tools & Resources'
         use-our-data: 'Use our data'
+        ipr-working-groups: 'IPR Publications & Guides'
+        ipr-publications-guides: 'IPR Working groups'
     multiple: false
     has_sortorder: true
 chapters:
