@@ -8,4 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'FileBrowser\\' => array($vendorDir . '/europeana/filebrowser'),
     'Disqus\\' => array($vendorDir . '/bolt/disqus'),
+    'Bolt\\Extension\\Bolt\\RSSFeed\\' => array($vendorDir . '/bolt/rssfeed', $vendorDir . '/bolt/rssfeed/src'),
 );

@@ -66,7 +66,7 @@
 
                 {% if (contenttype.slug in ['blogposts', 'events', 'publications', 'pressreleases']) %}
                 <div class="item-rss">
-                    <a href="FIXME/feed.xml">
+                    <a href="/{{contenttype.slug}}/rss/feed.xml">
                         <svg class="icon icon-rss"><use xlink:href="#icon-rss"></use></svg> 
                         RSS feed
                     </a>

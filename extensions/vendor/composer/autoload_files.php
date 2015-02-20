@@ -8,5 +8,6 @@ $baseDir = dirname($vendorDir);
 return array(
     $vendorDir . '/bolt/disqus/init.php',
     $vendorDir . '/europeana/filebrowser/init.php',
+    $vendorDir . '/bolt/rssfeed/init.php',
     $baseDir . '/installer.php',
 );

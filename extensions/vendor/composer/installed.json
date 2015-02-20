@@ -98,5 +98,59 @@
             "source": "https://github.com/europeana/filebrowser/tree/master",
             "issues": "https://github.com/europeana/filebrowser/issues"
         }
+    },
+    {
+        "name": "bolt/rssfeed",
+        "version": "v2.0.1",
+        "version_normalized": "2.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/GawainLynch/bolt-extension-rssfeed.git",
+            "reference": "453d40a345a4621a5e8589ec4e85e869cb9bd92d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/GawainLynch/bolt-extension-rssfeed/zipball/453d40a345a4621a5e8589ec4e85e869cb9bd92d",
+            "reference": "453d40a345a4621a5e8589ec4e85e869cb9bd92d",
+            "shasum": ""
+        },
+        "require": {
+            "bolt/bolt": ">=2.0.0,<3.0.0"
+        },
+        "time": "2015-02-10 09:08:32",
+        "type": "bolt-extension",
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "init.php"
+            ],
+            "psr-4": {
+                "Bolt\\Extension\\Bolt\\RSSFeed\\": [
+                    "",
+                    "src/"
+                ]
+            }
+        },
+        "license": [
+            "GPL-3.0+"
+        ],
+        "authors": [
+            {
+                "name": "Patrick van Kouteren",
+                "email": "info@wedesignit.nl"
+            },
+            {
+                "name": "Gawain Lynch",
+                "email": "gawain.lynch@gmail.com"
+            }
+        ],
+        "description": "RSS feeds extension for Bolt",
+        "keywords": [
+            "RSS"
+        ],
+        "support": {
+            "source": "https://github.com/GawainLynch/bolt-extension-rssfeed/tree/v2.0.1",
+            "issues": "https://github.com/GawainLynch/bolt-extension-rssfeed/issues"
+        }
     }
 ]

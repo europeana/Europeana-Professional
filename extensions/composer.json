@@ -1,7 +1,8 @@
 {
     "require": {
         "bolt/disqus": "v1.2",
-        "europeana/filebrowser": "dev-master"
+        "europeana/filebrowser": "dev-master",
+        "bolt/rssfeed": "v2.0.1"
     },
     "repositories": {
         "bolt": {
@@ -10,10 +11,10 @@
         },
         "packagist": false
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "provide": {
-        "bolt/bolt": "2.0.0"
+        "bolt/bolt": "2.0.5"
     },
     "scripts": {
         "post-package-install": "Bolt\\Composer\\ExtensionInstaller::handle",
@@ -26,5 +27,9 @@
         "files": [
             "installer.php"
         ]
+    },
+    "config": {
+        "discard-changes": true,
+        "preferred-install": "dist"
     }
 }
