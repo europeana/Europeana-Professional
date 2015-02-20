@@ -25,24 +25,24 @@ sharethis: cb2e010f-d3ab-4d91-8a02-935f467f48c0
 sort_options:
   disabled: ['persons', 'pages', 'structures', 'locations']
   default:
-    datepublish: 'Date (ASC)'
-    title: 'Title (ASC)'
-    -datepublish: 'Date (DESC)'
-    -title: 'Title (DESC)'
+    datepublish: 'Date (oldest first)'
+    title: 'Title (A → Z)'
+    -datepublish: 'Date (newest first)'
+    -title: 'Title (Z → A)'
   jobs:
-    datepublish: 'Date (ASC)'
-    position: 'Position (ASC)'
-    -datepublish: 'Date (DESC)'
-    -position: 'Position (DESC)'
+    datepublish: 'Date (oldest first)'
+    position: 'Position (A → Z)'
+    -datepublish: 'Date (newest first)'
+    -position: 'Position (Z → A)'
   projects:
-    datepublish: 'Date (ASC)'
-    title: 'Title (ASC)'
-    date_start: 'Project start (ASC)'
-    date_end: 'Project end (ASC)'
-    -datepublish: 'Date (DESC)'
-    -title: 'Title (DESC)'
-    -date_start: 'Project start (DESC)'
-    -date_end: 'Project end (DESC)'
+    datepublish: 'Date (oldest first)'
+    title: 'Title (A → Z)'
+    date_start: 'Project start (oldest first)'
+    date_end: 'Project end (oldest first)'
+    -datepublish: 'Date (newest first)'
+    -title: 'Title (Z → A)'
+    -date_start: 'Project start (newest first)'
+    -date_end: 'Project end (newest first)'
 
 
 # set default excerpt length
