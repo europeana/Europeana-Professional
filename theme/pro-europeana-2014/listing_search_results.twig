@@ -6,9 +6,7 @@
                     <ul class="results-list">
                         {% for record in searchresults %}
                       
-                                
-
-                                <li class="list-item">
+                               <li class="list-item">
                                     <div class="item-supplementary">
                                         {% if record.image %}
                                         <div class="item-image">
@@ -26,9 +24,79 @@
                                         {% endif %}
 
                                         </div>
+                                        
+                                        {% set snippet = record.snippet %}
+
+                                        {% if record.boltRecord  %}
+                                            {% set record = record.boltRecord %}
+
+
+                                    {# Needs to be done: 
+                                    - show correct author ( when? where? 
+                                    - show readtime (shows now, but incorrect, and div with archivetext needs to be hidden or so
+
+                                    #}    
+                                    {# % if record.contenttype.slug in [ "blogposts", "blog-posts" ] %}
+                                    <div class="item-meta-primary">
+                                        {% include 'items/_item-author.twig'  %}
+                                     
+                                        {# % include 'items/_item-readtime.twig' %}
+                                        --<div class="textcontent">{{record.body}}</div>--  
+
+                                    </div>
+                                    {% endif %  #}
+
+                                    <div class="item-meta-secondary">
+
+                                        {% if (record.contenttype.slug in [ "publications", "pressreleases", "press-releases" ]) %}
+                                            {# set date #}
+                                            {% include 'items/_item-date.twig'  %}
+                                            {# set tags#}
+                                            {% include 'items/_item-tags.twig'  %}
+
+                                        {% elseif record.contenttype.slug in [ "blogposts", "blog-posts" ] %}
+                                            {# set date #}
+                                            {% include 'items/_item-date.twig'  %}
+                                            {# set tags #}
+                                            {% include 'items/_item-tags.twig'  %}
+                                            {# set discus comments #}
+                                            {% include 'items/_item-comments-link.twig'  %}
+
+                                        {% elseif record.contenttype.slug == "events" %}
+                                            {# set location #}
+                                            {% include 'items/_item-location.twig' %}
+                                            {# set tags #}
+                                            {% include 'items/_item-tags.twig' %}
+
+                                        {% elseif record.contenttype.slug == "jobs" %}
+                                            {# set date #}
+                                            {% include 'items/_item-date.twig' %}
+                                            {# set location #}
+                                            {% include 'items/_item-location.twig' %}
+                                            {# set department #}
+                                            {% include 'items/_item-department.twig' %}
+
+                                        {% elseif record.contenttype.slug == "taskforces" %}
+                                            {% include 'items/_item-date.twig' with { date: record.date_start } %}
+                                            <span>to: </span>
+                                            {% include 'items/_item-date.twig' with { date: record.date_end } %}
+                                            {# set tags #}
+                                            {% include 'items/_item-tags.twig' %}
+
+                                        {% elseif (record.contenttype.slug in [ "projects", "structures" ]) %}
+                                            {% include 'items/_item-date.twig' with { date: record.date_start } %}
+                                            <span>to: </span>
+                                            {% include 'items/_item-date.twig' with { date: record.date_end } %}
+                                            <br />
+                                            {# set tags #}
+                                            {% include 'items/_item-tags.twig' %}
+                                        {% endif %}
+
+                                        </div>
+                                        {% endif %}
 
                                         <div class="item-preview">
-                                            {{ record.snippet|raw }}
+                                            {{ snippet|replace({'<br>':''})|raw }}
                                         </div>
                                     </div>
                                 </li>
