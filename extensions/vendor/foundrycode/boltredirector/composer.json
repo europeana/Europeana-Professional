@@ -1,0 +1,31 @@
+{
+    "name": "foundrycode/boltredirector",
+    "description": "Easily manage 301 redirects; useful for migrating from another platform.",
+    "type": "bolt-extension",
+    "keywords": [
+        "redirect",
+        "301",
+        "migration"
+    ],
+    "require": {
+        "bolt/bolt": ">=2.0.0,<3.0.0"
+    },
+    "license": "MIT",
+    "authors": [{
+        "name": "Mike Anthony",
+        "email": "code@foundrybusiness.co.za"
+    }],
+    "autoload": {
+        "files": [
+            "init.php"
+        ],
+        "psr-4": {
+            "Bolt\\Extension\\FoundryCode\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.*"
+        }
+    }
+}

@@ -152,5 +152,59 @@
             "source": "https://github.com/GawainLynch/bolt-extension-rssfeed/tree/v2.0.1",
             "issues": "https://github.com/GawainLynch/bolt-extension-rssfeed/issues"
         }
+    },
+    {
+        "name": "foundrycode/boltredirector",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/foundrycode/boltredirector.git",
+            "reference": "e64f56570f4e63455fa8c16bd32e76513fa2656f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/foundrycode/boltredirector/zipball/e64f56570f4e63455fa8c16bd32e76513fa2656f",
+            "reference": "e64f56570f4e63455fa8c16bd32e76513fa2656f",
+            "shasum": ""
+        },
+        "require": {
+            "bolt/bolt": ">=2.0.0,<3.0.0"
+        },
+        "time": "2014-11-01 05:25:01",
+        "type": "bolt-extension",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.*"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "init.php"
+            ],
+            "psr-4": {
+                "Bolt\\Extension\\FoundryCode\\": ""
+            }
+        },
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Mike Anthony",
+                "email": "code@foundrybusiness.co.za"
+            }
+        ],
+        "description": "Easily manage 301 redirects; useful for migrating from another platform.",
+        "keywords": [
+            "301",
+            "migration",
+            "redirect"
+        ],
+        "support": {
+            "source": "https://github.com/foundrycode/boltredirector/tree/1.0.1",
+            "issues": "https://github.com/foundrycode/boltredirector/issues"
+        }
     }
 ]

@@ -1,0 +1,140 @@
+## For information on how to use thie file, see the documentation at the repo home:
+## github.com/foundrycode/boltredirector
+
+# Options - Set Options for the Extension
+
+options:
+
+    # Auto slugging should be enabled. Makes slugs friendly. Like cats.
+
+    autoSlug: true
+
+    # If there is a query string, append it to the destination path.
+    # Disabled by default as Bolt generally doesn't need them. But, if
+    # you have an extension that does need them, best to turn it on.
+
+    appendQueryString: false
+
+# Redirects - The Main Redirects for this Installation
+
+redirects:
+
+    # blogs
+    '/web/europeana-creative/news/-/blogs/{slug:segment}': '/blogposts/{slug}'
+    '/pro-blog/-/blogs/{slug:segment}': '/blogposts/{slug}'
+
+    '/about': '/about-us/'
+    '/web/guest/history': '/about-us/'
+    '/publications': '/publications'
+    '/events': '/events'
+    '/web/guest/europeana-faq': '/about-us/who-we-are'
+    '/news/events': '/press/'
+    '/blog': '/blogposts'
+    '/news/press-releases': '/press/press-releases'
+    '/press-mentions': '/press/'
+    '/press-images': '/press/press-materials'
+    '/press-list': '/press/'
+    '/news/events': '/events'
+    '/projects': '/get-involved/projects/project-list'
+    '/project-working': '/get-involved/projects/managing-europeana-projects'
+    '/project-resources': '/get-involved/projects/resources-pr-tools'
+    '/glossary': '/get-involved/projects/glossary'
+    '/web/guest/projects': '/get-involved/projects/project-list'
+    '/foundation': '/about-us/who-we-are'
+    '/web/guest/about/europeana-foundation/exec': '/get-involved/our-network/members-council'
+    '/about/europeana-foundation/board': '/get-involved/our-network/members-council'
+    '/advocacy': '/get-involved/europeana-ipr/advocacy'
+    '/advocacy-framework': '/get-involved/europeana-ipr/advocacy/advocacy-framework'
+    '/about/staff': '/about-us/staff'
+    '/jobs': '/jobs'
+    '/about/facts-figures': '/about-us/factsfigures'
+    '/content': '/about-us/factsfigures'
+    '/metadata': '/about-us/factsfigures'
+    '/users': '/about-us/factsfigures'
+    '/traffic': '/about-us/factsfigures'
+    '/partners': '/about-us/factsfigures'
+    '/initiatives': '/about-us/factsfigures'
+    '/strategy': '/about-us/factsfigures'
+    '/network': '/get-involved/our-network'
+    '/web/guest/network/members': '/get-involved/our-network/network-members'
+    '/network/task-forces': '/get-involved/our-network/task-forces'
+    '/web/guest/network/task-forces/overview': '/get-involved/our-network/task-forces'
+    '/web/network/europeana-tech': '/get-involved/europeana-tech'
+    '/web/network/europeana-tech/-/wiki/Main/Task+Forces': '/get-involved/europeana-tech/europeanatech-task-forces'
+    '/web/network/europeana-tech/-/wiki/Main/Taskforce+on+hierarchical+objects': '/get-involved/europeana-tech/europeanatech-task-forces/hierarchical-objects'
+    '/web/network/europeana-tech/-/wiki/Main/Task+force+on+EDM+mappings+refinements+and+extensions': '/get-involved/europeana-tech/europeanatech-task-forces/edm-mappings-refinements-and-extensions'
+    '/web/network/europeana-tech/-/wiki/Main/Task+Force+EDM+FRBRoo': '/get-involved/europeana-tech/europeanatech-task-forces/edm-frbroo-application-profile'
+    '/web/network/europeana-tech/-/wiki/Main/Task+Force+on+EDM+profile+for+Sound': '/get-involved/europeana-tech/europeanatech-task-forces/edm-profile-for-sound'
+    '/web/network/europeana-tech/-/wiki/Main/Task+force+multilingual+semantic+enrichment': '/get-involved/europeana-tech/europeanatech-task-forces/multilingual-and-semantic-enrichment-strategy'
+    '/web/network/europeana-tech/-/wiki/Main/Task+Force+on+evaluation+and+enrichments': '/get-involved/europeana-tech/europeanatech-task-forces/evaluation-and-enrichments'
+    '/web/network/europeana-tech/-/wiki/Main/Semantic+activities+around+Europeana': '/get-involved/europeana-tech/europeana-tech-events/semantic-mindmap'
+    '/network-officers': '/get-involved/our-network/members-council'
+    '/network/apply': '/get-involved/our-network/sign-up'
+    '/web/network/network-documents': '/get-involved/our-network/network-documents'
+    '/provide-data': '/share-your-data/'
+    '/about/partners': '/share-your-data/become-a-data-provider'
+    '/procedure': '/share-your-data/how-to-contribute-data'
+    '/licensing': '/get-involved/europeana-ipr/europeana-licensing-framework'
+    '/data-exchange-agreement': '/get-involved/europeana-ipr/the-data-exchange-agreement'
+    '/available-rights-statements': '/share-your-data/rights-statement-guidelines/available-rights-statements'
+    '/technical-requirements': '/share-your-data/data-guidelines'
+    '/data-multilinguality': '/share-your-data/data-guidelines/edm-case-studies/data-multilinguality'
+    '/moving-to-edm': '/share-your-data/data-guidelines/provide-data-edm'
+    '/ese-documentation': '/share-your-data/data-guidelines/ese-documentation'
+    '/edm-documentation': '/share-your-data/data-guidelines/edm-documentation'
+    '/case-studies-edm': '/share-your-data/data-guidelines/edm-case-studies'
+    '/mimo-edm': '/share-your-data/data-guidelines/edm-case-studies/mimo-edm'
+    '/europeana-libraries-edm': '/share-your-data/data-guidelines/edm-case-studies/europeana-libraries-edm'
+    '/europeana-lod-pilot-edm': '/share-your-data/data-guidelines/edm-case-studies/europeana-lod-pilot-edm'
+    '/ead-edm': '/share-your-data/data-guidelines/edm-case-studies/ead-edm'
+    '/polymath-edm': '/share-your-data/data-guidelines/edm-case-studies/polymath-edm'
+    '/carare-edm': '/share-your-data/data-guidelines/edm-case-studies/carare-edm'
+    '/providers-faq': '/share-your-data/provider-faqs'
+    '/web/europeana-creative': '/get-involved/projects/project-list/europeana-creative'
+    '/web/europeana-creative/about-europeana-creative': '/get-involved/projects/project-list/europeana-creative/about-europeana-creative'
+    '/web/europeana-creative/contact-us': '/get-involved/projects/project-list/europeana-creative/about-europeana-creative'
+    '/web/europeana-creative/partners': '/get-involved/projects/project-list/europeana-creative/project-partners'
+    '/web/europeana-creative/about-europeana': '/about-us/who-we-are'
+    '/web/europeana-creative/pilots-and-challenges': '/get-involved/projects/project-list/europeana-creative'
+    '/web/europeana-creative/pilots': '/get-involved/projects/project-list/europeana-creative/pilots'
+    '/web/europeana-creative/challenges': '/get-involved/projects/project-list/europeana-creative/challenges'
+    '/web/europeana-creative/news': '/get-involved/projects/project-list/europeana-creative/europeana-creative-blog'
+    '/web/europeana-creative/extended-europeana-licensing-framework': '/get-involved/europeana-ipr/europeana-licensing-framework'
+    '/web/europeana-creative/project-documents': '/get-involved/projects/project-list/europeana-creative/project-documents'
+    '/web/europeana-cloud': '/get-involved/projects/project-list/europeana-cloud'
+    '/web/europeana-cloud/blog': '/get-involved/projects/project-list/europeana-cloud/europeana-cloud-blog'
+    '/web/europeana-cloud/project-partners': '/get-involved/projects/project-list/europeana-cloud/about-europeana-cloud'
+    '/web/europeana-cloud/results': '/get-involved/projects/project-list/europeana-cloud/europeana-cloud-project-documents'
+    '/web/europeana-cloud/newsletter': '/get-involved/projects/project-list/europeana-cloud/newsletter'
+    '/web/europeana-cloud/communication-tools': '/get-involved/projects/project-list/europeana-cloud/communication-tool'
+    '/web/europeana-cloud/results/-/document_library_display/p6BV/view/2240207': '/get-involved/projects/project-list/europeana-cloud/europeana-cloud-project-documents'
+
+
+
+    # html:
+    #     from: '{path}.{ext}'
+    #     to: '{path}'
+
+# Variables
+#
+# A simple array to make variable replacements in destination paths using the
+# {@<variable>} syntax. Be sure to avoid using global variables here as
+# they'll be overwritten!
+
+variables:
+
+
+
+# JIT (Just In Time) Replacements
+#
+# These replacements are made just before the actual redirect, so they
+# must match any parts in `to` patterns from the above array.
+#
+# For conciseness, try to match an entire destination, as other URIs
+# could be inadvertantly affected. If other URIs won't contain the
+# string, then you can keep it as short as needed.
+#
+# Also, regular expressions are allowed here. Capture with \\n.
+
+jits:
+  '/foo': '/bar'
