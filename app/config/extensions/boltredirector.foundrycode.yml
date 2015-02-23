@@ -31,8 +31,6 @@ redirects:
 
     '/about': '/about-us/'
     '/web/guest/history': '/about-us/'
-    '/publications': '/publications'
-    '/events': '/events'
     '/web/guest/europeana-faq': '/about-us/who-we-are'
     '/news/events': '/press/'
     '/blog': '/blogposts'
@@ -52,7 +50,6 @@ redirects:
     '/advocacy': '/get-involved/europeana-ipr/advocacy'
     '/advocacy-framework': '/get-involved/europeana-ipr/advocacy/advocacy-framework'
     '/about/staff': '/about-us/staff'
-    '/jobs': '/jobs'
     '/about/facts-figures': '/about-us/factsfigures'
     '/content': '/about-us/factsfigures'
     '/metadata': '/about-us/factsfigures'
