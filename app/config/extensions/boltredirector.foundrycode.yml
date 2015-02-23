@@ -19,6 +19,10 @@ options:
 
 redirects:
 
+    '/pro-blog/-/blogs/europeana-represents-cultural-heritage-institutions-at-eu-roundtable-on-copyright?_33_redirect=http%3A%2F%2Fpro.europeana.eu%2Fhome%3Fp_p_id%3D115%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview%26p_p_col_id%3Dcolumn-2%26p_p_col_pos%3D4%26p_p_col_count%3D6': 'blogpost/europeana-represents-cultural-heritage-institutions-at-eu-roundt'
+    '/pro-blog/-/blogs/europeana-represents-cultural-heritage-institutions-at-eu-roundtable-on-copyright': '/blogpost/europeana-represents-cultural-heritage-institutions-at-eu-roundt'
+
+
     # blogs
     '/web/europeana-creative/news/-/blogs/{slug:segment}': '/blogposts/{slug}'
     '/pro-blog/-/blogs/{slug:segment}': '/blogposts/{slug}'
