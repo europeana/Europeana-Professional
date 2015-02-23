@@ -24,6 +24,8 @@ redirects:
     '/pro-blog/-/blogs/mapping-the-future-of-digital-cultural-heritage-at-europeanatech-2015': '/blogpost/mapping-the-future-of-digital-cultural-heritage-at-europeanatech'
     '/pro-blog/-/blogs/new-recommendations-outline-ways-to-strengthen-europeana%E2%80%99s-future-relationship-with-wikimedia': 'blogpost/new-recommendations-outline-ways-to-strengthen-europeanas-future'
 
+    '/linked-open-data': 'http://labs.europeana.eu/api/linked-open-data/introduction/'
+
 
     # blogs
     '/web/europeana-creative/news/-/blogs/{slug:segment}': '/blogposts/{slug}'
@@ -31,6 +33,8 @@ redirects:
 
     '/about': '/about-us/'
     '/web/guest/history': '/about-us/'
+    '/publications': '/publications'
+    '/events': '/events'
     '/web/guest/europeana-faq': '/about-us/who-we-are'
     '/news/events': '/press/'
     '/blog': '/blogposts'
@@ -50,6 +54,7 @@ redirects:
     '/advocacy': '/get-involved/europeana-ipr/advocacy'
     '/advocacy-framework': '/get-involved/europeana-ipr/advocacy/advocacy-framework'
     '/about/staff': '/about-us/staff'
+    '/jobs': '/jobs'
     '/about/facts-figures': '/about-us/factsfigures'
     '/content': '/about-us/factsfigures'
     '/metadata': '/about-us/factsfigures'
