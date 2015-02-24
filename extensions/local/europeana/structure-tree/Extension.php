@@ -20,7 +20,7 @@ class Extension extends \Bolt\BaseExtension
     {
 
         // For europeana, stupid hardcoded redirect for a domain:
-        if (strpos($_SERVER['SERVER_NAME'], "europeanacreative.eu") !== false) {
+        if (strpos($_SERVER['HTTP_HOST'], "europeanacreative.eu") !== false) {
             \Bolt\Library::simpleredirect('http://pro.europeana.eu/get-involved/projects/project-list/europeana-creative');
             die();
         }
