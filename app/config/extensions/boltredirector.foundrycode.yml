@@ -453,6 +453,15 @@ redirects:
     '/documents/867916/0/Periodical+Technical+Validation+Report+1': '/files/Europeana_Professional/Projects/Project_list/Natural_Europe//Periodical%20Technical%20Validation%20Report%201.pdf'
     '/documents/867916/0/Periodical+Technical+Validation+Report+2': '/files/Europeana_Professional/Projects/Project_list/Natural_Europe//Periodical%20Technical%20Validation%20Report%202.pdf'
 
+    '/c/document_library/get_file?uuid=d542819d-d169-4240-9247-f96749113eaa&groupId=10602': '/files/Europeana_Professional/Publications/Public%20Domain%20Charter%20-%20EN.pdf'
+    '/c/document_library/get_file?uuid=c1430394-0769-4434-ac58-52bbb5e1c816&groupId=10602': '/files/Europeana_Professional/Publications/Public%20Domain%20Charter%20-%20FR.pdf'
+    '/c/document_library/get_file?uuid=232395e5-0d02-402c-9d1d-5fc584e7fb69&groupId=10602': '/files/Europeana_Professional/Publications/Public%20Domain%20Charter%20-%20DE.pdf'
+    '/c/document_library/get_file?uuid=4601e493-29c7-47d2-973b-4db0b77418d7&groupId=10602': '/files/Europeana_Professional/Publications/Public%20Domain%20Charter%20-%20IT.pdf'
+    '/c/document_library/get_file?uuid=556a29c2-6408-404e-bcce-4bde413e9706&groupId=10602': '/files/Europeana_Professional/Publications/Public%20Domain%20Charter%20-%20ES.pdf'
+    '/c/document_library/get_file?uuid=e0ad7503-644e-4d32-9cdf-5d959c10188e&groupId=10602': '/files/Europeana_Professional/Publications/Public%20Domain%20Charter%20-%20POL.pdf'
+    '/c/document_library/get_file?uuid=d159b7e0-406c-41e5-96b9-6f5e8e8ba395&groupId=10602': '/files/Europeana_Professional/Publications/Public%20Domain%20Charter%20-%20GR.pdf'
+    '/c/document_library/get_file?uuid=bc9c0116-0639-4f6e-adee-84bf603ccef4&groupId=10602': '/files/Europeana_Professional/Publications/Public%20Domain%20Charter%20-%20Romanian.pdf'
+
 
     # Added 2015-02-24 
     '/web/guest/edm-rights-selection-tool/v2/still_protected_by_copyright.html': '/page/the-europeana-rights-statement-selection-tool'
