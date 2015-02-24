@@ -60,7 +60,7 @@ redirects:
     '/metadata': '/about-us/factsfigures'
     '/users': '/about-us/factsfigures'
     '/traffic': '/about-us/factsfigures'
-    '/partners': '/about-us/factsfigures'
+    #'/partners': '/about-us/factsfigures'
     '/initiatives': '/about-us/factsfigures'
     '/strategy': '/about-us/factsfigures'
     '/network': '/get-involved/our-network'

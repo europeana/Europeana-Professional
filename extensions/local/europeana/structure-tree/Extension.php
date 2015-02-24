@@ -18,6 +18,13 @@ class Extension extends \Bolt\BaseExtension
 
     public function initialize()
     {
+
+        // For europeana, stupid hardcoded redirect for a domain:
+        if (strpos($_SERVER['SERVER_NAME'], "europeanacreative.eu") !== false) {
+            \Bolt\Library::simpleredirect('http://pro.europeana.eu/get-involved/projects/project-list/europeana-creative');
+            die();
+        }
+
         // listings
 
         // sitemap
