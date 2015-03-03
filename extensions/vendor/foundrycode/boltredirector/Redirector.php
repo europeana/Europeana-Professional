@@ -291,7 +291,8 @@ class Redirector extends BaseExtension
                     }
 
                     // Redirect the user to the final, processed path
-                    return $app->redirect(strtolower("{$self->prefix}{$convertedWildcards}{$self->sourceQueryString}"), 301);
+//                    return $app->redirect(strtolower("{$self->prefix}{$convertedWildcards}{$self->sourceQueryString}"), 301);
+                    return $app->redirect("{$self->prefix}{$convertedWildcards}{$self->sourceQueryString}", 301);
                 }
             }
         }, BoltApplication::EARLY_EVENT);
