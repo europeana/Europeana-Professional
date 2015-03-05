@@ -20,6 +20,7 @@ options:
 redirects:
 
     # Blog overrides.
+    '/web/europeana-cloud/blog/-/blogs/how-europeana-cloud-will-address-aggregators’-challenges-and-issues': '/blogpost/how-europeana-cloud-will-address-aggregators-challenges-and-issu'
     '/pro-blog/-/blogs/europeana-represents-cultural-heritage-institutions-at-eu-roundtable-on-copyright': '/blogpost/europeana-represents-cultural-heritage-institutions-at-eu-roundt'
     '/pro-blog/-/blogs/mapping-the-future-of-digital-cultural-heritage-at-europeanatech-2015': '/blogpost/mapping-the-future-of-digital-cultural-heritage-at-europeanatech'
     '/pro-blog/-/blogs/new-recommendations-outline-ways-to-strengthen-europeana%E2%80%99s-future-relationship-with-wikimedia': 'blogpost/new-recommendations-outline-ways-to-strengthen-europeanas-future'
@@ -30,6 +31,7 @@ redirects:
     # blogs
     '/web/europeana-creative/news/-/blogs/{slug:segment}': '/blogposts/{slug}'
     '/pro-blog/-/blogs/{slug:segment}': '/blogposts/{slug}'
+    '/web/europeana-cloud/blog/-/blogs/{slug:segment}': '/blogposts/{slug}'
 
     '/about': '/about-us/'
     '/web/guest/history': '/about-us/'
