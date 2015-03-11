@@ -24,9 +24,10 @@
             VS.
             http://localhost/Europeana-Professional/use-our-data/task-force-home/task-force-no78/
         #}
-        {% if ((record.contenttype.name == 'Structures' or record.group.slug is defined) and record.contenttype.name not in [ 'Events', 'Publications' ] ) %}
+        {% if ((record.contenttype.name == 'Structures' or record.related('structures')) and record.contenttype.name not in [ 'Events', 'Publications' ] ) %}
             {% set breadcrumbs = breadcrumb(record) %}
-            {% for bc in breadcrumbs %}
+            {# need to skip the last entry, which is the record itself #}
+            {% for bc in breadcrumbs[:-1] %}
                 {% if bc.title %}
                 <li><a href="{{ bc.path }}">{{ bc.title }}</a></li>
                 {% endif %}

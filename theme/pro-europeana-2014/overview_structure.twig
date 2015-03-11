@@ -5,13 +5,13 @@
 
 {% if contenttype %}
     {# get assigned structures and contenttype #}
-    {% setcontent records = '(Structures, ' ~ contenttype['name'] ~ ')' where { tree : record.slug }  %}
-    {% set records = sortRecords(records, 'sortorder') %}
+    {% set records = record.related(contenttype['slug'])|merge(record.related('structures')) %}
 {% else %}
     {# get assigned structures #}
-    {% setcontent records = 'Structures' where { tree : record.slug, orderby: 'sortorder' } %}
+    {% set records = record.related('structures') %}
 {% endif %}
 
+{% set records = sortRecords(records, 'sortorder') %}
 {% set contacts = record.related('persons') %}
 
 <!-- Start content -->
