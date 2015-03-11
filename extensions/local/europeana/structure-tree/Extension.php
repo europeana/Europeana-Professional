@@ -18,7 +18,6 @@ class Extension extends \Bolt\BaseExtension
 
     public function initialize()
     {
-
         // For europeana, stupid hardcoded redirect for a domain:
         if (strpos($_SERVER['HTTP_HOST'], "europeanacreative.eu") !== false) {
             \Bolt\Library::simpleredirect('http://pro.europeana.eu/get-involved/projects/project-list/europeana-creative');
@@ -37,12 +36,10 @@ class Extension extends \Bolt\BaseExtension
             ->bind('slugTreeRecord');
 
         // strucutureslug / slug listing
-        // todo: except _profiler
         $this->app->match("/{structureSlugs}/{slug}", array($this, 'structureTreeRecord'))
             ->assert('structureSlugs', '(?!(async|_profiler)).*')
             ->assert('slug', '[a-zA-Z0-9_\-]+')
             ->bind('structureTreeRecord');
-
 
         // twig functions
         $this->addTwigFunction('structurelink', 'getStructureLink');
@@ -53,13 +50,7 @@ class Extension extends \Bolt\BaseExtension
         $this->addTwigFunction('sortRecords', 'sortObject');
         $this->addTwigFunction('getContenttype', 'getContenttype');
 
-
-        // storage events
-        // $this->app['dispatcher']->addListener(\Bolt\StorageEvents::POST_SAVE, array($this, 'updateStructureTaxonomy'));
-        // $this->app['dispatcher']->addListener(\Bolt\StorageEvents::POST_DELETE, array($this, 'updateStructureTaxonomy'));
-
         $this->contenttypeslugs = $this->config['contenttypes'];
-
     }
 
     public function slugTreeRecord($slug) {
@@ -123,38 +114,6 @@ class Extension extends \Bolt\BaseExtension
         return 0;
     }
 
-
-
-    /**
-     * update strucuture taxnomoy options
-     * todo: add structuretree exeption
-     *
-     * @param Bolt\StorageEvent
-     * @return void
-     */
-    public function updateStructureTaxonomy(\Bolt\StorageEvent $event) {
-        if ($event->getContentType() == 'structures') {
-            $yaml = new Yaml();
-            $file = BOLT_CONFIG_DIR . '/taxonomy.yml';
-            $tax = $yaml->parse($file);
-            $options = array();
-
-            $structures = $this->app['storage']->getContent('structures', array( order => 'title') );
-            foreach($structures as $structure) {
-                $options[$structure->values['slug']] = $structure->values['title'];
-            }
-
-            $tax['tree']['options'] = $options;
-
-            file_put_contents($file, $yaml->dump($tax));
-
-            // delete session parents structures
-            $this->app['session']->set('parents', null);
-
-            return 0;
-        }
-    }
-
     public function getBaseStructure($record, $parents)
     {
         $contenttype = $record->contenttype['name'];
@@ -210,17 +169,7 @@ class Extension extends \Bolt\BaseExtension
             simpleredirect($this->app['config']->get('general/branding/path') . "/");
         }
 
-        // try to get related
-        // $pageContent = $this->app['storage']->getContent('pages', array('slug' => $slug,'status'=> '!published', 'returnsingle' => true));
-        // var_dump( $pageContent->taxonomy );
-
         $this->app->abort(404, "Page $contenttypeslug/$slug not found.");
-    }
-
-    public function getMixedContent($contenttype, $treeSlug) {
-        $content = $this->app['storage']->getContent($contenttype, array(tree => $treeSlug) );
-
-        echo sizeof($content);
     }
 
     /**
@@ -413,7 +362,7 @@ class Extension extends \Bolt\BaseExtension
                     $slug = util::slugify($entry['path'], -1);
                     $itemRaw = $this->app['storage']->getContent('structures', array('slug' => $slug, 'returnsingle' => true));
                     $item = $itemRaw->values;
-                    $childsUnsorted = self::getChilds($pages, $itemRaw['slug']);
+                    $childsUnsorted = self::getChildren($pages, $itemRaw['slug']);
                     $item['childs'] = self::sortObject($childsUnsorted, 'sortorder');
                     $item['link'] = $this->app['paths']['root'] . $item['slug'];
                     array_push($sitemap, $item);
@@ -441,7 +390,7 @@ class Extension extends \Bolt\BaseExtension
                         }
                         $item = $itemRaw->values;
                         $item['link'] = $this->app['paths']['root'] . $item['slug'];
-                        $item['childs'] = self::getChilds($pages, $itemRaw['slug']);
+                        $item['childs'] = self::getChildren($pages, $itemRaw['slug']);
                         array_push($itemRoot['childs'], $item);
                     }
                 }
@@ -468,7 +417,6 @@ class Extension extends \Bolt\BaseExtension
     }
 
     private function flat($sitemapItem, &$f) {
-        
         if (is_array($sitemapItem)) {
             foreach ($sitemapItem as $item) {
                 if (isset($item['childs']) ){
@@ -482,7 +430,7 @@ class Extension extends \Bolt\BaseExtension
         }
     }
 
-    private function getChilds(&$pages, $parentSlug, $depth = 1)
+    private function getChildren(&$pages, $parentSlug, $depth = 1)
     {
 
         if ($depth > 5) {
@@ -495,7 +443,7 @@ class Extension extends \Bolt\BaseExtension
             if ( isset($page->group['slug']) && $page->group['slug'] == $parentSlug ) {
                 $temp = $page->values;
                 $temp['link'] = self::getStructureLink($page);
-                $temp['childs'] = self::getChilds($pages, $page['slug'], $depth+1 );
+                $temp['childs'] = self::getChildren($pages, $page['slug'], $depth+1 );
                 $p[] = $temp;
             }
         }
