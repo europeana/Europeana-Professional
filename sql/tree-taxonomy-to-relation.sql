@@ -1,0 +1,1 @@
+insert into bolt_relations (from_contenttype, to_contenttype, from_id, to_id) select contenttype, 'structures', content_id, (select id from bolt_structures where slug = t.slug) from bolt_taxonomy t where t.taxonomytype = 'tree';
