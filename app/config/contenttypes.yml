@@ -108,6 +108,9 @@ publications:
       label: "ISBN:"
       variant: inline
       group: "Secondary options"
+    structure_sortorder:
+      type: integer
+      label: "Sort order in structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -217,6 +220,9 @@ pressreleases:
       label: "Image:"
       attrib: title
       extensions: [ gif, jpg, png ]
+    structure_sortorder:
+      type: integer
+      label: "Sort order in structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -467,6 +473,9 @@ persons:
     contact_tag:
       type: checkbox
       label: "Main contact of tag page"
+    structure_sortorder:
+      type: integer
+      label: "Sort order in structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -556,6 +565,9 @@ events:
       type: checkbox
       required: false
       label: "Show secondary email instead:"
+    structure_sortorder:
+      type: integer
+      label: "Sort order in structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -704,6 +716,9 @@ Jobs:
       required: false
       label: "Attachments:"
       group: "Secondary information"
+    structure_sortorder:
+      type: integer
+      label: "Sort order in structure tree parent"
   taxonomy: [ ]
   relations:
     structures:
@@ -813,6 +828,9 @@ blogposts:
       required: false
       label: "Attachments:"
       group: "Secondary information"
+    structure_sortorder:
+      type: integer
+      label: "Sort order in structure tree parent"
   # Show on Blog page
   taxonomy: [ tags ]
   relations:
@@ -988,6 +1006,9 @@ pages:
       type: markdown
       label: "Support navigation:"
       group: "Support navigation"
+    structure_sortorder:
+      type: integer
+      label: "Sort order in structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -1164,6 +1185,9 @@ projects:
       class: narrow
       label: "Document folder:"
       postfix: "Add the name of the folder to show as a 'File browser' listing, relative to the base 'files/' folder. If left blank, no file-browser will be shown."
+    structure_sortorder:
+      type: integer
+      label: "Sort order in structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -1286,6 +1310,9 @@ taskforces:
       class: narrow
       label: "Document folder:"
       postfix: "Add the name of the folder to show as a 'File browser' listing, relative to the base 'files/' folder. If left blank, no file-browser will be shown."
+    structure_sortorder:
+      type: integer
+      label: "Sort order in structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -1425,6 +1452,9 @@ structures:
       required: false
       label: "Project end:"
       variant: inline
+    structure_sortorder:
+      type: integer
+      label: "Sort order in structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:

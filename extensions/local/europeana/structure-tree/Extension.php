@@ -51,6 +51,7 @@ class Extension extends \Bolt\BaseExtension
         $this->addTwigFunction('subsite', 'subSite');
         $this->addTwigFunction('sortRecords', 'sortObject');
         $this->addTwigFunction('getContenttype', 'getContenttype');
+        $this->addTwigFunction('getTreeChildren', 'getTreeChildren');
 
         $this->contenttypeslugs = $this->config['contenttypes'];
     }
@@ -230,8 +231,8 @@ class Extension extends \Bolt\BaseExtension
         if (!$record) {
             return null;
         }
-        if ($record['subsite']) {
-            return $record['subsite'];
+        if (isset($record['subclass']) && $record['subclass'] !== 'none') {
+            return $record;
         }
         else {
             $parent = $this->getParentStructure($record);
@@ -261,7 +262,16 @@ class Extension extends \Bolt\BaseExtension
     public function sortObject($records, $sortby)
     {
         $callbackArraySort = function($a, $b) use ($sortby) {
-            return strcmp($a->{($sortby)}, $b->{($sortby)});
+            if (is_array($sortby)) {
+                foreach ($sortby as $s) {
+                    if ($a[$s] != $b[$s])
+                        return $a[$s] > $b[$s];
+                }
+                return false;
+            }
+            else {
+                return $a[$sortby] > $b[$sortby];
+            }
         };
 
         usort($records, $callbackArraySort);
@@ -352,7 +362,7 @@ class Extension extends \Bolt\BaseExtension
                     $itemRaw = $this->app['storage']->getContent('structures', array('slug' => $slug, 'returnsingle' => true));
                     $item = $itemRaw->values;
                     $childsUnsorted = $this->getSitemapChildren($itemRaw);
-                    $item['children'] = $this->sortObject($childsUnsorted, 'sortorder');
+                    $item['children'] = $this->sortObject($childsUnsorted, 'structure_sortorder');
                     $item['link'] = $this->app['paths']['root'] . $item['slug'];
                     $item['source'] = "menu:{$entry['path']}";
                     array_push($sitemap, $item);
@@ -408,7 +418,10 @@ class Extension extends \Bolt\BaseExtension
         $childSlugs = $this->getTreeChildIDs($record->id);
         $children = array();
         foreach ($childSlugs as $childSlug) {
-            $children[] = $this->app['storage']->getContent($childSlug);
+            $child = $this->app['storage']->getContent($childSlug);
+            if ($child) {
+                $children[] = $child;
+            }
         }
         return $children;
     }

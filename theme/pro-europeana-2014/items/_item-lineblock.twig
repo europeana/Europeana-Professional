@@ -1,18 +1,19 @@
-{#
+{%- spaceless %}
+{#-
 NOTE: assembla #211: structure overviewpages should have LINE = special class) and no picture on block,
 except when it's the Europeana Creative Site ( = one page).
 
 fix: Special exception when slug is 'europeana creative'
 AW-20150219
- #}
-{% set linkblocktextclass = 'link-block-text' %}
-{% if app.request.get('slug')=='europeana-creative' -%}
+ -#}
+{%- set linkblocktextclass = 'link-block-text' -%}
+{%- if app.request.get('slug')=='europeana-creative' -%}
     {# some special behaviour for the blocks at Ecreative: no line, yes images #}
     {%- set ecreative = '1' %}
     {%- set linkblocktextclass = '' %}
-{% endif %}<!--
+{%- endif -%}
 
---><li><div class="{{linkblocktextclass}} link-block block">
+<li><div class="{{linkblocktextclass}} link-block block">
     <a href="{{ structurelink(record) }}" title="{{ child.title }}" class="b-inner">
 {% if ecreative %}
         {% if child.image|length %}
@@ -27,3 +28,4 @@ AW-20150219
         </div>
     </a>
 </div></li>
+{% endspaceless -%}

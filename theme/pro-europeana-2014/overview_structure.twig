@@ -1,17 +1,10 @@
 {% include '_header.twig' %}
 
-{# get contenttype of assigned content by taxonomy slug #}
+{# get contenttype of assigned content by slug #}
 {% set contenttype = structurecontenttype(record.slug) %}
 
-{% if contenttype %}
-    {# get assigned structures and contenttype #}
-    {% set records = record.related(contenttype['slug'])|merge(record.related('structures')) %}
-{% else %}
-    {# get assigned structures #}
-    {% set records = record.related('structures') %}
-{% endif %}
+{% set records = sortRecords(getTreeChildren(record), ['structure_sortorder', 'slug']) %}
 
-{% set records = sortRecords(records, 'sortorder') %}
 {% set contacts = record.related('persons') %}
 
 <!-- Start content -->
@@ -30,10 +23,10 @@
                     <p>{{ record.teaser|raw }}</p>
                 </div>
                 {% if records is defined %}
-                <ul class="l-next_options"><!--
-             -->{% for record in records[0:6] if (record.hide_list != 1) %}<!--
-                -->{% include 'items/_item-lineblock.twig' with {child : record} %}<!--
-             -->{% endfor %}
+                <ul class="l-next_options">
+                    {%- for record in records[0:6] if (record.hide_list != 1) -%}
+                       {%- include 'items/_item-lineblock.twig' with {child : record} -%}
+                    {%- endfor %}
                 </ul>
                 {% endif %}
             </div>

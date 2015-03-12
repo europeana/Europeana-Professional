@@ -1,14 +1,9 @@
 {% include '_header.twig' %}
 
+{# get contenttype of assigned content by slug #}
 {% set contenttype = structurecontenttype(record.slug) %}
 
-{% if contenttype %}
-    {# get assigned structures and contenttype #}
-    {% setcontent mixedRecords = '(Structures, ' ~ contenttype['name'] ~ ')' where { tree : record.slug } %}
-    {% set records = sortRecords(mixedRecords, 'sortorder') %}
-{% else %}
-    {% setcontent records = 'Structures' where { tree : record.slug, orderby: 'sortorder'  } %}
-{% endif %}
+{% set records = sortRecords(getTreeChildren(record), ['structure_sortorder', 'slug']) %}
 
 {% set contacts = record.related('persons') %}
 
