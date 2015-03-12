@@ -8,9 +8,9 @@
 
         <li><a href="{{ record.link }}">{{ record.title }}</a></li>
 
-        {% if (record.childs is defined and record.childs|length ) %}
+        {% if (record.children is defined and record.children|length ) %}
             <li>
-            {% include 'items/_item-sitemap.twig' with {records: record.childs } %}
+            {% include 'items/_item-sitemap.twig' with {records: record.children } %}
             </li>
         {% endif %}
 
