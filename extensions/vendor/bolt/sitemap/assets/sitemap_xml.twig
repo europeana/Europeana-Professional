@@ -3,8 +3,7 @@
     {% for entry in entries %}
         {% if entry.link is defined %}
             <url>
-                <!-- {{ entry.link }} -->
-                <loc>{{ app.paths.hosturl }}{{ structurelink(entry) }}</loc>
+                <loc>{{ app.paths.hosturl }}{{ entry.link }}</loc>
                 {% if entry.lastmod is defined %}
                     <lastmod>{{ entry.lastmod }}</lastmod>
                 {% endif %}

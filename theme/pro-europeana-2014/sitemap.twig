@@ -19,14 +19,13 @@
             <h1>{{ __('Sitemap') }}</h1>
 
 
-            <div id="sitemap" >
-                {% for entry in entries %}
-                <ul>
-                    <li><h2>{{ entry.title }}</h2></li>
-                    <li>{% include 'items/_item-sitemap.twig' with {records: entry.childs } %}</li>
-                </ul>
-                {% endfor %}
-            </div>
+            <ul>
+            {% for entry in entries %}
+                {% if entry.link is defined %}
+                  <li><a href="{{ structurelink(entry)|default(entry.link) }}">{{ entry.title }}</a></li>
+                {% endif %}
+            {% endfor %}
+            </ul>
 
         </div>
 

@@ -9,5 +9,6 @@ return array(
     'FileBrowser\\' => array($vendorDir . '/europeana/filebrowser'),
     'Disqus\\' => array($vendorDir . '/bolt/disqus'),
     'Bolt\\Extension\\FoundryCode\\' => array($vendorDir . '/foundrycode/boltredirector'),
+    'Bolt\\Extension\\Bolt\\Sitemap\\' => array($vendorDir . '/bolt/sitemap'),
     'Bolt\\Extension\\Bolt\\RSSFeed\\' => array($vendorDir . '/bolt/rssfeed', $vendorDir . '/bolt/rssfeed/src'),
 );

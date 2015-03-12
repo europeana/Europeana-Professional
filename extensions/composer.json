@@ -3,6 +3,7 @@
         "bolt/disqus": "v1.2",
         "europeana/filebrowser": "dev-master",
         "bolt/rssfeed": "v2.0.1",
+        "bolt/sitemap": "1.0.0",
         "foundrycode/boltredirector": "1.0.1"
     },
     "repositories": {

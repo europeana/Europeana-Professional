@@ -58,20 +58,20 @@
         "source": {
             "type": "git",
             "url": "https://github.com/europeana/filebrowser.git",
-            "reference": "7a73bbbe5bc650bd78aa835028d97c9906574008"
+            "reference": "a4b2990f2e9e2d1ebffc845da5a3b2671ca66599"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/europeana/filebrowser/zipball/7a73bbbe5bc650bd78aa835028d97c9906574008",
-            "reference": "7a73bbbe5bc650bd78aa835028d97c9906574008",
+            "url": "https://api.github.com/repos/europeana/filebrowser/zipball/a4b2990f2e9e2d1ebffc845da5a3b2671ca66599",
+            "reference": "a4b2990f2e9e2d1ebffc845da5a3b2671ca66599",
             "shasum": ""
         },
         "require": {
             "bolt/bolt": ">=2.0,<3.0"
         },
-        "time": "2014-11-18 08:40:38",
+        "time": "2014-12-11 16:02:06",
         "type": "bolt-extension",
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "files": [
                 "init.php"
@@ -151,6 +151,53 @@
         "support": {
             "source": "https://github.com/GawainLynch/bolt-extension-rssfeed/tree/v2.0.1",
             "issues": "https://github.com/GawainLynch/bolt-extension-rssfeed/issues"
+        }
+    },
+    {
+        "name": "bolt/sitemap",
+        "version": "1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/bolt/Sitemap.git",
+            "reference": "eac7484cc0375cc2f66bb843461a4bb5d50e0266"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/bolt/Sitemap/zipball/eac7484cc0375cc2f66bb843461a4bb5d50e0266",
+            "reference": "eac7484cc0375cc2f66bb843461a4bb5d50e0266",
+            "shasum": ""
+        },
+        "require": {
+            "bolt/bolt": ">=2.0.0,<3.0.0"
+        },
+        "time": "2014-11-07 09:40:04",
+        "type": "bolt-extension",
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "init.php"
+            ],
+            "psr-4": {
+                "Bolt\\Extension\\Bolt\\Sitemap\\": ""
+            }
+        },
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Bob den Otter",
+                "email": "bob@twokings.nl"
+            },
+            {
+                "name": "Patrick van Kouteren",
+                "email": "info@wedesignit.nl"
+            }
+        ],
+        "support": {
+            "source": "https://github.com/bolt/Sitemap/tree/1.0.0",
+            "issues": "https://github.com/bolt/Sitemap/issues"
         }
     },
     {

@@ -9,6 +9,7 @@ return array(
     $vendorDir . '/bolt/disqus/init.php',
     $vendorDir . '/europeana/filebrowser/init.php',
     $vendorDir . '/bolt/rssfeed/init.php',
+    $vendorDir . '/bolt/sitemap/init.php',
     $vendorDir . '/foundrycode/boltredirector/init.php',
     $baseDir . '/installer.php',
 );

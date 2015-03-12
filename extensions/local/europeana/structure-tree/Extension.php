@@ -29,10 +29,6 @@ class Extension extends \Bolt\BaseExtension
 
         // listings
 
-        // sitemap
-        $this->app->match("/sitemap", array($this, 'htmlSitemap'));
-        $this->app->match("/sitemap.xml", array($this, 'xmlSitemap'));
-
         // slug listing
         $this->app->match("/{slug}", array($this, 'slugTreeRecord'))
             ->assert('slug', '[a-zA-Z0-9_\-]+[^(sitemap)^(search)]')
@@ -168,6 +164,9 @@ class Extension extends \Bolt\BaseExtension
 
     private function getParentStructure($record)
     {
+        if (is_array($record)) {
+            $record = $this->app['storage']->getContent($record['link']);
+        }
         $contenttype = $record->contenttype;
         $id = $this->getTreeParentID($contenttype['slug'], $record->id);
 
@@ -196,17 +195,22 @@ class Extension extends \Bolt\BaseExtension
         if (!$record) {
             return false;
         }
+        if (is_array($record)) {
+            $record = $this->app['storage']->getContent($record['link']);
+        }
         $structure = $this->getParentStructure($record);
         $selfSlug = $record['slug'];
         if ($structure) {
             $parentLink = $this->getStructureLink($structure, true);
             return "$parentLink/$selfSlug";
         }
+        /*
         else if ($record->contenttype['slug'] === 'structures') {
             return "/$selfSlug";
         }
+        */
         else {
-            return "/" . $record->link();
+            return $record->link;
         }
     }
 
@@ -306,110 +310,6 @@ class Extension extends \Bolt\BaseExtension
     }
 
 
-    /**
-     * xml sitemap listing
-     */
-    public function xmlSitemap()
-    {
-        $this->app['extensions']->clearSnippetQueue();
-        $this->app['extensions']->disableJquery();
-        $this->app['debugbar'] = false;
-
-        $headers['Content-Type'] = 'application/xml; charset=utf-8';
-        return $this->serveSitemap($this->config['sitemap']['xml_template'], $headers);
-    }
-
-    public function htmlSitemap()
-    {
-        return $this->serveSitemap($this->config['sitemap']['template'], array());
-    }
-
-    private function serveSitemap($template, $headers)
-    {
-        $sitemap = $this->collectSitemapData();
-
-        $this->app['twig.loader.filesystem']->addPath(__DIR__);
-        $body = $this->app['render']->render($template, array(
-                    'entries' => $sitemap,
-                    'title' => 'Sitemap'
-                    ));
-
-        return new Response($body, 200, $headers);
-    }
-
-
-    private function collectSitemapData() {
-        $sitemap = [];
-        $pages = [];
-        $sources = $this->config['sitemap']['sources'];
-        $contenttypes = $this->config['sitemap']['contenttypes'];
-
-        // get content
-        foreach ($contenttypes as $contenttype ) {
-            $pages = array_merge($pages, $this->app['storage']->getContent($contenttype));
-        }
-
-        // get sitemap sources
-        foreach ($sources as $source) {
-            $item = [];
-
-            // entry type 'menu'
-            if ($source['type'] == 'menu') {
-                $menu = $this->app['config']->get('menu/'.$source['data']['menu']);
-
-                foreach ($menu as $entry) {
-                    $slug = util::slugify($entry['path'], -1);
-                    $itemRaw = $this->app['storage']->getContent('structures', array('slug' => $slug, 'returnsingle' => true));
-                    $item = $itemRaw->values;
-                    $childsUnsorted = $this->getSitemapChildren($itemRaw);
-                    $item['children'] = $this->sortObject($childsUnsorted, 'structure_sortorder');
-                    $item['link'] = $this->app['paths']['root'] . $item['slug'];
-                    $item['source'] = "menu:{$entry['path']}";
-                    array_push($sitemap, $item);
-                }
-            }
-            // entry type 'list'
-            elseif ($source['type'] == 'list') {
-                $itemRoot = [];
-                $itemRoot['title'] = $source['label'];
-                $itemRoot['children'] = [];
-                $itemRoot['source'] = "list:{$source['label']}";
-
-                foreach ($source['data'] as $entry) {
-                    // get link entries
-                    if ($entry['link']) {
-                        $item = array('title'=> $entry['label'], 'link' => $entry['link']);
-                        $item['source'] = "list:{$source['label']}:{$entry['label']}";
-                        array_push($itemRoot['children'], $item);
-                    }
-                    // get slug entries
-                    elseif ($entry['slug']) {
-                        $slug = util::slugify($entry['slug'], -1);
-                        $itemRaw = null;
-                        foreach ($contenttypes as $contenttype ) {
-                            $itemRaw = $this->app['storage']->getContent($contenttype, array('slug' => $slug, 'returnsingle' => true));
-                            if ($itemRaw) {
-                                break;
-                            }
-                        }
-                        if (!$itemRaw) {
-                            // skip: item doesn't exist
-                            continue;
-                        }
-                        $item = $itemRaw->values;
-                        $item['link'] = $this->app['paths']['root'] . $item['slug'];
-                        $item['children'] = $this->getSitemapChildren($itemRaw);
-                        $item['source'] = "list:{$source['label']}:{$entry['label']}";
-                        array_push($itemRoot['children'], $item);
-                    }
-                }
-                array_push($sitemap, $itemRoot);
-            }
-        }
-
-        return $sitemap;
-    }
-
     public function getTreeChildren($record)
     {
         if ($record->contenttype['slug'] !== 'structures') {
@@ -417,31 +317,14 @@ class Extension extends \Bolt\BaseExtension
         }
         $childSlugs = $this->getTreeChildIDs($record->id);
         $children = array();
-        foreach ($childSlugs as $childSlug) {
-            $child = $this->app['storage']->getContent($childSlug);
-            if ($child) {
-                $children[] = $child;
+        if (!empty($childSlugs)) {
+            foreach ($childSlugs as $childSlug) {
+                $child = $this->app['storage']->getContent($childSlug);
+                if ($child) {
+                    $children[] = $child;
+                }
             }
         }
         return $children;
-    }
-
-    private function getSitemapChildren($parent, $depth = 1)
-    {
-
-        if ($depth > 5) {
-            return false;
-        }
-
-        $p = array();
-
-        foreach ($this->getTreeChildren($parent) as $page) {
-            $item = $page->values;
-            $item['link'] = $this->getStructureLink($page);
-            $item['children'] = $this->getSitemapChildren($page, $depth+1 );
-            $p[] = $item;
-        }
-
-        return $p;
     }
 }
