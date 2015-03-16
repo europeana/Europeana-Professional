@@ -204,11 +204,9 @@ class Extension extends \Bolt\BaseExtension
             $parentLink = $this->getStructureLink($structure, true);
             return "$parentLink/$selfSlug";
         }
-        /*
         else if ($record->contenttype['slug'] === 'structures') {
             return "/$selfSlug";
         }
-        */
         else {
             return $record->link;
         }
