@@ -208,7 +208,7 @@ class Extension extends \Bolt\BaseExtension
             return "/$selfSlug";
         }
         else {
-            return $record->link;
+            return $record->link();
         }
     }
 
