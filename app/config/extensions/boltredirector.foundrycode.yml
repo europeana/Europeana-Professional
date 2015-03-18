@@ -27,6 +27,7 @@ redirects:
 
     '/linked-open-data': 'http://labs.europeana.eu/api/linked-open-data/introduction/'
 
+    '/c/blogs/rss': '/blogposts/rss/feed.xml'
 
     # blogs
     '/web/europeana-creative/news/-/blogs/{slug:segment}': '/blogposts/{slug}'
