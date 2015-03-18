@@ -136,7 +136,7 @@
     </div>
 
     {# get the nearest two EVENTS #}
-    {% setcontent events = 'Events' limit 2 orderby 'start_event ASC' %}
+    {% setcontent events = 'Events' where { 'end_event': '>' ~ date()|date } limit 2 orderby 'start_event ASC' %}
     {% if events is defined %}
 
     <div class="section events-upcoming">

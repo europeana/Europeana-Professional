@@ -629,8 +629,9 @@ events:
       label: "Jobs"
       order: -id
       format: "{{ item.title|escape }}"
-  sort: -datepublish
+  sort: start_event
   record_template : record_event.twig
+  listing_records : 2
 
 
 
