@@ -673,12 +673,23 @@ Jobs:
       type: select
       required: false
       label: "Position will be in this team:"
-      values: [ "(not set)", "Aggregation", "Corporate Communication", "Distribution & Engagement", "Facilitation", "Managment", "Network & Sustainability", "People & Business Support", "Product Development", "Technology" ]
+      #values: [ "(not set)", "Aggregation", "Corporate Communication", "Distribution & Engagement", "Facilitation", "Managment", "Network & Sustainability", "People & Business Support", "Product Development", "Technology" ]
+      values: 
+        - 'Data Partner Services'
+        - 'Communications'
+        - 'End User Services'
+        - 'Policy, Research, Knowledge & Programme Management'
+        - 'Management'
+        - 'Network & Sustainability'
+        - 'People & Business Support'
+        - 'Product Development'
+        - 'Re-use Services'
+        - 'Technology'
     # Show on Job list page, Job page
     postion_type:
       type: select
       required: false
-      label: "Position will be in this team:"
+      label: "Contract type:"
       values: [ "Full time", "Part time", "Internship", "Full time (Maternity cover)", "Full time (Temp)", "Part time (Temp)" ]
     # Show on Job list page, Job page
     teaser:
