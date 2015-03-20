@@ -43,6 +43,9 @@ sort_options:
     -title: 'Title (Z → A)'
     -date_start: 'Project start (newest first)'
     -date_end: 'Project end (newest first)'
+  events:
+    end_event: 'Upcoming events'
+    -end_event: 'Archived events'
 
 
 # set default excerpt length
@@ -65,7 +68,7 @@ our_sites:
     title: Develop
     subtitle: Labs
     description: A playground for remixing cultural content
-    link: http://labs.europeana.eu/ 
+    link: http://labs.europeana.eu/
 
 
 # Set maintenance mode true or false
@@ -142,8 +145,8 @@ recordsperpage: 10
 # - authenticated: cache 'templates' and 'request' for logged-on users. In most cases you should *NOT* enable
 #   this, because it will cause side-effects if the website shows different content to authenticated users.
 caching:
-  config: true 
-  templates: true 
+  config: true
+  templates: true
   request: false
   duration: 10
   authenticated: false

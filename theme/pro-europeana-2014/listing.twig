@@ -1,5 +1,11 @@
 {% include '_header.twig' %}
 
+{# If 'contenttype' is a string, we get the contenttype array from config. #}
+{% if contenttype is not iterable and app.config.get('contenttypes/' ~ contenttype|lower) is defined %}
+    {% set contenttype = app.config.get('contenttypes/' ~ contenttype|lower) %}
+        {# {{ dump(contenttype) }} #}
+{% endif %}
+
 {% if contenttype['slug'] is defined %}
     {# set order #}
     {% set order = contenttype['sort'] %}
@@ -24,10 +30,10 @@
         {# default list views #}
         {% if record is not defined %}
 
-        {# tags #}
-        {% if taxonomy is defined %}
-            {% set showsortby = false %}
-            {% set contenttype = taxonomy %}
+            {# tags #}
+            {% if taxonomy is defined %}
+                {% set showsortby = false %}
+                {% set contenttype = taxonomy %}
 
             {% else %}
                 {% set contenttype = getContenttype(records|first.contenttype.name) %}
@@ -58,7 +64,7 @@
             {% include 'items/_item-breadcrumb.twig' %}
 
             {# hide sortby template for tag- and structure listing #}
-            {% if showsortby %}
+            {% if 1 or showsortby %}
                 {% include 'items/_item-sortby.twig' %}
             {% endif %}
         </div>
@@ -109,7 +115,15 @@
     {% endif %}
 
     {% if contenttype['slug'] == "events" or contenttype == 'Events' %}
-        {% setcontent records = 'events' where { limit : 2, order : order, page : page, 'end_event' : '>' ~ date()|date } allowpaging %}
+        {% if order == '-end_event' %}
+            <h1>Archived events</h1>
+            {% set end_event = '< today' %}
+        {% else %}
+            <h1>Upcoming events</h1>
+            {% set end_event = '> today' %}
+        {% endif %}
+
+        {% setcontent records = 'events' where { limit: 6, order: order, page: page, 'end_event': end_event } allowpaging %}
     {% endif %}
 
     {% for listItem in records %}
