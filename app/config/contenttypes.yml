@@ -193,8 +193,8 @@ pressreleases:
       required: true
       label: "Title (required):"
       variant: inline
-      postfix: "(max. 50 characters)"
-      pattern: "^.{1,50}$"
+      postfix: "(max. 100 characters)"
+      pattern: "^.{1,100}$"
       group: "Press releases"
     slug:
       type: slug
