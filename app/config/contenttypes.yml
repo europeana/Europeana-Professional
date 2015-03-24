@@ -170,6 +170,8 @@ publications:
       format: "{{ item.title|escape }}"
   sort: -datepublish
   record_template : record_publication.twig
+  icon_many: "fa:book"
+  icon_one: "fa:book"
 
 
 
@@ -282,6 +284,8 @@ pressreleases:
       format: "{{ item.title|escape }}"
   sort: -datepublish
   record_template : record_publication.twig
+  icon_many: "fa:newspaper-o"
+  icon_one: "fa:newspaper-o"
 
 
 
@@ -305,7 +309,7 @@ persons:
       label: "First name"
       variant: inline
       class: narrow
-      postfix: "<em><small>(required)</small></em>"      
+      postfix: "<em><small>(required)</small></em>"
       group: "Personal details"
     # Show on Staff list page, Staff page, Events page (speakers), Contact info block
     last_name:
@@ -487,6 +491,9 @@ persons:
   listing_records: 10000
   record_template: record_person.twig
   listing_template : listing_person.twig
+  icon_many: "fa:users"
+  icon_one: "fa:user"
+
 
 
 
@@ -632,6 +639,9 @@ events:
   sort: start_event
   record_template : record_event.twig
   listing_records : 2
+  icon_many: "fa:calendar"
+  icon_one: "fa:calendar"
+
 
 
 
@@ -674,7 +684,7 @@ Jobs:
       required: false
       label: "Position will be in this team:"
       #values: [ "(not set)", "Aggregation", "Corporate Communication", "Distribution & Engagement", "Facilitation", "Managment", "Network & Sustainability", "People & Business Support", "Product Development", "Technology" ]
-      values: 
+      values:
         - 'Data Partner Services'
         - 'Communications'
         - 'End User Services'
@@ -787,6 +797,9 @@ Jobs:
       format: "{{ item.title|escape }}"
   sort: -datepublish
   record_template: record_job.twig
+  icon_many: "fa:money"
+  icon_one: "fa:money"
+
 
 
 
@@ -903,6 +916,9 @@ blogposts:
       format: "{{ item.title|escape }}"
   record_template: record_blogpost.twig
   recordsperpage: 100
+  icon_many: "fa:quote-left"
+  icon_one: "fa:quote-right"
+
 
 
 #################################
@@ -932,7 +948,7 @@ blogposts:
 #     HTML field; neither is a particularly excellent solution, but the
 #     alternative would be to add yet another contenttype, and a relation - way
 #     too complex.
-#     The field should contain a sequence of list items 
+#     The field should contain a sequence of list items
 # - Should related content be shown on the contenttype (shown in prototype demo.deanbirkett but not in excel docs.google.com)?
 #
 #################################
@@ -1073,6 +1089,8 @@ pages:
       order: -id
       format: "{{ item.title|escape }}"
   record_template: record_page.twig
+  icon_many: "fa:files-o"
+  icon_one: "fa:files"
 
 
 
@@ -1122,6 +1140,9 @@ locations:
       required: false
       label: "This is the main Europeana office (appear in footer):"
   record_template: record_location.twig
+  icon_many: "fa:map-marker"
+  icon_one: "fa:map-marker"
+  show_in_menu: false
 
 
 
@@ -1255,6 +1276,8 @@ projects:
   listing_records: 5
   recordsperpage: 20
   sort: -datepublish
+  icon_many: "fa:clipboard"
+  icon_one: "fa:clipboard"
 
 
 
@@ -1385,6 +1408,8 @@ taskforces:
       format: "{{ item.title|escape }}"
   record_template: record_taskforce.twig
   recordsperpage: 1000
+  icon_many: "fa:bullseye"
+  icon_one: "fa:bullseye"
 
 
 #################################
@@ -1480,7 +1505,8 @@ structures:
   record_template: overview_structure.twig
   recordsperpage: 1000
   # viewless: true
-
+  icon_many: "fa:cubes"
+  icon_one: "fa:cube"
 
 
 #################################
@@ -1592,7 +1618,9 @@ homepage:
       label: "Footer"
       multiple: false
   viewless: true
-
+  icon_many: "fa:home"
+  icon_one: "fa:home"
+  show_in_menu: false
 
 
 
@@ -1648,3 +1676,8 @@ footers:
       label: "Location:"
       multiple: false
   viewless: true
+  icon_many: "fa:tasks"
+  icon_one: "fa:tasks"
+  show_in_menu: false
+
+

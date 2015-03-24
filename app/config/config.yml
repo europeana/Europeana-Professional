@@ -45,7 +45,7 @@ sort_options:
     -date_end: 'Project end (newest first)'
   events:
     end_event: 'Upcoming events'
-    -end_event: 'Archived events'
+    -end_event: 'Past events'
 
 
 # set default excerpt length
