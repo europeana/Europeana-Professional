@@ -5,20 +5,28 @@
     - include "default" list template
 #}
 
-
 {# get contenttype object #}
 {% set contenttype = structurecontenttype(record.slug) %}
 {% if contenttype == 0 %}
     {% set contenttype = getContenttype(record.content) %}
 {% endif %}
 
+
 {# set order / page / amount #}
 {% if contenttype != 0 %}
 
     {# set order #}
-    {% set order = contenttype['sort'] %}
+    {% set order = '' %}
+
+    {# override by contenttype #}
+    {% if contenttype['sort'] in app.config.get('contenttypes/' ~ record.content|lower ~ '/fields') %}
+        {% set order = contenttype['sort'] %}
+    {% endif %}
+
+    {# Override in URL #}
     {% if app.request.get('order') %}
         {% set order = app.request.get('order') %}
+            {% else %}
     {% endif %}
 
     {# set page number #}
@@ -85,7 +93,7 @@
 
     {# for contenttype "Person" include listing_person #}
     {% if (records|length and records|first.contenttype.name == 'Persons') %}
-    
+
         {% if app.request.get('slug')=='partners/' %}
             {% set records = records|order('company') %}
         {% else %}

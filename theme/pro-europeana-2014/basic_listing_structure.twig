@@ -1,0 +1,29 @@
+{#
+    BASIC structures list template.
+    - collects content for structure and possible assigend contenttype
+    - set pager options
+    - include "default" list template
+#}
+
+{# iterate over related, getting only the _pages_ #}
+
+{# {{ dump(record) }} #}
+
+{% set records = [] %}
+
+{% for rel in record.related if rel.contenttype.slug in ["pages", "taskforces"] %}
+    {% set records = records|merge([rel]) %}
+{% endfor %}
+
+{% if app.request.get('order') %}
+    {% set records = records|order(app.request.get('order')) %}
+{% else %}
+    {% set records = records|order('datepublish') %}
+{% endif %}
+
+{# include contenttype list template #}
+{% if records is defined %}
+
+    {% include 'listing.twig' with { records: records } %}
+
+{% endif %}
