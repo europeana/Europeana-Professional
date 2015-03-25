@@ -118,7 +118,7 @@
         {% if order == '-end_event' %}
             <h1>Past events</h1>
             {% set end_event = '< today' %}
-            {% set order = 'start_event' %}
+            {% set order = '-start_event' %}
         {% else %}
             <h1>Upcoming events</h1>
             {% set end_event = '> today' %}
