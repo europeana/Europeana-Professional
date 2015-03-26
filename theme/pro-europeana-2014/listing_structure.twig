@@ -58,19 +58,19 @@
     #}
 
     {# get content for current structure #}
-    {% set recordsStructure = [] %}
+    {#     {% set recordsStructure = [] %}
     {% if (order in record.values|keys) or ( order|slice(1,order|length) in record.values|keys ) %}
       {% setcontent recordsStructure = 'Structures' where { tree : record.slug, order : order }  %}
-    {% endif %}
+    {% endif %} #}
 
     {# get content assigned contenttype #}
     {% setcontent records = contenttype['name'] where { limit: amount, tree : record.slug, order: order, page : page } allowpaging  %}
 
     {# merge content #}
-    {% set records = records|merge(recordsStructure)|order(order) %}
+    {# {% set records = records|merge(recordsStructure)|order(order) %} #}
 
     {% if record.slug == "project-list" %}
-        {% setcontent extraprojects = 'structures' where { id: '16 || 27' }  %}
+        {% setcontent extraprojects = 'structures' where { id: '16 || 27 || 49' }  %}
         {% set records = records|merge(extraprojects) %}
     {% endif %}
 
