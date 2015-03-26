@@ -45,12 +45,10 @@
 
 {# listing for stucture with fixed content  #}
 {% if (record.content != '' and record.content != 'default' )  %}
-
     {% setcontent records = record.content where { limit : amount, order : order, page : page } allowpaging %}
 
 {# listing for mixed content (structure + contenttype) #}
 {% elseif contenttype %}
-
     {#
         because of the mixed content, we have to sort the list manually.
         1. get all structure and contenttype content by tree
@@ -66,11 +64,15 @@
     {% endif %}
 
     {# get content assigned contenttype #}
-
-    {% setcontent records = contenttype['name'] where { limit: amount, tree : record.slug, order: order, page : page } allowpaging %}
+    {% setcontent records = contenttype['name'] where { limit: amount, tree : record.slug, order: order, page : page } allowpaging  %}
 
     {# merge content #}
     {% set records = records|merge(recordsStructure)|order(order) %}
+
+    {% if record.slug == "project-list" %}
+        {% setcontent extraprojects = 'structures' where { id: '16 || 27' }  %}
+        {% set records = records|merge(extraprojects) %}
+    {% endif %}
 
     {# ------- Bob notes: I don't think we should manipulate pager here and/or slice the results.
     Removing that here, fixes https://www.assembla.com/spaces/europeana-professional/tickets/160

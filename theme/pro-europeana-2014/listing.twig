@@ -64,7 +64,7 @@
             {% include 'items/_item-breadcrumb.twig' %}
 
             {# hide sortby template for tag- and structure listing #}
-            {% if 1 or showsortby %}
+                {% if showsortby %}
                 {% include 'items/_item-sortby.twig' %}
             {% endif %}
         </div>
