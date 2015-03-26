@@ -138,9 +138,11 @@
             </div>
         </div><div class="l-sidebar">
             <div class="inner">
+                {# Don't display contacts in the sidebar. ----
                  {% setcontent staff_structure = 'structures/staff' returnsingle %}
                  {% set contacts = staff_structure.related('persons') %}
                  {% include 'items/_item-help.twig' with { records: contacts} %}
+                 ------ #}
             </div>
         </div>
     </div>
