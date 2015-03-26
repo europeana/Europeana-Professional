@@ -29,7 +29,7 @@
                         {% set currentTeam = records|first.team %}
                         <div class="team">
                             <h2>{{ teams[record.team]|default(record.team) }}</h2>
-                            <ul class="results-list"><!-- 
+                            <ul class="results-list"><!--
                                 -->{% for person in records if record.team == person.team  %}<!--
                                 --><li>{% include 'items/_item-person-list.twig' with { record: person} %}</li><!--
                             -->{% endfor %}<!--
@@ -38,7 +38,7 @@
                         {% set currentTeam = record.team %}
                     {% endif %}
                 {% endfor %}
-                
+
 {# If person does not work at europeana, he or she is a prtner #}
                 {% for record in records if record.team == "(not set)" %}
                     {% if ( record.company != currentCompany ) %}
@@ -51,7 +51,7 @@
                                <!--
                                 --><li>{% include 'items/_item-person-list.twig' with { record: person} %}</li><!--
                             -->{% endfor %}<!--
-                    
+
                         --></ul>
                         </div>
                         {% set currentCompany = record.company %}
@@ -74,14 +74,14 @@
                      {% if( contacts|length and contacts is not iterable) %}
                          {% set contacts = [contacts] %}
                      {% endif %}
-                     {% include 'items/_item-help.twig' with { records: contacts} %}
+                     {# {% include 'items/_item-help.twig' with { records: contacts} %} #}
                  {% elseif contenttype.singular_slug is defined %}
                      {% set contacttype = ('contact_'~(contenttype.singular_slug))  %}
                      {% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
                      {% if( contacts|length and contacts is not iterable) %}
                          {% set contacts = [contacts] %}
                      {% endif %}
-                     {% include 'items/_item-help.twig' with { records: contacts} %}
+                     {# {% include 'items/_item-help.twig' with { records: contacts} %} #}
                  {% endif %}
 
                  {#
