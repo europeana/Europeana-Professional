@@ -1472,7 +1472,7 @@ structures:
     subclass:
       type: select
       label: "Subsite theme"
-      values: ['none', 'europeana_subsite_cloud', 'europeana_subsite_creative']
+      values: ['none', 'europeana_subsite_cloud', 'europeana_subsite_creative', 'europeana_subsite_enumerate']
       prefix: "<hr><h2>Subsite Settings</h2>"
       group: "Subsite settings"
     footer:

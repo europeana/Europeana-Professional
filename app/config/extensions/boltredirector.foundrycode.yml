@@ -20,6 +20,7 @@ options:
 redirects:
 
     # Blog overrides.
+    '/web/europeana-cloud/blog/-/blogs/how-europeana-cloud-will-address-aggregators.*': '/blogpost/how-europeana-cloud-will-address-aggregators-challenges-and-issu'
     '/web/europeana-cloud/blog/-/blogs/how-europeana-cloud-will-address-aggregators’-challenges-and-issues': '/blogpost/how-europeana-cloud-will-address-aggregators-challenges-and-issu'
     '/pro-blog/-/blogs/europeana-represents-cultural-heritage-institutions-at-eu-roundtable-on-copyright': '/blogpost/europeana-represents-cultural-heritage-institutions-at-eu-roundt'
     '/pro-blog/-/blogs/mapping-the-future-of-digital-cultural-heritage-at-europeanatech-2015': '/blogpost/mapping-the-future-of-digital-cultural-heritage-at-europeanatech'
@@ -466,7 +467,7 @@ redirects:
     '/c/document_library/get_file?uuid=bc9c0116-0639-4f6e-adee-84bf603ccef4&groupId=10602': '/files/Europeana_Professional/Publications/Public%20Domain%20Charter%20-%20Romanian.pdf'
 
 
-    # Added 2015-02-24 
+    # Added 2015-02-24
     '/web/guest/edm-rights-selection-tool/v2/still_protected_by_copyright.html': '/page/the-europeana-rights-statement-selection-tool'
     '/web/guest/edm-rights-selection-tool/v2/rightsholders_known.html': '/page/edm-rights-selection-toolv2rightsholders_known'
     '/web/guest/edm-rights-selection-tool/v2/Autorisation_from_rightsholder.html': '/page/edm-rights-selection-toolv2autorisation_from_rightsholder'

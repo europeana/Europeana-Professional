@@ -230,6 +230,7 @@ class Extension extends \Bolt\BaseExtension
      */
     public function subSite($record)
     {
+
         if (!$record) {
             return null;
         }
