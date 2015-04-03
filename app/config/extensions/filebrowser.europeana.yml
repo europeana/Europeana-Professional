@@ -28,7 +28,7 @@ stylesheets: []
 # effect.
 # The first mode in the list will be used as the default mode.
 #
-# modes: [ 'list', 'icons' ]
+modes: [ 'list' ]
 
 # Icon configuration. Use this to override the root path for icons and/or
 # mappings for individual icons.

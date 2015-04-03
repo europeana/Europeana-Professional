@@ -5,7 +5,7 @@
 <h1>{{ title }}</h1>
 {% spaceless %}
 <div class="file-browser file-browser-buttons">
-    {% for bmode in allowedModes %}
+    {% for bmode in allowedModes if allowedModes|length > 1 %}
         <a class="file-browser file-browser-button file-browser-mode-button {% if bmode == mode %}file-browser-button-active{% endif %}"
             href="{{ linkto(paths.current, bmode) }}"
             data-fb-mode="{{bmode}}"
