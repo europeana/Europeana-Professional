@@ -19,6 +19,27 @@ options:
 
 redirects:
 
+    #thoughtlab
+    '/web/guest/thoughtlab/linked-open-data': 'http://labs.europeana.eu/apps/Amsterdam%20Museum%20Linked%20Open%20Data'
+    '/web/guest/thoughtlab/digitisation': 'http://labs.europeana.eu/apps/BHL%20Scan%20List/'
+    '/web/guest/thoughtlab/new-ways-of-searching-and-browsing': 'http://labs.europeana.eu/apps/'
+    '/web/guest/thoughtlab/service-infrastructure': 'http://labs.europeana.eu/apps/SIWA/'
+    '/web/guest/thoughtlab/enriching-metadata': 'http://labs.europeana.eu/apps/MIMO-DB/'
+    '/web/guest/thoughtlab/digital-library-catalogue': 'http://labs.europeana.eu/apps/GRIB/'
+    '/web/guest/thoughtlab/improving-metadata-quality': 'http://labs.europeana.eu/search/?q=improving+metadata+quality'
+    '/web/guest/thoughtlab/user-generated-content': 'http://labs.europeana.eu/search/?q=USER+GENERATED+CONTENT'
+    '/web/guest/thoughtlab/interoperability': 'http://labs.europeana.eu/search/?q=INTEROPERABILITY'
+    '/thoughtlab/linked-open-data': 'http://labs.europeana.eu/apps/Amsterdam%20Museum%20Linked%20Open%20Data'
+    '/thoughtlab/digitisation': 'http://labs.europeana.eu/apps/BHL%20Scan%20List/'
+    '/thoughtlab/new-ways-of-searching-and-browsing': 'http://labs.europeana.eu/apps/'
+    '/thoughtlab/service-infrastructure': 'http://labs.europeana.eu/apps/SIWA/'
+    '/thoughtlab/enriching-metadata': 'http://labs.europeana.eu/apps/MIMO-DB/'
+    '/thoughtlab/digital-library-catalogue': 'http://labs.europeana.eu/apps/GRIB/'
+    '/thoughtlab/improving-metadata-quality': 'http://labs.europeana.eu/search/?q=improving+metadata+quality'
+    '/thoughtlab/user-generated-content': 'http://labs.europeana.eu/search/?q=USER+GENERATED+CONTENT'
+    '/thoughtlab/interoperability': 'http://labs.europeana.eu/search/?q=INTEROPERABILITY'
+
+
     # Blog overrides.
     '/web/europeana-cloud/blog/-/blogs/how-europeana-cloud-will-address-aggregators.*': '/blogpost/how-europeana-cloud-will-address-aggregators-challenges-and-issu'
     '/web/europeana-cloud/blog/-/blogs/how-europeana-cloud-will-address-aggregators’-challenges-and-issues': '/blogpost/how-europeana-cloud-will-address-aggregators-challenges-and-issu'
