@@ -5,9 +5,14 @@ except when it's the Europeana Creative Site ( = one page).
 
 fix: Special exception when slug is 'europeana creative'
 AW-20150219
+
+fix 2:
+needed a / after the check for the slug - AW-20150429 #289
  -#}
+
+
 {%- set linkblocktextclass = 'link-block-text' -%}
-{%- if app.request.get('slug')=='europeana-creative' -%}
+{%- if app.request.get('slug')=='europeana-creative/' -%}
     {# some special behaviour for the blocks at Ecreative: no line, yes images #}
     {%- set ecreative = '1' %}
     {%- set linkblocktextclass = '' %}
