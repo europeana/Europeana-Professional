@@ -7,13 +7,18 @@ use Finfo;
 class MimeType
 {
     /**
-     * Detects MIME Type based on given content
+     * Detects MIME Type based on given content.
      *
-     * @param  string $content
-     * @return string|null     MIME Type or NULL if no extension detected
+     * @param string $content
+     *
+     * @return string|null MIME Type or NULL if no mime type detected
      */
     public static function detectByContent($content)
     {
+        if (! class_exists('Finfo')) {
+            return;
+        }
+
         $finfo = new Finfo(FILEINFO_MIME_TYPE);
         $mimeType = $finfo->buffer($content);
 
@@ -21,16 +26,19 @@ class MimeType
     }
 
     /**
-     * Detects MIME Type based on file extension
+     * Detects MIME Type based on file extension.
      *
-     * @param  string $extension
-     * @return string|null       MIME Type or NULL if no extension detected
+     * @param string $extension
+     *
+     * @return string|null MIME Type or NULL if no extension detected
      */
     public static function detectByFileExtension($extension)
     {
         static $extensionToMimeTypeMap;
 
-        if ( ! $extensionToMimeTypeMap) $extensionToMimeTypeMap = static::getExtensionToMimeTypeMap();
+        if (! $extensionToMimeTypeMap) {
+            $extensionToMimeTypeMap = static::getExtensionToMimeTypeMap();
+        }
 
         if (isset($extensionToMimeTypeMap[$extension])) {
             return $extensionToMimeTypeMap[$extension];

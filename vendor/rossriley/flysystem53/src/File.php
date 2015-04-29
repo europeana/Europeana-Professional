@@ -5,9 +5,19 @@ namespace League\Flysystem;
 class File extends Handler
 {
     /**
-     * Read the file
+     * Check whether the file exists.
      *
-     * @return  string  file contents
+     * @return bool
+     */
+    public function exists()
+    {
+        return $this->filesystem->has($this->path);
+    }
+
+    /**
+     * Read the file.
+     *
+     * @return string file contents
      */
     public function read()
     {
@@ -15,9 +25,9 @@ class File extends Handler
     }
 
     /**
-     * Read the file as a stream
+     * Read the file as a stream.
      *
-     * @return  resource  file stream
+     * @return resource file stream
      */
     public function readStream()
     {
@@ -25,10 +35,35 @@ class File extends Handler
     }
 
     /**
-     * Update the file contents
+     * Write the new file.
      *
-     * @param   string   $contents
-     * @return  boolean  success boolean
+     * @param string $content
+     *
+     * @return bool success boolean
+     */
+    public function write($content)
+    {
+        return $this->filesystem->write($this->path, $content);
+    }
+
+    /**
+     * Write the new file using a stream.
+     *
+     * @param resource $resource
+     *
+     * @return bool success boolean
+     */
+    public function writeStream($resource)
+    {
+        return $this->filesystem->writeStream($this->path, $resource);
+    }
+
+    /**
+     * Update the file contents.
+     *
+     * @param string $content
+     *
+     * @return bool success boolean
      */
     public function update($content)
     {
@@ -36,10 +71,11 @@ class File extends Handler
     }
 
     /**
-     * Update the file contents with a stream
+     * Update the file contents with a stream.
      *
-     * @param   resource   $resource
-     * @return  boolean    success boolean
+     * @param resource $resource
+     *
+     * @return bool success boolean
      */
     public function updateStream($resource)
     {
@@ -47,9 +83,67 @@ class File extends Handler
     }
 
     /**
-     * Get the file's timestamp
+     * Create the file or update if exists.
      *
-     * @return  int  unix timestamp
+     * @param string $content
+     *
+     * @return bool success boolean
+     */
+    public function put($content)
+    {
+        return $this->filesystem->put($this->path, $content);
+    }
+
+    /**
+     * Create the file or update if exists using a stream.
+     *
+     * @param resource $resource
+     *
+     * @return bool success boolean
+     */
+    public function putStream($resource)
+    {
+        return $this->filesystem->putStream($this->path, $resource);
+    }
+
+    /**
+     * Rename the file.
+     *
+     * @param string $newpath
+     *
+     * @return bool success boolean
+     */
+    public function rename($newpath)
+    {
+        if ($this->filesystem->rename($this->path, $newpath)) {
+            $this->path = $newpath;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Copy the file.
+     *
+     * @param string $newpath
+     *
+     * @return File|false new file or false
+     */
+    public function copy($newpath)
+    {
+        if ($this->filesystem->copy($this->path, $newpath)) {
+            return new File($this->filesystem, $newpath);
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the file's timestamp.
+     *
+     * @return int unix timestamp
      */
     public function getTimestamp()
     {
@@ -57,9 +151,9 @@ class File extends Handler
     }
 
     /**
-     * Get the file's mimetype
+     * Get the file's mimetype.
      *
-     * @return  string  mimetime
+     * @return string mimetime
      */
     public function getMimetype()
     {
@@ -67,9 +161,29 @@ class File extends Handler
     }
 
     /**
-     * Get the file size
+     * Get the file's visibility.
      *
-     * @return  int  file size
+     * @return string visibility
+     */
+    public function getVisibility()
+    {
+        return $this->filesystem->getVisibility($this->path);
+    }
+
+    /**
+     * Get the file's metadata.
+     *
+     * @return array
+     */
+    public function getMetadata()
+    {
+        return $this->filesystem->getMetadata($this->path);
+    }
+
+    /**
+     * Get the file size.
+     *
+     * @return int file size
      */
     public function getSize()
     {
@@ -77,9 +191,9 @@ class File extends Handler
     }
 
     /**
-     * Delete the file
+     * Delete the file.
      *
-     * @return  boolean  success boolean
+     * @return bool success boolean
      */
     public function delete()
     {

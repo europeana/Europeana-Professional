@@ -4,6 +4,7 @@
     extensions:  field.extensions|default([]),
     label:       field.label|default(''),
     upload:      field.upload|default(''),
+    can_upload:  field.canUpload,
     info:        field.info|default('info.upload.filelist')
 } %}
 
@@ -53,6 +54,10 @@
     </div>
 {% endset %}
 
+{% set list_item_uploading %}
+    <div>{{ __('Uploading') }} {{ '<FNAME>' }}</div>
+{% endset %}
+
 {% set listdata = {
     'message': {
         'remove':       __('Are you sure you want to remove this image?'),
@@ -61,6 +66,7 @@
     },
     'empty':          list_empty|trim,
     'item':           list_item|trim|preg_replace('/>\\s+</', '><'),
+    'itemUploading':     list_item_uploading|trim|preg_replace('/>\\s+</', '><'),
 } %}
 
 <fieldset class="imagelist">
@@ -70,7 +76,8 @@
 
         <div class="list" data-list="{{ listdata|json_encode }}"></div>
 
-        {{ macro.upload_buttons('image', key, attr_fileupload, option.upload, context.canUpload) }}
+        {% set can_upload = context.can_upload and option.can_upload %}
+        {{ macro.upload_buttons('image', key, attr_fileupload, option.upload, can_upload) }}
 
         <textarea name="{{ key }}" id="{{ key }}" class="hide">{{ list_json }}</textarea>
 
@@ -78,6 +85,8 @@
             <i class="fa fa-trash"></i>
             <span>{{ __('Remove selected') }}</span>
         </span>
+
+        <p class="uploading-list"></p>
 
         {{ block.serverselect(key) }}
 

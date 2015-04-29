@@ -1,10 +1,10 @@
 # app/resources/translations/nl_NL/messages.nl_NL.yml – generated on 2014-12-06 09:23:09 UTC
 
 # Warning: Translations are in the process of being moved to a new keyword-based translation
-#          at the moment. This is an ongoing process. Translations currently in the 
-#          repository are automatically mapped to the new scheme. Be aware that there 
-#          can be a race condition between that process and your PR so that it's 
-#          eventually necessary to remap your translations. If you're planning on 
+#          at the moment. This is an ongoing process. Translations currently in the
+#          repository are automatically mapped to the new scheme. Be aware that there
+#          can be a race condition between that process and your PR so that it's
+#          eventually necessary to remap your translations. If you're planning on
 #          updating your translations, it's best to ask on IRC to time your contribution
 #          in order to prevent merge conflicts.
 
@@ -213,7 +213,7 @@ general.about-bolt: "Over Bolt"
 "Password reset not successful! Either the token was incorrect, or you were too late, or you tried to reset the password from a different IP-address.": "Resetten van het wachtwoord is mislukt! Is het token correct? Wellicht heeft u te lang gewacht of geprobeerd het wachtwoord te resetten vanaf een ander ip-adres."
 "Password reset successful! You can now log on with the password that was sent to you via email.": "Gelukt! Je kunt nu inloggen met het wachtwoord dat per e-mail is verzonden."
 "Path": "Pad"
-"Path to image file": "Pad naar afbeeldings-bestand"
+"Path to image file": "Pad naar afbeelding"
 "Path:": "Pad:"
 "Permalink": "Permalink"
 "Permission denied": "Permissie gewiegerd"
@@ -293,9 +293,7 @@ menu.configuration.routing: "Route instellingen"
 
 "That user does not exist.": "Die gebruiker bestaat niet."
 "The Bolt extensions Repo at %repository% is currently unavailable. Check your connection and try again shortly.": "De Bolt extensies Repo op %repository% is momenteel niet beschikbaar. Controleer je verbinding, en probeer het straks opnieuw"
-"The activitylog has been cleared.": "De activiteitenlog is gewist."
-"The activitylog has been trimmed.": "De activiteitenlog is verkleind."
-"The database needs to be updated/repaired. Go to 'Settings' > '<a href=\"%link%\">Check Database</a>' to do this now.": "De database moet bijgewerkt of gerepareerd worden. Ga naar 'Instellingen' > '<a href=\"%link%\">Controleer Database</a>' om dit nu te doen."
+"The database needs to be updated/repaired. Go to 'Configuration' > '<a href=\"%link%\">Check Database</a>' to do this now.": "De database moet bijgewerkt of gerepareerd worden. Ga naar 'Configuratie' > '<a href=\"%link%\">Controleer Database</a>' om dit nu te doen."
 "The extensions directory (<code>%dir%</code>) does not exist, or it is not writable.": "De directory voor extensies (<code>%dir%</code> bestaat niet of is niet schrijfbaar."
 "The field %field% has been changed to \"%newValue%\"": "Het veld %field% is gewijzigd in \"%newValue%\"."
 "The file '%s' doesn't exist, or is not readable.": "Het bestand '%s' bestaat niet, of is niet leesbaar."
@@ -574,7 +572,6 @@ panel:
             more: "meer activiteit"
         by: "door"
         fixme: "Fixmij:"
-        headline: "Laatste activiteit"
         logged-in: "ingelogd"
         logged-out: "uitgelogd"
         saved: "Opgeslagen"
@@ -591,5 +588,4 @@ users.actions-for-users: "Handelingen voor Gebruikers"
 users.your-password: "Je wachtwoord"
 general.thanks: "Bedankt"
 
-logs.activity-log: "Activiteitenlog"
 

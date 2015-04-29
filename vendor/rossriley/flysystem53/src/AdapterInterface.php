@@ -15,95 +15,104 @@ interface AdapterInterface extends ReadInterface
     const VISIBILITY_PRIVATE = 'private';
 
     /**
-     * Write a new file
+     * Write a new file.
      *
-     * @param   string       $path
-     * @param   string       $contents
-     * @param   mixed        $config   Config object or visibility setting
-     * @return  false|array  false on failure file meta data on success
+     * @param string $path
+     * @param string $contents
+     * @param Config $config   Config object
+     *
+     * @return array|false false on failure file meta data on success
      */
-    public function write($path, $contents, $config = null);
+    public function write($path, $contents, Config $config);
 
     /**
-     * Update a file
+     * Write a new file using a stream.
      *
-     * @param   string       $path
-     * @param   string       $contents
-     * @param   mixed        $config   Config object or visibility setting
-     * @return  false|array  false on failure file meta data on success
+     * @param string   $path
+     * @param resource $resource
+     * @param Config   $config   Config object
+     *
+     * @return array|false false on failure file meta data on success
      */
-    public function update($path, $contents, $config = null);
+    public function writeStream($path, $resource, Config $config);
 
     /**
-     * Write a new file using a stream
+     * Update a file.
      *
-     * @param   string       $path
-     * @param   resource     $resource
-     * @param   mixed        $config   Config object or visibility setting
-     * @return  false|array  false on failure file meta data on success
+     * @param string $path
+     * @param string $contents
+     * @param Config $config   Config object
+     *
+     * @return array|false false on failure file meta data on success
      */
-    public function writeStream($path, $resource, $config = null);
+    public function update($path, $contents, Config $config);
 
     /**
-     * Update a file using a stream
+     * Update a file using a stream.
      *
-     * @param   string       $path
-     * @param   resource     $resource
-     * @param   mixed        $config   Config object or visibility setting
-     * @return  false|array  false on failure file meta data on success
+     * @param string   $path
+     * @param resource $resource
+     * @param Config   $config   Config object
+     *
+     * @return array|false false on failure file meta data on success
      */
-    public function updateStream($path, $resource, $config = null);
+    public function updateStream($path, $resource, Config $config);
 
     /**
-     * Rename a file
+     * Rename a file.
      *
-     * @param   string  $path
-     * @param   string  $newpath
-     * @return  boolean
+     * @param string $path
+     * @param string $newpath
+     *
+     * @return bool
      */
     public function rename($path, $newpath);
 
     /**
-     * Copy a file
+     * Copy a file.
      *
-     * @param   string  $path
-     * @param   string  $newpath
-     * @return  boolean
+     * @param string $path
+     * @param string $newpath
+     *
+     * @return bool
      */
     public function copy($path, $newpath);
 
     /**
-     * Delete a file
+     * Delete a file.
      *
-     * @param   string  $path
-     * @return  boolean
+     * @param string $path
+     *
+     * @return bool
      */
     public function delete($path);
 
     /**
-     * Delete a directory
+     * Delete a directory.
      *
-     * @param   string  $dirname
-     * @return  boolean
+     * @param string $dirname
+     *
+     * @return bool
      */
     public function deleteDir($dirname);
 
     /**
-     * Create a directory
+     * Create a directory.
      *
-     * @param   string       $dirname directory name
-     * @param   array|Config $options
+     * @param string $dirname directory name
+     * @param Config $config
      *
-     * @return  bool
+     * @return array|false
      */
-    public function createDir($dirname, $options = null);
+    public function createDir($dirname, Config $config);
 
     /**
-     * Set the visibility for a file
+     * Set the visibility for a file.
      *
-     * @param   string  $path
-     * @param   string  $visibility
-     * @return  file meta data
+     * @param string $path
+     * @param string $visibility
+     *
+     * @return array|false file meta data
      */
     public function setVisibility($path, $visibility);
 }

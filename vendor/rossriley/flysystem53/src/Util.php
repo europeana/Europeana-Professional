@@ -2,16 +2,17 @@
 
 namespace League\Flysystem;
 
-use LogicException;
 use League\Flysystem\Util\MimeType;
+use LogicException;
 
 class Util
 {
     /**
-     * Get normalized pathinfo
+     * Get normalized pathinfo.
      *
-     * @param   string  $path
-     * @return  array   pathinfo
+     * @param string $path
+     *
+     * @return array pathinfo
      */
     public static function pathinfo($path)
     {
@@ -22,10 +23,11 @@ class Util
     }
 
     /**
-     * Normalize a dirname return value
+     * Normalize a dirname return value.
      *
-     * @param   string  $dirname
-     * @return  string  normalized dirname
+     * @param string $dirname
+     *
+     * @return string normalized dirname
      */
     public static function normalizeDirname($dirname)
     {
@@ -37,10 +39,11 @@ class Util
     }
 
     /**
-     * Get a normalized dirname from a path
+     * Get a normalized dirname from a path.
      *
-     * @param   string  $path
-     * @return  string  dirname
+     * @param string $path
+     *
+     * @return string dirname
      */
     public static function dirname($path)
     {
@@ -48,19 +51,21 @@ class Util
     }
 
     /**
-     * Map result arrays
+     * Map result arrays.
      *
-     * @param   array  $object
-     * @param   array  $map
-     * @return  array  mapped result
+     * @param array $object
+     * @param array $map
+     *
+     * @return array mapped result
      */
     public static function map(array $object, array $map)
     {
         $result = array();
 
         foreach ($map as $from => $to) {
-            if ( ! isset($object[$from]))
+            if (! isset($object[$from])) {
                 continue;
+            }
 
             $result[$to] = $object[$from];
         }
@@ -69,40 +74,61 @@ class Util
     }
 
     /**
-     * Normalize path
+     * Normalize path.
      *
-     * @param   string  $path
-     * @param   string  $separator
-     * @return  string  normalized path
+     * @param string $path
+     *
+     * @throws LogicException
+     *
+     * @return string
      */
-    public static function normalizePath($path, $separator = '\\/')
+    public static function normalizePath($path)
     {
         // Remove any kind of funky unicode whitespace
         $normalized = preg_replace('#\p{C}+|^\./#u', '', $path);
 
+        $normalized = static::normalizeRelativePath($normalized);
+
+        if (preg_match('#/\.{2}|^\.{2}/#', $normalized)) {
+            throw new LogicException('Path is outside of the defined root, path: ['.$path.'], resolved: ['.$normalized.']');
+        }
+
+        // Replace any double directory separators
+        $normalized = preg_replace('#\\\{2,}#', '\\', trim($normalized, '\\'));
+        $normalized = preg_replace('#/{2,}#', '/', trim($normalized, '/'));
+
+        return $normalized;
+    }
+
+    /**
+     * Normalize relative directories in a path.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    public static function normalizeRelativePath($path)
+    {
         // Path remove self referring paths ("/./").
-        $normalized = preg_replace('#/\.(?=/)|^\./|\./$#', '', $normalized);
+        $path = preg_replace('#/\.(?=/)|^\./|\./$#', '', $path);
 
         // Regex for resolving relative paths
         $regex = '#/*[^/\.]+/\.\.#Uu';
 
-        while (preg_match($regex, $normalized)) {
-            $normalized = preg_replace($regex, '', $normalized);
+        while (preg_match($regex, $path)) {
+            $path = preg_replace($regex, '', $path);
         }
 
-        if (preg_match('#/\.{2}|\.{2}/#', $normalized)) {
-            throw new LogicException('Path is outside of the defined root, path: [' . $path . '], resolved: [' . $normalized . ']');
-        }
-
-        return trim($normalized, $separator);
+        return $path;
     }
 
     /**
-     * Normalize prefix
+     * Normalize prefix.
      *
-     * @param   string  $prefix
-     * @param   string  $separator
-     * @return  string  normalized path
+     * @param string $prefix
+     * @param string $separator
+     *
+     * @return string normalized path
      */
     public static function normalizePrefix($prefix, $separator)
     {
@@ -110,10 +136,11 @@ class Util
     }
 
     /**
-     * Get content size
+     * Get content size.
      *
-     * @param   string  $contents
-     * @return  int     content size
+     * @param string $contents
+     *
+     * @return int content size
      */
     public static function contentSize($contents)
     {
@@ -121,11 +148,12 @@ class Util
     }
 
     /**
-     * Guess MIME Type based on the path of the file and it's content
+     * Guess MIME Type based on the path of the file and it's content.
      *
-     * @param  string $path
-     * @param  string $content
-     * @return string|null     MIME Type or NULL if no extension detected
+     * @param string $path
+     * @param string $content
+     *
+     * @return string|null MIME Type or NULL if no extension detected
      */
     public static function guessMimeType($path, $content)
     {
@@ -135,7 +163,7 @@ class Util
             $extension = pathinfo($path, PATHINFO_EXTENSION);
 
             if ($extension) {
-                $mimeType = MimeType::detectByFileExtension($extension) ?: $mimeType;
+                $mimeType = MimeType::detectByFileExtension($extension) ?: 'text/plain';
             }
         }
 
@@ -143,30 +171,22 @@ class Util
     }
 
     /**
-     * Emulate directories
+     * Emulate directories.
      *
-     * @param   array  $listing
-     * @return  array  listing with emulated directories
+     * @param array $listing
+     *
+     * @return array listing with emulated directories
      */
     public static function emulateDirectories(array $listing)
     {
         $directories = array();
+        $listedDirectories = array();
 
         foreach ($listing as $object) {
-            if (empty($object['dirname'])) {
-                continue;
-            }
-
-            $parent = $object['dirname'];
-
-            while( ! empty($parent) && ! in_array($parent, $directories)) {
-                $directories[] = $parent;
-
-                $parent = static::dirname($parent);
-            }
+            list($directories, $listedDirectories) = static::emulateObjectDirectories($object, $directories, $listedDirectories);
         }
 
-        $directories = array_unique($directories);
+        $directories = array_diff(array_unique($directories), array_unique($listedDirectories));
 
         foreach ($directories as $directory) {
             $listing[] = static::pathinfo($directory) + array('type' => 'dir');
@@ -176,16 +196,18 @@ class Util
     }
 
     /**
-     * Ensure a Config instance
+     * Ensure a Config instance.
      *
-     * @param  string|array|Config  $config
-     * @return Config  config instance
+     * @param string|null|array|Config $config
+     *
+     * @return Config config instance
+     *
      * @throw  LogicException
      */
     public static function ensureConfig($config)
     {
         if ($config === null) {
-            return new Config;
+            return new Config();
         }
 
         if ($config instanceof Config) {
@@ -205,14 +227,60 @@ class Util
     }
 
     /**
-     * Rewind a stream
+     * Rewind a stream.
      *
-     * @param  resource  $resource
+     * @param resource $resource
      */
     public static function rewindStream($resource)
     {
         if (ftell($resource) !== 0) {
             rewind($resource);
         }
+    }
+
+    /**
+     * Get the size of a stream.
+     *
+     * @param resource $resource
+     *
+     * @return int stream size
+     */
+    public static function getStreamSize($resource)
+    {
+        $stat = fstat($resource);
+
+        return $stat['size'];
+    }
+
+    /**
+     * Emulate the directories of a single object.
+     *
+     * @param array $object
+     * @param array $directories
+     * @param array $listedDirectories
+     *
+     * @return array
+     */
+    protected static function emulateObjectDirectories(array $object, array $directories, array $listedDirectories)
+    {
+        if (empty($object['dirname'])) {
+            return array($directories, $listedDirectories);
+        }
+
+        $parent = $object['dirname'];
+
+        while (! empty($parent) && ! in_array($parent, $directories)) {
+            $directories[] = $parent;
+
+            $parent = static::dirname($parent);
+        }
+
+        if (isset($object['type']) && $object['type'] === 'dir') {
+            $listedDirectories[] = $object['path'];
+
+            return array($directories, $listedDirectories);
+        }
+
+        return array($directories, $listedDirectories);
     }
 }

@@ -2,20 +2,66 @@
 
 namespace League\Flysystem;
 
-use LogicException;
 use InvalidArgumentException;
+use League\Flysystem\Plugin\PluggableTrait;
+use League\Flysystem\Plugin\PluginNotFoundException;
+use LogicException;
 
+/**
+ * Class MountManager.
+ *
+ * Proxies methods to Filesystem (@see __call):
+ *
+ * @method AdapterInterface getAdapter($prefix)
+ * @method Config getConfig($prefix)
+ * @method bool has($path)
+ * @method bool write($path, $contents, array $config = [])
+ * @method bool writeStream($path, $resource, array $config = [])
+ * @method bool put($path, $contents, $config = [])
+ * @method bool putStream($path, $contents, $config = [])
+ * @method string readAndDelete($path)
+ * @method bool update($path, $contents, $config = [])
+ * @method bool updateStream($path, $resource, $config = [])
+ * @method string|false read($path)
+ * @method resource|false readStream($path)
+ * @method bool rename($path, $newpath)
+ * @method bool delete($path)
+ * @method bool deleteDir($dirname)
+ * @method bool createDir($dirname, $config = [])
+ * @method array listFiles($directory = '', $recursive = false)
+ * @method array listPaths($directory = '', $recursive = false)
+ * @method array listWith(array $keys = array(), $directory = '', $recursive = false)
+ * @method array getWithMetadata($path, array $metadata)
+ * @method string|false getMimetype($path)
+ * @method string|false getTimestamp($path)
+ * @method string|false getVisibility($path)
+ * @method int|false getSize($path);
+ * @method bool setVisibility($path, $visibility)
+ * @method array|false getMetadata($path)
+ * @method Handler get($path, Handler $handler = null)
+ * @method Filesystem flushCache()
+ * @method assertPresent($path)
+ * @method assertAbsent($path)
+ * @method Filesystem addPlugin(PluginInterface $plugin)
+ */
 class MountManager
 {
-    /**
-     * @var  array  $filesystems
-     */
-    protected $filesystems = array();
 
     /**
-     * Constructor
+     * @var array
+     */
+    protected $filesystems = array();
+    
+        
+    /**
+     * @var array
+     */
+    protected $plugins = array();
+
+    /**
+     * Constructor.
      *
-     * @param   array  $filesystems
+     * @param array $filesystems
      */
     public function __construct(array $filesystems = array())
     {
@@ -23,10 +69,11 @@ class MountManager
     }
 
     /**
-     * Mount filesystems
+     * Mount filesystems.
      *
-     * @param   array  $filesystems  [:prefix => Filesystem,]
-     * @return  $this
+     * @param array $filesystems [:prefix => Filesystem,]
+     *
+     * @return $this
      */
     public function mountFilesystems(array $filesystems)
     {
@@ -38,15 +85,16 @@ class MountManager
     }
 
     /**
-     * Mount filesystems
+     * Mount filesystems.
      *
-     * @param   string               $prefix
-     * @param   FilesystemInterface  $filesystem
-     * @return  $this
+     * @param string              $prefix
+     * @param FilesystemInterface $filesystem
+     *
+     * @return $this
      */
     public function mountFilesystem($prefix, FilesystemInterface $filesystem)
     {
-        if ( ! is_string($prefix)) {
+        if (! is_string($prefix)) {
             throw new InvalidArgumentException(__METHOD__.' expects argument #1 to be a string.');
         }
 
@@ -56,26 +104,29 @@ class MountManager
     }
 
     /**
-     * Get the filesystem with the corresponding prefix
+     * Get the filesystem with the corresponding prefix.
      *
-     * @param    string               $prefix
-     * @return   FilesystemInterface
-     * @throws   LogicException
+     * @param string $prefix
+     *
+     * @throws LogicException
+     *
+     * @return FilesystemInterface
      */
     public function getFilesystem($prefix)
     {
-        if ( ! isset($this->filesystems[$prefix])) {
-            throw new LogicException('No filesystem mounted with prefix ' . $prefix);
+        if (! isset($this->filesystems[$prefix])) {
+            throw new LogicException('No filesystem mounted with prefix '.$prefix);
         }
 
         return $this->filesystems[$prefix];
     }
 
     /**
-     * Retrieve the prefix form an arguments array
+     * Retrieve the prefix form an arguments array.
      *
-     * @param   array  $arguments
-     * @return  array  [:prefix, :arguments]
+     * @param array $arguments
+     *
+     * @return array [:prefix, :arguments]
      */
     public function filterPrefix(array $arguments)
     {
@@ -85,34 +136,165 @@ class MountManager
 
         $path = array_shift($arguments);
 
-        if ( ! is_string($path)) {
+        if (! is_string($path)) {
             throw new InvalidArgumentException('First argument should be a string');
         }
 
-        if ( ! preg_match('#^[a-zA-Z0-9]+\:\/\/.*#', $path)) {
-            throw new InvalidArgumentException('No prefix detected in for path: ' . $path);
+        if (! preg_match('#^[a-zA-Z0-9]+\:\/\/.*#', $path)) {
+            throw new InvalidArgumentException('No prefix detected in for path: '.$path);
         }
 
-        list ($prefix, $path) = explode('://', $path, 2);
+        list($prefix, $path) = explode('://', $path, 2);
         array_unshift($arguments, $path);
 
         return array($prefix, $arguments);
     }
 
     /**
-     * Call forwarder
+     * @param string $directory
+     * @param bool   $recursive
      *
-     * @param   string  $method
-     * @param   array   $arguments
-     * @return  mixed
+     * @return array
+     */
+    public function listContents($directory = '', $recursive = false)
+    {
+        list($prefix, $arguments) = $this->filterPrefix(array($directory));
+        $filesystem = $this->getFilesystem($prefix);
+        $directory = array_shift($arguments);
+        $result = $filesystem->listContents($directory, $recursive);
+
+        foreach ($result as &$file) {
+            $file['filesystem'] = $prefix;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Call forwarder.
+     *
+     * @param string $method
+     * @param array  $arguments
+     *
+     * @return mixed
      */
     public function __call($method, $arguments)
     {
         list($prefix, $arguments) = $this->filterPrefix($arguments);
 
         $filesystem = $this->getFilesystem($prefix);
+
+        try {
+            return $this->invokePlugin($method, $arguments, $filesystem);
+        } catch (PluginNotFoundException $e) {
+            // Let it pass, it's ok, don't panic.
+        }
+
         $callback = array($filesystem, $method);
 
         return call_user_func_array($callback, $arguments);
     }
+
+    /**
+     * @param $from
+     * @param $to
+     *
+     * @return bool
+     */
+    public function copy($from, $to)
+    {
+        list($prefixFrom, $arguments) = $this->filterPrefix(array($from));
+
+        $fsFrom = $this->getFilesystem($prefixFrom);
+        $buffer = call_user_func_array(array($fsFrom, 'readStream'), $arguments);
+
+        if ($buffer === false) {
+            return false;
+        }
+
+        list($prefixTo, $arguments) = $this->filterPrefix(array($to));
+
+        $fsTo = $this->getFilesystem($prefixTo);
+        $result =  call_user_func_array(array($fsTo, 'writeStream'), array_merge($arguments, array($buffer)));
+
+        if (is_resource($buffer)) {
+            fclose($buffer);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Move a file.
+     *
+     * @param $from
+     * @param $to
+     */
+    public function move($from, $to)
+    {
+        $copied = $this->copy($from, $to);
+
+        if ($copied) {
+            return $this->delete($from);
+        }
+
+        return false;
+    }
+    
+
+
+    /**
+     * Register a plugin.
+     *
+     * @param PluginInterface $plugin
+     *
+     * @return $this
+     */
+    public function addPlugin(PluginInterface $plugin)
+    {
+        $this->plugins[$plugin->getMethod()] = $plugin;
+
+        return $this;
+    }
+
+    /**
+     * Register a plugin.
+     *
+     * @param string $method
+     *
+     * @throws LogicException
+     *
+     * @return PluginInterface $plugin
+     */
+    protected function findPlugin($method)
+    {
+        if (! isset($this->plugins[$method])) {
+            throw new PluginNotFoundException('Plugin not found for method: '.$method);
+        }
+
+        if (! method_exists($this->plugins[$method], 'handle')) {
+            throw new LogicException(get_class($this->plugins[$method]).' does not have a handle method.');
+        }
+
+        return $this->plugins[$method];
+    }
+
+    /**
+     * Invoke a plugin by method name.
+     *
+     * @param string $method
+     * @param array  $arguments
+     *
+     * @return mixed
+     */
+    protected function invokePlugin($method, array $arguments, FilesystemInterface $filesystem)
+    {
+        $plugin = $this->findPlugin($method);
+        $plugin->setFilesystem($filesystem);
+        $callback = array($plugin, 'handle');
+
+        return call_user_func_array($callback, $arguments);
+    }
+    
+    
 }

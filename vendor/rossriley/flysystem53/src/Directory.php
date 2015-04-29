@@ -5,9 +5,9 @@ namespace League\Flysystem;
 class Directory extends Handler
 {
     /**
-     * Delete the directory
+     * Delete the directory.
      *
-     * @return  void
+     * @return bool
      */
     public function delete()
     {
@@ -15,10 +15,11 @@ class Directory extends Handler
     }
 
     /**
-     * List the directory contents
+     * List the directory contents.
      *
-     * @param   boolean        $recursive
-     * @return  array|boolean  directory contents or false
+     * @param bool $recursive
+     *
+     * @return array|bool directory contents or false
      */
     public function getContents($recursive = false)
     {

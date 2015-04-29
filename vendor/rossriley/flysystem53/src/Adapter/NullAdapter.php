@@ -2,16 +2,20 @@
 
 namespace League\Flysystem\Adapter;
 
+use League\Flysystem\Adapter\Polyfill\StreamedCopyTrait;
+use League\Flysystem\Adapter\Polyfill\StreamedTrait;
 use League\Flysystem\Config;
 use League\Flysystem\Util;
 
 class NullAdapter extends AbstractAdapter
 {
+
     /**
-     * Check whether a file is present
+     * Check whether a file is present.
      *
-     * @param   string   $path
-     * @return  boolean
+     * @param string $path
+     *
+     * @return bool
      */
     public function has($path)
     {
@@ -19,14 +23,9 @@ class NullAdapter extends AbstractAdapter
     }
 
     /**
-     * Write a file
-     *
-     * @param $path
-     * @param $contents
-     * @param null $config
-     * @return array|bool
+     * {@inheritdoc}
      */
-    public function write($path, $contents, $config = null)
+    public function write($path, $contents, Config $config)
     {
         $type = 'file';
         $config = Util::ensureConfig($config);
@@ -40,23 +39,15 @@ class NullAdapter extends AbstractAdapter
     }
 
     /**
-     * Update a file
-     *
-     * @param   string       $path
-     * @param   string       $contents
-     * @param   mixed        $config   Config object or visibility setting
-     * @return  array|bool
+     * {@inheritdoc}
      */
-    public function update($path, $contents, $config = null)
+    public function update($path, $contents, Config $config)
     {
         return false;
     }
 
     /**
-     * Read a file
-     *
-     * @param   string  $path
-     * @return  array|bool
+     * {@inheritdoc}
      */
     public function read($path)
     {
@@ -64,23 +55,15 @@ class NullAdapter extends AbstractAdapter
     }
 
     /**
-     * Rename a file
-     *
-     * @param $path
-     * @param $newpath
-     * @return bool
+     * {@inheritdoc}
      */
     public function rename($path, $newpath)
     {
         return false;
     }
 
-
     /**
-     * Delete a file
-     *
-     * @param $path
-     * @return bool
+     * {@inheritdoc}
      */
     public function delete($path)
     {
@@ -88,22 +71,15 @@ class NullAdapter extends AbstractAdapter
     }
 
     /**
-     * List contents of a directory
-     *
-     * @param string $directory
-     * @param bool $recursive
-     * @return array
+     * {@inheritdoc}
      */
     public function listContents($directory = '', $recursive = false)
     {
-        return false;
+        return array();
     }
 
     /**
-     * Get the metadata of a file
-     *
-     * @param $path
-     * @return array|false
+     * {@inheritdoc}
      */
     public function getMetadata($path)
     {
@@ -111,10 +87,7 @@ class NullAdapter extends AbstractAdapter
     }
 
     /**
-     * Get the size of a file
-     *
-     * @param $path
-     * @return array|false
+     * {@inheritdoc}
      */
     public function getSize($path)
     {
@@ -122,10 +95,7 @@ class NullAdapter extends AbstractAdapter
     }
 
     /**
-     * Get the mimetype of a file
-     *
-     * @param $path
-     * @return array
+     * {@inheritdoc}
      */
     public function getMimetype($path)
     {
@@ -133,10 +103,7 @@ class NullAdapter extends AbstractAdapter
     }
 
     /**
-     * Get the timestamp of a file
-     *
-     * @param $path
-     * @return array|boolean
+     * {@inheritdoc}
      */
     public function getTimestamp($path)
     {
@@ -144,10 +111,7 @@ class NullAdapter extends AbstractAdapter
     }
 
     /**
-     * Get the visibility of a file
-     *
-     * @param $path
-     * @return array|bool
+     * {@inheritdoc}
      */
     public function getVisibility($path)
     {
@@ -155,11 +119,7 @@ class NullAdapter extends AbstractAdapter
     }
 
     /**
-     * Set the visibility of a file
-     *
-     * @param $path
-     * @param $visibility
-     * @return array|void
+     * {@inheritdoc}
      */
     public function setVisibility($path, $visibility)
     {
@@ -167,26 +127,118 @@ class NullAdapter extends AbstractAdapter
     }
 
     /**
-     * Create a directory
-     *
-     * @param   string       $dirname directory name
-     * @param   array|Config $options
-     *
-     * @return  bool
+     * {@inheritdoc}
      */
-    public function createDir($dirname, $options = null)
+    public function createDir($dirname, Config $config)
     {
         return array('path' => $dirname, 'type' => 'dir');
     }
 
     /**
-     * Delete a directory
-     *
-     * @param $dirname
-     * @return bool
+     * {@inheritdoc}
      */
     public function deleteDir($dirname)
     {
         return false;
     }
+    
+    
+    
+    /**
+     * Get the contents of a file in a stream.
+     *
+     * @param string $path
+     *
+     * @return resource|false false when not found, or a resource
+     */
+    public function readStream($path)
+    {
+        if (! $data = $this->read($path)) {
+            return false;
+        }
+
+        $stream = tmpfile();
+        fwrite($stream, $data['contents']);
+        rewind($stream);
+        $data['stream'] = $stream;
+        unset($data['contents']);
+
+        return $data;
+    }
+
+
+    /**
+     * Stream fallback delegator.
+     *
+     * @param string   $path
+     * @param resource $resource
+     * @param Config   $config
+     * @param string   $fallback
+     *
+     * @return mixed fallback result
+     */
+    protected function stream($path, $resource, Config $config, $fallback)
+    {
+        $contents = stream_get_contents($resource);
+        $fallbackCall = array($this, $fallback);
+
+        return call_user_func($fallbackCall, $path, $contents, $config);
+    }
+
+    /**
+     * Write using a stream.
+     *
+     * @param string   $path
+     * @param resource $resource
+     * @param Config   $config
+     *
+     * @return mixed false or file metadata
+     */
+    public function writeStream($path, $resource, Config $config)
+    {
+        return $this->stream($path, $resource, $config, 'write');
+    }
+
+    /**
+     * Update a file using a stream.
+     *
+     * @param string   $path
+     * @param resource $resource
+     * @param Config   $config   Config object or visibility setting
+     *
+     * @return mixed false of file metadata
+     */
+    public function updateStream($path, $resource, Config $config)
+    {
+        return $this->stream($path, $resource, $config, 'update');
+    }
+
+    
+    /**
+     * Copy a file.
+     *
+     * @param string $path
+     * @param string $newpath
+     *
+     * @return bool
+     */
+    public function copy($path, $newpath)
+    {
+        $response = $this->readStream($path);
+
+        if ($response === false || ! is_resource($response['stream'])) {
+            return false;
+        }
+
+        $result = $this->writeStream($newpath, $response['stream'], new Config());
+
+        if (is_resource($response['stream'])) {
+            fclose($response['stream']);
+        }
+
+        return (boolean) $result;
+    }
+
+    // Required abstract method
+
 }

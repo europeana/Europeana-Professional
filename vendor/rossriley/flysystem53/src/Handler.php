@@ -5,21 +5,20 @@ namespace League\Flysystem;
 abstract class Handler
 {
     /**
-     * @var  string  $path
+     * @var string
      */
     protected $path;
 
     /**
-     * @var  FilesystemInterface  $filesystem
+     * @var FilesystemInterface
      */
-
     protected $filesystem;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param  FilesystemInterface  $filesystem
-     * @param   string               $path
+     * @param FilesystemInterface $filesystem
+     * @param string              $path
      */
     public function __construct(FilesystemInterface $filesystem = null, $path = null)
     {
@@ -28,9 +27,9 @@ abstract class Handler
     }
 
     /**
-     * Check whether the entree is a directory
+     * Check whether the entree is a directory.
      *
-     * @return  boolean
+     * @return bool
      */
     public function isDir()
     {
@@ -38,9 +37,9 @@ abstract class Handler
     }
 
     /**
-     * Check whether the entree is a file
+     * Check whether the entree is a file.
      *
-     * @return  boolean
+     * @return bool
      */
     public function isFile()
     {
@@ -48,9 +47,9 @@ abstract class Handler
     }
 
     /**
-     * Retrieve the entree type (file|dir)
+     * Retrieve the entree type (file|dir).
      *
-     * @return  string  file or dir
+     * @return string file or dir
      */
     public function getType()
     {
@@ -60,10 +59,11 @@ abstract class Handler
     }
 
     /**
-     * Set the Filesystem object
+     * Set the Filesystem object.
      *
-     * @param   FilesystemInterface  $filesystem
-     * @return  $this
+     * @param FilesystemInterface $filesystem
+     *
+     * @return $this
      */
     public function setFilesystem(FilesystemInterface $filesystem)
     {
@@ -73,10 +73,11 @@ abstract class Handler
     }
 
     /**
-     * Set the entree path
+     * Set the entree path.
      *
-     * @param   string  $path
-     * @return  $this
+     * @param string $path
+     *
+     * @return $this
      */
     public function setPath($path)
     {
@@ -86,12 +87,28 @@ abstract class Handler
     }
 
     /**
-     * Retrieve the entree path
+     * Retrieve the entree path.
      *
-     * @return  string  path
+     * @return string path
      */
     public function getPath()
     {
         return $this->path;
+    }
+
+    /**
+     * Plugins pass-through.
+     *
+     * @param string $method
+     * @param array  $arguments
+     *
+     * @return mixed
+     */
+    public function __call($method, array $arguments)
+    {
+        array_unshift($arguments, $this->path);
+        $callback = array($this->filesystem, $method);
+
+        return call_user_func_array($callback, $arguments);
     }
 }

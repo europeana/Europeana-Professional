@@ -1,10 +1,10 @@
 # app/resources/translations/en_GB/messages.en_GB.yml – generated on 2014-12-06 09:22:41 UTC
 
 # Warning: Translations are in the process of being moved to a new keyword-based translation
-#          at the moment. This is an ongoing process. Translations currently in the 
-#          repository are automatically mapped to the new scheme. Be aware that there 
-#          can be a race condition between that process and your PR so that it's 
-#          eventually necessary to remap your translations. If you're planning on 
+#          at the moment. This is an ongoing process. Translations currently in the
+#          repository are automatically mapped to the new scheme. Be aware that there
+#          can be a race condition between that process and your PR so that it's
+#          eventually necessary to remap your translations. If you're planning on
 #          updating your translations, it's best to ask on IRC to time your contribution
 #          in order to prevent merge conflicts.
 
@@ -28,7 +28,8 @@ general.about: "About"
 general.about-bolt: "About Bolt"
 "Actions": "Actions"
 users.actions-for-users: "Actions for Users"
-logs.activity-log: "Activity log"
+logs.change-log: "Change Log"
+logs.system-log: "System Log"
 "Add a brief, optional comment to describe what's changed.": "Add a brief, optional comment to describe what's changed."
 "Add a comment:": "Add a comment:"
 "Add a new extension using the form below.": "Add a new extension using the form below."
@@ -297,9 +298,11 @@ menu.configuration.routing: "Routing set up"
 general.thanks: "Thanks"
 "That user does not exist.": "That user does not exist."
 "The Bolt extensions Repo at %repository% is currently unavailable. Check your connection and try again shortly.": "The Bolt extensions Repo at %repository% is currently unavailable. Check your connection and try again shortly."
-"The activitylog has been cleared.": "The activity log has been cleared."
-"The activitylog has been trimmed.": "The activity log has been trimmed."
-"The database needs to be updated/repaired. Go to 'Settings' > '<a href=\"%link%\">Check Database</a>' to do this now.": "The database needs to be updated/repaired. Go to 'Settings' > '<a href=\"%link%\">Check Database</a>' to do this now."
+"The change log has been cleared.": "The change log has been cleared."
+"The change log has been trimmed.": "The change log has been trimmed."
+"The system log has been cleared.": "The system log has been cleared."
+"The system log has been trimmed.": "The system log has been trimmed."
+"The database needs to be updated/repaired. Go to 'Configuration' > '<a href=\"%link%\">Check Database</a>' to do this now.": "The database needs to be updated/repaired. Go to 'Configuration' > '<a href=\"%link%\">Check Database</a>' to do this now."
 "The extensions directory (<code>%dir%</code>) does not exist, or it is not writable.": "The extensions directory (<code>%dir%</code>) does not exist, or it is not writable."
 "The field %field% has been changed to \"%newValue%\"": "The field %field% has been changed to \"%newValue%\""
 "The file '%s' doesn't exist, or is not readable.": "The file '%s' doesn't exist, or is not readable."
@@ -401,9 +404,9 @@ users.your-password: "Your password"
 component:
     changelog-detail:
         by: "by"
-        field: "field"
-        value-new: "new value"
-        value-old: "old value"
+        field: "Field"
+        value-new: "New value"
+        value-old: "Old value"
     changelog-pager:
         page: "Page"
 
@@ -435,6 +438,7 @@ contenttypes:
         publish: "Publish %contenttype%"
         recent: "Recent %contenttypes%"
         recently-edited: "Recently edited %contenttypes%"
+        recent-changes-one: "Recent changes to this %contenttype%"
         reserved-name: "In the contenttype for '%contenttype%', the field '%field%' is defined, which is a reserved name. Please edit contenttypes.yml, and correct this."
         save: "Save %contenttype%"
         saved-changes: "The changes to this %contenttype% have been saved."
@@ -532,11 +536,11 @@ page:
             last-seen: "Last seen"
             password: "Password"
             password-confirm: "Password (confirmation)"
-            user-enabled: "User is enabled"
+            user-enabled: "User account is enabled"
             username: "Username"
         log:
-            user-added: "Added user '%user%'."
-            user-updated: "Updated user '%user%'."
+            user-added: "Added user account '%user%'."
+            user-updated: "Updated user account '%user%'."
         message:
             saving-user: "User %user% could not be saved, or nothing was changed."
             user-saved: "User %user% has been saved."
@@ -549,11 +553,11 @@ page:
             password-confirm: "Confirm your password"
             username: "Pick a username, lowercase only"
         title:
-            create: "Create a new user"
-            edit: "Edit user"
+            create: "Create a new user account"
+            edit: "Edit user account"
             profile: "Profile"
-        user-create: "Create a new user, using the form below. The password field is required."
-        user-edit: "Edit an existing user, using the form below. Leave the password fields empty, unless you wish to change the password."
+        user-create: "Create a new user account, using the form below. The password field is required."
+        user-edit: "Edit an existing user account, using the form below. Leave the password fields empty, unless you wish to change the password."
     login:
         button:
             back: "Back to login"
@@ -576,10 +580,13 @@ panel:
             more: "more activity"
         by: "by"
         fixme: "Fixme:"
-        headline: "Latest activity"
+        change: "Latest changes"
         logged-in: "logged in"
         logged-out: "logged out"
+        created: "Created"
         saved: "Saved"
+        system: "Latest system activity"
+        deleted: "Deleted"
         unknown: "unknown"
     user-actions:
         button:

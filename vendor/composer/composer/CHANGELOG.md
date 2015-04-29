@@ -1,3 +1,27 @@
+### 1.0.0-alpha10 (2015-04-14)
+
+  * Break: The following event classes are deprecated and you should update your script handlers to use the new ones in type hints:
+    - `Composer\Script\CommandEvent` is deprecated, use `Composer\Script\Event`
+    - `Composer\Script\PackageEvent` is deprecated, use `Composer\Installer\PackageEvent`
+  * Break: Output is now split between stdout and stderr. Any irrelevant output to each command is on stderr as per unix best practices.
+  * Added support for npm-style semver operators (`^` and `-` ranges, ` ` = AND, `||` = OR)
+  * Added --prefer-lowest to `update` command to allow testing a package with the lowest declared dependencies
+  * Added support for parsing semver build metadata `+anything` at the end of versions
+  * Added --sort-packages option to `require` command for sorting dependencies
+  * Added --no-autoloader to `install` and `update` commands to skip autoload generation
+  * Added --list to `run-script` command to see available scripts
+  * Added --absolute to `config` command to get back absolute paths
+  * Added `classmap-authoritative` config option, if enabled only the classmap info will be used by the composer autoloader
+  * Added support for branch-alias on numeric branches
+  * Added support for the `https_proxy`/`HTTPS_PROXY` env vars used only for https URLs
+  * Added support for using real composer repos as local paths in `create-project` command
+  * Added --no-dev to `licenses` command
+  * Added support for PHP 7.0 nightly builds
+  * Fixed detection of stability when parsing multiple constraints
+  * Fixed installs from lock file containing updated composer.json requirement
+  * Fixed the autoloader suffix in vendor/autoload.php changing in every build
+  * Many minor fixes, documentation additions and UX improvements
+
 ### 1.0.0-alpha9 (2014-12-07)
 
   * Added `remove` command to do the reverse of `require`
@@ -113,7 +137,7 @@
 ### 1.0.0-alpha6 (2012-10-23)
 
   * Schema: Added ability to pass additional options to repositories (i.e. ssh keys/client certificates to secure private repos)
-  * Schema: Added a new `~` operator that should be prefered over `>=`, see http://getcomposer.org/doc/01-basic-usage.md#package-versions
+  * Schema: Added a new `~` operator that should be preferred over `>=`, see http://getcomposer.org/doc/01-basic-usage.md#package-versions
   * Schema: Version constraints `<x.y` are assumed to be `<x.y-dev` unless specified as `<x.y-stable` to reduce confusion
   * Added `config` command to edit/list config values, including --global switch for system config
   * Added OAuth token support for the GitHub API
@@ -121,7 +145,7 @@
   * Added --prefer-dist flag to force installs of dev packages from zip archives instead of clones
   * Added --working-dir (-d) flag to change the working directory
   * Added --profile flag to all commands to display execution time and memory usage
-  * Added `github-protocols` config key to define the order of prefered protocols for github.com clones
+  * Added `github-protocols` config key to define the order of preferred protocols for github.com clones
   * Added ability to interactively reset changes to vendor dirs while updating
   * Added support for hg bookmarks in the hg driver
   * Added support for svn repositories not following the standard trunk/branch/tags scheme

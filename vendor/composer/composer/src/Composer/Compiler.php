@@ -55,7 +55,7 @@ class Compiler
         $date->setTimezone(new \DateTimeZone('UTC'));
         $this->versionDate = $date->format('Y-m-d H:i:s');
 
-        $process = new Process('git describe --tags HEAD');
+        $process = new Process('git describe --tags --exact-match HEAD');
         if ($process->run() == 0) {
             $this->version = trim($process->getOutput());
         } else {
@@ -102,10 +102,13 @@ class Compiler
         $finder->files()
             ->ignoreVCS(true)
             ->name('*.php')
+            ->name('LICENSE')
             ->exclude('Tests')
+            ->exclude('tests')
+            ->exclude('docs')
             ->in(__DIR__.'/../../vendor/symfony/')
-            ->in(__DIR__.'/../../vendor/seld/jsonlint/src/')
-            ->in(__DIR__.'/../../vendor/justinrainbow/json-schema/src/')
+            ->in(__DIR__.'/../../vendor/seld/jsonlint/')
+            ->in(__DIR__.'/../../vendor/justinrainbow/json-schema/')
         ;
 
         foreach ($finder as $file) {

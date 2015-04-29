@@ -49,7 +49,7 @@ class FrontendExt
 			}
 		}
 	
-		$app['log']->setValue('templatechosen', $app['config']->get('general/theme') . "/$template ($chosen)");
+		// $app['log']->setValue('templatechosen', $app['config']->get('general/theme') . "/$template ($chosen)");
 	
 		// Fallback: If file is not OK, show an error page
 		$filename = $app['paths']['themepath'] . "/" . $template;

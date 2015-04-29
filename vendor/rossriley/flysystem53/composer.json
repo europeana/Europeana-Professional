@@ -1,7 +1,11 @@
 {
-    "name": "league/flysystem",
-    "description": "Filesystem abstraction, but easy.",
-    "keywords": ["filesystem", "dropbox", "aws", "s3", "ftp", "sftp", "remote", "webdav"],
+    "name": "rossriley/flysystem53",
+    "description": "Many filesystems, one API. - This fork maintains PHP 5.3 compatibility while tracking upstream",
+    "keywords": [
+        "filesystem", "files", "storage", "dropbox", "aws",
+        "s3", "ftp", "sftp", "remote", "webdav", "file systems", "cloud",
+        "cloud files", "rackspace", "copy.com"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -9,36 +13,53 @@
             "email": "info@frenky.net"
         }
     ],
-    
+    "require": {
+        "php": ">=5.3.0"
+    },
     "require-dev": {
-        "league/event": "~0.2.0",
+        "ext-fileinfo": "*",
         "phpunit/phpunit": "~4.0",
-        "mockery/mockery": "~0.9@dev",
-        "aws/aws-sdk-php": "~2.4",
-        "predis/predis": "~0.8.4",
-        "dropbox/dropbox-sdk": "~1.1.1",
-        "rackspace/php-opencloud": "~1.9.1",
-        "sabre/dav": "~2.0.2",
-        "phpseclib/phpseclib": "~0.3.5",
-        "league/phpunit-coverage-listener" : "~1.1"
+        "mockery/mockery": "~0.9",
+        "predis/predis": "~1.0",
+        "tedivm/stash": "~0.12.0",
+        "league/phpunit-coverage-listener" : "~1.1",
+        "phpspec/phpspec": "~2.0.0",
+        "phpspec/prophecy-phpunit": "~1.0"
     },
     "autoload": {
         "psr-4": {
             "League\\Flysystem\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "League\\Flysystem\\Stub\\": "stub/"
+        }
+    },
+    "replace": {
+      "league/flysystem": "~1.1"
+    },
     "suggest": {
-        "league/event": "Required for EventableFilesystem",
-        "aws/aws-sdk-php": "Allows you to use AWS S3 storage",
+        "ext-fileinfo": "Required for MimeType",
         "predis/predis": "Allows you to use Predis for caching",
-        "dropbox/dropbox-sdk": "Allows you to use Dropbox storage",
-        "phpseclib/phpseclib": "Allows SFTP server storage",
-        "sabre/dav": "Enables WebDav support",
-        "rackspace/php-opencloud": "Allows you to use Rackspace Cloud Files"
+        "league/flysystem-eventable-filesystem": "Allows you to use EventableFilesystem",
+        "league/flysystem-rackspace": "Allows you to use Rackspace Cloud Files",
+        "league/flysystem-copy": "Allows you to use Copy.com storage",
+        "league/flysystem-azure": "Allows you to use Windows Azure Blob storage",
+        "league/flysystem-webdav": "Allows you to use WebDAV storage",
+        "league/flysystem-aws-s3-v2": "Use S3 storage with AWS SDK v2",
+        "league/flysystem-aws-s3-v3": "Use S3 storage with AWS SDK v3",
+        "league/flysystem-dropbox": "Use Dropbox storage",
+        "league/flysystem-cached-adapter": "Flysystem adapter decorator for metadata caching",
+        "league/flysystem-sftp": "Allows SFTP server storage via phpseclib",
+        "league/flysystem-ziparchive": "Allows you to use ZipArchive adapter"
+    },
+    "config": {
+        "bin-dir": "bin"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.5-dev"
+            "dev-master": "1.1-dev"
         }
     }
 }

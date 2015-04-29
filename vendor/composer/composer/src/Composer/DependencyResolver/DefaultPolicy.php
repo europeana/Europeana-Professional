@@ -24,10 +24,12 @@ use Composer\Package\LinkConstraint\VersionConstraint;
 class DefaultPolicy implements PolicyInterface
 {
     private $preferStable;
+    private $preferLowest;
 
-    public function __construct($preferStable = false)
+    public function __construct($preferStable = false, $preferLowest = false)
     {
         $this->preferStable = $preferStable;
+        $this->preferLowest = $preferLowest;
     }
 
     public function versionCompare(PackageInterface $a, PackageInterface $b, $operator)
@@ -60,7 +62,15 @@ class DefaultPolicy implements PolicyInterface
         return $pool->getPriority($package->getRepository());
     }
 
+    /**
+     * @deprecated Method has been renamed to selectPreferredPackages, you should update usages
+     */
     public function selectPreferedPackages(Pool $pool, array $installedMap, array $literals, $requiredPackage = null)
+    {
+        return $this->selectPreferredPackages($pool, $installedMap, $literals, $requiredPackage);
+    }
+
+    public function selectPreferredPackages(Pool $pool, array $installedMap, array $literals, $requiredPackage = null)
     {
         $packages = $this->groupLiteralsByNamePreferInstalled($pool, $installedMap, $literals);
 
@@ -195,6 +205,7 @@ class DefaultPolicy implements PolicyInterface
 
     protected function pruneToBestVersion(Pool $pool, $literals)
     {
+        $operator = $this->preferLowest ? '<' : '>';
         $bestLiterals = array($literals[0]);
         $bestPackage = $pool->literalToPackage($literals[0]);
         foreach ($literals as $i => $literal) {
@@ -204,7 +215,7 @@ class DefaultPolicy implements PolicyInterface
 
             $package = $pool->literalToPackage($literal);
 
-            if ($this->versionCompare($package, $bestPackage, '>')) {
+            if ($this->versionCompare($package, $bestPackage, $operator)) {
                 $bestPackage = $package;
                 $bestLiterals = array($literal);
             } elseif ($this->versionCompare($package, $bestPackage, '==')) {

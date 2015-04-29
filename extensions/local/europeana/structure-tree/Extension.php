@@ -90,10 +90,14 @@ class Extension extends \Bolt\BaseExtension
         // Add snippets, since this is a Frontend route.
         $this->app['htmlsnippets'] = true;
 
-        $slug = \Bolt\Helpers\String::slug($slug, -1);
+        // $slug = \Bolt\Helpers\String::slug($slug, -1);
+        $slug = $this->app['slugify']->slugify($slug);
 
         $contenttype = $this->getContenttypeBySlug($slug, true);
-        return Bolt\Controllers\Frontend::record($this->app , $contenttype, $slug);
+
+        $frontend = new Bolt\Controllers\Frontend();
+
+        return $frontend->record($this->app , $contenttype, $slug);
     }
 
     /**
@@ -107,7 +111,11 @@ class Extension extends \Bolt\BaseExtension
         $this->app['htmlsnippets'] = true;
 
         $contenttype = $this->getContenttypeBySlug($slug);
-        return Bolt\Controllers\Frontend::record($this->app , $contenttype, $slug);
+
+        $frontend = new Bolt\Controllers\Frontend();
+
+        return $frontend->record($this->app , $contenttype, $slug);
+
     }
 
     /**
@@ -326,4 +334,37 @@ class Extension extends \Bolt\BaseExtension
         }
         return $children;
     }
+
+    /**
+     * Render a template while wrapping Twig_Error_Loader in 404
+     * in case the template is not found by Twig.
+     *
+     * @param \Silex\Application $app
+     * @param string             $template Ex: 'listing.twig'
+     * @param string             $title    '%s' in "No template for '%s' defined."
+     *
+     * @return mixed Rendered template
+     */
+    public function render(Silex\Application $app, $template, $title)
+    {
+        try {
+            return $app['twig']->render($template);
+        } catch (\Twig_Error_Loader $e) {
+            $error = sprintf(
+                'Rendering %s failed: %s',
+                $title,
+                $e->getMessage()
+            );
+
+            // Log it
+            $app['logger.system']->error($error, array('event' => 'twig'));
+
+            // Set the template error
+            $this->setTemplateError($app, $error);
+
+            // Abort ship
+            $app->abort(Response::HTTP_INTERNAL_SERVER_ERROR, $error);
+        }
+    }
+
 }

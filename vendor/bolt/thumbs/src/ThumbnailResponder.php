@@ -41,6 +41,12 @@ class ThumbnailResponder
         } else {
             $this->resizer = $resizer;
         }
+        
+        // Thumbnails should not set cookies. Remove them, to allow Varnish (or
+        // other reverse-proxies) to do a better job of caching the request.
+        if (!headers_sent()) {
+            header_remove("Set-Cookie");
+        }
     }
 
     /**
@@ -110,7 +116,7 @@ class ThumbnailResponder
     {
         $path = urldecode($this->request->getPathInfo());
 
-        if (preg_match('#/thumbs/(?<width>\d+)x(?<height>\d+)(?<action>[a-z]?)/?(?<file>.+)#', $path, $parsedRequest)) {
+        if (preg_match('#/thumbs/(?P<width>\d+)x(?P<height>\d+)(?P<action>[a-z]?)/?(?P<file>.+)#', $path, $parsedRequest)) {
             $commands = $this->resizer->provides();
             if (isset($parsedRequest['action']) && array_key_exists($parsedRequest['action'], $commands)) {
                 $this->action = $commands[$parsedRequest['action']];
@@ -121,6 +127,13 @@ class ThumbnailResponder
             $this->width    = $parsedRequest['width'];
             $this->height   = $parsedRequest['height'];
             $this->file     = $parsedRequest['file'];
+        }
+        
+        // Check for retina image request
+        if(strpos($this->file, '@2x') !== false) {
+            $this->file = str_replace('@2x', '', $this->file);
+            $this->width = $this->width * 2;
+            $this->height = $this->height * 2;
         }
     }
 

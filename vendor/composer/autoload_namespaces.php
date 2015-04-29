@@ -8,7 +8,6 @@ $baseDir = dirname($vendorDir);
 return array(
     'utilphp\\' => array($vendorDir . '/brandonwamboldt/utilphp/src'),
     'Whoops' => array($vendorDir . '/filp/whoops/src'),
-    'URLify' => array($vendorDir . '/jbroadway/urlify'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
     'Symfony\\Component\\VarDumper\\' => array($vendorDir . '/symfony/var-dumper'),

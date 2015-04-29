@@ -7,28 +7,28 @@ use Exception as BaseException;
 class FileNotFoundException extends Exception
 {
     /**
-     * @var  string  $path
+     * @var string
      */
     protected $path;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param  string     $path
-     * @param  int        $code
-     * @param  \Exception  $previous
+     * @param string     $path
+     * @param int        $code
+     * @param \Exception $previous
      */
     public function __construct($path, $code = 0, BaseException $previous = null)
     {
         $this->path = $path;
 
-        parent::__construct('File not found at path: ' . $this->getPath(), $code, $previous);
+        parent::__construct('File not found at path: '.$this->getPath(), $code, $previous);
     }
 
     /**
-     * Get the path which was not found
+     * Get the path which was not found.
      *
-     * @return  string
+     * @return string
      */
     public function getPath()
     {
