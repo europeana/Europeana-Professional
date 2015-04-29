@@ -575,6 +575,10 @@ events:
     structure_sortorder:
       type: integer
       label: "Sort order in structure tree parent"
+    support_navigation:
+      type: markdown
+      label: "Support navigation:"
+      group: "Support navigation"
   taxonomy: [ tags ]
   relations:
     structures:
