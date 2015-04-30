@@ -215,8 +215,10 @@ class Extension extends \Bolt\BaseExtension
         else if ($record->contenttype['slug'] === 'structures') {
             return "/$selfSlug";
         }
-        else {
+        else if ($record != false ) {
             return $record->link();
+        } else {
+            return;
         }
     }
 
