@@ -95,7 +95,6 @@
     {% endif %}
 
     <ul class="results-list">
-
     {# Bob notes: see related ticket #196, #198, #223.. What was patrick thinking when he made this?
         Just grab the blog-postings again on this page.. #}
     {% if showsortby and taxonomy is not defined and contenttype.slug == "blogposts" %}
@@ -115,6 +114,8 @@
         {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page } allowpaging %}
 
         {% endif %}
+    {% else %}
+         {% setcontent records = 'BlogPosts/latest/1' allowpaging %} {# TEMPORARILY, DELETE BEFORE DEPLOY - just for a check, to keep the page from loading the whole site - AW #}
     {% endif %}
 
     {% if contenttype['slug'] == "events" or contenttype == 'Events' %}

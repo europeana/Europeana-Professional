@@ -126,16 +126,20 @@ class JsonManipulator
     {
         $decoded = JsonFile::parseJson($this->contents);
 
-        // no main node yet
-        if (!isset($decoded[$mainNode])) {
-            $this->addMainKey($mainNode, array($name => $value));
-
-            return true;
-        }
-
         $subName = null;
         if (in_array($mainNode, array('config', 'repositories')) && false !== strpos($name, '.')) {
             list($name, $subName) = explode('.', $name, 2);
+        }
+
+        // no main node yet
+        if (!isset($decoded[$mainNode])) {
+            if ($subName !== null) {
+                $this->addMainKey($mainNode, array($name => array($subName => $value)));
+            } else {
+                $this->addMainKey($mainNode, array($name => $value));
+            }
+
+            return true;
         }
 
         // main node content not match-able
@@ -354,7 +358,7 @@ class JsonManipulator
 
     protected function detectIndenting()
     {
-        if ($this->pregMatch('{^(\s+)"}m', $this->contents, $match)) {
+        if ($this->pregMatch('{^([ \t]+)"}m', $this->contents, $match)) {
             $this->indent = $match[1];
         } else {
             $this->indent = '    ';

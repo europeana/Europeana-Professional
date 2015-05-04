@@ -199,7 +199,6 @@ return array(
     'Composer\\Command\\DiagnoseCommand' => $vendorDir . '/composer/composer/src/Composer/Command/DiagnoseCommand.php',
     'Composer\\Command\\DumpAutoloadCommand' => $vendorDir . '/composer/composer/src/Composer/Command/DumpAutoloadCommand.php',
     'Composer\\Command\\GlobalCommand' => $vendorDir . '/composer/composer/src/Composer/Command/GlobalCommand.php',
-    'Composer\\Command\\Helper\\DialogHelper' => $vendorDir . '/composer/composer/src/Composer/Command/Helper/DialogHelper.php',
     'Composer\\Command\\HomeCommand' => $vendorDir . '/composer/composer/src/Composer/Command/HomeCommand.php',
     'Composer\\Command\\InitCommand' => $vendorDir . '/composer/composer/src/Composer/Command/InitCommand.php',
     'Composer\\Command\\InstallCommand' => $vendorDir . '/composer/composer/src/Composer/Command/InstallCommand.php',

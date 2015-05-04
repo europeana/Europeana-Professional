@@ -1,6 +1,7 @@
 app/cache/*
 app/database/*
 /files/*
+/files
 /thumbs/
 composer.phar
 .DS_Store

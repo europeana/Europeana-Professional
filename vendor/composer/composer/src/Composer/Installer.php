@@ -206,7 +206,12 @@ class Installer
 
         // create installed repo, this contains all local packages + platform packages (php & extensions)
         $localRepo = $this->repositoryManager->getLocalRepository();
-        $platformRepo = new PlatformRepository();
+        if (!$this->update && $this->locker->isLocked()) {
+            $platformOverrides = $this->locker->getPlatformOverrides();
+        } else {
+            $platformOverrides = $this->config->get('platform') ?: array();
+        }
+        $platformRepo = new PlatformRepository(array(), $platformOverrides);
         $repos = array(
             $localRepo,
             new InstalledArrayRepository(array($installedRootPackage)),
@@ -282,7 +287,7 @@ class Installer
                     $pool->addRepository($installedRepo, $aliases);
 
                     // creating requirements request
-                    $request = $this->createRequest($pool, $this->package, $platformRepo);
+                    $request = $this->createRequest($this->package, $platformRepo);
                     $request->updateAll();
                     foreach ($this->package->getRequires() as $link) {
                         $request->install($link->getTarget(), $link->getConstraint());
@@ -311,7 +316,8 @@ class Installer
                     $this->package->getMinimumStability(),
                     $this->package->getStabilityFlags(),
                     $this->preferStable || $this->package->getPreferStable(),
-                    $this->preferLowest
+                    $this->preferLowest,
+                    $this->config->get('platform') ?: array()
                 );
                 if ($updatedLock) {
                     $this->io->writeError('<info>Writing lock file</info>');
@@ -352,9 +358,12 @@ class Installer
         $repositories = null;
 
         // initialize locker to create aliased packages
-        $installFromLock = false;
-        if (!$this->update && $this->locker->isLocked()) {
-            $installFromLock = true;
+        $installFromLock = !$this->update && $this->locker->isLocked();
+
+        // initialize locked repo if we are installing from lock or in a partial update
+        // and a lock file is present as we need to force install non-whitelisted lock file
+        // packages in that case
+        if ($installFromLock || (!empty($this->updateWhitelist) && $this->locker->isLocked())) {
             try {
                 $lockedRepository = $this->locker->getLockedRepository($withDevReqs);
             } catch (\RuntimeException $e) {
@@ -378,21 +387,23 @@ class Installer
 
         // creating repository pool
         $policy = $this->createPolicy();
-        $pool = $this->createPool($withDevReqs, $lockedRepository);
+        $pool = $this->createPool($withDevReqs, $installFromLock ? $lockedRepository : null);
         $pool->addRepository($installedRepo, $aliases);
-        if ($installFromLock) {
-            $pool->addRepository($lockedRepository, $aliases);
-        }
-
         if (!$installFromLock) {
             $repositories = $this->repositoryManager->getRepositories();
             foreach ($repositories as $repository) {
                 $pool->addRepository($repository, $aliases);
             }
         }
+        // Add the locked repository after the others in case we are doing a
+        // partial update so missing packages can be found there still.
+        // For installs from lock it's the only one added so it is first
+        if ($lockedRepository) {
+            $pool->addRepository($lockedRepository, $aliases);
+        }
 
         // creating requirements request
-        $request = $this->createRequest($pool, $this->package, $platformRepo);
+        $request = $this->createRequest($this->package, $platformRepo);
 
         if (!$installFromLock) {
             // remove unstable packages from the localRepo if they don't match the current stability settings
@@ -426,16 +437,7 @@ class Installer
             // if the updateWhitelist is enabled, packages not in it are also fixed
             // to the version specified in the lock, or their currently installed version
             if ($this->updateWhitelist) {
-                if ($this->locker->isLocked()) {
-                    try {
-                        $currentPackages = $this->locker->getLockedRepository($withDevReqs)->getPackages();
-                    } catch (\RuntimeException $e) {
-                        // fetch only non-dev packages from lock if doing a dev update fails due to a previously incomplete lock file
-                        $currentPackages = $this->locker->getLockedRepository()->getPackages();
-                    }
-                } else {
-                    $currentPackages = $installedRepo->getPackages();
-                }
+                $currentPackages = $this->getCurrentPackages($withDevReqs, $installedRepo);
 
                 // collect packages to fixate from root requirements as well as installed packages
                 $candidates = array();
@@ -494,7 +496,7 @@ class Installer
         }
 
         // force dev packages to have the latest links if we update or install from a (potentially new) lock
-        $this->processDevPackages($localRepo, $pool, $policy, $repositories, $lockedRepository, $installFromLock, 'force-links');
+        $this->processDevPackages($localRepo, $pool, $policy, $repositories, $installedRepo, $lockedRepository, $installFromLock, $withDevReqs, 'force-links');
 
         // solve dependencies
         $this->eventDispatcher->dispatchInstallerEvent(InstallerEvents::PRE_DEPENDENCIES_SOLVING, $this->devMode, $policy, $pool, $installedRepo, $request);
@@ -510,7 +512,7 @@ class Installer
         }
 
         // force dev packages to be updated if we update or install from a (potentially new) lock
-        $operations = $this->processDevPackages($localRepo, $pool, $policy, $repositories, $lockedRepository, $installFromLock, 'force-updates', $operations);
+        $operations = $this->processDevPackages($localRepo, $pool, $policy, $repositories, $installedRepo, $lockedRepository, $installFromLock, $withDevReqs, 'force-updates', $operations);
 
         // execute operations
         if (!$operations) {
@@ -602,6 +604,12 @@ class Installer
             if (!$this->dryRun) {
                 $localRepo->write();
             }
+        }
+
+        if (!$this->dryRun) {
+            // force source/dist urls to be updated for all packages
+            $operations = $this->processPackageUrls($pool, $policy, $localRepo, $repositories);
+            $localRepo->write();
         }
 
         return 0;
@@ -729,9 +737,9 @@ class Installer
         return new DefaultPolicy($preferStable, $preferLowest);
     }
 
-    private function createRequest(Pool $pool, RootPackageInterface $rootPackage, PlatformRepository $platformRepo)
+    private function createRequest(RootPackageInterface $rootPackage, PlatformRepository $platformRepo)
     {
-        $request = new Request($pool);
+        $request = new Request();
 
         $constraint = new VersionConstraint('=', $rootPackage->getVersion());
         $constraint->setPrettyString($rootPackage->getPrettyVersion());
@@ -762,13 +770,17 @@ class Installer
         return $request;
     }
 
-    private function processDevPackages($localRepo, $pool, $policy, $repositories, $lockedRepository, $installFromLock, $task, array $operations = null)
+    private function processDevPackages($localRepo, $pool, $policy, $repositories, $installedRepo, $lockedRepository, $installFromLock, $withDevReqs, $task, array $operations = null)
     {
         if ($task === 'force-updates' && null === $operations) {
             throw new \InvalidArgumentException('Missing operations argument');
         }
         if ($task === 'force-links') {
             $operations = array();
+        }
+
+        if (!$installFromLock && $this->updateWhitelist) {
+            $currentPackages = $this->getCurrentPackages($withDevReqs, $installedRepo);
         }
 
         foreach ($localRepo->getCanonicalPackages() as $package) {
@@ -811,6 +823,26 @@ class Installer
                 if ($this->update) {
                     // skip package if the whitelist is enabled and it is not in it
                     if ($this->updateWhitelist && !$this->isUpdateable($package)) {
+                        // check if non-updateable packages are out of date compared to the lock file to ensure we don't corrupt it
+                        foreach ($currentPackages as $curPackage) {
+                            if ($curPackage->isDev() && $curPackage->getName() === $package->getName() && $curPackage->getVersion() === $package->getVersion()) {
+                                if ($task === 'force-links') {
+                                    $package->setRequires($curPackage->getRequires());
+                                    $package->setConflicts($curPackage->getConflicts());
+                                    $package->setProvides($curPackage->getProvides());
+                                    $package->setReplaces($curPackage->getReplaces());
+                                } elseif ($task === 'force-updates') {
+                                    if (($curPackage->getSourceReference() && $curPackage->getSourceReference() !== $package->getSourceReference())
+                                        || ($curPackage->getDistReference() && $curPackage->getDistReference() !== $package->getDistReference())
+                                    ) {
+                                        $operations[] = new UpdateOperation($package, $curPackage);
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+
                         continue;
                     }
 
@@ -854,7 +886,7 @@ class Installer
                 }
 
                 if ($task === 'force-updates') {
-                    // force installed package to update to referenced version if it does not match the installed version
+                    // force installed package to update to referenced version in root package if it does not match the installed version
                     $references = $this->package->getReferences();
 
                     if (isset($references[$package->getName()]) && $references[$package->getName()] !== $package->getSourceReference()) {
@@ -866,6 +898,23 @@ class Installer
         }
 
         return $operations;
+    }
+
+    /**
+     * Loads the most "current" list of packages that are installed meaning from lock ideally or from installed repo as fallback
+     */
+    private function getCurrentPackages($withDevReqs, $installedRepo)
+    {
+        if ($this->locker->isLocked()) {
+            try {
+                return $this->locker->getLockedRepository($withDevReqs)->getPackages();
+            } catch (\RuntimeException $e) {
+                // fetch only non-dev packages from lock if doing a dev update fails due to a previously incomplete lock file
+                return $this->locker->getLockedRepository()->getPackages();
+            }
+        }
+
+        return $installedRepo->getPackages();
     }
 
     private function getRootAliases()
@@ -886,6 +935,42 @@ class Installer
         }
 
         return $normalizedAliases;
+    }
+
+    private function processPackageUrls($pool, $policy, $localRepo, $repositories)
+    {
+        if (!$this->update) {
+            return;
+        }
+
+        foreach ($localRepo->getCanonicalPackages() as $package) {
+            // find similar packages (name/version) in all repositories
+            $matches = $pool->whatProvides($package->getName(), new VersionConstraint('=', $package->getVersion()));
+            foreach ($matches as $index => $match) {
+                // skip local packages
+                if (!in_array($match->getRepository(), $repositories, true)) {
+                    unset($matches[$index]);
+                    continue;
+                }
+
+                // skip providers/replacers
+                if ($match->getName() !== $package->getName()) {
+                    unset($matches[$index]);
+                    continue;
+                }
+
+                $matches[$index] = $match->getId();
+            }
+
+            // select preferred package according to policy rules
+            if ($matches && $matches = $policy->selectPreferredPackages($pool, array(), $matches)) {
+                $newPackage = $pool->literalToPackage($matches[0]);
+
+                // update the dist and source URLs
+                $package->setSourceUrl($newPackage->getSourceUrl());
+                $package->setDistUrl($newPackage->getDistUrl());
+            }
+        }
     }
 
     private function aliasPlatformPackages(PlatformRepository $platformRepo, $aliases)
