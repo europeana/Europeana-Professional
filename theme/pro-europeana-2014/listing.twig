@@ -114,8 +114,6 @@
         {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page } allowpaging %}
 
         {% endif %}
-    {% else %}
-         {% setcontent records = 'BlogPosts/latest/1' allowpaging %} {# TEMPORARILY, DELETE BEFORE DEPLOY - just for a check, to keep the page from loading the whole site - AW #}
     {% endif %}
 
     {% if contenttype['slug'] == "events" or contenttype == 'Events' %}
