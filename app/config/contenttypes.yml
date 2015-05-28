@@ -111,6 +111,10 @@ publications:
     structure_sortorder:
       type: integer
       label: "Sort order in structure tree parent"
+    structure_parent:
+      type: select
+      values: structures/id,title
+      label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -225,6 +229,10 @@ pressreleases:
     structure_sortorder:
       type: integer
       label: "Sort order in structure tree parent"
+    structure_parent:
+      type: select
+      values: structures/id,title
+      label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -480,6 +488,10 @@ persons:
     structure_sortorder:
       type: integer
       label: "Sort order in structure tree parent"
+    structure_parent:
+      type: select
+      values: structures/id,title
+      label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -575,6 +587,10 @@ events:
     structure_sortorder:
       type: integer
       label: "Sort order in structure tree parent"
+    structure_parent:
+      type: select
+      values: structures/id,title
+      label: "Select structure tree parent"
     support_navigation:
       type: markdown
       label: "Support navigation:"
@@ -745,6 +761,10 @@ Jobs:
     structure_sortorder:
       type: integer
       label: "Sort order in structure tree parent"
+    structure_parent:
+      type: select
+      values: structures/id,title
+      label: "Select structure tree parent"
   taxonomy: [ ]
   relations:
     structures:
@@ -860,6 +880,10 @@ blogposts:
     structure_sortorder:
       type: integer
       label: "Sort order in structure tree parent"
+    structure_parent:
+      type: select
+      values: structures/id,title
+      label: "Select structure tree parent"
   # Show on Blog page
   taxonomy: [ tags ]
   relations:
@@ -1041,6 +1065,10 @@ pages:
     structure_sortorder:
       type: integer
       label: "Sort order in structure tree parent"
+    structure_parent:
+      type: select
+      values: structures/id,title
+      label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -1225,6 +1253,10 @@ projects:
     structure_sortorder:
       type: integer
       label: "Sort order in structure tree parent"
+    structure_parent:
+      type: select
+      values: structures/id,title
+      label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -1352,6 +1384,10 @@ taskforces:
     structure_sortorder:
       type: integer
       label: "Sort order in structure tree parent"
+    structure_parent:
+      type: select
+      values: structures/id,title
+      label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
@@ -1496,6 +1532,10 @@ structures:
     structure_sortorder:
       type: integer
       label: "Sort order in structure tree parent"
+    structure_parent:
+      type: select
+      values: structures/id,title
+      label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
     structures:
