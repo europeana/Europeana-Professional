@@ -147,10 +147,15 @@ class Extension extends \Bolt\BaseExtension
     }
 
     /**
-     * Legacy method to get the structure roots.
+     * Dump the whole structure tree, useful for debugging purposes.
      */
     public function structureTreeOverview() {
-        // dump the whole structure tree, useful for debugging purposes.
+        $this->requireUserPermission('structure-tree');
+        if (!$this->app['users']->isAllowed('structure-tree')) {
+            return Lib::redirect('dashboard');
+        }
+
+
         $this->app['htmlsnippets'] = true;
         $this->app['twig.loader.filesystem']->addPath(dirname(__FILE__) . '/assets');
 
@@ -183,6 +188,10 @@ class Extension extends \Bolt\BaseExtension
      *
      */
     public function structureTreeConvert() {
+        $this->requireUserPermission('structure-tree');
+        if (!$this->app['users']->isAllowed('structure-tree')) {
+            return Lib::redirect('dashboard');
+        }
 
         $bolt_relations = $this->app['config']->get('general/database/prefix') . 'relations';
         $results = $this->app['db']->fetchAll("SELECT * FROM  `$bolt_relations` WHERE  `to_contenttype` = 'structures' ORDER BY `from_contenttype` ASC LIMIT 0, 10000");
