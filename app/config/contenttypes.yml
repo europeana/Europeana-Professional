@@ -114,13 +114,10 @@ publications:
     structure_parent:
       type: select
       values: structures/id,title
+      autocomplete: true
       label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
-    structures:
-      label: "Tree parent"
-      multiple: false
-      order: title
     persons:
       label: "Author(s)"
       multiple: true
@@ -232,13 +229,10 @@ pressreleases:
     structure_parent:
       type: select
       values: structures/id,title
+      autocomplete: true
       label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
-    structures:
-      label: "Tree parent"
-      multiple: false
-      order: title
     persons:
       label: "Author(s)"
       multiple: true
@@ -491,13 +485,10 @@ persons:
     structure_parent:
       type: select
       values: structures/id,title
+      autocomplete: true
       label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
-    structures:
-      label: "Tree parent"
-      multiple: false
-      order: title
   sort: team
   # no pager for person, mabe there is a better solution
   listing_records: 10000
@@ -590,6 +581,7 @@ events:
     structure_parent:
       type: select
       values: structures/id,title
+      autocomplete: true
       label: "Select structure tree parent"
     support_navigation:
       type: markdown
@@ -597,10 +589,6 @@ events:
       group: "Support navigation"
   taxonomy: [ tags ]
   relations:
-    structures:
-      label: "Tree parent"
-      multiple: false
-      order: title
     locations:
       multiple: false
       label: "Location"
@@ -764,13 +752,10 @@ Jobs:
     structure_parent:
       type: select
       values: structures/id,title
+      autocomplete: true
       label: "Select structure tree parent"
   taxonomy: [ ]
   relations:
-    structures:
-      label: "Tree parent"
-      multiple: false
-      order: title
     persons:
       multiple: true
       label: "Contact(s)"
@@ -883,14 +868,11 @@ blogposts:
     structure_parent:
       type: select
       values: structures/id,title
+      autocomplete: true
       label: "Select structure tree parent"
   # Show on Blog page
   taxonomy: [ tags ]
   relations:
-    structures:
-      label: "Tree parent"
-      multiple: false
-      order: title
     persons:
       label: "Author(s)"
       multiple: true
@@ -1068,13 +1050,10 @@ pages:
     structure_parent:
       type: select
       values: structures/id,title
+      autocomplete: true
       label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
-    structures:
-      label: "Tree parent"
-      multiple: false
-      order: title
     persons:
       label: "Contact(s)"
       multiple: true
@@ -1256,13 +1235,10 @@ projects:
     structure_parent:
       type: select
       values: structures/id,title
+      autocomplete: true
       label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
-    structures:
-      label: "Tree parent"
-      multiple: false
-      order: title
     person:
       multiple: true
       label: "Contact(s)"
@@ -1387,13 +1363,10 @@ taskforces:
     structure_parent:
       type: select
       values: structures/id,title
+      autocomplete: true
       label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
-    structures:
-      label: "Tree parent"
-      multiple: false
-      order: title
     person:
       multiple: true
       label: "Contact(s)"
@@ -1535,13 +1508,10 @@ structures:
     structure_parent:
       type: select
       values: structures/id,title
+      autocomplete: true
       label: "Select structure tree parent"
   taxonomy: [ tags ]
   relations:
-    structures:
-      label: "Tree parent"
-      multiple: false
-      order: title
     persons:
       label: "Contact(s)"
       multiple: true

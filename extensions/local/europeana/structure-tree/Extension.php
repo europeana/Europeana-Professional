@@ -66,17 +66,35 @@ class Extension extends \Bolt\BaseExtension
         if ($this->linksLoaded) {
             return;
         }
-        $tablename = $this->app['config']->get('general/database/prefix') . 'relations';
-        $stmt = $this->app['db']->prepare("SELECT from_contenttype, from_id, to_id FROM $tablename WHERE to_contenttype = 'structures'");
-        $res = $stmt->execute();
-        while ($row = $stmt->fetch()) {
-            $contenttype = $row['from_contenttype'];
-            $from = intval($row['from_id']);
-            $to = intval($row['to_id']);
 
-            $this->treeParents[$contenttype][$from] = $to;
-            $this->treeChildren[$to][] = "$contenttype/$from";
+        // TODO: in new Bolt version use getContenttypeTablename instead of getTablename.
+        $tableStructures = $this->app['storage']->getTablename('structures');
+        $structures = $this->app['db']->fetchAll("SELECT id FROM $tableStructures WHERE status = 'published'");
+        $availableStructures = util::array_pluck($structures, 'id');
+
+        $contenttypes = $this->app['config']->get('contenttypes');
+        foreach ($contenttypes as $contenttype) {
+            if (isset($contenttype['fields']['structure_parent'])) {
+
+                $contenttypeslug = $contenttype['slug'];
+                $tablename = $this->app['storage']->getTablename($contenttypeslug);
+
+                $stmt = $this->app['db']->prepare("SELECT id, structure_parent FROM $tablename");
+                $res = $stmt->execute();
+
+                while ($row = $stmt->fetch()) {
+                    $id = intval($row['id']);
+                    $parent = intval($row['structure_parent']);
+
+                    // The $parent is only relevant if it exists and is published.
+                    if (in_array($parent, $availableStructures)) {
+                        $this->treeParents[$contenttypeslug][$id] = $parent;
+                        $this->treeChildren[$parent][] = "$contenttypeslug/$id";
+                    }
+                }
+            }
         }
+
         $this->linksLoaded = true;
     }
 
@@ -136,23 +154,8 @@ class Extension extends \Bolt\BaseExtension
         $this->app['htmlsnippets'] = true;
         $this->app['twig.loader.filesystem']->addPath(dirname(__FILE__) . '/assets');
 
-        // 1. Find the structures with a parent.
-        $bolt_relations = $this->app['config']->get('general/database/prefix') . 'relations';
-        $results = $this->app['db']->fetchAll("SELECT `from_id` FROM `$bolt_relations` WHERE `from_contenttype` = :from AND `to_contenttype` = :to", array(
-            'from' => 'structures',
-            'to' => 'structures'
-        ));
-
-        $structuresWithParent = array_map(function ($element) {return intval($element['from_id']);}, $results);
-
-        // 2. Find the structure types that DO NOT have a parent.
         $bolt_structures = $this->app['config']->get('general/database/prefix') . 'structures';
-        $roots = $this->app['db']->fetchAll(
-            "SELECT `id` FROM `$bolt_structures` WHERE `id` NOT IN (?)",
-            array($structuresWithParent),
-            array(\Doctrine\DBAL\Connection::PARAM_INT_ARRAY)
-        );
-
+        $roots = $this->app['db']->fetchAll("SELECT `id` FROM `$bolt_structures` WHERE `structure_parent` = ''");
         $roots = array_map(function ($element) {return $element['id'];}, $roots);
 
         $data = array(
@@ -170,17 +173,19 @@ class Extension extends \Bolt\BaseExtension
      *     structure_parent:
      *       type: select
      *       values: structures/id,title
+     *       autocomplete: true
      *       label: "Select structure tree parent"
      *
      * 2. Run this query at /bolt/structure-tree/convert
      *
-     * 3. remove all elements from `bolt_relations` WHERE `to_contenttype` = 'structures'
+     * 3. remove all elements from `bolt_relations` WHERE `from_contenttype` = 'structures' AND `to_contenttype` = 'structures'
+     *    -> can't just delete `to_contenttype` = 'structures', because this messes with other relationships.
      *
      */
     public function structureTreeConvert() {
 
         $bolt_relations = $this->app['config']->get('general/database/prefix') . 'relations';
-        $results = $this->app['db']->fetchAll("SELECT * FROM  `$bolt_relations` WHERE  `to_contenttype` LIKE  'structures' ORDER BY `from_contenttype` ASC LIMIT 0, 10000");
+        $results = $this->app['db']->fetchAll("SELECT * FROM  `$bolt_relations` WHERE  `to_contenttype` = 'structures' ORDER BY `from_contenttype` ASC LIMIT 0, 10000");
 
         foreach($results as $result) {
             $tablename = $this->app['config']->get('general/database/prefix') . $result['from_contenttype'];
