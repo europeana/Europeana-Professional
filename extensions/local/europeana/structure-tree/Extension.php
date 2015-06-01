@@ -27,6 +27,16 @@ class Extension extends \Bolt\BaseExtension
             die();
         }
 
+        // structure tree overview
+        $this->boltPath = $this->app['config']->get('general/branding/path');
+        $this->addMenuOption(\Bolt\Translation\Translator::__('Structure Tree'), "$this->boltPath/structure-tree/overview", "fa:sitemap");
+        $this->app->get("$this->boltPath/structure-tree/overview", array($this, 'structureTreeOverview'))
+            ->bind('structureTreeOverview');
+
+        // convert legacy relationships to column values in contenttypes.
+        $this->app->get("$this->boltPath/structure-tree/convert", array($this, 'structureTreeConvert'))
+            ->bind('structureTreeConvert');
+
         // listings
 
         // slug listing
@@ -56,17 +66,35 @@ class Extension extends \Bolt\BaseExtension
         if ($this->linksLoaded) {
             return;
         }
-        $tablename = $this->app['config']->get('general/database/prefix') . 'relations';
-        $stmt = $this->app['db']->prepare("SELECT from_contenttype, from_id, to_id FROM $tablename WHERE to_contenttype = 'structures'");
-        $res = $stmt->execute();
-        while ($row = $stmt->fetch()) {
-            $contenttype = $row['from_contenttype'];
-            $from = intval($row['from_id']);
-            $to = intval($row['to_id']);
 
-            $this->treeParents[$contenttype][$from] = $to;
-            $this->treeChildren[$to][] = "$contenttype/$from";
+        // TODO: in new Bolt version use getContenttypeTablename instead of getTablename.
+        $tableStructures = $this->app['storage']->getTablename('structures');
+        $structures = $this->app['db']->fetchAll("SELECT id FROM $tableStructures WHERE status = 'published'");
+        $availableStructures = util::array_pluck($structures, 'id');
+
+        $contenttypes = $this->app['config']->get('contenttypes');
+        foreach ($contenttypes as $contenttype) {
+            if (isset($contenttype['fields']['structure_parent'])) {
+
+                $contenttypeslug = $contenttype['slug'];
+                $tablename = $this->app['storage']->getTablename($contenttypeslug);
+
+                $stmt = $this->app['db']->prepare("SELECT id, structure_parent FROM $tablename");
+                $res = $stmt->execute();
+
+                while ($row = $stmt->fetch()) {
+                    $id = intval($row['id']);
+                    $parent = intval($row['structure_parent']);
+
+                    // The $parent is only relevant if it exists and is published.
+                    if (in_array($parent, $availableStructures)) {
+                        $this->treeParents[$contenttypeslug][$id] = $parent;
+                        $this->treeChildren[$parent][] = "$contenttypeslug/$id";
+                    }
+                }
+            }
         }
+
         $this->linksLoaded = true;
     }
 
@@ -116,6 +144,67 @@ class Extension extends \Bolt\BaseExtension
 
         return $frontend->record($this->app , $contenttype, $slug);
 
+    }
+
+    /**
+     * Dump the whole structure tree, useful for debugging purposes.
+     */
+    public function structureTreeOverview() {
+        $this->requireUserPermission('structure-tree');
+        if (!$this->app['users']->isAllowed('structure-tree')) {
+            return Lib::redirect('dashboard');
+        }
+
+
+        $this->app['htmlsnippets'] = true;
+        $this->app['twig.loader.filesystem']->addPath(dirname(__FILE__) . '/assets');
+
+        $bolt_structures = $this->app['config']->get('general/database/prefix') . 'structures';
+        $roots = $this->app['db']->fetchAll("SELECT `id` FROM `$bolt_structures` WHERE `structure_parent` = ''");
+        $roots = array_map(function ($element) {return $element['id'];}, $roots);
+
+        $data = array(
+            'roots' => $roots,
+        );
+
+        $html = $this->app['render']->render('overview.twig', $data);
+        return new \Twig_Markup($html, 'UTF-8');
+    }
+
+    /**
+     * Convert legacy relationships to select field values.
+     *
+     * 1. Add to all contenttypes in `contenttypes.yml` the following field:
+     *     structure_parent:
+     *       type: select
+     *       values: structures/id,title
+     *       autocomplete: true
+     *       label: "Select structure tree parent"
+     *
+     * 2. Run this query at /bolt/structure-tree/convert
+     *
+     * 3. remove all elements from `bolt_relations` WHERE `from_contenttype` = 'structures' AND `to_contenttype` = 'structures'
+     *    -> can't just delete `to_contenttype` = 'structures', because this messes with other relationships.
+     *
+     */
+    public function structureTreeConvert() {
+        $this->requireUserPermission('structure-tree');
+        if (!$this->app['users']->isAllowed('structure-tree')) {
+            return Lib::redirect('dashboard');
+        }
+
+        $bolt_relations = $this->app['config']->get('general/database/prefix') . 'relations';
+        $results = $this->app['db']->fetchAll("SELECT * FROM  `$bolt_relations` WHERE  `to_contenttype` = 'structures' ORDER BY `from_contenttype` ASC LIMIT 0, 10000");
+
+        foreach($results as $result) {
+            $tablename = $this->app['config']->get('general/database/prefix') . $result['from_contenttype'];
+            $id = $result['from_id'];
+            $parent = $result['to_id'];
+
+            $this->app['db']->executeUpdate("UPDATE $tablename SET structure_parent = ? WHERE id = ?", array($parent, $id));
+        }
+
+        return 'ok';
     }
 
     /**
