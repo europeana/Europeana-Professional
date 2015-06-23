@@ -11,7 +11,7 @@
 
 {% set records = [] %}
 
-{% for rel in record.related if rel.contenttype.slug in ["pages", "taskforces"] %}
+{% for rel in getTreeChildren(record) if rel.contenttype.slug in ["pages", "taskforces"] %}
     {% set records = records|merge([rel]) %}
 {% endfor %}
 

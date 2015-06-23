@@ -94,9 +94,7 @@
     {# for contenttype "Person" include listing_person #}
     {% if (records|length and records|first.contenttype.name == 'Persons') %}
 
-
-
-        {% if app.request.get('slug')=='partners/' %}
+        {% if app.request.get('slug') in ['partners', 'partners/'] %}
             {% setcontent persons = 'persons' where {department: 'Our Partner'} order 'company' %}
         {% else %}
             {% setcontent persons = 'persons' where {department: 'Europeana Staff'} order 'team' %}

@@ -24,8 +24,13 @@
             VS.
             http://localhost/Europeana-Professional/use-our-data/task-force-home/task-force-no78/
         #}
-        {% if ((record.contenttype.name == 'Structures' or record.related('structures')) and record.contenttype.name not in [ 'Events', 'Publications' ] ) %}
-            {% set breadcrumbs = breadcrumb(record) %}
+
+        {#
+            Previously the breadcrumbs used relationships, now we just check the breadcrumbs,
+            if there's only one element then this means that there aren't any parents, only a self.
+        #}
+        {% set breadcrumbs = breadcrumb(record) %}
+        {% if ((record.contenttype.name == 'Structures' or breadcrumbs|length > 1) and record.contenttype.name not in [ 'Events', 'Publications' ] ) %}
             {# need to skip the last entry, which is the record itself #}
             {% for bc in breadcrumbs[:-1] %}
                 {% if bc.title %}
