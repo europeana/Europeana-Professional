@@ -18,7 +18,7 @@
 {% if app.request.get('order') %}
     {% set records = records|order(app.request.get('order')) %}
 {% else %}
-    {% set records = records|order('structure_sortorder', 'datepublish') %}
+    {% set records = records|order('structure_sortorder', '-datepublish') %}
 {% endif %}
 
 {# include contenttype list template #}
