@@ -68,7 +68,7 @@
             <div class="grid">
 
             {% set ourSites = app.config.get('general/our_sites')  %}
-            {% for site in ourSites %}
+            {% for site in ourSites %}{% spaceless %}
                 <div class="l-linklist">
                     <div class="inner">
                     <h2 class="title h3">{{ site.title }}</h2>
@@ -82,7 +82,7 @@
                     </ul>
                 </div>
             </div>
-            {% endfor %}
+            {% endspaceless %}{% endfor %}
 
             </div>
             </div>
