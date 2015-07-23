@@ -12,6 +12,7 @@
 
 namespace Composer\Repository;
 
+use Composer\Config;
 use Composer\Package\PackageInterface;
 use Composer\Package\CompletePackage;
 use Composer\Package\Version\VersionParser;
@@ -31,15 +32,14 @@ class PlatformRepository extends ArrayRepository
      *
      * @var array
      */
-    private $overrides;
+    private $overrides = array();
 
     public function __construct(array $packages = array(), array $overrides = array())
     {
-        parent::__construct($packages);
-        $this->overrides = array();
         foreach ($overrides as $name => $version) {
             $this->overrides[strtolower($name)] = array('name' => $name, 'version' => $version);
         }
+        parent::__construct($packages);
     }
 
     protected function initialize()

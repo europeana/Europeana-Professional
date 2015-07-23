@@ -65,7 +65,6 @@ class Application extends BaseApplication
             date_default_timezone_set(@date_default_timezone_get());
         }
 
-        ErrorHandler::register();
         parent::__construct('Composer', Composer::VERSION);
     }
 
@@ -89,8 +88,9 @@ class Application extends BaseApplication
     public function doRun(InputInterface $input, OutputInterface $output)
     {
         $this->io = new ConsoleIO($input, $output, $this->getHelperSet());
+        ErrorHandler::register($this->io);
 
-        if (version_compare(PHP_VERSION, '5.3.2', '<')) {
+        if (PHP_VERSION_ID < 50302) {
             $this->getIO()->writeError('<warning>Composer only officially supports PHP 5.3.2 and above, you will most likely encounter problems with your PHP '.PHP_VERSION.', upgrading is strongly recommended.</warning>');
         }
 
@@ -104,7 +104,7 @@ class Application extends BaseApplication
             }
             if ($commandName !== 'self-update' && $commandName !== 'selfupdate') {
                 if (time() > COMPOSER_DEV_WARNING_TIME) {
-                    $this->getIO()->writeError(sprintf('<warning>Warning: This development build of composer is over 30 days old. It is recommended to update it by running "%s self-update" to get the latest version.</warning>', $_SERVER['PHP_SELF']));
+                    $this->getIO()->writeError(sprintf('<warning>Warning: This development build of composer is over 60 days old. It is recommended to update it by running "%s self-update" to get the latest version.</warning>', $_SERVER['PHP_SELF']));
                 }
             }
         }
@@ -181,7 +181,7 @@ class Application extends BaseApplication
             if ($composer) {
                 $config = $composer->getConfig();
 
-                $minSpaceFree = 1024*1024;
+                $minSpaceFree = 1024 * 1024;
                 if ((($df = @disk_free_space($dir = $config->get('home'))) !== false && $df < $minSpaceFree)
                     || (($df = @disk_free_space($dir = $config->get('vendor-dir'))) !== false && $df < $minSpaceFree)
                     || (($df = @disk_free_space($dir = sys_get_temp_dir())) !== false && $df < $minSpaceFree)
@@ -272,6 +272,7 @@ class Application extends BaseApplication
         $commands[] = new Command\SearchCommand();
         $commands[] = new Command\ValidateCommand();
         $commands[] = new Command\ShowCommand();
+        $commands[] = new Command\SuggestsCommand();
         $commands[] = new Command\RequireCommand();
         $commands[] = new Command\DumpAutoloadCommand();
         $commands[] = new Command\StatusCommand();

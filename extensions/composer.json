@@ -28,7 +28,13 @@
     "autoload": {
         "files": [
             "installer.php"
-        ]
+        ],
+        "psr-4": {
+            "Bolt\\Extension\\Bolt\\RSSAggregator\\": "local/europeana/rssaggregator/",
+            "Bolt\\Extension\\Europeana\\GoogleSearch\\": "local/europeana/google-search/",
+            "Bolt\\Extension\\Europeana\\StructureTree\\": "local/europeana/structure-tree/",
+            "Bolt\\Extension\\Europeana\\FileHelper\\": "local/europeana/file-helper/"
+        }
     },
     "config": {
         "discard-changes": true,

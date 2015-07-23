@@ -39,9 +39,11 @@
             {{ __('Id') }}
         </a></th>
 
-        <th style="width:80%"><a href="{{ link }}{% if request('order') == content.TitleColumnName() %}-{% endif %}{{ content.TitleColumnName() }}">
-            {{ __('Title') }} / {{ __('Excerpt') }}
-        </a></th>
+        <th style="width:80%">
+            <a href="{{ link }}{% if request('order') == content.TitleColumnName()|first %}-{% endif %}{{ content.TitleColumnName()|first }}">
+                {{ __('Title') }} / {{ __('Excerpt') }}
+            </a>
+        </th>
 
         <th>&nbsp;</th>
 
@@ -52,11 +54,11 @@
     </tr>
 {% endif %}
 
-<tr {% if content.status!='published' %}class="dim"{% endif %} id="item_{{ content.id }}">
+<tr {% if content.status!='published' %}class="dim"{% endif %}{% if not compact and editable %} id="item_{{ content.id }}"{% endif %}>
     {% block listing_id %}
 
         {% if not compact and editable and isallowed('delete', contenttype) %}
-            <td class="check hidden-xs"><input type="checkbox" name="checkRow" /></td>
+            <td class="check hidden-xs"><input type="checkbox" name="checkRow"></td>
         {% else %}
             <td style="margin: 0; padding: 0;"></td>
         {% endif %}
@@ -65,24 +67,35 @@
     {% endblock %}
 
     {% block listing_content %}
-        <td class="excerpt {% if not compact %}large{% endif %}"><span>
-            <strong class="visible-xs">№ {{ content.id }}. </strong>
-            <strong>
-                {% if editable %}
-                    <a href="{{ path('editcontent', {'contenttypeslug': content.contenttype.slug, 'id': content.id}) }}" title="Slug: {{ content.slug }}">
-                        {{ content.getTitle|default("<em>(" ~ __("no title …") ~ ")</em>")|raw }}
-                    </a>
-                {% else %}
-                     <strong>
-                        {{ content.getTitle|default("<em>(" ~ __("no title …") ~ ")</em>")|raw }}
-                    </strong>
-                 {% endif %}
-            </strong>
-            {{ content.excerpt(excerptlength) }}
-                        </span></td>
-        <td class="listthumb">
+        <td class="excerpt {% if not compact %}large{% endif %}">
+            {% set title = content.getTitle|default("<em>(" ~ __("no title …") ~ ")</em>")|raw %}
+            <span>
+                <strong class="visible-xs">№ {{ content.id }}. </strong>
+                <strong>
+                    {% if editable %}
+                        <a href="{{ path('editcontent', {'contenttypeslug': content.contenttype.slug, 'id': content.id}) }}" title="Slug: {{ content.slug }}">
+                            {{ title }}
+                        </a>
+                    {% else %}
+                        <strong>
+                            {{ title }}
+                        </strong>
+                     {% endif %}
+                </strong>
+                {{ content.excerpt(excerptlength - title|length) }}
+            </span>
+        </td>
+        <td class="listthumb" style="width: {{ thumbsize + 4 }}px;">
             {% if content.getImage is not empty %}
-                {{ content.getImage|popup(thumbsize, thumbsize * 0.75, 'c') }}
+                {# Hack to add alt attribute #}
+                {#{ content.getImage|popup(thumbsize, thumbsize * 0.75, 'c') }#}
+                {% set thumb_height = (thumbsize * 0.75)|round %}
+                {% set thumb_small = content.getImage|thumbnail(thumbsize, thumb_height, 'c') %}
+                {% set thumb_large = content.getImage|thumbnail(1000, 800, 'r') %}
+                {% set thumb_title = __('Image') ~ ': ' ~ content.getImage %}
+                <a href="{{ thumb_large }}" class="magnific" title="{{ thumb_title }}">
+                    <img src="{{ thumb_small }}" width="{{ thumbsize }}" height="{{ thumb_height }}" alt="{{ __('Thumbnail') }}">
+                </a>
             {% endif %}
         </td>
     {% endblock %}

@@ -264,7 +264,7 @@ class Installer
 
             $this->io->writeError(
                 sprintf(
-                    "<error>Package %s is abandoned, you should avoid using it. %s.</error>",
+                    "<warning>Package %s is abandoned, you should avoid using it. %s.</warning>",
                     $package->getPrettyName(),
                     $replacement
                 )
@@ -509,6 +509,11 @@ class Installer
             $this->io->writeError($e->getMessage());
 
             return max(1, $e->getCode());
+        }
+
+        if ($this->io->isVerbose()) {
+            $this->io->writeError("Analyzed ".count($pool)." packages to resolve dependencies");
+            $this->io->writeError("Analyzed ".$solver->getRuleSetSize()." rules to resolve dependencies");
         }
 
         // force dev packages to be updated if we update or install from a (potentially new) lock
@@ -968,7 +973,11 @@ class Installer
 
                 // update the dist and source URLs
                 $package->setSourceUrl($newPackage->getSourceUrl());
-                $package->setDistUrl($newPackage->getDistUrl());
+                // only update dist url for github/bitbucket dists as they use a combination of dist url + dist reference to install
+                // but for other urls this is ambiguous and could result in bad outcomes
+                if (preg_match('{^https?://(?:(?:www\.)?bitbucket\.org|(api\.)?github\.com)/}', $newPackage->getDistUrl())) {
+                    $package->setDistUrl($newPackage->getDistUrl());
+                }
             }
         }
     }

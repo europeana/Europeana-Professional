@@ -8,7 +8,7 @@ cocur/slugify
 [![Code Coverage](http://img.shields.io/coveralls/cocur/slugify.svg?style=flat)](https://coveralls.io/r/cocur/slugify)
 [![Monthly Downloads](http://img.shields.io/packagist/dm/cocur/slugify.svg?style=flat)](https://packagist.org/packages/cocur/slugify)
 
-Developed by [Florian Eckerstorfer](https://florian.ec) in Vienna, Europe with the help of 
+Developed by [Florian Eckerstorfer](https://florian.ec) in Vienna, Europe with the help of
 [many great contributors](https://github.com/cocur/slugify/graphs/contributors).
 
 
@@ -82,15 +82,25 @@ You can add rulesets by using `Slugify::addRuleset()` and retrieve all rulesets 
 
 ### Further Customization
 
-You can also change the regular expression that is used to replace characters with the separator.
+You can also change the regular expression that is used to replace characters with the separator. If you pass `null`
+the default regular expression is used.
 
 ```php
-$slugify = new Slugify('/([^a-z0-9]|-)+/');
+$slugify = new Slugify('/([^A-Za-z0-9]|-)+/');
 // or
-$slugify->setRegExp('/([^a-z0-9]|-)+/');
+$slugify->setRegExp('/([^A-Za-z0-9]|-)+/');
 ```
 
 *(The regular expression used in the example above is the default one.)*
+
+The constructor also takes an options array. Currently you can disable converting the string to lowercase.
+
+```php
+$slugify = new Slugify(null, array('lowercase' => false));
+$slugify->slugify('Hello World'); // -> "Hello-World"
+```
+
+Options can also be set using the `setOptions()` method.
 
 ### Contributing
 
@@ -178,7 +188,7 @@ Slugify extension using a closure:
 ),
 ```
 
-You can find more information about registering extensions in the 
+You can find more information about registering extensions in the
 [Twig documentation](http://twig.sensiolabs.org/doc/advanced.html#creating-an-extension).
 
 ### Silex
@@ -350,6 +360,12 @@ $latte->addFilter('slugify', array(new SlugifyHelper(Slugify::create()), 'slugif
 
 Changelog
 ---------
+
+### Version 1.2 (2 July 2015)
+
+- Add integration for [Plum](https://github.com/plumphp/plum) (by [florianeckerstorfer](https://github.com/florianeckerstorfer))
+- [#64](https://github.com/cocur/slugify/pull/64) Fix Nette integration (by [lookyman](https://github.com/lookyman))
+- Add option to not convert slug to lowercase (by [florianeckerstorfer](https://github.com/florianeckerstorfer) and [GDmac](https://github.com/GDmac))
 
 ### Version 1.1 (18 March 2015)
 
