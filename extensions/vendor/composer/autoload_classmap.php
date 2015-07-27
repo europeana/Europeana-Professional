@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Bolt\\Composer\\ExtensionInstaller' => $baseDir . '/ExtensionInstaller.php',
     'Bolt\\Extension\\Bolt\\RSSAggregator\\Extension' => $baseDir . '/local/europeana/rssaggregator/Extension.php',
     'Bolt\\Extension\\Bolt\\RSSFeed\\Controller' => $vendorDir . '/bolt/rssfeed/src/Controller.php',
     'Bolt\\Extension\\Bolt\\RSSFeed\\Extension' => $vendorDir . '/bolt/rssfeed/Extension.php',

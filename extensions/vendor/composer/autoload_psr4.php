@@ -15,4 +15,5 @@ return array(
     'Bolt\\Extension\\Bolt\\Sitemap\\' => array($vendorDir . '/bolt/sitemap'),
     'Bolt\\Extension\\Bolt\\RSSFeed\\' => array($vendorDir . '/bolt/rssfeed', $vendorDir . '/bolt/rssfeed/src'),
     'Bolt\\Extension\\Bolt\\RSSAggregator\\' => array($baseDir . '/local/europeana/rssaggregator'),
+    'Bolt\\Composer\\' => array($baseDir . '/'),
 );

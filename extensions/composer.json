@@ -16,7 +16,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "provide": {
-        "bolt/bolt": "2.0.5"
+        "bolt/bolt": "2.2.5"
     },
     "scripts": {
         "post-package-install": "Bolt\\Composer\\ExtensionInstaller::handle",
@@ -33,7 +33,8 @@
             "Bolt\\Extension\\Bolt\\RSSAggregator\\": "local/europeana/rssaggregator/",
             "Bolt\\Extension\\Europeana\\GoogleSearch\\": "local/europeana/google-search/",
             "Bolt\\Extension\\Europeana\\StructureTree\\": "local/europeana/structure-tree/",
-            "Bolt\\Extension\\Europeana\\FileHelper\\": "local/europeana/file-helper/"
+            "Bolt\\Extension\\Europeana\\FileHelper\\": "local/europeana/file-helper/",
+            "Bolt\\Composer\\": ""
         }
     },
     "config": {
