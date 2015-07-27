@@ -813,6 +813,8 @@ class Extension extends BaseExtension
                     if($this->debug_mode) {
                         dump('last change was not long enough ago (' . $existing_image_age . ' seconds) - skipping image fetching for user ' . $params['name']);
                     }
+
+                    $this->app['logger.system']->error('last image change was not long enough ago (' . $existing_image_age . ' seconds) - skipping image fetching for user ' . $params['name'], array('event' => 'zohoimport'));
                     return false;
                 }
             }
@@ -847,6 +849,8 @@ class Extension extends BaseExtension
             }
 
             $image['size'] = file_put_contents($image['tmpname'], $this->filedata[$params['name']]);
+
+            $this->app['logger.system']->error('loaded photo resource for: ' . $params['name'], array('event' => 'zohoimport'));
             unset($this->filedata[$params['name']]);
         } else {
             // there was a tempfile already
