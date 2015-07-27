@@ -34,7 +34,11 @@
             "Bolt\\Extension\\Europeana\\GoogleSearch\\": "local/europeana/google-search/",
             "Bolt\\Extension\\Europeana\\StructureTree\\": "local/europeana/structure-tree/",
             "Bolt\\Extension\\Europeana\\FileHelper\\": "local/europeana/file-helper/",
-            "Bolt\\Composer\\": ""
+            "Bolt\\Composer\\": "",
+            "Bolt\\Extension\\Europeana\\ZohoImport\\": [
+                "local/europeana/zohoimport/",
+                "local/europeana/zohoimport/src"
+            ]
         }
     },
     "config": {

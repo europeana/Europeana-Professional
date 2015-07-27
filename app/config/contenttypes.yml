@@ -39,6 +39,7 @@
 # - JOB
 # - EVENT
 # - PERSON
+# - NETWORK PARTNER
 # - PUBLICATION
 # - PRESSRELEASE
 # - PROJECTS
@@ -126,6 +127,12 @@ publications:
     person:
       multiple: true
       label: "Contact(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
+    network:
+      multiple: true
+      label: "Network Members(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
@@ -241,6 +248,12 @@ pressreleases:
     person:
       multiple: true
       label: "Contact(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
+    network:
+      multiple: true
+      label: "Network Members(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
@@ -497,7 +510,351 @@ persons:
   icon_many: "fa:users"
   icon_one: "fa:user"
 
-
+#################################
+#
+# NETWORK PARTNERS
+#
+# Notes:
+# The permalink should be /network/{first name}-{last-name} eg. /network/dean-birkett
+#
+#
+#################################
+network:
+  name: Network Partners
+  singular_name: Network Partner
+  slug: network
+  singular_slug: network
+  fields:
+    # Show on Staff list page, Staff page, Events page (speakers), Contact info block
+    first_name:
+      type: text
+      required: true
+      label: "First name"
+      variant: inline
+      class: narrow
+      postfix: "<em><small>(required)</small></em>"
+      group: "Public details"
+    # Show on Staff list page, Staff page, Events page (speakers), Contact info block
+    last_name:
+      type: text
+      required: true
+      label: "Last name"
+      postfix: "<em><small>(required)</small></em>"
+      variant: inline
+      class: narrow
+    slug:
+      type: slug
+      uses: [ first_name, last_name ]
+    introduction:
+      type: html
+      required: false
+      label: "Bio:"
+      height: 150px
+    company:
+      type: text
+      required: false
+      label: "Company:"
+      postfix: (if not Europeana Foundation)
+      variant: inline
+      class: narrow
+    company_url:
+      type: text
+      required: false
+      label: "Company URL:"
+      postfix: (if not Europeana Foundation)
+      pattern: url
+      variant: inline
+      class: narrow
+    job_title:
+      type: text
+      required: false
+      label: "Job Title:"
+      variant: inline
+      class: narrow
+    public_email:
+      type: text
+      required: false
+      label: "Public email:"
+      variant: inline
+      pattern: email
+      class: narrow
+    public_phone:
+      type: text
+      required: false
+      label: "Public phone:"
+      variant: inline
+      postfix: "<em>Allowed values are numbers, spaces, (, ), + and - </em>"
+      pattern: '^[0-9+ -]*$'
+      class: narrow
+    public_photo:
+      type: checkbox
+      label: "Show photo on website"
+    linkedin:
+      type: text
+      required: false
+      label: "Linkedin URL:"
+      variant: inline
+      postfix: "<em>URL has to start with http:// or https://</em>"
+      pattern: url
+      class: narrow
+    twitter:
+      type: text
+      required: false
+      label: "Twitter URL:"
+      variant: inline
+      postfix: '<em>For expample "https://twitter.com/Europeanaeu" </em>'
+      pattern: url
+      class: narrow
+    skype:
+      type: text
+      required: false
+      label: "Skype ID:"
+      variant: inline
+      class: narrow
+    image:
+      type: image
+      required: false
+      label: "Image:"
+      attrib: title
+      extensions: [ gif, jpg, png ]
+    network_participation:
+      type: select
+      required: false
+      multiple: true
+      label: "Network participation level:"
+      values:
+        "(not set)": "(not set)"
+        "Founding Member": "Founding Member"
+        "Governing Board": "Governing Board"
+        "Association Management Board": "Association Management Board"
+        "Association Members Council": "Association Members Council"
+        "Association Network Member": "Association Network Member"
+        "Partner": "Partner"
+        "Not a Network member": "Not a Network member"
+    community: 
+      type: select
+      required: false
+      multiple: true
+      label: "Interested in:"
+      values:
+        "(not set)": "(not set)"
+        "Academic research": "Academic research"
+        "Data partner": "Data partner"
+        "EuropeanaIPR": "EuropeanaIPR"
+        "EuropeanaTech (R&D)": "EuropeanaTech (R&D)"
+        "Innovation": "Innovation"
+    community_role: 
+      type: text
+      required: false
+      class: narrow
+      variant: inline
+      label: "Community role"
+    europeana_tech:
+      type: select
+      required: false
+      multiple: false
+      label: "Member of EuropeanaTech"
+      values:
+        "(not set)": "(not set)"
+        "false": "false"
+        "true": "true"
+    department:
+      type: select
+      default: 'Our Partner'
+      values: 
+        'Europeana Staff': 'Europeana Staff'
+        'Our Partner': 'Our Partner'
+    sector: 
+      type: text
+      required: false
+      class: narrow
+      variant: inline
+      label: "Sector"
+    country: 
+      type: text
+      required: false
+      class: narrow
+      variant: inline
+      label: "Country"
+    team:
+      type: select
+      required: false
+      label: "Team:"
+      values:
+        "(not set)": "(not set)"
+        "Aggregation": "Data Partner Services"
+        "Corporate Communication": "Communications"
+        "Distribution & Engagement": "End User Services"
+        "Facilitation": "Policy, Research, Knowledge & Programme Management"
+        "Management": "Management"
+        "Network & Sustainability": "Network & Sustainability"
+        "People & Business Support": "People & Business Support"
+        "Product Development": "Product Development"
+        "Technology": "Technology"
+        "Re-use Services": "Re-use Services"
+    email:
+      type: text
+      required: false
+      label: "Email address:"
+      variant: inline
+      pattern: email
+      class: narrow
+      group: "Hidden details"
+    # This is only used if the checkbox is checked on the page - it will override the email address and show the secondary email address instead
+    secondary_email:
+      type: text
+      required: false
+      label: "Secondary email address:"
+      variant: inline
+      pattern: email
+      class: narrow
+    telephone_number:
+      type: text
+      required: false
+      label: "Telephone number:"
+      variant: inline
+      postfix: "<em>Allowed values are numbers, spaces, (, ), + and - </em>"
+      pattern: '^[0-9+ -()]*$'
+      class: narrow
+    other_number:
+      type: text
+      required: false
+      label: "Other number:"
+      variant: inline
+      postfix: "<em>Allowed values are numbers, spaces, (, ), + and - </em>"
+      pattern: '^[0-9+ -]*$'
+      class: narrow
+    other_links_1:
+      type: text
+      required: false
+      label: "Other link:"
+      variant: inline
+      postfix: "<em>URL has to start with http:// or https://</em>"
+      pattern: url
+      class: narrow
+    other_links_2:
+      type: text
+      required: false
+      label: "Other link:"
+      variant: inline
+      postfix: "<em>URL has to start with http:// or https://</em>"
+      pattern: url
+      class: narrow
+    other_links_3:
+      type: text
+      required: false
+      label: "Other link:"
+      variant: inline
+      postfix: "<em>URL has to start with http:// or https://</em>"
+      pattern: url
+      class: narrow
+    structure_sortorder:
+      type: integer
+      label: "Sort order in structure tree parent"
+    structure_parent:
+      type: select
+      values: structures/id,title
+      autocomplete: true
+      label: "Select structure tree parent"
+    # uniqe identifier for ZOHO import
+    uid:
+      type: text
+      class: narrow
+      variant: inline
+      group: "ZOHO"
+    europeana_id: 
+      type: text
+      class: narrow
+      variant: inline
+    author_uid: 
+      type: text
+      class: narrow
+      variant: inline
+    author_name: 
+      type: text
+      class: narrow
+      variant: inline
+    modified_uid:
+      type: text
+      class: narrow
+      variant: inline
+    modified_name:
+      type: text
+      class: narrow
+      variant: inline
+    latime:
+      type: text
+      class: narrow
+      variant: inline
+    account_uid: 
+      type: text
+      class: narrow
+      variant: inline
+    account_name: 
+      type: text
+      class: narrow
+      variant: inline
+    description:
+      type: html
+      required: false
+      label: "Description:"
+      height: 150px
+    statutes_read:
+      type: select
+      required: false
+      multiple: false
+      label: "I have read & agree to the statutes"
+      values:
+        "(not set)": "(not set)"
+        "false": "false"
+        "true": "true"
+    statutes_agree:
+      type: select
+      required: false
+      multiple: false
+      label: "I agree to statutes"
+      values:
+        "(not set)": "(not set)"
+        "false": "false"
+        "true": "true"
+    contact_blogpost:
+      type: checkbox
+      label: "Main contact of the blog"
+    contact_event:
+      type: checkbox
+      label: "Main contact of events"
+    contact_job:
+      type: checkbox
+      label: "Main contact of the jobs page"
+    contact_person:
+      type: checkbox
+      label: "Main contact of the staff page"
+    contact_publication:
+      type: checkbox
+      label: "Main contact of the publications page"
+    contact_pressrelease:
+      type: checkbox
+      label: "Main contact of the press releases page"
+    contact_taskforce:
+      type: checkbox
+      label: "Main contact of the task forces page"
+    contact_tag:
+      type: checkbox
+      label: "Main contact of tag page"
+  taxonomy: [ tags ]
+  relations:
+    events:
+      multiple: true
+      label: "Events"
+      order: -id
+      format: "{{ item.title|escape }}"
+  sort: team
+  # no pager for person, mabe there is a better solution
+  listing_records: 10000
+  record_template: record_networkpartner.twig
+  listing_template : listing_networkpartner.twig
+  icon_many: "fa:users"
+  icon_one: "fa:user"
 
 
 #################################
@@ -761,6 +1118,12 @@ Jobs:
       label: "Contact(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
+    network:
+      multiple: true
+      label: "Network Members(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
     locations:
       label: "Locations"
       multiple: false
@@ -881,6 +1244,12 @@ blogposts:
     person:
       multiple: true
       label: "Contact(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
+    network:
+      multiple: true
+      label: "Network Members(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
@@ -1057,6 +1426,12 @@ pages:
     persons:
       label: "Contact(s)"
       multiple: true
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
+    network:
+      multiple: true
+      label: "Network Members(s)"
+      order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
     pages:
@@ -1244,6 +1619,12 @@ projects:
       label: "Contact(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
+    network:
+      multiple: true
+      label: "Network Members(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
     pages:
       multiple: true
       label: "Pages"
@@ -1379,6 +1760,12 @@ taskforces:
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
+    network:
+      multiple: true
+      label: "Network Members(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
     pages:
       multiple: true
       label: "Pages"
@@ -1463,6 +1850,23 @@ structures:
       label: "Intro text:"
       height: 150px
     # Shown on Overview pages, List pages, Teasers
+    intro:
+      type: text
+      required: false
+      label: "Introduction:"
+      pattern: "^.{1,120}$"
+      height: 150px
+    body:
+      type: html
+      required: false
+      label: "Body:"
+      height: 150px
+    suffix:
+      type: html
+      required: false
+      label: "Suffix:"
+      height: 150px
+      postfix: "<p>Text after listing on structure page.</p><hr>"
     image:
       type: image
       required: true
@@ -1477,7 +1881,7 @@ structures:
     content:
       type: select
       label: 'Contenttype'
-      values: ['default', 'Events', 'BlogPosts', 'Persons', 'PressReleases', 'Projects', 'Publications', 'TaskForces', 'Jobs']
+      values: ['default', 'Events', 'BlogPosts', 'Persons', 'Network', 'PressReleases', 'Projects', 'Publications', 'TaskForces', 'Jobs']
       postfix: 'Set content by contenttype'
       group: "Content type"
     # subclass get a own body class
@@ -1516,6 +1920,53 @@ structures:
       label: "Contact(s)"
       multiple: true
       format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
+    network:
+      multiple: true
+      label: "Network Members(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+      order: last_name
+    pages:
+      multiple: true
+      label: "Pages"
+      order: -id
+      format: "{{ item.title|escape }}"
+    blogposts:
+      multiple: true
+      label: "Blog posts"
+      order: -id
+      format: "{{ item.title|escape }}"
+    publications:
+      multiple: true
+      label: "Publications"
+      order: -id
+      format: "{{ item.title|escape }}"
+    pressreleases:
+      multiple: true
+      label: "Press releases"
+      order: -id
+      format: "{{ item.title|escape }}"
+    projects:
+      multiple: true
+      label: "Projects"
+      order: -id
+      format: "{{ item.title|escape }}"
+    taskforces:
+      multiple: true
+      label: "Task forces"
+      order: -id
+      format: "{{ item.title|escape }}"
+    events:
+      multiple: true
+      label: "Events"
+      order: -id
+      format: "{{ item.title|escape }}"
+    jobs:
+      multiple: true
+      label: "Jobs"
+      order: -id
+      format: "{{ item.title|escape }}"
   record_template: overview_structure.twig
   recordsperpage: 1000
   # viewless: true

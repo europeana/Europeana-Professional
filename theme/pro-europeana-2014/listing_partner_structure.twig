@@ -1,0 +1,129 @@
+{% include '_header.twig' %}
+
+<!-- Start content -->
+<main role="main" class="l-page">
+<div class="lc">
+    <!-- Start grid -->
+    <div class="grid-main">
+
+        <div class="l-content">
+
+            <div class="l-breadcrumbs">
+                {% include 'items/_item-breadcrumb.twig' %}
+            </div>
+
+            <div id="maincontent" class="maincontent">
+                {% if ( record is defined and record.title != "") %}
+                    <div class="textcontent prose">
+                        <h1 class="title">{{ record.title }}</h1>
+                        <p class="intro">{{ record.intro }}</p>
+                        {{ record.body|raw }}
+                    </div>
+                {% else %}
+                    <h1 class="title">Network Members</h1>
+                {% endif %}
+
+                {% set currentCompany = 'empty' %}
+
+                {#
+                {{ dump(npls) }}
+                #}
+
+
+                {% setcontent records = 'network' limit 100 orderby 'company' allowpaging %}
+                {% if records %}
+                    <table class="table-responsive">
+                        <thead>
+                             <tr>
+                                <th>Name</th>
+                                <th>Institution</th>
+                                <th>Job Title</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in records %}
+    
+                                <tr>
+                                    <th>
+                                        <a href="{{ structurelink(record) }}">{{ record.first_name }} {{ record.last_name }}</a>
+                                    </th>
+                                    <td>
+                                    {% if record.company_url != "" %}
+                                        <a href="{{ record.company_url }}">
+                                            {{ record.company }}
+                                        </a>
+                                    {% else %}
+                                        {{ record.company }}
+                                    {% endif %}
+                                    </td>
+                                    <td>{{ record.job_title }}</td>
+                                    <td>
+                                        {% if record.public_email %}
+                                        <a class="email" href="mailto:{{ record.public_email }}">{{ record.public_email }}</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    {{ pager('network') }}
+                {% else %}
+                    <div class="textcontent prose">
+                        <p>No network partners found</p>
+                    </div>
+                {% endif %}
+
+                {% if ( record is defined and record.suffix != "") %}
+                    <div class="textcontent prose">
+                        {{ record.suffix|raw }}
+                    </div>
+                {% endif %}
+
+                {#
+                    include related items
+                #}
+                {% if not record.hide_related_section %}
+                    {% include 'items/_item-related.twig' with {title: "Next steps", short: false} %}
+                {% endif %}
+            </div>
+        </div><!--
+
+        --><div class="l-sidebar">
+             <div class="inner">
+
+                 {#
+                     get main contacts. definied in contenttype 'person'
+                     example: field "contact_blog" -> main contact of the blogposts
+                 #}
+
+                 {% if ( record.relation.persons is defined and record.relation.persons|length ) %}
+                     {% setcontent contacts = 'persons' where { id: record.relation.persons|join(' || ') } orderby 'last_name' %}
+                     {% if( contacts|length and contacts is not iterable) %}
+                         {% set contacts = [contacts] %}
+                     {% endif %}
+                     {# {% include 'items/_item-help.twig' with { records: contacts} %} #}
+                 {% elseif contenttype.singular_slug is defined %}
+                     {% set contacttype = ('contact_'~(contenttype.singular_slug))  %}
+                     {% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
+                     {% if( contacts|length and contacts is not iterable) %}
+                         {% set contacts = [contacts] %}
+                     {% endif %}
+                     {# {% include 'items/_item-help.twig' with { records: contacts} %} #}
+                 {% endif %}
+
+                 {% include 'items/_item-help.twig' with { records: contacts} %}
+            </div>
+        </div><!-- end l-sidebar -->
+
+    </div>
+    <!-- End grid -->
+</div>
+</main>
+<!-- End Content -->
+
+
+
+{% include '_footer.twig' %}
+

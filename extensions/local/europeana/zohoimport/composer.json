@@ -1,0 +1,26 @@
+{
+    "name": "europeana/zohoimport",
+    "description": "Import XML, ATOM or JSON nodes into a content type",
+    "type": "bolt-extension",
+    "require": {
+        "bolt/bolt": ">=2.0.0,<3.0.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lodewijk Evers", 
+            "email": "lodewijk@twokings.nl"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "init.php"
+        ],
+        "psr-4": {
+            "Bolt\\Extension\\Europeana\\ZohoImport\\": [
+                "",
+                "src"
+            ]
+        }
+    }
+}

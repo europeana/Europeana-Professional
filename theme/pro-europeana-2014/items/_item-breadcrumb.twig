@@ -47,7 +47,7 @@
 
         {# title #}
 
-        {% if (record.contenttype.singular_name == 'Person') %}
+        {% if (record.contenttype.singular_name in ['Person', 'Network Partner'] ) %}
             <li><span class="lastitem">{{ record.first_name }} {{ record.last_name }}</span></li>
         {% else %}
             <li><span class="lastitem">{{ record.title }}</span></li>

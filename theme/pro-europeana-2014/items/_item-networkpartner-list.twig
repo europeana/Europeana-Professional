@@ -8,35 +8,35 @@
     <div class="b-inner">
         <div class="b-thumb">
             {% if record.image %}
-                <a href="{{ listItemLink  }}">
+                <a href="{{ structurelink(record) }}">
                     <img src="{{ record.image|image(300,400) }}" alt="{{ record.first_name }} {{ record.last_name }}" />
                 </a>
             {% else %}
-                <a href="{{ listItemLink  }}">
+                <a href="{{ structurelink(record) }}">
                     <img src="{{ app.paths.theme }}images/fpo_avatar.png" alt="{{ record.first_name }} {{ record.last_name }}" />
                 </a>
             {% endif %}
         </div>
         <div class="b-text">
-            <h2 class="person-name"><a href="{{ listItemLink }}">{{ record.first_name }} {{ record.last_name }}</a></h2>
+            <h2 class="person-name"><a href="{{ structurelink(record) }}">{{ record.first_name }} {{ record.last_name }}</a></h2>
             <div class="jobdetails">
                 <div class="job-title">{{ record.job_title }}</div>
             </div>
 
-            {% if record.email != '' %}
+            {% if record.public_email != '' %}
             <div class="item-sendemail">
-                <a class="email" href="mailto:{{ record.email }}">
+                <a class="email" href="mailto:{{ record.public_email }}">
                     <svg class="icon icon-sendemail"><use xlink:href="#icon-sendemail"></use></svg>
-                    {{ record.email }}
+                    {{ record.public_email }}
                 </a>
             </div>
             {% endif %}
-            {% if record.telephone_number != '' %}
+            {% if record.public_phone != '' %}
             <div class="item-phone-work">
                 <svg class="icon icon-phone-work">
                     <use xlink:href="#icon-phone-work"></use>
                 </svg>
-                <span class="tel">{{ record.telephone_number }}</span>
+                <span class="tel">{{ record.public_phone }}</span>
             </div>
             {% endif %}
 

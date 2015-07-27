@@ -58,6 +58,11 @@
                     {% endif %}
                 {% endfor %}
 
+                {% if ( record is defined and record.suffix != "") %}
+                    <div class="textcontent prose">
+                        {{ record.suffix|raw }}
+                    </div>
+                {% endif %}
             </div>
         </div><!--
 
