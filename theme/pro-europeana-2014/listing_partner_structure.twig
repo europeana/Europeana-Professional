@@ -45,9 +45,9 @@
                             {% for record in records %}
     
                                 <tr>
-                                    <tr>
+                                    <td>
                                         <a href="{{ structurelink(record) }}">{{ record.first_name }} {{ record.last_name }}</a>
-                                    </tr>
+                                    </td>
                                     <td>
                                     {% if record.company_url != "" %}
                                         <a href="{{ record.company_url }}">
