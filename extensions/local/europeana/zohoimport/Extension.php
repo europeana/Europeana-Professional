@@ -31,6 +31,11 @@ class Extension extends BaseExtension
 
     public function initialize()
     {
+        // set variables that are needed later
+        $this->structure_tree_map = $this->orderStructureTreeMap();
+        $this->remote_request_counter = 0;
+        $this->debug_mode = $this->config['debug_mode'];
+
         if ($this->app['config']->getWhichEnd() === 'backend' 
             || $this->app['config']->getWhichEnd() === 'cli') {
 
@@ -50,11 +55,6 @@ class Extension extends BaseExtension
                     ->bind('zohoImportOverview');
             }
         }
-
-        // set variables that are needed later
-        $this->structure_tree_map = $this->orderStructureTreeMap();
-        $this->remote_request_counter = 0;
-        $this->debug_mode = $this->config['debug_mode'];
 
         // command line only stuff
         if ($this->app['config']->getWhichEnd() === 'cli') {
@@ -85,7 +85,9 @@ class Extension extends BaseExtension
         $this->app['twig.loader.filesystem']->addPath(dirname(__FILE__) . '/assets');
 
         $data['config'] = $this->config;
+        $data['batchoutput'] = '<p>Please do this on the console <tt>$ php app/nut zoho:import</tt>.</p>';
 
+        //$data['batchoutput'] .= '<pre>'.print_r($this->structure_tree_map, true).'</pre>';
 
         $html = $this->app['render']->render('overview.twig', $data);
         return new \Twig_Markup($html, 'UTF-8');
@@ -103,7 +105,8 @@ class Extension extends BaseExtension
 
         $data['config'] = $this->config;
         //$this->debug_mode = true;
-        $data['batchoutput'] = $this->importJob();
+        $on_console = false;
+        $data['batchoutput'] = $this->importJob($on_console);
 
         $html = $this->app['render']->render('overview.twig', $data);
         return new \Twig_Markup($html, 'UTF-8');
@@ -113,7 +116,7 @@ class Extension extends BaseExtension
     /**
      * Test page with debug stuff for development
      */
-    public function importJob()
+    public function importJob($on_console = false)
     {
         //dump($this->config);
         if($this->debug_mode) {
@@ -166,19 +169,31 @@ class Extension extends BaseExtension
                             dump($name . ' limit reached - 100 iterations are a bit much, please try to modify this import');
                         }
                         $this->app['logger.system']->warning($name . ' limit reached - 100 iterations are a bit much, please try to modify this import', array('event' => 'zohoimport'));
-                        $output .= 'import step '. $looper. ": hard import limit reached. 100 iterations are a bit much, please try to modify this import<br>\n";
+                        if($on_console) {
+                            echo 'import step '. $looper. ': hard import limit reached. 100 iterations are a bit much, please try to modify this import..'."\n";
+                        } else {
+                            $output .= 'import step '. $looper. ": hard import limit reached. 100 iterations are a bit much, please try to modify this import<br>\n";
+                        }
                     } elseif($this->resourcedata[$name]=='nodata') {
                         $this->endcondition = true;
                         if($this->debug_mode) {
                             dump($name . ' found end of data for import');
                         }
                         $this->app['logger.system']->info($name . ' found end of data for import', array('event' => 'zohoimport'));
-
-                        $output .= 'import step '. $looper. ": end of data found<br>\n";
+                        if($on_console) {
+                            echo  'import step '. $looper. ': end of data found..'."\n";
+                        } else {
+                            $output .= 'import step '. $looper. ": end of data found<br>\n";
+                        }
                     } else {
                         $this->saveRecords($name, $localconfig);
                         $numrecords += count($this->resourcedata[$name]);
-                        $output .= 'import step '. $looper. ": " . $localconfig['source']['getparams'][$counter]. ' - '. $localconfig['source']['getparams'][$stepper]. "<br>\n";
+
+                        if($on_console) {
+                            echo  'import step '. $looper. ": " . $localconfig['source']['getparams'][$counter]. ' - '. $localconfig['source']['getparams'][$stepper].'..'."\n";
+                        } else {
+                            $output .= 'import step '. $looper. ": " . $localconfig['source']['getparams'][$counter]. ' - '. $localconfig['source']['getparams'][$stepper]. "<br>\n";
+                        }
 
                     }
 
@@ -190,7 +205,11 @@ class Extension extends BaseExtension
                     $looper++; 
                 }
 
-                $output .= 'imported ~ '. $numrecords .' records from paged resource'. "<br>\n";
+                if($on_console) {
+                    echo 'imported ~ '. $numrecords .' records from paged resource..'."\n";
+                } else {
+                    $output .= 'imported ~ '. $numrecords .' records from paged resource'. "<br>\n";
+                }
             } elseif($config['source']['files']) {
                 // the import has file paging so lets import every file at once
                 $localconfig = $config;
@@ -211,7 +230,12 @@ class Extension extends BaseExtension
                     }
                     $numrecords += count($this->resourcedata[$name]);
                 }
-                $output .= 'imported '. $numrecords .' records from short resource'. "<br>\n";
+
+                if($on_console) {
+                    echo 'imported '. $numrecords .' records from files resource..'."\n";
+                } else {
+                    $output .= 'imported '. $numrecords .' records from files resource'. "<br>\n";
+                }
             } else {
                 if($this->debug_mode) {
                     dump('loading resource:' . $name);
@@ -224,10 +248,22 @@ class Extension extends BaseExtension
                     $this->saveRecords($name, $config);
                 }
                 $numrecords = count($this->resourcedata[$name]);
-                $output .= 'imported '. $numrecords .' records from short resource'. "<br>\n";
+
+                if($on_console) {
+                    echo 'imported '. $numrecords .' records from short resource..'."\n";
+                } else {
+                    $output .= 'imported '. $numrecords .' records from short resource'. "<br>\n";
+                }
+                
             }
             $this->depublishRemovedRecords($name, $config, $batchdate);
-            $output .= 'depublished removed records' . "<br>\n";
+            
+            if($on_console) {
+                echo 'depublished removed records..'."\n";
+            } else {
+                $output .= 'depublished removed records' . "<br>\n";
+            }
+            
             $this->app['logger.system']->info($name . ' - completed import - batch:'. $batchdate . ' - ' . $config['source']['type'], array('event' => 'zohoimport'));
 
         }
@@ -714,20 +750,24 @@ class Extension extends BaseExtension
      */
     public function setParentStructure($source_record, $target_record, $params)
     {
-        //dump('setParentStructure');
+        // dump('setParentStructure');
         $id = $this->structure_tree_map['default_id'];
         $lastrank = $this->structure_tree_map['lowest_rank'];
         
         if(array_key_exists($params['source_field'], $source_record) && !empty($source_record[$params['source_field']])) {
             $labels = explode(';',$source_record[$params['source_field']]);
             // loop trough all of found labels
-            // and override previously set label if the rank is higer (number is lower)
+            // highest ranks are first in zoho
+            // so return the value for the first matched rank
             foreach($labels as $label) {
                 $rank = $this->structure_tree_map['ranks'][$label];
-                if($rank < $lastrank) {
-                    $rank = $lastrank;
-                    $id = $this->structure_tree_map['ids'][$label];
-                }
+                $id = $this->structure_tree_map['ids'][$label];
+                return $id;
+                // and override previously set label if the rank is higer (number is lower)
+                // if($rank < $lastrank) {
+                //     $rank = $lastrank;
+                //     $id = $this->structure_tree_map['ids'][$label];
+                // }
             }
         }
         return $id;

@@ -19,7 +19,9 @@ class Console extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $text = $this->app['extensions.ZohoImport']->testPage();
+        $on_console = true;
+        $text = $this->app['extensions.ZohoImport']->importJob($on_console);
+        $text = strip_tags($text);
 
         $output->writeln($text);
     }
