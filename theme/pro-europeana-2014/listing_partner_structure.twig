@@ -32,7 +32,7 @@
 
                 {% setcontent records = 'network' limit 100 orderby 'company' allowpaging %}
                 {% if records %}
-                    <table class="table-responsive">
+                    <table class="table-responsive-break">
                         <thead>
                              <tr>
                                 <th>Name</th>
@@ -45,9 +45,9 @@
                             {% for record in records %}
     
                                 <tr>
-                                    <th>
+                                    <tr>
                                         <a href="{{ structurelink(record) }}">{{ record.first_name }} {{ record.last_name }}</a>
-                                    </th>
+                                    </tr>
                                     <td>
                                     {% if record.company_url != "" %}
                                         <a href="{{ record.company_url }}">
