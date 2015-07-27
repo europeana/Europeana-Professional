@@ -35,20 +35,20 @@
                     <table class="table-responsive-break">
                         <thead>
                              <tr>
-                                <th>Name</th>
-                                <th>Institution</th>
-                                <th>Job Title</th>
-                                <th>Email</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Institution</th>
+                                <th scope="col">Job Title</th>
+                                <th scope="col">Email</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for record in records %}
     
                                 <tr>
-                                    <td>
+                                    <th scope="row">
                                         <a href="{{ structurelink(record) }}">{{ record.first_name }} {{ record.last_name }}</a>
-                                    </td>
-                                    <td>
+                                    </th>
+                                    <td data-title="Institution">
                                     {% if record.company_url != "" %}
                                         <a href="{{ record.company_url }}">
                                             {{ record.company }}
@@ -57,8 +57,8 @@
                                         {{ record.company }}
                                     {% endif %}
                                     </td>
-                                    <td>{{ record.job_title }}</td>
-                                    <td>
+                                    <td data-title="Job Title">{{ record.job_title }}</td>
+                                    <td data-title="Email">
                                         {% if record.public_email %}
                                         <a class="email" href="mailto:{{ record.public_email }}">{{ record.public_email }}</a>
                                         {% endif %}
