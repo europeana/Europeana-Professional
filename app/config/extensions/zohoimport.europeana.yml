@@ -3,7 +3,7 @@ debug_mode: false
 # the path for downloads images in hookafterload
 image_path: 'zoho_images'
 # set image_downloads to true for the hookafterload images
-image_downloads: true
+image_downloads: false
 
 # Make the associations with the different values and their structure tree equivalent
 # rank  - the order of importance, with 1 as highest rank
@@ -14,23 +14,23 @@ structure_tree_map:
     founding:
         rank: 1
         label: "Founding Member"
-        id: 55
+        id: 56
     governing:
         rank: 2
         label: "Governing Board"
-        id: 55
+        id: 56
     management:
         rank: 3
         label: "Association Management Board"
-        id: 56
+        id: 57
     council:
         rank: 4
         label: "Association Members Council"
-        id: 56
+        id: 57
     members:
         rank: 5
         label: "Association Network Member"
-        id: 59
+        id: 58
     partners:
         rank: 6
         label: "Partner"
