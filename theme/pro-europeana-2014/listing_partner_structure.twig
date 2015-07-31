@@ -29,9 +29,22 @@
                 {{ dump(npls) }}
                 #}
 
+                {% if app.request.get('slug') in ['founding-members-governing-board', 'founding-members-governing-board/', 'founding-members-and-governing-board', 'founding-members-and-governing-board/', 'europeana-foundation', 'europeana-foundation/'] %}
+                    {% set npls = ["Founding Member", "Governing Board"] %}
+                {% elseif app.request.get('slug') in ['management-board-members-council', 'management-board-members-council/', 'association-management-board-and-members-council', 'association-management-board-and-members-council/', 'members-council', 'members-council/'] %}
+                    {% set npls = ["Association Management Board", "Association Members Council"]  %}
+                {% elseif app.request.get('slug') in ['association-network-members', 'association-network-members/', 'network-members', 'network-members/'] %}
+                    {% set npls = ["Association Network Member"] %}
+                {% elseif app.request.get('slug') in ['network-partners', 'network-partners/', 'partners', 'partners/'] %}
+                    {% set npls = ["Partner"] %}
+                {% else %}
+                    {% set npls = app.config.get('contenttypes/network/fields/network_participation/values') %}
+                {% endif %}
 
-                {% setcontent records = 'network' limit 100 orderby 'company' allowpaging %}
-                {% if records %}
+                {# {{ dump(npls) }} #}
+
+                {% for npl in npls %}
+                    {% setcontent records = 'network' where {network_participation: '%'~npl~'%'} limit 100 orderby 'company' allowpaging %}
                     <table class="table-responsive-break">
                         <thead>
                              <tr>
@@ -73,7 +86,7 @@
                     <div class="textcontent prose">
                         <p>No network partners found</p>
                     </div>
-                {% endif %}
+                {% endfor %}
 
                 {% if ( record is defined and record.suffix != "") %}
                     <div class="textcontent prose">

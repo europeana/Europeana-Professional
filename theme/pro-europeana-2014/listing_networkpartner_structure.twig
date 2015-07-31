@@ -30,7 +30,7 @@
                 {% elseif app.request.get('slug') in ['association-network-members', 'association-network-members/', 'network-members', 'network-members/'] %}
                     {% set npls = ["Association Network Member"] %}
                 {% elseif app.request.get('slug') in ['network-partners', 'network-partners/', 'partners', 'partners/'] %}
-                    {% set npls = ["Network Partner"] %}
+                    {% set npls = ["Partner"] %}
                 {% else %}
                     {% set npls = app.config.get('contenttypes/network/fields/network_participation/values') %}
                 {% endif %}
@@ -38,19 +38,36 @@
                 {# {{ dump(npls) }} #}
 
                 {% for npl in npls %}
-                    {% setcontent records = 'network' where {network_participation: '%'~npl~'%'} %}
-                    {% if records %}
-                    {#    {{ dump(records) }} #}
-                    <div class="team">
-                        {% if npl != "Not a Network member" %}
-                        <h2>{{ npl|default('Default network member') }}</h2>
-                        {% endif %}
-                        <ul class="results-list"><!--
-                            -->{% for person in records %}<!--
-                            --><li>{% include 'items/_item-networkpartner-list.twig' with { record: person } %}</li><!--
-                        -->{% endfor %}<!--
-                    --></ul>
-                    </div>
+                    {% if npl != "Association Network Member" %}
+                        {% setcontent records = 'network' where { network_participation: '%'~npl~'%' } orderby 'last_name' %}
+                        {#    {{ dump(records) }} #}
+                        <div class="team">
+                            {% if npl != "Not a Network member" %}
+                            <h2>{{ npl|default('Default network member') }}</h2>
+                            {% endif %}
+                            <ul class="results-list"><!--
+                                -->{% for person in records %}<!--
+                                --><li>{% include 'items/_item-networkpartner-list.twig' with { record: person } %}</li><!--
+                            -->{% endfor %}<!--
+                        --></ul>
+                        </div>
+                    {% else %}
+                        {% set currentCompany = 'empty' %}
+                        {% setcontent records = 'network' where { network_participation: '%'~npl~'%' } orderby 'company' %}
+                        <div class="team">
+                        {% for record in records %}
+                            {% if loop.first == false and ( record.company != currentCompany ) %}
+                                --></ul>
+                            {% endif %}
+                            {% if ( record.company != currentCompany ) %}
+                                <h2>{{ record.company }}</h2>
+                                <ul class="results-list"><!--
+                            {% endif %}
+                                    --><li>{% include 'items/_item-person-list.twig' with { record: record } %}</li><!--
+                            {% set currentCompany = record.company %}
+                        {% endfor %}
+                            --></ul>
+                        </div>
                     {% endif %}
                 {% else %}
                     <div class="textcontent prose">
