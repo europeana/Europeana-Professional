@@ -55,22 +55,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for record in records %}
+                            {% for person in records %}
                                 <tr>
                                     <th scope="row">
-                                        <a href="{{ structurelink(record) }}">{{ record.first_name }} {{ record.last_name }}</a>
+                                        <a href="{{ structurelink(person) }}">{{ person.first_name }} {{ person.last_name }}</a>
                                     </th>
                                     <td data-title="Organisation">
-                                    {% if record.company_url != "" %}
-                                        <a href="{{ record.company_url }}" target="_blank">
-                                            {{ record.company }}
+                                    {% if person.company_url != "" %}
+                                        <a href="{{ person.company_url }}" target="_blank">
+                                            {{ person.company }}
                                         </a>
                                     {% else %}
-                                        {{ record.company }}
+                                        {{ person.company }}
                                     {% endif %}
                                     </td>
-                                    <td data-title="Countrye">{{ record.country }}</td>
-                                    <td data-title="Sector">{{ record.sector }}</td>
+                                    <td data-title="Countrye">{{ person.country }}</td>
+                                    <td data-title="Sector">{{ person.sector }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
