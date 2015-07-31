@@ -49,33 +49,28 @@
                         <thead>
                              <tr>
                                 <th scope="col">Name</th>
-                                <th scope="col">Institution</th>
-                                <th scope="col">Job Title</th>
-                                <th scope="col">Email</th>
+                                <th scope="col">Organisation</th>
+                                <th scope="col">Country</th>
+                                <th scope="col">Sector</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for record in records %}
-    
                                 <tr>
                                     <th scope="row">
                                         <a href="{{ structurelink(record) }}">{{ record.first_name }} {{ record.last_name }}</a>
                                     </th>
-                                    <td data-title="Institution">
+                                    <td data-title="Organisation">
                                     {% if record.company_url != "" %}
-                                        <a href="{{ record.company_url }}">
+                                        <a href="{{ record.company_url }}" target="_blank">
                                             {{ record.company }}
                                         </a>
                                     {% else %}
                                         {{ record.company }}
                                     {% endif %}
                                     </td>
-                                    <td data-title="Job Title">{{ record.job_title }}</td>
-                                    <td data-title="Email">
-                                        {% if record.public_email %}
-                                        <a class="email" href="mailto:{{ record.public_email }}">{{ record.public_email }}</a>
-                                        {% endif %}
-                                    </td>
+                                    <td data-title="Countrye">{{ record.country }}</td>
+                                    <td data-title="Sector">{{ record.sector }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
