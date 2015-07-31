@@ -38,7 +38,7 @@
                 {# {{ dump(npls) }} #}
 
                 {% for npl in npls %}
-                    {% if npl != "Association Network Member" %}
+                    {% if npl != "Partner" %}
                         {% setcontent records = 'network' where { network_participation: '%'~npl~'%' } orderby 'last_name' %}
                         {#    {{ dump(records) }} #}
                         <div class="team">
