@@ -154,12 +154,16 @@ class Extension extends BaseExtension
                 $looper = 1; // just a counter to see how far we are
                 $numrecords = 0;
 
+                if($on_console) {
+                    $localconfig['on_console'] = $on_console;
+                }
+
                 while($this->endcondition==false) {
 
                     if($this->debug_mode) {
                         dump($localconfig);
                     }
-                    $this->app['logger.system']->info($name . ' step '. $looper .' from:'. $localconfig['source']['getparams'][$counter] . ' - to: '. $localconfig['source']['getparams'][$stepper], array('event' => 'zohoimport'));
+                    $this->app['logger.system']->debug($name . ' step '. $looper .' from:'. $localconfig['source']['getparams'][$counter] . ' - to: '. $localconfig['source']['getparams'][$stepper], array('event' => 'zohoimport'));
                     $this->fetchAnyResource($name, $localconfig);
                     $this->normalizeInput($name, $localconfig);
 
@@ -276,6 +280,8 @@ class Extension extends BaseExtension
 
         $output .= 'import took ~ ' . $batchdelta . " seconds<br>\n";
 
+        $this->app['logger.system']->info(strip_tags($output), array('event' => 'zohoimport'));
+
         return $output;
     }
 
@@ -285,6 +291,12 @@ class Extension extends BaseExtension
     private function saveRecords($name, $config)
     {
         $inputrecords = $this->resourcedata[$name];
+
+        if($config['on_console']) {
+            $on_console = $config['on_console'];
+        } else {
+            $on_console = false;
+        }
 
         foreach ($inputrecords as $inputrecord) {
             $uid = $config['target']['mapping']['fields']['uid'];
@@ -303,14 +315,14 @@ class Extension extends BaseExtension
                 if($this->debug_mode) {
                     dump('record is empty, preparing a new one: ' . $inputrecord[$uid]);
                 }
-                $this->app['logger.system']->info($name . ' - preparing a new record: ' . $inputrecord[$uid], array('event' => 'zohoimport'));
+                $this->app['logger.system']->debug($name . ' - preparing a new record: ' . $inputrecord[$uid], array('event' => 'zohoimport'));
                 $record = $this->app['storage']->getEmptyContent($config['target']['contenttype']);
                 $items['status'] = $config['target']['defaults']['new'];
             } else {
                 if($this->debug_mode) {
                     dump('found existing record: ' . $inputrecord[$uid]);
                 }
-                $this->app['logger.system']->info($name . ' - updating existing record: ' . $inputrecord[$uid], array('event' => 'zohoimport'));
+                $this->app['logger.system']->debug($name . ' - updating existing record: ' . $inputrecord[$uid], array('event' => 'zohoimport'));
                 $items['status'] = $config['target']['defaults']['updated'];
             }
 
@@ -340,6 +352,13 @@ class Extension extends BaseExtension
             if(array_key_exists('hookafterload', $config['target']) && is_array($config['target']['hookafterload'])) {
 
                 foreach($config['target']['hookafterload'] as $key => $hookparams) {
+
+                    if($on_console && $key == 'image') {
+                        //echo "hookafterload: ". $key . " - " .$hookparams['callback'] . " | check for: '" . $inputrecord['public_photo'] . "' - " . $inputrecord['source_url'] . "\n";
+
+                        $hookparams['on_console'] = true;
+                    }
+
                     if(!array_key_exists($key, $items) || empty($items[$key])) {
                         // it is a new value for the $items
                         $tempvalue = $this->$hookparams['callback']($inputrecord, $record, $hookparams);
@@ -347,6 +366,11 @@ class Extension extends BaseExtension
                         if(0 && $this->debug_mode) {
                             dump('tempvalue ' . $key . ': '. $tempvalue);
                         }
+
+                        if(0 && $on_console && $key == 'image' && $tempvalue) {
+                            echo "hookafterload new value: ". $tempvalue . "\n";
+                        }
+
                         if($tempvalue) {
                             $items[$key] = $tempvalue;
                         }
@@ -356,6 +380,11 @@ class Extension extends BaseExtension
                         if(0 && $this->debug_mode) {
                             dump('tempvalue ' . $key . ': '. $tempvalue);
                         }
+
+                        if(0 && $on_console && $key == 'image' && $tempvalue) {
+                            echo "hookafterload existing: ". $tempvalue . "\n";
+                        }
+
                         // set the new value if it is different
                         if($tempvalue != $items[$key]) {
                             $items[$key] = $tempvalue;
@@ -629,6 +658,12 @@ class Extension extends BaseExtension
      */
     private function fetchAnyResource($name, $enabled)
     {
+        if($enabled['on_console']) {
+            $on_console = $enabled['on_console'];
+        } else {
+            $on_console = false;
+        }
+
         if(array_key_exists('file', $enabled['source'])) {
             $source = __DIR__."/".$enabled['source']['file'];
             if(file_exists($source)) {
@@ -643,6 +678,10 @@ class Extension extends BaseExtension
                     $gkeys[] = $gkey ."=" . urlencode($gvalue);
                 }
                 $source .= "?" . join('&', $gkeys);
+            }
+
+            if($on_console) {
+                echo 'fetching: ' . $name . ' - ' . $source . "\n";
             }
 
             $this->fetchRemoteResource($name, $source);
@@ -696,6 +735,7 @@ class Extension extends BaseExtension
     public function countRemoteRequest($name = 'unknown') {
         $this->remote_request_counter++;
     }
+
     /**
      * HOOKAFTERLOAD:
      * Set a title if none is set 
@@ -780,18 +820,68 @@ class Extension extends BaseExtension
      */
     public function downloadZohoPhotoFromURL($source_record, $target_record, $params)
     {
+
+        if($params['on_console']) {
+            $on_console = $params['on_console'];
+        } else {
+            $on_console = false;
+        }
+
         //prepare url
         if(array_key_exists($params['source_field'], $source_record) && !empty($source_record[$params['source_field']])) {
             $params['name'] = $source_record[$params['source_field']];
             $params['source_url'] = str_replace($params['source_field'], $params['name'], $params['source_url']);
+        } else {
+            if($on_console) {
+                echo "downloadZohoPhotoFromURL has bad config\n";
+            }
         }
 
         // only fetch photos from contacts that need it
-        if($source_record['public_photo'] !== true) {
+        if($source_record["Show photo on europeana site"] == false || $source_record["Show photo on europeana site"] == 'false' ) {
+            $this->app['logger.system']->debug('no remote photo needed for:' . $params['source_url'], array('event' => 'zohoimport'));
+            if(0 && $on_console) {
+                echo "no remote photo needed for by Show photo on europeana site: " . $params['source_url'] . "\n";
+                //dump($params);
+                //die();
+            }
             return false;
+        } elseif($source_record["Show photo on europeana site"] == true || $source_record["Show photo on europeana site"] == 'true' ) {
+            $this->app['logger.system']->debug('we should check for a public photo at:' . $params['source_url'], array('event' => 'zohoimport'));
+            if($on_console) {
+                echo "we should check for a public photo by Show photo on europeana site: " . $params['source_url'] . "\n";
+                //dump($params);
+                //die();
+            }
+        } elseif($source_record['public_photo'] == false || $source_record['public_photo'] == 'false') {
+            $this->app['logger.system']->debug('no remote photo needed for:' . $source_record['public_photo'], array('event' => 'zohoimport'));
+            if(0 && $on_console) {
+                echo "no remote photo needed for by public_photo: " . $source_record['source_url'] . "\n";
+                //dump($params);
+                //die();
+            }
+            return false;
+        } elseif($source_record['public_photo'] == true || $source_record['public_photo'] == 'true') {
+            $this->app['logger.system']->debug('we should check for a public photo at:' . $params['source_url'], array('event' => 'zohoimport'));
+            if(0 && $on_console) {
+                echo "we should check for a public photo by public_photo: " . $params['source_url'] . "\n";
+                //dump($params);
+                //die();
+            }
+        } else {
+            $this->app['logger.system']->debug('we should check for a public photo at:' . $params['source_url'], array('event' => 'zohoimport'));
+            if(0 && $on_console) {
+                echo "we should check for a public photo at: " . $params['source_url'] . "\n";
+                //dump($params);
+                // dump($target_record->values);
+                // die();
+            }
         }
 
-        if($this->config['image_downloads'] !== true) {
+        if($this->config['image_downloads'] != true) {
+            // if($on_console) {
+            //     echo "download not enabled: " . $this->config['image_downloads'] . "\n";
+            // }
             return false;
         }
 
@@ -814,18 +904,33 @@ class Extension extends BaseExtension
                         dump('last change was not long enough ago (' . $existing_image_age . ' seconds) - skipping image fetching for user ' . $params['name']);
                     }
 
-                    $this->app['logger.system']->error('last image change was not long enough ago (' . $existing_image_age . ' seconds) - skipping image fetching for user ' . $params['name'], array('event' => 'zohoimport'));
+                    $this->app['logger.system']->warning('last image change was not long enough ago (' . $existing_image_age . ' seconds) - skipping image fetching for user ' . $params['name'], array('event' => 'zohoimport'));
                     return false;
                 }
             }
+        } else {
+            $this->app['logger.system']->debug('no existing photo found for:' . $params['name'], array('event' => 'zohoimport'));
         }
 
         $cachepath = $this->app['paths']['cachepath'];
         $image['tmpname'] = $cachepath . '/'. $params['name'];
         $image['id'] = $params['name'];
+
+        // if($on_console) {
+        //     echo "check if image exists: ". $image['tmpname'] . "\n";
+        // }
+
         if(!file_exists($image['tmpname'])) {
+            // if($on_console) {
+            //     echo "image does not exist: ". $image['tmpname'] . "\n";
+            // }
+
             if($this->debug_mode) {
                 dump('looking up profile photo for user ' . $params['name']);
+            }
+
+            if($on_console) {
+                echo "fetch image: ". $params['source_url'] . "\n";
             }
 
             // really fetch the file
@@ -845,12 +950,13 @@ class Extension extends BaseExtension
                     dump('no photo for this id');
                 }
                 unset($this->filedata[$params['name']]);
+
+                $this->app['logger.system']->warning('no remote photo found for:' . $params['name'] . ' at url: ' . $params['source_url'], array('event' => 'zohoimport'));
                 return false;
             }
 
             $image['size'] = file_put_contents($image['tmpname'], $this->filedata[$params['name']]);
 
-            $this->app['logger.system']->error('loaded photo resource for: ' . $params['name'], array('event' => 'zohoimport'));
             unset($this->filedata[$params['name']]);
         } else {
             // there was a tempfile already
@@ -888,6 +994,13 @@ class Extension extends BaseExtension
         $newfile = $imagefile->move($image['target_dir'], $image['target_name']);
 
         //dump($image);
+
+        // if($on_console) {
+        //     echo "fetched image:\n";
+        //     dump($image);
+        // }
+
+        $this->app['logger.system']->info('loaded remote photo resource for: ' . $params['name'], array('event' => 'zohoimport'));
 
         // return the filename for record
         return json_encode(array('file' => $image['target_dbname'], 'title' => $image['id']));
