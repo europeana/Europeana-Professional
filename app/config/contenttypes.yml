@@ -587,8 +587,10 @@ network:
       pattern: '^[0-9+ -]*$'
       class: narrow
     public_photo:
-      type: checkbox
       label: "Show photo on website"
+      type: select
+      values: ["false", "true"]
+    community_role: 
     linkedin:
       type: text
       required: false
