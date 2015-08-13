@@ -29,12 +29,18 @@
                 {{ dump(npls) }}
                 #}
 
-                {% if app.request.get('slug') in ['founding-members-governing-board', 'founding-members-governing-board/', 'founding-members-and-governing-board', 'founding-members-and-governing-board/', 'europeana-foundation', 'europeana-foundation/'] %}
+                {% if app.request.get('slug') in ['foundation-governing-board', 'foundation-governing-board/'] %}
+                    {% set npls = ["Governing Board"] %}
+                {% elseif app.request.get('slug') in ['management-board-members-council', 'management-board-members-council/'] %}
+                    {% set npls = ["Management Board", "Members Council"]  %}
+                {% elseif app.request.get('slug') in ['network-association-members', 'network-association-members/'] %}
+                    {% set npls = ["Network Association Member"]  %}
+                {# {% elseif app.request.get('slug') in ['founding-members-governing-board', 'founding-members-governing-board/', 'founding-members-and-governing-board', 'founding-members-and-governing-board/', 'europeana-foundation', 'europeana-foundation/'] %}
                     {% set npls = ["Founding Member", "Governing Board"] %}
                 {% elseif app.request.get('slug') in ['management-board-members-council', 'management-board-members-council/', 'association-management-board-and-members-council', 'association-management-board-and-members-council/', 'members-council', 'members-council/'] %}
                     {% set npls = ["Association Management Board", "Association Members Council"]  %}
                 {% elseif app.request.get('slug') in ['association-network-members', 'association-network-members/', 'network-members', 'network-members/'] %}
-                    {% set npls = ["Association Network Member"] %}
+                    {% set npls = ["Association Network Member"] %} #}
                 {% elseif app.request.get('slug') in ['network-partners', 'network-partners/', 'partners', 'partners/'] %}
                     {% set npls = ["Partner"] %}
                 {% else %}

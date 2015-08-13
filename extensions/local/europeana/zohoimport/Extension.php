@@ -301,6 +301,8 @@ class Extension extends BaseExtension
         foreach ($inputrecords as $inputrecord) {
             $uid = $config['target']['mapping']['fields']['uid'];
 
+            // clear previous record
+            unset($record);
             // check existing
             $record = $this->app['storage']->getContent(
                             $config['target']['contenttype'],

@@ -628,9 +628,9 @@ network:
         "(not set)": "(not set)"
         "Founding Member": "Founding Member"
         "Governing Board": "Governing Board"
-        "Association Management Board": "Association Management Board"
-        "Association Members Council": "Association Members Council"
-        "Association Network Member": "Association Network Member"
+        "Management Board": "Management Board"
+        "Members Council": "Members Council"
+        "Network Association Member": "Network Association Member"
         "Partner": "Partner"
         "Not a Network member": "Not a Network member"
     community: 

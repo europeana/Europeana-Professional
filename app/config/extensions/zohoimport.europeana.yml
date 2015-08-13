@@ -21,15 +21,15 @@ structure_tree_map:
         id: 56
     management:
         rank: 3
-        label: "Association Management Board"
+        label: "Management Board"
         id: 57
     council:
         rank: 4
-        label: "Association Members Council"
+        label: "Members Council"
         id: 57
     members:
         rank: 5
-        label: "Association Network Member"
+        label: "Network Association Member"
         id: 58
     partners:
         rank: 6
