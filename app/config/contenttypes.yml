@@ -586,11 +586,6 @@ network:
       postfix: "<em>Allowed values are numbers, spaces, (, ), + and - </em>"
       pattern: '^[0-9+ -()]*$'
       class: narrow
-    public_photo:
-      label: "Show photo on website"
-      type: select
-      values: ["false", "true"]
-    community_role: 
     linkedin:
       type: text
       required: false
@@ -613,6 +608,10 @@ network:
       label: "Skype ID:"
       variant: inline
       class: narrow
+    public_photo:
+      label: "Show photo on website"
+      type: select
+      values: ["false", "true"]
     image:
       type: image
       required: false
@@ -660,12 +659,6 @@ network:
         "(not set)": "(not set)"
         "false": "false"
         "true": "true"
-    department:
-      type: select
-      default: 'Our Partner'
-      values: 
-        'Europeana Staff': 'Europeana Staff'
-        'Our Partner': 'Our Partner'
     sector: 
       type: text
       required: false
@@ -694,6 +687,12 @@ network:
         "Product Development": "Product Development"
         "Technology": "Technology"
         "Re-use Services": "Re-use Services"
+    department:
+      type: select
+      default: 'Our Partner'
+      values:
+        'Europeana Staff': 'Europeana Staff'
+        'Our Partner': 'Our Partner'
     email:
       type: text
       required: false

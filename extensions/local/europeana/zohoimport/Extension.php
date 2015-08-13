@@ -302,7 +302,12 @@ class Extension extends BaseExtension
             $uid = $config['target']['mapping']['fields']['uid'];
 
             // clear previous record
+            if($record->values) {
+                unset($record->values);
+            }
             unset($record);
+            unset($items);
+
             // check existing
             $record = $this->app['storage']->getContent(
                             $config['target']['contenttype'],
@@ -317,12 +322,18 @@ class Extension extends BaseExtension
                 if($this->debug_mode) {
                     dump('record is empty, preparing a new one: ' . $inputrecord[$uid]);
                 }
+                if($on_console) {
+                    echo 'record is empty, preparing a new one: ' . $inputrecord[$uid] . "\n";
+                }
                 $this->app['logger.system']->debug($name . ' - preparing a new record: ' . $inputrecord[$uid], array('event' => 'zohoimport'));
                 $record = $this->app['storage']->getEmptyContent($config['target']['contenttype']);
                 $items['status'] = $config['target']['defaults']['new'];
             } else {
                 if($this->debug_mode) {
                     dump('found existing record: ' . $inputrecord[$uid]);
+                }
+                if($on_console) {
+                    echo 'found existing record: ' . $inputrecord[$uid] . "\n";
                 }
                 $this->app['logger.system']->debug($name . ' - updating existing record: ' . $inputrecord[$uid], array('event' => 'zohoimport'));
                 $items['status'] = $config['target']['defaults']['updated'];
@@ -331,6 +342,7 @@ class Extension extends BaseExtension
             // update the new values
             foreach($config['target']['mapping']['fields'] as $key => $value) {
                 if(!array_key_exists($value, $inputrecord)) {
+                    $record->values[$value] = '';
                     $inputrecord[$value] = '';
                 }
                 $items[$key] = $inputrecord[$value];
@@ -411,14 +423,17 @@ class Extension extends BaseExtension
                     $items['community'] = explode(";", $items['community']);
                 }
 
-                if(!empty($items['twitter']) && !stristr('https://twitter.com/', $items['twitter'])) {
-                    $items['twitter'] = 'https://twitter.com/' . trim($items['twitter']);
+                if(!empty($items['twitter'])) {
+                    if(stristr($items['twitter'], 'http://twitter.com/')) {
+                        $items['twitter'] = str_replace('http://twitter.com/', 'https://twitter.com/', $items['twitter']);
+                    } elseif(!stristr($items['twitter'], 'https://twitter.com/')) {
+                        $items['twitter'] = 'https://twitter.com/' . trim($items['twitter']);
+                    }
                 }
             }
 
             // Store the data array into the record
             $record->setValues($items);
-
 
             if(0 && $this->debug_mode) {
                 dump($items);
@@ -478,6 +493,7 @@ class Extension extends BaseExtension
         } else {
             $this->app['logger.system']->error('Error occurred during normalize: ' . $name . ' - ' . $config['source']['type'], array('event' => 'zohoimport'));
         }
+
         // dump($this->resourcedata[$name]);
     }
 
@@ -505,6 +521,7 @@ class Extension extends BaseExtension
                 $value = TypeConverter::toArray($value);
                 $value = $this->convertNulls($value);
                 $values[] = $value;
+                unset($value);
             }
             $items = $values;
         }
@@ -533,6 +550,12 @@ class Extension extends BaseExtension
                 dump($doc);
             }
             die();
+        }
+
+        if($config['on_console']) {
+            $on_console = $config['on_console'];
+        } else {
+            $on_console = false;
         }
 
         $items = TypeConverter::toArray($doc);
@@ -564,25 +587,21 @@ class Extension extends BaseExtension
 
         // Modify deep nested json objects
         $test = reset($items);
-        if(!TypeConverter::isArray($test)) {
-            foreach($items as $value) {
-                $value = TypeConverter::toArray($value);
-
-                $FLtest = reset($value['FL']);
-                if(!TypeConverter::isArray($FLtest)) {
-                    foreach($value['FL'] as $FLvalue) {
-                        $FLvalues[] = TypeConverter::toArray($FLvalue);
+        if(!is_array($test)) {
+            foreach($items as $rawzohoitem) {
+                if(isset($rawzohoitem->FL) && is_array($rawzohoitem->FL)) {
+                    $currentrow = $rawzohoitem->FL;
+                    foreach($currentrow as $rowitem) {
+                        $outrow[$rowitem->val] = $rowitem->content;
                     }
-                    $value['FL'] = $FLvalues;
                 }
-                $values[] = $value;
+
+                $outrows[] = $outrow;
+                unset($outrow);
             }
-            $items = $values;
         }
 
-        $items = $this->flattenZOHO($items);
-
-        $this->resourcedata[$name] = $items;
+        $this->resourcedata[$name] = $outrows;
         return $doc;
     }
 
@@ -593,6 +612,7 @@ class Extension extends BaseExtension
     private function normalizeFromXml($name, $config, $input = '')
     {
         $doc = new SimpleXMLElement($this->filedata[$name]);
+
         $items = TypeConverter::xmlToArray($doc, TypeConverter::XML_MERGE);
 
         // get down into the root element
@@ -621,24 +641,27 @@ class Extension extends BaseExtension
      * Flatten the array values in a record that comes from ZOHO
      *
      * This specifically gets the key => data pairs
-     * in the subkey FL top the fop level of a row
+     * in the subkey FL to the top level of a row
      * 
      * from
      *     $array[$i]['FL'][$j][val=>'key',(value|content)=>'data']
      * into
      *     $array[$i][key]=data
      */
-    private function flattenZOHO($array) {
-        $test = reset($array);
+    private function flattenZOHO($inarray) {
+        $test = reset($inarray);
+        $outarray = [];
         if(array_key_exists('FL', $test)) {
-            foreach($array as $rowid => $row) {
+            foreach($inarray as $row) {
+                $outrow = null;
                 foreach($row['FL'] as $fk => $fv) {
-                    $array[$rowid][$fv['val']] = $fv['value']?trim($fv['value']):trim($fv['content']);
+                    $outrow[$fv['val']] = $fv['value']?trim($fv['value']):trim($fv['content']);
                 }
+                $outarray[] = $outrow;
             }
         }
 
-        return $array;
+        return $outarray;
     }
     
     /**
@@ -840,7 +863,21 @@ class Extension extends BaseExtension
         }
 
         // only fetch photos from contacts that need it
-        if($source_record["Show photo on europeana site"] == false || $source_record["Show photo on europeana site"] == 'false' ) {
+        if($source_record["Show photo on europeana site"] == true || $source_record["Show photo on europeana site"] == 'true' ) {
+            $this->app['logger.system']->debug('we should check for a public photo at:' . $params['source_url'], array('event' => 'zohoimport'));
+            if($on_console) {
+                echo "we should check for a public photo by Show photo on europeana site:\n" . $params['source_url'] . "\n";
+                //dump($params);
+                //die();
+            }
+        } elseif($source_record['public_photo'] == true || $source_record['public_photo'] == 'true') {
+            $this->app['logger.system']->debug('we should check for a public photo at:' . $params['source_url'], array('event' => 'zohoimport'));
+            if($on_console) {
+                echo "we should check for a public photo by public_photo:\n" . $params['source_url'] . "\n";
+                //dump($params);
+                //die();
+            }
+        } elseif($source_record["Show photo on europeana site"] == false || $source_record["Show photo on europeana site"] == 'false' ) {
             $this->app['logger.system']->debug('no remote photo needed for:' . $params['source_url'], array('event' => 'zohoimport'));
             if(0 && $on_console) {
                 echo "no remote photo needed for by Show photo on europeana site: " . $params['source_url'] . "\n";
@@ -848,13 +885,6 @@ class Extension extends BaseExtension
                 //die();
             }
             return false;
-        } elseif($source_record["Show photo on europeana site"] == true || $source_record["Show photo on europeana site"] == 'true' ) {
-            $this->app['logger.system']->debug('we should check for a public photo at:' . $params['source_url'], array('event' => 'zohoimport'));
-            if($on_console) {
-                echo "we should check for a public photo by Show photo on europeana site: " . $params['source_url'] . "\n";
-                //dump($params);
-                //die();
-            }
         } elseif($source_record['public_photo'] == false || $source_record['public_photo'] == 'false') {
             $this->app['logger.system']->debug('no remote photo needed for:' . $source_record['public_photo'], array('event' => 'zohoimport'));
             if(0 && $on_console) {
@@ -863,13 +893,6 @@ class Extension extends BaseExtension
                 //die();
             }
             return false;
-        } elseif($source_record['public_photo'] == true || $source_record['public_photo'] == 'true') {
-            $this->app['logger.system']->debug('we should check for a public photo at:' . $params['source_url'], array('event' => 'zohoimport'));
-            if(0 && $on_console) {
-                echo "we should check for a public photo by public_photo: " . $params['source_url'] . "\n";
-                //dump($params);
-                //die();
-            }
         } else {
             $this->app['logger.system']->debug('we should check for a public photo at:' . $params['source_url'], array('event' => 'zohoimport'));
             if(0 && $on_console) {
@@ -889,6 +912,14 @@ class Extension extends BaseExtension
 
         // prevent hammering the limits of zoho by only fetching images after minimum of 36 hours
         $existing_image = $target_record->get('image');
+        // if($on_console && is_array($existing_image) && array_key_exists('file',  $existing_image)) {
+        //     echo "check for existing image:\n" . $existing_image['file'] . "\n";
+        // }
+
+        if(empty($existing_image)) {
+            $existing_image['file'] = $params['name'] . '.png';
+        }
+
         if($existing_image && array_key_exists('file',  $existing_image)) {
             $existing_image_path = $this->app['paths']['filespath'] . '/'. $existing_image['file'];
             if(file_exists($existing_image_path)) {
@@ -905,13 +936,24 @@ class Extension extends BaseExtension
                     if($this->debug_mode) {
                         dump('last change was not long enough ago (' . $existing_image_age . ' seconds) - skipping image fetching for user ' . $params['name']);
                     }
+                    if($on_console) {
+                        echo "existing image is still fresh:\n" . $existing_image_age . " : " . $existing_image_path . "\n";
+                    }
 
                     $this->app['logger.system']->warning('last image change was not long enough ago (' . $existing_image_age . ' seconds) - skipping image fetching for user ' . $params['name'], array('event' => 'zohoimport'));
                     return false;
                 }
+            } else {
+                if($on_console) {
+                    echo "no existing image found in filesystem\n";
+                }
+                $this->app['logger.system']->debug('no existing photo found in filesystem for:' . $params['name'], array('event' => 'zohoimport'));
             }
         } else {
-            $this->app['logger.system']->debug('no existing photo found for:' . $params['name'], array('event' => 'zohoimport'));
+            if($on_console) {
+                echo "no existing image set in record\n";
+            }
+            $this->app['logger.system']->debug('no existing photo set in record:' . $params['name'], array('event' => 'zohoimport'));
         }
 
         $cachepath = $this->app['paths']['cachepath'];
@@ -921,7 +963,6 @@ class Extension extends BaseExtension
         // if($on_console) {
         //     echo "check if image exists: ". $image['tmpname'] . "\n";
         // }
-
         if(!file_exists($image['tmpname'])) {
             // if($on_console) {
             //     echo "image does not exist: ". $image['tmpname'] . "\n";
