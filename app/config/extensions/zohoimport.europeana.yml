@@ -93,7 +93,7 @@ remotes:
                     telephone_number: "Phone"               # example: "0703457628"
                     other_number: "Mobile"                  # example: "+316123456789"
 
-                    #introduction: "Description"             # example: "Test record"
+                    introduction: "Description"             # example: "Test record"
 
                     skype: "Skype ID"                       # example: "example"
                     twitter: "Twitter"                      # example: "twokings"
@@ -110,11 +110,8 @@ remotes:
                     public_phone: "Public phone"            # example: "1234567890"
                     public_photo: "Show photo on europeana site"
                                                             # example: "true"
-                    introduction: "Public introduction"     # example: "Test record"
                     sector: "Sector"
                     country: "Country"
-                    description: "Description"
-
 
                     # fields that can safely be ignored
                     europeana_id: "ID"                      # default: "EL30MC"
