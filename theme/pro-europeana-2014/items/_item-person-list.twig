@@ -46,6 +46,11 @@
             </div>
             {% endif %}
 
+            {% if record.linkedin != '' %}
+            <div class="item-linkedin">
+                <a href="{{ record.linkedin }}"><svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>{{ record.first_name }} {{ record.last_name }}</a>
+            </div>
+            {% endif %}
         </div>
 
     </div>

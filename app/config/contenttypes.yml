@@ -584,7 +584,7 @@ network:
       label: "Public phone:"
       variant: inline
       postfix: "<em>Allowed values are numbers, spaces, (, ), + and - </em>"
-      pattern: '^[0-9+ -]*$'
+      pattern: '^[0-9+ -()]*$'
       class: narrow
     public_photo:
       label: "Show photo on website"
@@ -724,7 +724,7 @@ network:
       label: "Other number:"
       variant: inline
       postfix: "<em>Allowed values are numbers, spaces, (, ), + and - </em>"
-      pattern: '^[0-9+ -]*$'
+      pattern: '^[0-9+ -()]*$'
       class: narrow
     other_links_1:
       type: text
