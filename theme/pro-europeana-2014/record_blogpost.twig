@@ -2,7 +2,7 @@
 
 {% set blogpost = record %}
 {% set authors = blogpost.related('persons') %}
-{% set authors = authors|merge(record.related('network_partner')) %}
+{% set authors = authors|merge(record.related('networkpartner')) %}
 {% set contacts = record.related('person') %}
 {% set contacts = contacts|merge(record.related('network')) %}
 

@@ -3,7 +3,7 @@
 {% set job = record %}
 {% set location = job.related('locations')|first %}
 {% set contacts = record.related('persons') %}
-{% set contacts = contacts|merge(record.related('network')) %}
+{% set contacts = contacts|merge(record.related('networkpartner')) %}
 
 <!-- Start content -->
 <main role="main" class="l-page">
