@@ -844,11 +844,6 @@ network:
       label: "Main contact of tag page"
   taxonomy: [ tags ]
   relations:
-    events:
-      multiple: true
-      label: "Events"
-      order: -id
-      format: "{{ item.title|escape }}"
   sort: team
   # no pager for person, mabe there is a better solution
   listing_records: 10000
@@ -954,12 +949,17 @@ events:
       format: "{{ item.title }}"
     persons:
       multiple: true
-      label: "Speakers"
+      label: "Speakers (Contacts)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
     person:
       multiple: true
       label: "Contact(s)"
+      order: last_name
+      format: "{{ item.last_name }}, {{ item.first_name }}"
+    network:
+      multiple: true
+      label: "Speakers (Network members)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
     pages:
