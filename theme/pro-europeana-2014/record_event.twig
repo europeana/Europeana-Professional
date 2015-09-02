@@ -2,7 +2,8 @@
 
 {% set event = record %}
 {% set location = record.related('locations')|first %}
-{% set speakers =  record.related('persons') %}
+{% set speakers = record.related('persons') %}
+{% set speakers = speakers|merge(record.related('network')) %}
 {% set contacts = record.related('person') %}
 
 <!-- Start content -->

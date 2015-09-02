@@ -1,5 +1,6 @@
 {% include '_header.twig' %}
 {% set contacts = record.related('persons') %}
+{% set contacts = contacts|merge(record.related('network')) %}
 
 <!-- Start content -->
 <main role="main" class="l-page">

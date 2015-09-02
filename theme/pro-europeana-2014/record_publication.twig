@@ -3,6 +3,7 @@
 {% set publication = record %}
 {% set related = record.related() %}
 {% set authors = record.related('persons') %}
+{% set authors = authors|merge(record.related('network')) %}
 {% set contacts = record.related('person') %}
 
 <!-- Start content -->
