@@ -19,7 +19,7 @@
 
 {% if record %}
     {% set allRelatedContent = record.related() %}
-    {% set relatedExceptions = ['persons', 'locations', 'structures'] %}
+    {% set relatedExceptions = ['persons', 'network', 'locations', 'structures'] %}
     {% set relatedContents = [] %}
 
     {# collect all related content objects #}
