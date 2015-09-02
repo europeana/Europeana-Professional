@@ -105,7 +105,7 @@ publications:
       label: "Contact(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-    network_partner:
+    networkpartner:
       multiple: true
       label: "Author(s) Network Members"
       order: last_name
@@ -227,7 +227,7 @@ pressreleases:
       label: "Contact(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-    network_partner:
+    networkpartner:
       multiple: true
       label: "Author(s) Network Members"
       order: last_name
@@ -500,7 +500,7 @@ network:
   name: Network Partners
   singular_name: Network Partner
   slug: network
-  singular_slug: network_partner
+  singular_slug: networkpartner
   fields:
     # Show on Staff list page, Staff page, Events page (speakers), Contact info block
     first_name:
@@ -927,7 +927,7 @@ events:
       label: "Speakers (Contacts)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-    network_partner:
+    networkpartner:
       multiple: true
       label: "Speakers (Network members)"
       order: last_name
@@ -1095,7 +1095,7 @@ Jobs:
       label: "Contact(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-    network_partner:
+    networkpartner:
       multiple: true
       label: "Network Members(s)"
       order: last_name
@@ -1213,7 +1213,7 @@ blogposts:
       multiple: true
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
-    network_partner:
+    networkpartner:
       multiple: true
       label: "Author(s) Network members"
       order: last_name
@@ -1401,7 +1401,7 @@ pages:
       multiple: true
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
-    network_partner:
+    networkpartner:
       multiple: true
       label: "Contact(s) Network Members"
       order: last_name
@@ -1723,7 +1723,7 @@ taskforces:
       label: "Chair(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-    network_partner:
+    networkpartner:
       multiple: true
       label: "Chairs(s) from Network Members"
       order: last_name
