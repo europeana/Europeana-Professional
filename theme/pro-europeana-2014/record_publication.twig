@@ -3,8 +3,9 @@
 {% set publication = record %}
 {% set related = record.related() %}
 {% set authors = record.related('persons') %}
-{% set authors = authors|merge(record.related('network')) %}
+{% set authors = authors|merge(record.related('network_partner')) %}
 {% set contacts = record.related('person') %}
+{% set contacts = contacts|merge(record.related('network')) %}
 
 <!-- Start content -->
 <main role="main" class="l-page">

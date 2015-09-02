@@ -3,8 +3,9 @@
 {% set event = record %}
 {% set location = record.related('locations')|first %}
 {% set speakers = record.related('persons') %}
-{% set speakers = speakers|merge(record.related('network')) %}
+{% set speakers = speakers|merge(record.related('network_partner')) %}
 {% set contacts = record.related('person') %}
+{% set contacts = contacts|merge(record.related('network')) %}
 
 <!-- Start content -->
 <main role="main" class="l-page event-detail">
