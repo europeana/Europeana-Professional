@@ -105,17 +105,11 @@ publications:
       label: "Contact(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-    networkpartner:
-      multiple: true
-      label: "Author(s) Network Members"
-      order: last_name
-      format: "{{ item.last_name }}, {{ item.first_name }}"
     network:
       multiple: true
-      label: "Contact(s) Network Members"
+      label: "Authors(s) Network Members"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-      order: last_name
     pages:
       multiple: true
       label: "Pages"
@@ -227,17 +221,11 @@ pressreleases:
       label: "Contact(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-    networkpartner:
-      multiple: true
-      label: "Author(s) Network Members"
-      order: last_name
-      format: "{{ item.last_name }}, {{ item.first_name }}"
     network:
       multiple: true
-      label: "Contact(s) Network Members"
+      label: "Authors(s) Network Members"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-      order: last_name
     pages:
       multiple: true
       label: "Pages"
@@ -927,19 +915,9 @@ events:
       label: "Speakers (Contacts)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-    networkpartner:
-      multiple: true
-      label: "Speakers (Network members)"
-      order: last_name
-      format: "{{ item.last_name }}, {{ item.first_name }}"
-    person:
-      multiple: true
-      label: "Contact(s)"
-      order: last_name
-      format: "{{ item.last_name }}, {{ item.first_name }}"
     network:
       multiple: true
-      label: "Contact(s) Network Members"
+      label: "Speaker(s) Network Members"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
     pages:
@@ -1095,9 +1073,9 @@ Jobs:
       label: "Contact(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-    networkpartner:
+    network:
       multiple: true
-      label: "Network Members(s)"
+      label: "Contact(s) Network Members"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
     locations:
@@ -1213,19 +1191,14 @@ blogposts:
       multiple: true
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
-    networkpartner:
+    network:
       multiple: true
-      label: "Author(s) Network members"
+      label: "Author(s) Network Members"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
     person:
       multiple: true
       label: "Contact(s)"
-      order: last_name
-      format: "{{ item.last_name }}, {{ item.first_name }}"
-    network:
-      multiple: true
-      label: "Contact(s) Network Members"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
     pages:
@@ -1401,12 +1374,11 @@ pages:
       multiple: true
       format: "{{ item.last_name }}, {{ item.first_name }}"
       order: last_name
-    networkpartner:
+    network:
       multiple: true
       label: "Contact(s) Network Members"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-      order: last_name
     pages:
       multiple: true
       label: "Pages"
@@ -1713,17 +1685,12 @@ taskforces:
       label: "Contact(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-    network:
-      multiple: true
-      label: "Contact(s) from Network Members"
-      order: last_name
-      format: "{{ item.last_name }}, {{ item.first_name }}"
     persons:
       multiple: true
       label: "Chair(s)"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
-    networkpartner:
+    network:
       multiple: true
       label: "Chairs(s) from Network Members"
       order: last_name
@@ -1885,7 +1852,7 @@ structures:
       order: last_name
     network:
       multiple: true
-      label: "Contact(s) from Network Members"
+      label: "Contact(s) Network Members"
       order: last_name
       format: "{{ item.last_name }}, {{ item.first_name }}"
     pages:
