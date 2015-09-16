@@ -1,0 +1,19 @@
+{#
+  used in:
+    - sitemap
+#}
+{% if records|length %}
+    <ul>
+    {% for record in records %}
+
+        <li><a href="{{ record.link }}">{{ record.title }}</a></li>
+
+        {% if (record.childs is defined and record.childs|length ) %}
+            <li>
+            {% include 'items/_item-sitemap.twig' with {records: record.childs } %}
+            </li>
+        {% endif %}
+
+    {% endfor %}
+    </ul>
+{% endif %}
