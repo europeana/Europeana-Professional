@@ -6,7 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Bolt\\Composer\\ExtensionInstaller' => $baseDir . '/ExtensionInstaller.php',
+    'Bolt\\Composer\\ExtensionInstaller' => $baseDir . '/installer.php',
     'Bolt\\Extension\\Bolt\\RSSAggregator\\Extension' => $baseDir . '/local/europeana/rssaggregator/Extension.php',
     'Bolt\\Extension\\Bolt\\RSSFeed\\Controller' => $vendorDir . '/bolt/rssfeed/src/Controller.php',
     'Bolt\\Extension\\Bolt\\RSSFeed\\Extension' => $vendorDir . '/bolt/rssfeed/Extension.php',
@@ -15,6 +15,8 @@ return array(
     'Bolt\\Extension\\Europeana\\FrontendExt\\Extension' => $baseDir . '/local/europeana/frontendext/Extension.php',
     'Bolt\\Extension\\Europeana\\GoogleSearch\\Extension' => $baseDir . '/local/europeana/google-search/Extension.php',
     'Bolt\\Extension\\Europeana\\StructureTree\\Extension' => $baseDir . '/local/europeana/structure-tree/Extension.php',
+    'Bolt\\Extension\\Europeana\\ZohoImport\\Console' => $baseDir . '/local/europeana/zohoimport/src/Console/Console.php',
+    'Bolt\\Extension\\Europeana\\ZohoImport\\Extension' => $baseDir . '/local/europeana/zohoimport/Extension.php',
     'Bolt\\Extension\\FoundryCode\\Redirector' => $vendorDir . '/foundrycode/boltredirector/Redirector.php',
     'Disqus\\Extension' => $vendorDir . '/bolt/disqus/Extension.php',
     'FileBrowser\\Extension' => $vendorDir . '/europeana/filebrowser/Extension.php',
