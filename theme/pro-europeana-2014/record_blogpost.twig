@@ -2,9 +2,9 @@
 
 {% set blogpost = record %}
 {% set authors = blogpost.related('persons') %}
-{% set authors = authors|merge(record.related('networkpartner')) %}
+{% set authors = authors|merge(record.related('network')) %}
 {% set contacts = record.related('person') %}
-{% set contacts = contacts|merge(record.related('network')) %}
+{# {% set contacts = contacts|merge(record.related('network')) %} #}
 
 <!-- Start content -->
 <main role="main" class="l-page">

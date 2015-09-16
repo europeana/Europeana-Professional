@@ -51,29 +51,31 @@
                             {% if npl != "Not a Network member" %}
                             <h2>{{ npl|default('Default network member') }}</h2>
                             {% endif %}
+                            {% if records %}
                             <ul class="results-list"><!--
                                 -->{% for person in records %}<!--
                                 --><li>{% include 'items/_item-networkpartner-list.twig' with { record: person } %}</li><!--
-                            -->{% endfor %}<!--
-                        --></ul>
+                                -->{% endfor %}<!--
+                            --></ul>
+                            {% endif %}
                         </div>
                     {% else %}
                         {% set currentCompany = 'empty' %}
                         {% setcontent records = 'network' where { network_participation: '%'~npl~'%' } orderby 'company' %}
-                        <div class="team">
-                        {% for person in records %}
-                            {% if loop.first == false and ( person.company != currentCompany ) %}
-                                --></ul>
-                            {% endif %}
-                            {% if ( person.company != currentCompany ) %}
-                                <h2>{{ person.company }}</h2>
-                                <ul class="results-list"><!--
-                            {% endif %}
+                        <div class="team"><!--
+                                -->{% for person in records %}<!--
+                                    -->{% if loop.first == false and ( person.company != currentCompany ) %}
+                                        --></ul><!--
+                                    -->{% endif %}<!--
+                                    -->{% if ( person.company != currentCompany ) %}<!--
+                                        --><h2>{{ person.company }}</h2><!--
+                                        --><ul class="results-list"><!--
+                                    -->{% endif %}<!--
                                     --><li>{% include 'items/_item-person-list.twig' with { record: person } %}</li><!--
-                            {% set currentCompany = person.company %}
-                        {% endfor %}
-                            --></ul>
-                        </div>
+                                    -->{% set currentCompany = person.company %}<!--
+                                -->{% endfor %}<!--
+                            --></ul><!--
+                        --></div>
                     {% endif %}
                 {% else %}
                     <div class="textcontent prose">

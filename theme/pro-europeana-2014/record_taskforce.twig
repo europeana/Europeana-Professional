@@ -1,9 +1,9 @@
 {% include '_header.twig' %}
 
 {% set contacts = record.related('person') %}
-{% set contacts = contacts|merge(record.related('network')) %}
+{# {% set contacts = contacts|merge(record.related('network')) %} #}
 {% set chairs = record.related('persons') %}
-{% set chairs = chairs|merge(record.related('network_partner')) %}
+{% set chairs = chairs|merge(record.related('network')) %}
 
 <!-- Start content -->
 <main role="main" class="l-page">

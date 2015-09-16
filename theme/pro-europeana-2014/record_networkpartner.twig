@@ -1,12 +1,31 @@
 {% set curtitle = record.first_name ~ ' ' ~ record.last_name %}
 {% include '_header.twig' %}
 
+{# as a speaker on events #}
 {% set events = record.related('events') %}
-{% set pressreleases = record.related('pressreleases') %}
-{% set publications = record.related('publications') %}
-{% set blogposts = record.related('blogposts') %}
-{% set contacts = record.related('person') %}
 
+{# as an author to blogposts #}
+{% set blogposts = record.related('blogposts') %}
+
+{# as an author to pressreleases #}
+{% set pressreleases = record.related('pressreleases') %}
+
+{# as an author to publications #}
+{% set publications = record.related('publications') %}
+
+{# 
+<!-- as a contact to pages -->
+{% set pages = record.related('pages') %}
+
+<!-- as a contact to projects -->
+{% set projects = record.related('projects') %}
+
+<!-- as a chair to task forces -->
+{% set taskforces = record.related('taskforces') %}
+
+<!-- as a contact to structures ->
+{% set structures = record.related('structures') %}
+#}
 <!-- Start content -->
 <main role="main" class="l-page">
 <div class="lc">
