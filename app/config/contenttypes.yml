@@ -412,7 +412,7 @@ persons:
       required: false
       label: "Twitter URL:"
       variant: inline
-      postfix: '<em>For expample "https://twitter.com/Europeanaeu" </em>'
+      postfix: '<em>For example "https://twitter.com/Europeanaeu" </em>'
       pattern: url
       class: narrow
     skype:
