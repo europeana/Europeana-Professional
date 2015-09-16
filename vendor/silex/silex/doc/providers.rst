@@ -32,7 +32,7 @@ Conventions
 ~~~~~~~~~~~
 
 You need to watch out in what order you do certain things when interacting
-with providers. Just keep these rules in mind:
+with providers. Just keep to these rules:
 
 * Overriding existing services must occur **after** the provider is
   registered.
@@ -44,6 +44,8 @@ with providers. Just keep these rules in mind:
 
   *Reason: Providers can set default values for parameters. Just like with
   services, the provider will overwrite existing values.*
+
+Make sure to stick to this behavior when creating your own providers.
 
 Included providers
 ~~~~~~~~~~~~~~~~~~
@@ -87,10 +89,10 @@ Providers must implement the ``Silex\ServiceProviderInterface``::
         public function boot(Application $app);
     }
 
-The ``register()`` method defines services on the application which then may
-make use of other services and parameters.
-
-The ``boot()`` method configures the application, just before it handles a
+This is very straight forward, just create a new class that implements the two
+methods. In the ``register()`` method, you can define services on the
+application which then may make use of other services and parameters. In the
+``boot()`` method, you can configure the application, just before it handles a
 request.
 
 Here is an example of such a provider::
@@ -196,7 +198,7 @@ defined (like ``get``, ``post``, ``match``, ...).
 
     The ``Application`` class acts in fact as a proxy for these methods.
 
-You can use this provider as follows::
+You can now use this provider as follows::
 
     $app = new Silex\Application();
 

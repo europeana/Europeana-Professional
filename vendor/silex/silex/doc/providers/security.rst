@@ -14,12 +14,7 @@ Services
 --------
 
 * **security**: The main entry point for the security provider. Use it to get
-  the current user token (only for Symfony up to 2.5).
-
-* **security.token_storage**: Gives access to the user token (Symfony 2.6+).
-
-* **security.authorization_checker**: Allows to check authorizations for the
-  users (Symfony 2.6+).
+  the current user token.
 
 * **security.authentication_manager**: An instance of
   `AuthenticationProviderManager
@@ -42,8 +37,6 @@ Services
   passwords (default to use a digest algorithm for all users).
 
 * **security.encoder.digest**: The encoder to use by default for all users.
-
-* **user**: Returns the current user
 
 .. note::
 
@@ -85,7 +78,7 @@ Usage
 -----
 
 The Symfony Security component is powerful. To learn more about it, read the
-`Symfony Security documentation
+`Symfony2 Security documentation
 <http://symfony.com/doc/2.3/book/security.html>`_.
 
 .. tip::
@@ -102,10 +95,6 @@ Accessing the current User
 The current user information is stored in a token that is accessible via the
 ``security`` service::
 
-    // Symfony 2.6+
-    $token = $app['security.token_storage']->getToken();
-
-    // Symfony 2.3/2.5
     $token = $app['security']->getToken();
 
 If there is no information about the user, the token is ``null``. If the user
@@ -338,12 +327,6 @@ Checking User Roles
 To check if a user is granted some role, use the ``isGranted()`` method on the
 security context::
 
-    // Symfony 2.6+
-    if ($app['security.authorization_checker']->isGranted('ROLE_ADMIN')) {
-        // ...
-    }
-
-    // Symfony 2.3/2.5
     if ($app['security']->isGranted('ROLE_ADMIN')) {
         // ...
     }
@@ -583,8 +566,7 @@ use in your configuration::
 
         // define the authentication listener object
         $app['security.authentication_listener.'.$name.'.wsse'] = $app->share(function () use ($app) {
-            // use 'security' instead of 'security.token_storage' on Symfony <2.6
-            return new WsseListener($app['security.token_storage'], $app['security.authentication_manager']);
+            return new WsseListener($app['security'], $app['security.authentication_manager']);
         });
 
         return array(
@@ -640,6 +622,8 @@ Traits
 ------
 
 ``Silex\Application\SecurityTrait`` adds the following shortcuts:
+
+* **user**: Returns the current user.
 
 * **encodePassword**: Encode a given password.
 

@@ -66,7 +66,7 @@ class ConfigCommand extends Command
                 new InputOption('auth', 'a', InputOption::VALUE_NONE, 'Affect auth config file (only used for --editor)'),
                 new InputOption('unset', null, InputOption::VALUE_NONE, 'Unset the given setting-key'),
                 new InputOption('list', 'l', InputOption::VALUE_NONE, 'List configuration settings'),
-                new InputOption('file', 'f', InputOption::VALUE_REQUIRED, 'If you want to choose a different composer.json or config.json', 'composer.json'),
+                new InputOption('file', 'f', InputOption::VALUE_REQUIRED, 'If you want to choose a different composer.json or config.json'),
                 new InputOption('absolute', null, InputOption::VALUE_NONE, 'Returns absolute paths when fetching *-dir config values instead of relative'),
                 new InputArgument('setting-key', null, 'Setting key'),
                 new InputArgument('setting-value', InputArgument::IS_ARRAY, 'Setting value'),
@@ -129,7 +129,7 @@ EOT
     {
         parent::initialize($input, $output);
 
-        if ($input->getOption('global') && 'composer.json' !== $input->getOption('file')) {
+        if ($input->getOption('global') && null !== $input->getOption('file')) {
             throw new \RuntimeException('--file and --global can not be combined');
         }
 
@@ -139,7 +139,7 @@ EOT
         // passed in a file to use
         $configFile = $input->getOption('global')
             ? ($this->config->get('home') . '/config.json')
-            : $input->getOption('file');
+            : ($input->getOption('file') ?: trim(getenv('COMPOSER')) ?: 'composer.json');
 
         // create global composer.json if this was invoked using `composer global config`
         if ($configFile === 'composer.json' && !file_exists($configFile) && realpath(getcwd()) === realpath($this->config->get('home'))) {
@@ -151,7 +151,7 @@ EOT
 
         $authConfigFile = $input->getOption('global')
             ? ($this->config->get('home') . '/auth.json')
-            : dirname(realpath($input->getOption('file'))) . '/auth.json';
+            : dirname(realpath($configFile)) . '/auth.json';
 
         $this->authConfigFile = new JsonFile($authConfigFile);
         $this->authConfigSource = new JsonConfigSource($this->authConfigFile, true);

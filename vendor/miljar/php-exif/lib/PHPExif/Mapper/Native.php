@@ -13,6 +13,7 @@ namespace PHPExif\Mapper;
 
 use PHPExif\Exif;
 use DateTime;
+use Exception;
 
 /**
  * PHP Exif Native Mapper
@@ -24,33 +25,33 @@ use DateTime;
  */
 class Native implements MapperInterface
 {
-    const APERTUREFNUMBER = 'ApertureFNumber';
-    const ARTIST = 'Artist';
-    const CAPTION = 'caption';
-    const COLORSPACE = 'ColorSpace';
-    const COPYRIGHT = 'copyright';
+    const APERTUREFNUMBER  = 'ApertureFNumber';
+    const ARTIST           = 'Artist';
+    const CAPTION          = 'caption';
+    const COLORSPACE       = 'ColorSpace';
+    const COPYRIGHT        = 'copyright';
     const DATETIMEORIGINAL = 'DateTimeOriginal';
-    const CREDIT = 'credit';
-    const EXPOSURETIME = 'ExposureTime';
-    const FILESIZE = 'FileSize';
-    const FOCALLENGTH = 'FocalLength';
-    const FOCUSDISTANCE = 'FocusDistance';
-    const HEADLINE = 'headline';
-    const HEIGHT = 'Height';
-    const ISOSPEEDRATINGS = 'ISOSpeedRatings';
-    const JOBTITLE = 'jobtitle';
-    const KEYWORDS = 'keywords';
-    const MIMETYPE = 'MimeType';
-    const MODEL = 'Model';
-    const ORIENTATION = 'Orientation';
-    const SOFTWARE = 'Software';
-    const SOURCE = 'source';
-    const TITLE = 'title';
-    const WIDTH = 'Width';
-    const XRESOLUTION = 'XResolution';
-    const YRESOLUTION = 'YResolution';
-    const GPSLATITUDE = 'GPSLatitude';
-    const GPSLONGITUDE = 'GPSLongitude';
+    const CREDIT           = 'credit';
+    const EXPOSURETIME     = 'ExposureTime';
+    const FILESIZE         = 'FileSize';
+    const FOCALLENGTH      = 'FocalLength';
+    const FOCUSDISTANCE    = 'FocusDistance';
+    const HEADLINE         = 'headline';
+    const HEIGHT           = 'Height';
+    const ISOSPEEDRATINGS  = 'ISOSpeedRatings';
+    const JOBTITLE         = 'jobtitle';
+    const KEYWORDS         = 'keywords';
+    const MIMETYPE         = 'MimeType';
+    const MODEL            = 'Model';
+    const ORIENTATION      = 'Orientation';
+    const SOFTWARE         = 'Software';
+    const SOURCE           = 'source';
+    const TITLE            = 'title';
+    const WIDTH            = 'Width';
+    const XRESOLUTION      = 'XResolution';
+    const YRESOLUTION      = 'YResolution';
+    const GPSLATITUDE      = 'GPSLatitude';
+    const GPSLONGITUDE     = 'GPSLongitude';
 
     const SECTION_FILE      = 'FILE';
     const SECTION_COMPUTED  = 'COMPUTED';
@@ -84,33 +85,33 @@ class Native implements MapperInterface
      * @var array
      */
     protected $map = array(
-        self::APERTUREFNUMBER => Exif::APERTURE,
-        self::FOCUSDISTANCE => Exif::FOCAL_DISTANCE,
-        self::HEIGHT => Exif::HEIGHT,
-        self::WIDTH => Exif::WIDTH,
-        self::CAPTION => Exif::CAPTION,
-        self::COPYRIGHT => Exif::COPYRIGHT,
-        self::CREDIT => Exif::CREDIT,
-        self::HEADLINE => Exif::HEADLINE,
-        self::JOBTITLE => Exif::JOB_TITLE,
-        self::KEYWORDS => Exif::KEYWORDS,
-        self::SOURCE => Exif::SOURCE,
-        self::TITLE => Exif::TITLE,
-        self::ARTIST => Exif::AUTHOR,
-        self::MODEL => Exif::CAMERA,
-        self::COLORSPACE => Exif::COLORSPACE,
+        self::APERTUREFNUMBER  => Exif::APERTURE,
+        self::FOCUSDISTANCE    => Exif::FOCAL_DISTANCE,
+        self::HEIGHT           => Exif::HEIGHT,
+        self::WIDTH            => Exif::WIDTH,
+        self::CAPTION          => Exif::CAPTION,
+        self::COPYRIGHT        => Exif::COPYRIGHT,
+        self::CREDIT           => Exif::CREDIT,
+        self::HEADLINE         => Exif::HEADLINE,
+        self::JOBTITLE         => Exif::JOB_TITLE,
+        self::KEYWORDS         => Exif::KEYWORDS,
+        self::SOURCE           => Exif::SOURCE,
+        self::TITLE            => Exif::TITLE,
+        self::ARTIST           => Exif::AUTHOR,
+        self::MODEL            => Exif::CAMERA,
+        self::COLORSPACE       => Exif::COLORSPACE,
         self::DATETIMEORIGINAL => Exif::CREATION_DATE,
-        self::EXPOSURETIME => Exif::EXPOSURE,
-        self::FILESIZE => Exif::FILESIZE,
-        self::FOCALLENGTH => Exif::FOCAL_LENGTH,
-        self::ISOSPEEDRATINGS => Exif::ISO,
-        self::MIMETYPE => Exif::MIMETYPE,
-        self::ORIENTATION => Exif::ORIENTATION,
-        self::SOFTWARE => Exif::SOFTWARE,
-        self::XRESOLUTION => Exif::HORIZONTAL_RESOLUTION,
-        self::YRESOLUTION => Exif::VERTICAL_RESOLUTION,
-        self::GPSLATITUDE => Exif::GPS,
-        self::GPSLONGITUDE => Exif::GPS,
+        self::EXPOSURETIME     => Exif::EXPOSURE,
+        self::FILESIZE         => Exif::FILESIZE,
+        self::FOCALLENGTH      => Exif::FOCAL_LENGTH,
+        self::ISOSPEEDRATINGS  => Exif::ISO,
+        self::MIMETYPE         => Exif::MIMETYPE,
+        self::ORIENTATION      => Exif::ORIENTATION,
+        self::SOFTWARE         => Exif::SOFTWARE,
+        self::XRESOLUTION      => Exif::HORIZONTAL_RESOLUTION,
+        self::YRESOLUTION      => Exif::VERTICAL_RESOLUTION,
+        self::GPSLATITUDE      => Exif::GPS,
+        self::GPSLONGITUDE     => Exif::GPS,
     );
 
     /**
@@ -142,25 +143,34 @@ class Native implements MapperInterface
             // manipulate the value if necessary
             switch ($field) {
                 case self::DATETIMEORIGINAL:
-                    $value = DateTime::createFromFormat('Y:m:d H:i:s', $value);
+                    try {
+                        $value = new DateTime($value);
+                    } catch (Exception $exception) {
+                        continue 2;
+                    }
                     break;
                 case self::EXPOSURETIME:
-                    // normalize ExposureTime
-                    // on one test image, it reported "10/300" instead of "1/30"
-                    list($counter, $denominator) = explode('/', $value);
-                    if (intval($counter) !== 1) {
-                        $denominator /= $counter;
+                    if (!is_float($value)) {
+                        $value = $this->normalizeComponent($value);
                     }
-                    $value = '1/' . round($denominator);
+
+                    // Based on the source code of Exiftool (PrintExposureTime subroutine):
+                    // http://cpansearch.perl.org/src/EXIFTOOL/Image-ExifTool-9.90/lib/Image/ExifTool/Exif.pm
+                    if ($value < 0.25001 && $value > 0) {
+                        $value = sprintf('1/%d', intval(0.5 + 1 / $value));
+                    } else {
+                        $value = sprintf('%.1f', $value);
+                        $value = preg_replace('/.0$/', '', $value);
+                    }
                     break;
                 case self::FOCALLENGTH:
-                    $parts  = explode('/', $value);
-                    $value = (int)reset($parts) / (int)end($parts);
+                    $parts = explode('/', $value);
+                    $value = (int) reset($parts) / (int) end($parts);
                     break;
                 case self::XRESOLUTION:
                 case self::YRESOLUTION:
                     $resolutionParts = explode('/', $value);
-                    $value = (int)reset($resolutionParts);
+                    $value = (int) reset($resolutionParts);
                     break;
                 case self::GPSLATITUDE:
                     $gpsData['lat'] = $this->extractGPSCoordinate($value);
@@ -174,13 +184,20 @@ class Native implements MapperInterface
             $mappedData[$key] = $value;
         }
 
+        // add GPS coordinates, if available
         if (count($gpsData) === 2) {
+            $latitudeRef = empty($data['GPSLatitudeRef'][0]) ? 'N' : $data['GPSLatitudeRef'][0];
+            $longitudeRef = empty($data['GPSLongitudeRef'][0]) ? 'E' : $data['GPSLongitudeRef'][0];
+
             $gpsLocation = sprintf(
                 '%s,%s',
-                (strtoupper($data['GPSLatitudeRef'][0]) === 'S' ? -1 : 1) * $gpsData['lat'],
-                (strtoupper($data['GPSLongitudeRef'][0]) === 'W' ? -1 : 1) * $gpsData['lon']
+                (strtoupper($latitudeRef) === 'S' ? -1 : 1) * $gpsData['lat'],
+                (strtoupper($longitudeRef) === 'W' ? -1 : 1) * $gpsData['lon']
             );
+
             $mappedData[Exif::GPS] = $gpsLocation;
+        } else {
+            unset($mappedData[Exif::GPS]);
         }
 
         return $mappedData;
@@ -205,21 +222,33 @@ class Native implements MapperInterface
      */
     protected function extractGPSCoordinate(array $components)
     {
-        $components = array_map(array($this, 'normalizeGPSComponent'), $components);
+        $components = array_map(array($this, 'normalizeComponent'), $components);
 
-        return intval($components[0]) + (intval($components[1]) / 60) + (floatval($components[2]) / 3600);
+        if (count($components) > 2) {
+            return intval($components[0]) + (intval($components[1]) / 60) + (floatval($components[2]) / 3600);
+        }
+
+        return reset($components);
     }
 
     /**
-     * Normalize GPS coordinates components
+     * Normalize component
      *
      * @param mixed $component
      * @return int|float
      */
-    protected function normalizeGPSComponent($component)
+    protected function normalizeComponent($component)
     {
-        $parts  = explode('/', $component);
+        $parts = explode('/', $component);
 
-        return count($parts) === 1 ? $parts[0] : (int) reset($parts) / (int) end($parts);
+        if (count($parts) > 1) {
+            if ($parts[1]) {
+                return intval($parts[0]) / intval($parts[1]);
+            }
+
+            return 0;
+        }
+
+        return floatval(reset($parts));
     }
 }

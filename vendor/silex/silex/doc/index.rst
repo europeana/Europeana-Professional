@@ -17,3 +17,4 @@ Silex
     providers/index
     web_servers
     changelog
+    phar
