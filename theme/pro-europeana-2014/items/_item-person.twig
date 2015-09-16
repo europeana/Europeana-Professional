@@ -23,7 +23,14 @@
             {% endif %}
 
 
-            {% if person.email != "" %}
+            {% if person.public_email != "" %}
+            <div class="item-sendemail">
+                <a class="email" href="mailto:{{ person.public_email }}" title="public email">
+                    <svg class="icon icon-sendemail"><use xlink:href="#icon-sendemail"></use></svg>
+                    {{ person.public_email }}
+                </a>
+            </div>
+            {% elseif person.email != "" %}
             <div class="item-sendemail">
                 <a class="email" href="mailto:{{ person.email }}">
                     <svg class="icon icon-sendemail"><use xlink:href="#icon-sendemail"></use></svg>
@@ -31,6 +38,7 @@
                 </a>
             </div>
             {% endif %}
+
 
             {% if person.telephone_number != "" %}
             <div class="item-phone-work">
