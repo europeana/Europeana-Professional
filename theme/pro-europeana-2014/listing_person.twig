@@ -68,31 +68,26 @@
 
      --><div class="l-sidebar">
              <div class="inner">
-
-                 {#
-                     get main contacts. definied in contenttype 'person'
-                     example: field "contact_blog" -> main contact of the blogposts
-                 #}
-
-                 {% if ( record.relation.persons is defined and record.relation.persons|length ) %}
-                     {% setcontent contacts = 'persons' where { id: record.relation.persons|join(' || ') } orderby 'last_name' %}
-                     {% if( contacts|length and contacts is not iterable) %}
-                         {% set contacts = [contacts] %}
-                     {% endif %}
-                     {# {% include 'items/_item-help.twig' with { records: contacts} %} #}
-                 {% elseif contenttype.singular_slug is defined %}
-                     {% set contacttype = ('contact_'~(contenttype.singular_slug))  %}
-                     {% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
-                     {% if( contacts|length and contacts is not iterable) %}
-                         {% set contacts = [contacts] %}
-                     {% endif %}
-                     {# {% include 'items/_item-help.twig' with { records: contacts} %} #}
-                 {% endif %}
-
-                 {#
-                 {% setcontent contacts = 'persons' where { contact_staff : '1' } orderby 'datepublish'  %}
-                 {% include 'items/_item-help.twig' with { records: contacts} %}
+                {#
+                    get main contacts. definied in contenttype 'person'
+                    example: field "contact_blog" -> main contact of the blogposts
                 #}
+
+                {% if contenttype.singular_slug is defined %}
+                    {% set contacttype = ('contact_'~(contenttype.singular_slug))  %}
+                    {% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
+                    {% if( contacts|length and contacts is not iterable) %}
+                        {% set contacts = [contacts] %}
+                    {% endif %}
+                    {% include 'items/_item-help.twig' with { records: contacts} %}
+                {% else %}
+
+                    {% set contacts = record.related('persons') %}
+                    {% set contacts = contacts|merge(record.related('network')) %}
+                    {% include 'items/_item-help.twig' with { records: contacts } %}
+
+                {% endif %}
+
             </div>
 
         </div>
