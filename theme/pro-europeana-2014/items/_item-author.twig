@@ -5,10 +5,16 @@
       - listing_listing
       - listing_search_results
 #}
-{% if records is defined %}
+{% if authors is defined %}
+    <span class="author-name">Author:
+    {% for person in authors %}
+        <a href="{{ structurelink(person) }}">{{ person.first_name }} {{ person.last_name }}</a>{% if (not loop.last) %},{% endif %}
+    {% endfor%}
+    </span>
+{% elseif records is defined %}
     <span class="author-name">Author:
     {% for person in records %}
-        <a href="{{ structurelink(person) }}">{{person.first_name}} {{person.last_name}}</a>{% if (not loop.last) %},{% endif %}
+        <a href="{{ structurelink(person) }}">{{ person.first_name }} {{ person.last_name }}</a>{% if (not loop.last) %},{% endif %}
     {% endfor%}
     </span>
 {% elseif record.relation.persons is defined %}

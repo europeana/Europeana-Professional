@@ -46,7 +46,11 @@
         {% elseif contenttype.slug in [ "blogposts", "blog-posts" ] %}
             <div class="item-meta-primary">
                 {# set author #}
-                {% include 'items/_item-author.twig' %}
+                {% if authors is defined %}
+                    {% include 'items/_item-author.twig' with { records: authors } %}
+                {% else %}
+                    {% include 'items/_item-author.twig' %}
+                {% endif %}
                 {% include 'items/_item-readtime.twig' %}
             </div>
         {% endif %}

@@ -188,7 +188,9 @@
                     <h2>Publications</h2>
                     <ul class="results-list">
                         {% for publication in publications %}
-                            {% include 'items/_item-list.twig' with {record: publication} %}
+                            {# as an author to blogposts #}
+                            {% set authors = publication.related('network') %}
+                            {% include 'items/_item-list.twig' with {record: publication, authors: authors} %}
                         {% endfor %}
                     </ul>
                 </div>
@@ -199,7 +201,9 @@
                     <h2>Blog posts</h2>
                     <ul class="results-list">
                         {% for blogpost in blogposts %}
-                            {% include 'items/_item-list.twig' with {record: blogpost} %}
+                            {# as an author to blogposts #}
+                            {% set authors = blogpost.related('network') %}
+                            {% include 'items/_item-list.twig' with {record: blogpost, authors: authors} %}
                         {% endfor %}
                     </ul>
                 </div>
