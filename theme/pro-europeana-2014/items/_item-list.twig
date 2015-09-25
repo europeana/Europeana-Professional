@@ -39,11 +39,21 @@
         <h2 class="title"><a href="{{ listItemLink }}">{{ listItem.title|striptags }}</a></h2>
 
         {% if (contenttype.slug in [ 'publications', 'pressreleases', 'press-releases' ]) %}
+            {% set publication = record %}
+            {% set authors = publication.related('persons') %}
+            {% set authors = authors|merge(publication.related('network')) %}
             <div class="item-meta-primary">
                 {# set authors #}
-                {% include 'items/_item-author.twig' %}
+                {% if authors is defined %}
+                    {% include 'items/_item-author.twig' with { records: authors } %}
+                {% else %}
+                    {% include 'items/_item-author.twig' %}
+                {% endif %}
             </div>
         {% elseif contenttype.slug in [ "blogposts", "blog-posts" ] %}
+            {% set blogpost = record %}
+            {% set authors = blogpost.related('persons') %}
+            {% set authors = authors|merge(blogpost.related('network')) %}
             <div class="item-meta-primary">
                 {# set author #}
                 {% if authors is defined %}
