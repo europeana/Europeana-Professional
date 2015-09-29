@@ -163,7 +163,12 @@
         {% else %}
 
             {% set contacts = record.related('persons') %}
-            {% set contacts = contacts|merge(record.related('network')) %}
+            {% if contacts is iterable %}
+                {% set contacts = contacts|merge(record.related('network')) %}
+            {% else %}
+                {% set contacts = record.related('network') %}
+            {% endif %}
+
             {% include 'items/_item-help.twig' with { records: contacts } %}
 
         {% endif %}

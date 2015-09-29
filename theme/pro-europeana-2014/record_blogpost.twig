@@ -1,8 +1,14 @@
 {% include '_header.twig' %}
 
 {% set blogpost = record %}
-{% set authors = blogpost.related('persons') %}
-{% set authors = authors|merge(record.related('network')) %}
+
+{% set authors = record.related('persons') %}
+{% if authors is iterable %}
+    {% set authors = authors|merge(record.related('network')) %}
+{% else %}
+    {% set authors = record.related('network') %}
+{% endif %}
+
 {% set contacts = record.related('person') %}
 {# {% set contacts = contacts|merge(record.related('network')) %} #}
 

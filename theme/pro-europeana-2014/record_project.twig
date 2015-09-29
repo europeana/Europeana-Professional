@@ -1,7 +1,11 @@
 {% include '_header.twig' %}
 
 {% set contacts = record.related('person') %}
-{% set contacts = contacts|merge(record.related('network')) %}
+{% if contacts is iterable %}
+    {% set contacts = contacts|merge(record.related('network')) %}
+{% else %}
+    {% set contacts = record.related('network') %}
+{% endif %}
 
 <!-- Start content -->
 <main role="main" class="l-page">

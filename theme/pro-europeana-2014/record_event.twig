@@ -4,7 +4,12 @@
 {% set location = record.related('locations')|first %}
 
 {% set speakers = record.related('persons') %}
-{% set speakers = speakers|merge(record.related('network')) %}
+{% if speakers is iterable %}
+    {% set speakers = speakers|merge(record.related('network')) %}
+{% else %}
+    {% set speakers = record.related('network') %}
+{% endif %}
+
 {% set contacts = record.related('person') %}
 {# {% set contacts = contacts|merge(record.related('network')) %} #}
 

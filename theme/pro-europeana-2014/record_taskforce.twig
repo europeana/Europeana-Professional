@@ -2,8 +2,13 @@
 
 {% set contacts = record.related('person') %}
 {# {% set contacts = contacts|merge(record.related('network')) %} #}
+
 {% set chairs = record.related('persons') %}
-{% set chairs = chairs|merge(record.related('network')) %}
+{% if chairs is iterable %}
+    {% set chairs = chairs|merge(record.related('network')) %}
+{% else %}
+    {% set chairs = record.related('network') %}
+{% endif %}
 
 <!-- Start content -->
 <main role="main" class="l-page">
