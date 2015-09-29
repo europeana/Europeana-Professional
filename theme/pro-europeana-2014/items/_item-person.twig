@@ -14,7 +14,7 @@
                 {% elseif person.image and person.contenttype.slug == 'network' and person.public_photo == 'true' %}
                     <img src="{{ person.image|image(300,400,"c") }}" alt="{{ person.image|title }}" />
                 {% else %}
-                    <img src="/theme/pro-europeana-2014/images/fpo_avatar.png" alt="{{ person.image|title }}" />
+                    <img src="{{ app.paths.theme }}images/fpo_avatar.png" alt="{{ person.image|title }}" />
                 {% endif %}
             </a>
         </div>
@@ -35,6 +35,7 @@
                     {{ person.public_email }}
                 </a>
             </div>
+
             {% elseif person.email != ""  and person.contenttype.slug != 'network' %}
             <div class="item-sendemail person">
                 <a class="email" href="mailto:{{ person.email }}">
@@ -43,7 +44,6 @@
                 </a>
             </div>
             {% endif %}
-
 
             {% if person.telephone_number != "" %}
             <div class="item-phone-work">

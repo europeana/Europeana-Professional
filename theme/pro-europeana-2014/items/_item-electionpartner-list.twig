@@ -6,18 +6,19 @@
 
 {% if record %}<div class="l-person block block-thumb">
     <div class="b-inner">
-        <div class="b-thumb">
-            {% if record.image %}
-                <a href="{{ structurelink(record) }}">
-                    <img src="{{ record.image|image(300,400) }}" alt="{{ record.first_name }} {{ record.last_name }}" />
-                </a>
-            {% else %}
-                <a href="{{ structurelink(record) }}">
-                    <img src="{{ app.paths.theme }}images/fpo_avatar.png" alt="{{ record.first_name }} {{ record.last_name }}" />
-                </a>
-            {% endif %}
+        <div class="b-thumb-wide">
+            <a href="{{ structurelink(record) }}">
+                {% if record.image and record.contenttype.slug != 'network' %}
+                    <img src="{{ record.image|image(300,400,"c") }}" alt="{{ record.image|title }}" />
+                {% elseif record.image and record.contenttype.slug == 'network' and record.public_photo == 'true' %}
+                    <img src="{{ record.image|image(300,400,"c") }}" alt="{{ record.image|title }}" />
+                {% else %}
+                     <img src="{{ app.paths.theme }}images/fpo_avatar.png" alt="{{ record.first_name }} {{ record.last_name }}" class="photo missing" />
+                {% endif %}
+            </a>
         </div>
         <div class="b-text">
+            {# {{ dump(record) }} #}
             <h2 class="person-name"><a href="{{ structurelink(record) }}">{{ record.first_name }} {{ record.last_name }}</a></h2>
             <div class="jobdetails">
                 <div class="job-title">{{ record.job_title }}</div>
@@ -46,7 +47,7 @@
                 </a>
             </div>
             {% endif %}
-
+            
             {% if record.public_phone != '' %}
             <div class="item-phone-work">
                 <svg class="icon icon-phone-work">
@@ -61,10 +62,16 @@
                 <a href="{{ record.twitter }}"><svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>@{{ record.first_name }}{{ record.last_name }}</a>
             </div>
             {% endif %}
-
+{# 
             {% if record.linkedin != '' %}
             <div class="item-linkedin">
                 <a href="{{ record.linkedin }}"><svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>{{ record.first_name }} {{ record.last_name }}</a>
+            </div>
+            {% endif %} #}
+
+            {% if record.network_participation is not empty and 'MC Election Candidate' in record.network_participation %}
+            <div class="list-teaser">
+                <div class="teaser">{{ record.candidacy_teaser }}</div>
             </div>
             {% endif %}
 

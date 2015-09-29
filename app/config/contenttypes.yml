@@ -595,6 +595,7 @@ network:
         "Management Board": "Management Board"
         "Members Council": "Members Council"
         "Network Association Member": "Network Association Member"
+        "MC Election Candidate": "MC Election Candidate"
         "Partner": "Partner"
         "Not a Network member": "Not a Network member"
     community: 
@@ -658,6 +659,17 @@ network:
       values:
         'Europeana Staff': 'Europeana Staff'
         'Our Partner': 'Our Partner'
+    candidacy_teaser:
+      type: html
+      required: false
+      label: "Candicacy Teaser:"
+      height: 150px
+      group: "MC election"
+    candidacy_intro:
+      type: html
+      required: false
+      label: "Candicacy Introduction:"
+      height: 200px
     email:
       type: text
       required: false

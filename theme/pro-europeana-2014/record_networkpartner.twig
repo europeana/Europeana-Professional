@@ -39,7 +39,11 @@
             {# {{ dump(record) }} #}
 
             <div class="maincontent">
-                {% if record.network_participation is not empty %}
+                {% if record.network_participation is not empty and 'MC Election Candidate' in record.network_participation %}
+                     <div class="network-participation">
+                        <h1>MC Election Candidate</h1>
+                     </div>
+                {% elseif record.network_participation is not empty %}
                      <div class="network-participation">
                          {% for npl in record.network_participation %}
                              {% if loop.first == true %}
@@ -52,10 +56,12 @@
 
                 <div class="section contact-detail">
                     <div class="l-contact-photo">
-                        {% if record.image %}
-                            <img src="{{ record.image|image(300,400) }}" alt="{{ record.first_name }} {{ record.last_name }}" class="photo" />
+                        {% if record.image and record.contenttype.slug != 'network' %}
+                            <img src="{{ record.image|image(300,400,"c") }}" alt="{{ record.image|title }}" />
+                        {% elseif record.image and record.contenttype.slug == 'network' and record.public_photo == 'true' %}
+                            <img src="{{ record.image|image(300,400,"c") }}" alt="{{ record.image|title }}" />
                         {% else %}
-                            <img src="{{ app.paths.theme }}images/fpo_avatar.png" alt="{{ record.first_name }} {{ record.last_name }}" class="photo missing" />
+                             <img src="{{ app.paths.theme }}images/fpo_avatar.png" alt="{{ record.first_name }} {{ record.last_name }}" class="photo missing" />
                         {% endif %}
                     </div><!--
                     --><div class="l-contact">
@@ -128,6 +134,13 @@
                             </ul>
                         </div>
 
+                        {% if record.network_participation is not empty and 'MC Election Candidate' in record.network_participation %}
+                        <div class="candidacy-intro">
+                            <blockquote>
+                                {{ record.candidacy_intro }}
+                            </blockquote>
+                        </div>
+                        {% endif %}
 
                         <div class="contact-additional">
                             {{ record.introduction }}

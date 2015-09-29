@@ -27,8 +27,12 @@ structure_tree_map:
         rank: 4
         label: "Network Association Member"
         id: 57
+    candidates:
+        rank: 6
+        label: "MC Election Candidate"
+        id: 62
     partners:
-        rank: 5
+        rank: 9
         label: "Partner"
         id: 29
     default:
