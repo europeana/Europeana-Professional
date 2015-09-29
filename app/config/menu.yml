@@ -1,13 +1,16 @@
 primary:
+  - title: 'Join our Network'
+    path: /join-the-europeana-network
+    label: 'Join our Network'
   - title: 'Get involved'
     path: /get-involved
     label: 'Get involved'
   - title: 'Provide your data'
     path: /share-your-data
     label: 'Share your data'
-  - title: 'Use our data'
-    path: /use-our-data
-    label: 'Use our data'
+#  - title: 'Use our data'
+#    path: /use-our-data
+#    label: 'Use our data'
 footer:
   - title: Home
     path: homepage
