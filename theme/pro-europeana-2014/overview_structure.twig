@@ -27,10 +27,11 @@
                     <h1 class="title">{{ record.title }}</h1>
                     <p>{{ record.teaser|raw }}</p>
                 </div>
-                {% if records is defined %}
+                {% if records is defined %}{%- set recordcounter = 0 -%}
                 <ul class="l-next_options">
-                    {%- for record in records[0:6] if (record.hide_list != 1) -%}
+                    {%- for record in records if ((record.hide_list != 1) and (recordcounter < 6 )) -%}
                        {%- include 'items/_item-lineblock.twig' with {child : record} -%}
+                       {%- set recordcounter = recordcounter + 1 -%}
                     {%- endfor %}
                 </ul>
                 {% endif %}
