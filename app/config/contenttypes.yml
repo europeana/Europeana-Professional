@@ -1796,6 +1796,7 @@ structures:
       required: false
       label: "Introduction:"
       pattern: "^.{1,120}$"
+      postfix: "(One small sentence for overview pages, maximum 120 characters)"
       height: 150px
     body:
       type: html
