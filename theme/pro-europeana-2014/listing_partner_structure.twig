@@ -14,9 +14,11 @@
 
             <div id="maincontent" class="maincontent">
                 {% if ( record is defined and record.title != "") %}
-                    <div class="textcontent prose">
+                    <div class="page-intro">
                         <h1 class="title">{{ record.title }}</h1>
-                        <p class="intro">{{ record.intro }}</p>
+                        {% if ( record.teaser != "") %}
+                        <p class="intro">{{ record.teaser|raw }}</p>
+                        {% endif %}
                         {{ record.body|raw }}
                     </div>
                 {% else %}

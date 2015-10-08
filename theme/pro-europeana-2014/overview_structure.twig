@@ -23,10 +23,16 @@
             </div>
 
             <div class="maincontent">
-                <div class="page-intro">
-                    <h1 class="title">{{ record.title }}</h1>
-                    <p>{{ record.teaser|raw }}</p>
-                </div>
+                {% if ( record is defined and record.title != "") %}
+                    <div class="page-intro">
+                        <h1 class="title">{{ record.title }}</h1>
+                        {% if ( record.teaser != "") %}
+                            <p class="intro">{{ record.teaser|raw }}</p>
+                        {% endif %}
+                        {{ record.body|raw }}
+                    </div>
+                {% endif %}
+
                 {% if records is defined %}{%- set recordcounter = 0 -%}
                 <ul class="l-next_options">
                     {%- for record in records if ((record.hide_list != 1) and (recordcounter < 6 )) -%}
@@ -34,6 +40,12 @@
                        {%- set recordcounter = recordcounter + 1 -%}
                     {%- endfor %}
                 </ul>
+                {% endif %}
+
+                {% if ( record is defined and record.suffix != "") %}
+                    <div class="textcontent prose">
+                        {{ record.suffix|raw }}
+                    </div>
                 {% endif %}
             </div>
         </div><!--

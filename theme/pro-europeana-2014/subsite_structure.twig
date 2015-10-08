@@ -26,12 +26,15 @@
             <div class="subsite-banner" style="background-image: url('{{ paths.root ~ 'files/' ~ record.image }}')"></div>
 
             <div class="maincontent">
-
-
-                <div class="page-intro">
-                    <h1 class="title">{{ record.title }}</h1>
-                    <p>{{ record.teaser }}</p>
-                </div>
+                {% if ( record is defined and record.title != "") %}
+                    <div class="page-intro">
+                        <h1 class="title">{{ record.title }}</h1>
+                        {% if ( record.teaser != "") %}
+                            <p class="intro">{{ record.teaser|raw }}</p>
+                        {% endif %}
+                        {{ record.body|raw }}
+                    </div>
+                {% endif %}
 
                 {% if records|length %}
                 <ul class="l-next_options"><!--
@@ -39,6 +42,12 @@
                 -->{% include 'items/_item-lineblock.twig' with {child : record} %}<!--
              -->{% endfor %}
                 </ul>
+                {% endif %}
+
+                {% if ( record is defined and record.suffix != "") %}
+                    <div class="textcontent prose">
+                        {{ record.suffix|raw }}
+                    </div>
                 {% endif %}
 
             </div>

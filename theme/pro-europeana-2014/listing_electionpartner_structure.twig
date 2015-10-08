@@ -21,7 +21,9 @@
 
                 {% if ( record is defined and record.intro != "") %}
                     <div class="textcontent prose">
-                        <p class="intro">{{ record.intro }}</p>
+                        {% if ( record.teaser != "") %}
+                            <p class="intro">{{ record.teaser|raw }}</p>
+                        {% endif %}
                         {{ record.body|raw }}
                     </div>
                 {% endif %}
