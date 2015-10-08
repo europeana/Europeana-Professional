@@ -57,11 +57,13 @@
             </div>
             {% endif %}
 
-            {% if record.twitter != '' %}
+            {% if person.twitter != "" %}
+            {% set twittername = person.twitter|split('/')|last %}
             <div class="item-twitter">
-                <a href="{{ record.twitter }}"><svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>@{{ record.first_name }}{{ record.last_name }}</a>
+                <a href="{{ person.twitter }}"><svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>@{{ twittername }}</a>
             </div>
             {% endif %}
+
 {# 
             {% if record.linkedin != '' %}
             <div class="item-linkedin">
