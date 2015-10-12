@@ -29,7 +29,7 @@ my_db_config = {
         "databasename" => ey_db_config['database'],
         "username" => ey_db_config['username'],
         "password" => ey_db_config['password']
-    }
+    },
     "environment" => ey_db_config['environment']
 }
 
