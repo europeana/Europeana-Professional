@@ -11,6 +11,11 @@ payoff: The Europeana Foundation
 # they _will_ get updated in next releases
 theme: pro-europeana-2014
 
+stylesheet:
+  prod: http://styleguide.europeana.eu/css/pro/screen.css
+  dev: http://develop.styleguide.eanadev.org/css/pro/screen.css
+  beta: http://develop.styleguide.eanadev.org/css/pro/screen.css
+
 # The locale that'll be used by the application. If no locale is set the
 # fallback locale is 'en_GB'. For available options, see: http://docs.bolt.cm/locales
 locale: en_GB
