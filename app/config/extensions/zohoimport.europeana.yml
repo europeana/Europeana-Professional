@@ -97,7 +97,7 @@ remotes:
 
                     skype: "Skype ID"                       # example: "example"
                     twitter: "Twitter"                      # example: "twokings"
-                    linkedin: "LinkedIn"                    # example: "https://linkedin.com/in/twokings"
+                    linkedin: "LinkedIn profile"                    # example: "https://linkedin.com/in/twokings"
 
                     network_participation: "Participation level"
                                                             # example: "Governing Board;Association Members Council"
@@ -121,6 +121,6 @@ remotes:
                     modified_name: "Modified By"            # example: "Bob den Otter"
                     latime: "Last Activity Time"            # example: "2015-06-09 14:44:58"
                     account_uid: "ACCOUNTID"                # example: "1482250000000152017"
-                    statutes_read: "I have read & agree to the statutes"
+                    statutes_read: "I have read and agree to the statutes"
                                                             # example: "true"
-                    statutes_agree: "I agree to statutes"   # example: "true"
+                    statutes_agree: "I have read and agree to the statutes"   # example: "true"
