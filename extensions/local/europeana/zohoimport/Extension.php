@@ -138,7 +138,9 @@ class Extension extends BaseExtension
             if($this->config['image_downloads'] !== true) {
                 $output .= "importing extra images is disabled<br>\n";
             }
-            $this->app['logger.system']->info($name . ' started import - batch:'. $batchdate . ' - ' . $config['source']['type'], array('event' => 'zohoimport'));
+            $this->app['logger.system']->info($name 
+                . ' started import - batch:'. $batchdate . ' - ' 
+                . $config['source']['type'], array('event' => 'zohoimport'));
 
             if(is_array($config['source']['loopparams'])) {
                 // the import has paging so lets use that
@@ -163,7 +165,9 @@ class Extension extends BaseExtension
                     if($this->debug_mode) {
                         dump($localconfig);
                     }
-                    $this->app['logger.system']->debug($name . ' step '. $looper .' from:'. $localconfig['source']['getparams'][$counter] . ' - to: '. $localconfig['source']['getparams'][$stepper], array('event' => 'zohoimport'));
+                    $this->app['logger.system']->debug($name . ' step ' . $looper 
+                        . ' from:' . $localconfig['source']['getparams'][$counter] 
+                        . ' - to: ' . $localconfig['source']['getparams'][$stepper], array('event' => 'zohoimport'));
                     $this->fetchAnyResource($name, $localconfig);
                     $this->normalizeInput($name, $localconfig);
 
@@ -172,7 +176,8 @@ class Extension extends BaseExtension
                         if($this->debug_mode) {
                             dump($name . ' limit reached - 100 iterations are a bit much, please try to modify this import');
                         }
-                        $this->app['logger.system']->warning($name . ' limit reached - 100 iterations are a bit much, please try to modify this import', array('event' => 'zohoimport'));
+                        $this->app['logger.system']->warning($name 
+                            . ' limit reached - 100 iterations are a bit much, please try to modify this import', array('event' => 'zohoimport'));
                         if($on_console) {
                             echo 'import step '. $looper. ': hard import limit reached. 100 iterations are a bit much, please try to modify this import..'."\n";
                         } else {
@@ -325,7 +330,8 @@ class Extension extends BaseExtension
                 if($on_console) {
                     echo 'record is empty, preparing a new one: ' . $inputrecord[$uid] . "\n";
                 }
-                $this->app['logger.system']->debug($name . ' - preparing a new record: ' . $inputrecord[$uid], array('event' => 'zohoimport'));
+                $this->app['logger.system']->debug($name 
+                    . ' - preparing a new record: ' . $inputrecord[$uid], array('event' => 'zohoimport'));
                 $record = $this->app['storage']->getEmptyContent($config['target']['contenttype']);
                 $items['status'] = $config['target']['defaults']['new'];
             } else {
@@ -335,7 +341,8 @@ class Extension extends BaseExtension
                 if($on_console) {
                     echo 'found existing record: ' . $inputrecord[$uid] . "\n";
                 }
-                $this->app['logger.system']->debug($name . ' - updating existing record: ' . $inputrecord[$uid], array('event' => 'zohoimport'));
+                $this->app['logger.system']->debug($name 
+                    . ' - updating existing record: ' . $inputrecord[$uid], array('event' => 'zohoimport'));
                 $items['status'] = $config['target']['defaults']['updated'];
             }
 
@@ -863,19 +870,25 @@ class Extension extends BaseExtension
         }
 
         // only fetch photos from contacts that need it
-        if($source_record["Show photo on europeana site"] == true || $source_record["Show photo on europeana site"] == 'true' ) {
+        if($source_record["Show photo on europeana site"] == 'true' ) {
             $this->app['logger.system']->debug('we should check for a public photo at:' . $params['source_url'], array('event' => 'zohoimport'));
             if($on_console) {
                 echo "we should check for a public photo by Show photo on europeana site:\n" . $params['source_url'] . "\n";
-                //dump($params);
-                //die();
+                // echo "===============================================================";
+                // dump($params);
+                // echo "===============================================================";
+                // dump($source_record);
+                // die();
             }
         } elseif($source_record['public_photo'] == true || $source_record['public_photo'] == 'true') {
             $this->app['logger.system']->debug('we should check for a public photo at:' . $params['source_url'], array('event' => 'zohoimport'));
             if($on_console) {
                 echo "we should check for a public photo by public_photo:\n" . $params['source_url'] . "\n";
-                //dump($params);
-                //die();
+                // echo "===============================================================";
+                // dump($params);
+                // echo "===============================================================";
+                // dump($source_record);
+                // die();
             }
         } elseif($source_record["Show photo on europeana site"] == false || $source_record["Show photo on europeana site"] == 'false' ) {
             $this->app['logger.system']->debug('no remote photo needed for:' . $params['source_url'], array('event' => 'zohoimport'));

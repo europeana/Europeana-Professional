@@ -3,7 +3,7 @@ debug_mode: false
 # the path for downloads images in hookafterload
 image_path: 'zoho_images'
 # set image_downloads to true for the hookafterload images
-image_downloads: false
+image_downloads: true
 
 # Make the associations with the different values and their structure tree equivalent
 # rank  - the order of importance, with 1 as highest rank
