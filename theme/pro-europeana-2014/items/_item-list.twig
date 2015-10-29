@@ -41,7 +41,9 @@
         {% if (contenttype.slug in [ 'publications', 'pressreleases', 'press-releases' ]) %}
             {% set publication = record %}
             {% set authors = publication.related('persons') %}
-            {% set authors = authors|merge(publication.related('network')) %}
+            {% if authors is iterable and publication.related('network') is iterable %}
+                {% set authors = authors|merge(publication.related('network')) %}
+            {% endif %}
             <div class="item-meta-primary">
                 {# set authors #}
                 {% if authors is defined %}
@@ -53,7 +55,9 @@
         {% elseif contenttype.slug in [ "blogposts", "blog-posts" ] %}
             {% set blogpost = record %}
             {% set authors = blogpost.related('persons') %}
-            {% set authors = authors|merge(blogpost.related('network')) %}
+            {% if authors is iterable and blogpost.related('network') is iterable %}
+                {% set authors = authors|merge(blogpost.related('network')) %}
+            {% endif %}
             <div class="item-meta-primary">
                 {# set author #}
                 {% if authors is defined %}
