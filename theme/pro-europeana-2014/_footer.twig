@@ -23,10 +23,11 @@
         <div class="grid">
             <div class="l-contact">
                 <div>
+                    {% if footer.image %}
                     <a href="{{ logolink }}" title="{{ footer.image|title }}">
                         <img src="{{ footer.image|image }}" alt="{{ footer.values['image'].title }}">
                     </a>
-
+                {% endif %}
                 </div>
 
                 <div class="address">
@@ -45,24 +46,32 @@
                 <div class="l-sitemap grid">
                 <div class="l-linklist">
                     <div class="inner">
-                        {{ footer.linklist_left}}
+                        {% if footer.linklist_left %}
+                            {{ footer.linklist_left}}
+                        {% endif %}
                     </div>
                     </div><!--
              --><div class="l-linklist">
                      <div class="inner">
-                        {{ footer.linklist_right}}
+                        {% if footer.linklist_right %}
+                            {{ footer.linklist_right}}
+                        {% endif %}
                     </div>
                     </div>
                 </div>
 
                 <div class="grid">
                     <div class="l-mission">
-                        {{ footer.mission}}
+                        {% if footer.mission %}
+                            {{ footer.mission}}
+                        {% endif %}
                     </div><!--
 
                  --><div class="l-othersites">
                          <div class="l-linklist inline-list">
-                        {{ footer.linklist_other }}
+                            {% if footer.linklist_other %}
+                                {{ footer.linklist_other }}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -71,7 +80,9 @@
         --><div class="l-nextsteps">
 
                 <div class="social-links">
-                    {{ footer.socialmedia|raw }}
+                    {% if footer.socialmedia %}
+                        {{ footer.socialmedia|raw }}
+                    {% endif %}
                 </div>
             </div>
         </div>
