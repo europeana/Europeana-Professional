@@ -24,7 +24,8 @@
 
         <link rel="Shortcut Icon" href="{{ paths.theme }}images/favicon.ico" />
 {#        <link rel="stylesheet" href="http://develop.styleguide.eanadev.org/css/pro/screen.css"  media="all"/> #}
-        <link rel="stylesheet" href="http://styleguide.europeana.eu/css/pro/screen.css"  media="all"/>
+        {% set stylesheet = app.config.get('general/stylesheet/'~ app.config.get('general/environment')|default('prod') ) %}
+        <link rel="stylesheet" href="{{ stylesheet }}"  media="all"/>
         <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,700|Open+Sans:400italic,700italic,400,700&subset=latin,greek,cyrillic' rel='stylesheet' type='text/css'>
 
         <script src="{{ paths.theme }}js/jquery-2.1.3.min.js"></script>
@@ -68,7 +69,7 @@
             <div class="grid">
 
             {% set ourSites = app.config.get('general/our_sites')  %}
-            {% for site in ourSites %}
+            {% for site in ourSites %}{% spaceless %}
                 <div class="l-linklist">
                     <div class="inner">
                     <h2 class="title h3">{{ site.title }}</h2>
@@ -82,7 +83,7 @@
                     </ul>
                 </div>
             </div>
-            {% endfor %}
+            {% endspaceless %}{% endfor %}
 
             </div>
             </div>

@@ -85,65 +85,72 @@
 
         <div class="results">
 
-        {# show title and intro for structrure listview #}
-        {% if record is defined %}
-        <div class="page-intro">
+            {# show title and intro for structure listview #}
+            {% if ( record is defined and record.title != "") %}
+                <div class="page-intro">
+                    <h1 class="title">{{ record.title }}</h1>
+                    {% if ( record.teaser != "") %}
+                        <p class="intro">{{ record.teaser|raw }}</p>
+                    {% endif %}
+                    {{ record.body|raw }}
+                </div>
+            {% endif %}
 
-        <h1 class="title">{{ record.title }}</h1>
-        <p>{{ record.teaser|raw }}</p>
+            <ul class="results-list">
+            {# Bob notes: see related ticket #196, #198, #223.. What was patrick thinking when he made this?
+                Just grab the blog-postings again on this page.. #}
+            {% if showsortby and taxonomy is not defined and contenttype.slug == "blogposts" %}
+                {% if "Europeana Cloud" in record.taxonomy.tree %}
+
+                {# Europeana Cloud blog posts. #}
+                {% setcontent records = record.content where { limit : amount, order : order, page : page, tree: "Europeana Cloud Blog" } allowpaging %}
+
+                {% elseif "Europeana Creative" in record.taxonomy.tree %}
+
+                {# Europeana Cloud blog posts. #}
+                {% setcontent records = record.content where { limit : amount, order : order, page : page, tree: "Europeana Creative Blog" } allowpaging %}
+
+                {% else %}
+
+                {# all blog posts. #}
+                {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page } allowpaging %}
+
+                {% endif %}
+            {% endif %}
+
+            {% if contenttype['slug'] == "events" or contenttype == 'Events' %}
+                {% if order == '-end_event' %}
+                    <h1>Past events</h1>
+                    {% set end_event = '< today' %}
+                    {% set order = '-start_event' %}
+                {% else %}
+                    <h1>Upcoming events</h1>
+                    {% set end_event = '> today' %}
+                    {% set order = 'start_event' %}
+                {% endif %}
+
+                {% setcontent records = 'events' where { limit: 6, order: order, page: page, 'end_event': end_event } allowpaging %}
+            {% endif %}
+
+            {% for listItem in records %}
+                {% include 'items/_item-list.twig' with { record: listItem } %}
+            {% endfor %}
+
+            </ul>
+
+            {% if pager is defined or taxonomy is defined %}
+                {{ pager() }}
+            {% endif %}
+
+
+            {% if ( record is defined and record.suffix != "") %}
+                <div class="textcontent prose">
+                    {{ record.suffix|raw }}
+                </div>
+            {% endif %}
+        </div>
+
     </div>
-    {% endif %}
-
-    <ul class="results-list">
-    {# Bob notes: see related ticket #196, #198, #223.. What was patrick thinking when he made this?
-        Just grab the blog-postings again on this page.. #}
-    {% if showsortby and taxonomy is not defined and contenttype.slug == "blogposts" %}
-        {% if "Europeana Cloud" in record.taxonomy.tree %}
-
-        {# Europeana Cloud blog posts. #}
-        {% setcontent records = record.content where { limit : amount, order : order, page : page, tree: "Europeana Cloud Blog" } allowpaging %}
-
-        {% elseif "Europeana Creative" in record.taxonomy.tree %}
-
-        {# Europeana Cloud blog posts. #}
-        {% setcontent records = record.content where { limit : amount, order : order, page : page, tree: "Europeana Creative Blog" } allowpaging %}
-
-        {% else %}
-
-        {# all blog posts. #}
-        {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page } allowpaging %}
-
-        {% endif %}
-    {% endif %}
-
-    {% if contenttype['slug'] == "events" or contenttype == 'Events' %}
-        {% if order == '-end_event' %}
-            <h1>Past events</h1>
-            {% set end_event = '< today' %}
-            {% set order = '-start_event' %}
-        {% else %}
-            <h1>Upcoming events</h1>
-            {% set end_event = '> today' %}
-            {% set order = 'start_event' %}
-        {% endif %}
-
-        {% setcontent records = 'events' where { limit: 6, order: order, page: page, 'end_event': end_event } allowpaging %}
-    {% endif %}
-
-    {% for listItem in records %}
-        {% include 'items/_item-list.twig' with { record: listItem } %}
-    {% endfor %}
-
-</ul>
-
-{% if pager is defined or taxonomy is defined %}
-    {{ pager() }}
-{% endif %}
-
-
-</div>
-
-</div>
 </div><!--
 
 --><div class="l-sidebar">
@@ -153,19 +160,24 @@
             example: field "contact_blog" -> main contact of the blogposts
         #}
 
-        {% if ( record.relation.persons is defined and record.relation.persons|length ) %}
-            {% setcontent contacts = 'persons' where { id: record.relation.persons|join(' || ') } orderby 'last_name' %}
-            {% if( contacts|length and contacts is not iterable) %}
-                {% set contacts = [contacts] %}
-            {% endif %}
-            {% include 'items/_item-help.twig' with { records: contacts} %}
-        {% elseif contenttype.singular_slug is defined %}
+        {% if contenttype.singular_slug is defined %}
             {% set contacttype = ('contact_'~(contenttype.singular_slug))  %}
             {% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
             {% if( contacts|length and contacts is not iterable) %}
                 {% set contacts = [contacts] %}
             {% endif %}
             {% include 'items/_item-help.twig' with { records: contacts} %}
+        {% else %}
+
+            {% set contacts = record.related('persons') %}
+            {% if contacts is iterable %}
+                {% set contacts = contacts|merge(record.related('network')) %}
+            {% else %}
+                {% set contacts = record.related('network') %}
+            {% endif %}
+
+            {% include 'items/_item-help.twig' with { records: contacts } %}
+
         {% endif %}
 
         </div>

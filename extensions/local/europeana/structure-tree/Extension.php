@@ -29,26 +29,31 @@ class Extension extends \Bolt\BaseExtension
 
         // structure tree overview
         $this->boltPath = $this->app['config']->get('general/branding/path');
-        $this->addMenuOption(\Bolt\Translation\Translator::__('Structure Tree'), "$this->boltPath/structure-tree/overview", "fa:sitemap");
-        $this->app->get("$this->boltPath/structure-tree/overview", array($this, 'structureTreeOverview'))
-            ->bind('structureTreeOverview');
 
-        // convert legacy relationships to column values in contenttypes.
-        $this->app->get("$this->boltPath/structure-tree/convert", array($this, 'structureTreeConvert'))
-            ->bind('structureTreeConvert');
 
         // listings
+        if ($this->app['config']->getWhichEnd() === 'backend' || $this->app['config']->getWhichEnd() === 'cli') {
+            // back-end listings
+            $this->addMenuOption(\Bolt\Translation\Translator::__('Structure Tree'), "$this->boltPath/structure-tree/overview", "fa:sitemap");
+            $this->app->get("$this->boltPath/structure-tree/overview", array($this, 'structureTreeOverview'))
+                ->bind('structureTreeOverview');
 
-        // slug listing
-        $this->app->match("/{slug}", array($this, 'slugTreeRecord'))
-            ->assert('slug', '[a-zA-Z0-9_\-]+[^(sitemap)^(search)]')
-            ->bind('slugTreeRecord');
+            // convert legacy relationships to column values in contenttypes.
+            $this->app->get("$this->boltPath/structure-tree/convert", array($this, 'structureTreeConvert'))
+                ->bind('structureTreeConvert');
+        } else {
+            // slug listing
+            $this->app->match("/{slug}", array($this, 'slugTreeRecord'))
+                ->assert('slug', '[a-zA-Z0-9_\-]+[^(sitemap)^(search)]')
+                ->bind('slugTreeRecord');
 
-        // strucutureslug / slug listing
-        $this->app->match("/{structureSlugs}/{slug}", array($this, 'structureTreeRecord'))
-            ->assert('structureSlugs', '(?!(async|_profiler)).*')
-            ->assert('slug', '[a-zA-Z0-9_\-]+')
-            ->bind('structureTreeRecord');
+            // strucutureslug / slug listing
+            $this->app->match("/{structureSlugs}/{slug}", array($this, 'structureTreeRecord'))
+                ->assert('structureSlugs', '(?!(async|_profiler)).*')
+                ->assert('slug', '[a-zA-Z0-9_\-]+')
+                ->bind('structureTreeRecord');
+
+        }
 
         // twig functions
         $this->addTwigFunction('structurelink', 'getStructureLink');
@@ -304,7 +309,7 @@ class Extension extends \Bolt\BaseExtension
         else if ($record->contenttype['slug'] === 'structures') {
             return "/$selfSlug";
         }
-        else if ($record != false ) {
+        else if ($record instanceof \Bolt\Content) {
             return $record->link();
         } else {
             return;

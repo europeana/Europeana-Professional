@@ -3,7 +3,7 @@
 namespace Bolt;
 
 use Bolt\Exception\LowlevelException;
-use Bolt\Helpers\String;
+use Bolt\Helpers\Str;
 use Bolt\Library as Lib;
 use Bolt\Provider\LoggerServiceProvider;
 use Bolt\Provider\PathServiceProvider;
@@ -27,11 +27,17 @@ class Application extends Silex\Application
      */
     const DEFAULT_LOCALE = 'en_GB';
 
+    /**
+     * @param array $values
+     */
     public function __construct(array $values = array())
     {
-        $values['bolt_version'] = '2.1.8';
-        $values['bolt_name'] = 'pl1';
+        $values['bolt_version'] = '2.2.8';
+        $values['bolt_name'] = '';
         $values['bolt_released'] = true; // `true` for stable releases, `false` for alpha, beta and RC.
+
+        /** @internal Parameter to track a deprecated PHP version */
+        $values['deprecated.php'] = version_compare(PHP_VERSION, '5.4.0', '<');
 
         parent::__construct($values);
 
@@ -67,7 +73,8 @@ class Application extends Silex\Application
 
     protected function initConfig()
     {
-        $this->register(new Provider\ConfigServiceProvider());
+        $this->register(new Provider\IntegrityCheckerProvider())
+            ->register(new Provider\ConfigServiceProvider());
     }
 
     protected function initSession()
@@ -129,6 +136,9 @@ class Application extends Silex\Application
         $this->error(array($this, 'errorHandler'));
     }
 
+    /**
+     * Initialize the loggers.
+     */
     public function initLogger()
     {
         $this->register(new LoggerServiceProvider(), array());
@@ -188,7 +198,7 @@ class Application extends Silex\Application
              * to the database, which has failed since we are here.
              */
             $platform = $this['db']->getDriver()->getName();
-            $platform = String::replaceFirst('pdo_', '', $platform);
+            $platform = Str::replaceFirst('pdo_', '', $platform);
 
             $error = "Bolt could not connect to the configured database.\n\n" .
                      "Things to check:\n" .
@@ -204,6 +214,9 @@ class Application extends Silex\Application
         restore_error_handler();
     }
 
+    /**
+     * Initialize the rendering providers.
+     */
     public function initRendering()
     {
         $this->register(new Provider\TwigServiceProvider());
@@ -288,6 +301,7 @@ class Application extends Silex\Application
         if (!is_array($configLocale)) {
             $configLocale = array($configLocale);
         }
+
         // $app['locale'] should only be a single value.
         $this['locale'] = reset($configLocale);
 
@@ -315,7 +329,10 @@ class Application extends Silex\Application
 
         $this->register(
             new Silex\Provider\TranslationServiceProvider(),
-            array('locale_fallbacks' => array(Application::DEFAULT_LOCALE))
+            array(
+                'translator.cache_dir' => $this['resources']->getPath('cache/trans'),
+                'locale_fallbacks'     => array(Application::DEFAULT_LOCALE)
+                )
         );
 
         // Loading stub functions for when intl / IntlDateFormatter isn't available.
@@ -354,7 +371,9 @@ class Application extends Silex\Application
         $factory = new RandomLib\Factory();
         $this['randomgenerator'] = $factory->getGenerator(new SecurityLib\Strength(SecurityLib\Strength::MEDIUM));
 
-        $this->register(new Silex\Provider\UrlGeneratorServiceProvider())
+        $this
+            ->register(new Silex\Provider\HttpFragmentServiceProvider())
+            ->register(new Silex\Provider\UrlGeneratorServiceProvider())
             ->register(new Silex\Provider\FormServiceProvider())
             ->register(new Silex\Provider\ValidatorServiceProvider())
             ->register(new Provider\RoutingServiceProvider())
@@ -363,13 +382,13 @@ class Application extends Silex\Application
             ->register(new Provider\StorageServiceProvider())
             ->register(new Provider\UsersServiceProvider())
             ->register(new Provider\CacheServiceProvider())
-            ->register(new Provider\IntegrityCheckerProvider())
             ->register(new Provider\ExtensionServiceProvider())
             ->register(new Provider\StackServiceProvider())
             ->register(new Provider\OmnisearchServiceProvider())
             ->register(new Provider\TemplateChooserServiceProvider())
             ->register(new Provider\CronServiceProvider())
             ->register(new Provider\FilePermissionsServiceProvider())
+            ->register(new Provider\MenuServiceProvider())
             ->register(new Controllers\Upload())
             ->register(new Controllers\Extend())
             ->register(new Provider\FilesystemProvider())
@@ -377,7 +396,8 @@ class Application extends Silex\Application
             ->register(new Provider\NutServiceProvider())
             ->register(new Provider\GuzzleServiceProvider())
             ->register(new Provider\PrefillServiceProvider())
-            ->register(new SlugifyServiceProvider());
+            ->register(new SlugifyServiceProvider())
+            ->register(new Provider\MarkdownServiceProvider());
 
         $this['paths'] = $this['resources']->getPaths();
 
@@ -395,11 +415,13 @@ class Application extends Silex\Application
 
     public function initExtensions()
     {
+        $this['extensions']->checkLocalAutoloader();
         $this['extensions']->initialize();
     }
 
     /**
      * No Mail transport has been set. We should gently nudge the user to set the mail configuration.
+     *
      * @see: the issue at https://github.com/bolt/bolt/issues/2908
      *
      * For now, we only pester the user, if an extension needs to be able to send
@@ -476,7 +498,7 @@ class Application extends Silex\Application
     {
         if (!headers_sent()) {
             $headersList = headers_list();
-            foreach($headersList as $header) {
+            foreach ($headersList as $header) {
                 if (strpos($header, "Set-Cookie: bolt_session=") === 0) {
                     header_remove("Set-Cookie");
                 }
@@ -515,7 +537,7 @@ class Application extends Silex\Application
             // only add when content-type is text/html
             if (strpos($response->headers->get('Content-Type'), 'text/html') !== false) {
                 // Add our meta generator tag.
-                $this['extensions']->insertSnippet(Extensions\Snippets\Location::AFTER_META, '<meta name="generator" content="Bolt">');
+                $this['extensions']->insertSnippet(Extensions\Snippets\Location::END_OF_HEAD, '<meta name="generator" content="Bolt">');
 
                 // Perhaps add a canonical link.
 
@@ -524,7 +546,7 @@ class Application extends Silex\Application
                         '<link rel="canonical" href="%s">',
                         htmlspecialchars($this['resources']->getUrl('canonicalurl'), ENT_QUOTES)
                     );
-                    $this['extensions']->insertSnippet(Extensions\Snippets\Location::AFTER_META, $snippet);
+                    $this['extensions']->insertSnippet(Extensions\Snippets\Location::END_OF_HEAD, $snippet);
                 }
 
                 // Perhaps add a favicon.
@@ -535,7 +557,7 @@ class Application extends Silex\Application
                         htmlspecialchars($this['resources']->getUrl('theme'), ENT_QUOTES),
                         htmlspecialchars($this['config']->get('general/favicon'), ENT_QUOTES)
                     );
-                    $this['extensions']->insertSnippet(Extensions\Snippets\Location::AFTER_META, $snippet);
+                    $this['extensions']->insertSnippet(Extensions\Snippets\Location::END_OF_HEAD, $snippet);
                 }
 
                 // Do some post-processing.. Hooks, snippets.
@@ -566,13 +588,13 @@ class Application extends Silex\Application
                 $template = $this['config']->get('general/maintenance_template');
                 $body = $this['render']->render($template);
 
-                return new Response($body, 503);
+                return new Response($body, Response::HTTP_SERVICE_UNAVAILABLE);
             }
         }
 
         // Log the error message
         $message = $exception->getMessage();
-        $this['logger.system']->addCritical($message, array('event' => 'exception', 'exception' => $exception));
+        $this['logger.system']->critical($message, array('event' => 'exception', 'exception' => $exception));
 
         $trace = $exception->getTrace();
         foreach ($trace as $key => $value) {
@@ -612,17 +634,24 @@ class Application extends Silex\Application
     }
 
     /**
-     * TODO Can this be removed?
+     * @todo Can this be removed?
      *
      * @param string $name
      *
-     * @return bool
+     * @return boolean
      */
     public function __isset($name)
     {
         return isset($this[$name]);
     }
 
+    /**
+     * Get the Bolt version string
+     *
+     * @param boolean $long TRUE returns 'version name', FALSE 'version'
+     *
+     * @return string
+     */
     public function getVersion($long = true)
     {
         if ($long) {

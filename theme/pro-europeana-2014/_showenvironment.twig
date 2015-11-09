@@ -1,0 +1,7 @@
+{% spaceless %}
+    {% if app.config.get('general/environment') != 'prod' %}
+        <div style='position: absolute; left: 0; top: 0; background-color: #EEE; color: #900; padding: 4px; z-index: 100000; font-size: 80%;'>
+            Environment: <strong>[{{ app.config.get('general/environment') }}]</strong>
+        </div>
+    {% endif %}
+{% endspaceless %} 

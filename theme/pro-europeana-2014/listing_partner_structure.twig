@@ -1,0 +1,133 @@
+{% include '_header.twig' %}
+
+<!-- Start content -->
+<main role="main" class="l-page">
+<div class="lc">
+    <!-- Start grid -->
+    <div class="grid-main">
+
+        <div class="l-content">
+
+            <div class="l-breadcrumbs">
+                {% include 'items/_item-breadcrumb.twig' %}
+            </div>
+
+            <div id="maincontent" class="maincontent">
+                {% if ( record is defined and record.title != "") %}
+                    <div class="page-intro">
+                        <h1 class="title">{{ record.title }}</h1>
+                        {% if ( record.teaser != "") %}
+                        <p class="intro">{{ record.teaser|raw }}</p>
+                        {% endif %}
+                        {{ record.body|raw }}
+                    </div>
+                {% else %}
+                    <h1 class="title">Network Members</h1>
+                {% endif %}
+
+                {% set currentCompany = 'empty' %}
+
+                {#
+                {{ dump(npls) }}
+                #}
+
+                {% if app.request.get('slug') in ['foundation-governing-board', 'foundation-governing-board/'] %}
+                    {% set npls = ["Governing Board"] %}
+                {% elseif app.request.get('slug') in ['management-board-members-council', 'management-board-members-council/'] %}
+                    {% set npls = ["Management Board", "Members Council"]  %}
+                {% elseif app.request.get('slug') in ['network-association-members', 'network-association-members/'] %}
+                    {% set npls = ["Network Association Member"]  %}
+                {# {% elseif app.request.get('slug') in ['founding-members-governing-board', 'founding-members-governing-board/', 'founding-members-and-governing-board', 'founding-members-and-governing-board/', 'europeana-foundation', 'europeana-foundation/'] %}
+                    {% set npls = ["Founding Member", "Governing Board"] %}
+                {% elseif app.request.get('slug') in ['management-board-members-council', 'management-board-members-council/', 'association-management-board-and-members-council', 'association-management-board-and-members-council/', 'members-council', 'members-council/'] %}
+                    {% set npls = ["Association Management Board", "Association Members Council"]  %}
+                {% elseif app.request.get('slug') in ['association-network-members', 'association-network-members/', 'network-members', 'network-members/'] %}
+                    {% set npls = ["Association Network Member"] %} #}
+                {% elseif app.request.get('slug') in ['network-partners', 'network-partners/', 'partners', 'partners/'] %}
+                    {% set npls = ["Partner"] %}
+                {% else %}
+                    {% set npls = app.config.get('contenttypes/network/fields/network_participation/values') %}
+                {% endif %}
+
+                {# {{ dump(npls) }} #}
+
+                {% for npl in npls %}
+                    {% setcontent records = 'network' where {network_participation: '%'~npl~'%'} limit 100 orderby 'company' allowpaging %}
+                    <table class="table-responsive-break">
+                        <thead>
+                             <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Organisation</th>
+                                <th scope="col">Country</th>
+                                <th scope="col">Sector</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for person in records %}
+                                <tr>
+                                    <th scope="row">
+                                        <a href="{{ structurelink(person) }}">{{ person.first_name }} {{ person.last_name }}</a>
+                                    </th>
+                                    <td data-title="Organisation">
+                                    {% if person.company_url != "" %}
+                                        <a href="{{ person.company_url }}" target="_blank">
+                                            {{ person.company }}
+                                        </a>
+                                    {% else %}
+                                        {{ person.company }}
+                                    {% endif %}
+                                    </td>
+                                    <td data-title="Country">{{ person.country }}</td>
+                                    <td data-title="Sector">{{ person.sector }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    {{ pager('network') }}
+                {% else %}
+                    <div class="textcontent prose">
+                        <p>No network partners found</p>
+                    </div>
+                {% endfor %}
+
+                {% if ( record is defined and record.suffix != "") %}
+                    <div class="textcontent prose">
+                        {{ record.suffix|raw }}
+                    </div>
+                {% endif %}
+
+                {#
+                    include related items
+                #}
+                {% if not record.hide_related_section %}
+                    {% include 'items/_item-related.twig' with {title: "Next steps", short: false} %}
+                {% endif %}
+            </div>
+        </div><!--
+
+        --><div class="l-sidebar">
+             <div class="inner">
+
+                {% set contacts = record.related('persons') %}
+                {% if contacts is iterable %}
+                    {% set contacts = contacts|merge(record.related('network')) %}
+                {% else %}
+                    {% set contacts = record.related('network') %}
+                {% endif %}
+
+                {% include 'items/_item-help.twig' with { records: contacts } %}
+
+            </div>
+        </div><!-- end l-sidebar -->
+
+    </div>
+    <!-- End grid -->
+</div>
+</main>
+<!-- End Content -->
+
+
+
+{% include '_footer.twig' %}
+

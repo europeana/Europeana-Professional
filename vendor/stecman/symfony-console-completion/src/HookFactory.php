@@ -8,8 +8,8 @@ final class HookFactory
     /**
      * Hook scripts
      *
-     * These are shell-specific scripts that pass required information from existing
-     * completion systems in a common form the completion component of this module.
+     * These are shell-specific scripts that pass required information from that shell's
+     * completion system to the interface of the completion command in this module.
      *
      * The following placeholders are replaced with their value at runtime:
      *
@@ -30,7 +30,15 @@ final class HookFactory
         'bash' => <<<'END'
 # BASH completion for %%program_path%%
 function %%function_name%% {
-    export COMP_LINE COMP_POINT COMP_WORDBREAKS;
+
+    # Copy BASH's completion variables to the ones the completion command expects
+    # These line up exactly as the library was originally designed for BASH
+    local CMDLINE_CONTENTS="$COMP_LINE"
+    local CMDLINE_CURSOR_INDEX="$COMP_POINT"
+    local CMDLINE_WORDBREAKS="$COMP_WORDBREAKS";
+
+    export CMDLINE_CONTENTS CMDLINE_CURSOR_INDEX CMDLINE_WORDBREAKS
+
     local RESULT STATUS;
 
     RESULT="$(%%completion_command%%)";
@@ -63,15 +71,11 @@ END
         , 'zsh' => <<<'END'
 # ZSH completion for %%program_path%%
 function %%function_name%% {
-    # Emulate BASH's command line contents variable
-    local -x COMP_LINE="$words"
-
-    # Emulate BASH's cursor position variable, setting it to the end of the current word.
-    local -x COMP_POINT
-    (( COMP_POINT = ${#${(j. .)words[1,CURRENT]}} ))
+    local -x CMDLINE_CONTENTS="$words"
+    local -x CMDLINE_CURSOR_INDEX
+    (( CMDLINE_CURSOR_INDEX = ${#${(j. .)words[1,CURRENT]}} ))
 
     local RESULT STATUS
-    local -x COMPOSER_CWD=`pwd`
     RESULT=("${(@f)$( %%completion_command%% )}")
     STATUS=$?;
 
@@ -94,6 +98,11 @@ compdef %%function_name%% %%program_name%%;
 END
     );
 
+    /**
+     * Return the names of shells that have hooks
+     *
+     * @return string[]
+     */
     public static function getShellTypes()
     {
         return array_keys(self::$hooks);
@@ -138,8 +147,7 @@ END
     }
 
     /**
-     * Generate a function name that is unlikely to conflict with other
-     * generated function names in the same shell
+     * Generate a function name that is unlikely to conflict with other generated function names in the same shell
      */
     protected function generateFunctionName($programPath, $programName)
     {
@@ -151,7 +159,12 @@ END
     }
 
     /**
-     * BASH's eval doesn't work with comments, so these have to be stripped out
+     * Strip '#' style comments from a string
+     *
+     * BASH's eval doesn't work with comments as it removes line breaks, so comments have to be stripped out
+     * for this method of sourcing the hook to work. Eval seems to be the most reliable method of getting a
+     * hook into a shell, so while it would be nice to render comments, this stripping is required for now.
+     *
      * @param string $script
      * @return string
      */

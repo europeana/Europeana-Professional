@@ -17,6 +17,10 @@ if ey_db_config === nil then
     warning("Database configuration for 'production' not found!")
 end
 
+if ey_db_config['environment'] === nil then
+    ey_db_config['environment'] = 'prod'
+end
+
 # Build Bolt config_local data structure
 my_db_config = {
     "database" => {
@@ -25,7 +29,8 @@ my_db_config = {
         "databasename" => ey_db_config['database'],
         "username" => ey_db_config['username'],
         "password" => ey_db_config['password']
-    }
+    },
+    "environment" => ey_db_config['environment']
 }
 
 # Write Bolt config_local YAML file

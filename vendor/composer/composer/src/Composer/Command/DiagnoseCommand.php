@@ -81,8 +81,11 @@ EOT
         $this->getIO()->write('Checking git settings: ', false);
         $this->outputResult($this->checkGit());
 
-        $this->getIO()->write('Checking http connectivity: ', false);
-        $this->outputResult($this->checkHttp());
+        $this->getIO()->write('Checking http connectivity to packagist: ', false);
+        $this->outputResult($this->checkHttp('http'));
+
+        $this->getIO()->write('Checking https connectivity to packagist: ', false);
+        $this->outputResult($this->checkHttp('https'));
 
         $opts = stream_context_get_options(StreamContextFactory::getContext('http://example.org'));
         if (!empty($opts['http']['proxy'])) {
@@ -168,11 +171,10 @@ EOT
         return true;
     }
 
-    private function checkHttp()
+    private function checkHttp($proto)
     {
-        $protocol = extension_loaded('openssl') ? 'https' : 'http';
         try {
-            $this->rfs->getContents('packagist.org', $protocol . '://packagist.org/packages.json', false);
+            $this->rfs->getContents('packagist.org', $proto . '://packagist.org/packages.json', false);
         } catch (\Exception $e) {
             return $e;
         }
@@ -293,7 +295,7 @@ EOT
 
     private function checkDiskSpace($config)
     {
-        $minSpaceFree = 1024*1024;
+        $minSpaceFree = 1024 * 1024;
         if ((($df = @disk_free_space($dir = $config->get('home'))) !== false && $df < $minSpaceFree)
             || (($df = @disk_free_space($dir = $config->get('vendor-dir'))) !== false && $df < $minSpaceFree)
         ) {
@@ -377,11 +379,11 @@ EOT
             $errors['ioncube'] = ioncube_loader_version();
         }
 
-        if (version_compare(PHP_VERSION, '5.3.2', '<')) {
+        if (PHP_VERSION_ID < 50302) {
             $errors['php'] = PHP_VERSION;
         }
 
-        if (!isset($errors['php']) && version_compare(PHP_VERSION, '5.3.4', '<')) {
+        if (!isset($errors['php']) && PHP_VERSION_ID < 50304) {
             $warnings['php'] = PHP_VERSION;
         }
 

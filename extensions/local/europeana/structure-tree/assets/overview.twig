@@ -6,7 +6,7 @@
   {% for record in records %}
     {% if record.id not in processed %}
     <li>
-      № {{ record.id }} <strong><a href="{{ record.link }}">{{ record.title }}</a></strong> {# [<a href="{{ record.editlink }}">edit</a>] #}
+      <span>№ {{ record.id }}</span> <strong><a href="{{ record.link }}">{{ record.title }}</a></strong> {# [<a href="{{ record.editlink }}">edit</a>] #}
       {% set processed = processed|merge([record.id]) %}
       {% if userelations == false %}
         {% set children = getTreeChildren( record )|sort('structure_sortorder') %}
@@ -38,8 +38,31 @@
 </ul>
 #}
 
+
+<link rel="stylesheet" href="{{ app.paths.extensions }}local/europeana/structure-tree/assets/css/jquery.sapling.css">
+
+<script type="text/javascript" src="{{ app.paths.extensions }}local/europeana/structure-tree/assets/js/jquery.sapling.min.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+    $('#structuretree').sapling();
+
+    $('#expandAll').click(function() {
+        $('#structuretree').data('sapling').expand();
+    });
+
+    $('#collapseAll').click(function() {
+        $('#structuretree').data('sapling').collapse();
+    });
+
+});
+
+</script>
+
 <h2>Structure Tree Overview</h2>
-<ul>
+<a id="expandAll" href="#">Expand All</a> - <a id="collapseAll" href="#">Collapse All</a>
+<ul id="structuretree">
   {% set processed = [] %}
   {{ _self.dumpchildren(records, processed, false) }}
 </ul>

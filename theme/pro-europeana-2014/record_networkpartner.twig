@@ -1,0 +1,241 @@
+{% set curtitle = record.first_name ~ ' ' ~ record.last_name %}
+{% include '_header.twig' %}
+
+{# as a speaker on events #}
+{% set events = record.related('events') %}
+
+{# as an author to blogposts #}
+{% set blogposts = record.related('blogposts') %}
+
+{# as an author to pressreleases #}
+{% set pressreleases = record.related('pressreleases') %}
+
+{# as an author to publications #}
+{% set publications = record.related('publications') %}
+
+{# 
+<!-- as a contact to pages -->
+{% set pages = record.related('pages') %}
+
+<!-- as a contact to projects -->
+{% set projects = record.related('projects') %}
+
+<!-- as a chair to task forces -->
+{% set taskforces = record.related('taskforces') %}
+
+<!-- as a contact to structures ->
+{% set structures = record.related('structures') %}
+#}
+<!-- Start content -->
+<main role="main" class="l-page">
+<div class="lc">
+    <!-- Start grid -->
+    <div class="grid-main">
+        <div class="l-content">
+            <div class="l-breadcrumbs">
+                {% include 'items/_item-breadcrumb.twig' %}
+            </div>
+
+            {# {{ dump(record) }} #}
+
+            <div class="maincontent">
+                {% if record.network_participation is not empty and 'MC Election Candidate' in record.network_participation %}
+                     <div class="network-participation">
+                        <h1>MC Election Candidate</h1>
+                     </div>
+                {% elseif record.network_participation is not empty %}
+                     <div class="network-participation">
+                         {% for npl in record.network_participation %}
+                             {% if loop.first == true %}
+                             <h1>{{ npl }}</h1>
+                             {% endif %}
+                         {% endfor %}
+                     </div>
+                {% endif %}
+                <h1 class="title fn">{{record.first_name}} {{record.last_name}}</h1>
+
+                <div class="section contact-detail">
+                    <div class="l-contact-photo">
+                        {% if record.image and record.contenttype.slug != 'network' %}
+                            <img src="{{ record.image|image(300,400,"c") }}" alt="{{ record.image|title }}" />
+                        {% elseif record.image and record.contenttype.slug == 'network' and record.public_photo == 'true' %}
+                            <img src="{{ record.image|image(300,400,"c") }}" alt="{{ record.image|title }}" />
+                        {% else %}
+                             <img src="{{ app.paths.theme }}images/fpo_avatar.png" alt="{{ record.first_name }} {{ record.last_name }}" class="photo missing" />
+                        {% endif %}
+                    </div><!--
+                    --><div class="l-contact">
+                        <div class="contact-methods cf">
+                            <div class="jobdetails">
+                                <h2 class="job-title">{{record.job_title}}</h2>
+                                {% if record.company_url != "" %}
+                                    <div class="fn">
+                                        <a href="{{ record.company_url }}" target="_blank">
+                                            <!-- <svg class="icon icon-bookmark">
+                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-bookmark"></use>
+                                            </svg> -->
+                                            {{ record.company }}
+                                            <svg class="icon icon-linkout">
+                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-linkout"></use>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    <div class="fn">{{ record.company }}</div>
+                                {% endif %}
+
+                                <div>{{ record.country }}</div>
+
+                                <div>{{ record.sector }}</div>
+
+                                {% if record.public_email != '' %}
+                                <div class="item-sendemail">
+                                    <a class="email" href="mailto:{{ record.public_email }}">
+                                        <svg class="icon icon-sendemail">
+                                            <use xlink:href="#icon-sendemail"></use>
+                                        </svg>
+                                        <span>{{ record.public_email }}</span>
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="contact-internal">
+
+                                {% if record.public_phone != '' %}
+                                <div class="item-phone-work">
+                                    <svg class="icon icon-phone-work">
+                                        <use xlink:href="#icon-phone-work"></use>
+                                    </svg>
+                                    <span class="tel">{{ record.public_phone }}</span>
+                                </div>
+                                {% endif %}
+
+                                {% if record.other_number != '' %}
+                                <div class="item-phone-mobile">
+                                    <svg class="icon icon-phone-mobile">
+                                        <use xlink:href="#icon-phone-mobile"></use>
+                                    </svg>
+                                    <span class="tel">{{ record.other_number }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <ul class="contact-external">
+                                {% if record.twitter != '' %}
+                                <li><a href="{{ record.twitter }}"><svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>{{ record.twitter|split('/')|last }}</a></li>
+                                {% endif %}
+                                {% if record.skype != '' %}
+                                <li><a href="skype:{{ record.skype }}"><svg class="icon icon-skype"><use xlink:href="#icon-skype"></use></svg>{{ record.skype }}</a></li>
+                                {% endif %}
+                                {% if record.linkedin != '' %}
+                                <li><a href="{{ record.linkedin }}"><svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>{{ record.first_name }} {{ record.last_name }}</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        {% if record.network_participation is not empty and 'MC Election Candidate' in record.network_participation %}
+                        <div class="candidacy-intro">
+                            <blockquote>
+                                {{ record.candidacy_intro }}
+                            </blockquote>
+                        </div>
+                        {% endif %}
+
+                        <div class="contact-additional">
+                            {{ record.introduction }}
+
+                            {% if (record.other_links_1 or record.other_links_2 or record.other_links_3 ) %}
+                            <ul class="nav">
+                                {% if record.other_links_1 %}
+                                <li><a href="{{ record.other_links_1 }}">{{ record.other_links_1 }}</a></li>
+                                {% endif %}
+                                {% if record.other_links_2 %}
+                                <li><a href="{{ record.other_links_2 }}">{{ record.other_links_2 }}</a></li>
+                                {% endif %}
+                                {% if record.other_links_3 %}
+                                <li><a href="{{ record.other_links_3 }}">{{ record.other_links_3 }}</a></li>
+                                {% endif %}
+                            </ul>
+                            {% endif %}
+
+                            {% if record.network_participation is not empty %}
+                                <div class="network-participation">
+                                    {% for npl in record.network_participation %}
+                                        {% if loop.first == true %}Also {% endif %}
+                                        {% if loop.first == false %}{% if loop.last == true %}and{% else %},{% endif %}{% endif %}
+                                        {{ npl }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {% if events %}
+                <div class="section">
+                    <h2>Speaking at</h2>
+                    <div class="results">
+                        <ul class="results-list">
+                            {% for event in events %}
+                                {% include 'items/_item-list.twig' with {record: event} %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if pressreleases %}
+                <div class="section">
+                    <h2>Press Releases</h2>
+                    <ul class="results-list">
+                        {% for pressrelease in pressreleases %}
+                            {% include 'items/_item-list.twig' with {record: pressrelease} %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if publications %}
+                <div class="section">
+                    <h2>Publications</h2>
+                    <ul class="results-list">
+                        {% for publication in publications %}
+                            {# as an author to blogposts #}
+                            {% set authors = publication.related('network') %}
+                            {% include 'items/_item-list.twig' with {record: publication, authors: authors} %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if blogposts %}
+                <div class="section">
+                    <h2>Blog posts</h2>
+                    <ul class="results-list">
+                        {% for blogpost in blogposts %}
+                            {# as an author to blogposts #}
+                            {% set authors = blogpost.related('network') %}
+                            {% include 'items/_item-list.twig' with {record: blogpost, authors: authors} %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div><!--
+        --><div class="l-sidebar">
+            <div class="inner">
+                {# Don't display contacts in the sidebar. ----
+                 {% setcontent staff_structure = 'structures/staff' returnsingle %}
+                 {% set contacts = staff_structure.related('persons') %}
+                 {% include 'items/_item-help.twig' with { records: contacts} %}
+                 ------ #}
+            </div>
+        </div>
+    </div>
+    <!-- End grid -->
+</div>
+</main>
+<!-- End Content -->
+
+{% include '_footer.twig' %}

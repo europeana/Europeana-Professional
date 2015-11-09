@@ -1,5 +1,5 @@
 # possibles child contenttypes
-contenttypes: [ pages, blogposts, publications, pressreleases, events, projects, jobs, persons, taskforces, structures ]
+contenttypes: [ pages, blogposts, publications, pressreleases, events, projects, jobs, persons, network, taskforces, structures ]
 # parent structure handle child contenttypes
 parenttype: structures
 # sitemap settings

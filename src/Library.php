@@ -158,7 +158,7 @@ class Library
      * @param array  $param
      * @param string $add
      *
-     * @return string
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public static function redirect($path, $param = array(), $add = '')
     {
@@ -184,6 +184,24 @@ class Library
         }
 
         return $app->redirect(self::path($path, $param, $add));
+    }
+
+    /**
+     * Get an array of the query parameters
+     * 
+     * @internal
+     *
+     * @param string $url
+     *
+     * @return array
+     */
+    public static function getQueryParameters($url)
+    {
+        $parsedUrl = parse_url($url);
+        parse_str($parsedUrl['query'], $parameters);
+        $parameters = array_diff($parameters, array(''));
+
+        return $parameters;
     }
 
     /**
@@ -294,8 +312,6 @@ class Library
         // disallow user to interrupt
         ignore_user_abort(true);
 
-        $oldUmask = umask(0111);
-
         // open the file and lock it.
         if ($fp = fopen($filename, 'a')) {
             if (flock($fp, LOCK_EX | LOCK_NB)) {
@@ -336,7 +352,6 @@ class Library
                 'Current path: ' . getcwd() . '.';
             throw new LowlevelException($message);
         }
-        umask($oldUmask);
 
         // reset the users ability to interrupt the script
         ignore_user_abort(false);

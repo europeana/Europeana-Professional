@@ -3,6 +3,11 @@
 
 # Options - Set Options for the Extension
 
+# Note: a harcoded redirect for "http://www.europeana-libraries.eu/" is built into
+# index.php for: http://www.europeana-libraries.eu
+# to http://pro.europeana.eu/get-involved/projects/project-list/europeana-libraries
+
+
 options:
 
     # Auto slugging should be enabled. Makes slugs friendly. Like cats.

@@ -1,0 +1,19 @@
+{% extends '_base/_page-nav.twig' %}
+
+{% block page_main %}
+
+<h1>ZOHO import</h1>
+
+{# { dump(paths.bolt) } #}
+
+{% if batchoutput is not null %}
+    <div class="">
+        {{ batchoutput|raw }}
+    </div>
+{% else %}
+    {{ dump(config) }}
+{% endif %}
+
+<p><a class="button" href="{{ paths.bolt }}zohoimport/batchpage">Start a new import</a>.</p>
+
+{% endblock %}

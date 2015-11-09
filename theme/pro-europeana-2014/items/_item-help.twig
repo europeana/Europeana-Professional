@@ -15,7 +15,13 @@
             {% set personlink = structurelink(person) %}
 
             <a href="{{ personlink }}">
-                <img src="{{ person.image|image(600,600,"c") }}" alt="{{ person.image|title }}" />
+                {% if person.image and person.contenttype.slug != 'network' %}
+                    <img src="{{ person.image|image(300,400,"c") }}" alt="{{ person.image|title }}" />
+                {% elseif person.image and person.contenttype.slug == 'network' and person.public_photo == 'true' %}
+                    <img src="{{ person.image|image(300,400,"c") }}" alt="{{ person.image|title }}" />
+                {% else %}
+                    <img src="/theme/pro-europeana-2014/images/fpo_avatar.png" alt="{{ person.image|title }}" />
+                {% endif %}
             </a>
 
             <h5>Contact:</h5>
@@ -26,11 +32,16 @@
                 {% if person.telephone_number != "" %}
                 <div class="tel">{{ person.telephone_number }}</div>
                 {% endif %}
-                {# show person.secondary_mail if event.secondary_mail is checked #}
-                {% if (record.secondary_mail is defined and record.secondary_mail == "1" ) %}
-                    <a class="email" href="mailto:{{ person.secondary_email }}">{{ person.secondary_email }}</a>
-                {% else %}
-                    <a class="email" href="mailto:{{ person.email }}">{{ person.email }}</a>
+
+                {% if person.public_email != "" %}
+                    <a class="email" href="mailto:{{ person.public_email }}">{{ person.public_email }}</a>
+                {% elseif person.email != ""  and person.contenttype.slug != 'network' %}
+                    {# show person.secondary_mail if event.secondary_mail is checked #}
+                    {% if (record.secondary_mail is defined and record.secondary_mail == "1" ) %}
+                        <a class="email" href="mailto:{{ person.secondary_email }}">{{ person.secondary_email }}</a>
+                    {% else %}
+                        <a class="email" href="mailto:{{ person.email }}">{{ person.email }}</a>
+                    {% endif %}
                 {% endif %}
 
             </div>

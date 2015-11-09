@@ -19,7 +19,6 @@ use Composer\Util\ProcessExecutor;
 use Composer\Repository\ArrayRepository;
 use Composer\Package\Dumper\ArrayDumper;
 use Composer\Package\Loader\ArrayLoader;
-use Composer\Package\Version\VersionParser;
 use Composer\Util\Git as GitUtil;
 use Composer\IO\IOInterface;
 
@@ -133,11 +132,10 @@ class Locker
     public function getPlatformRequirements($withDevReqs = false)
     {
         $lockData = $this->getLockData();
-        $versionParser = new VersionParser();
         $requirements = array();
 
         if (!empty($lockData['platform'])) {
-            $requirements = $versionParser->parseLinks(
+            $requirements = $this->loader->parseLinks(
                 '__ROOT__',
                 '1.0.0',
                 'requires',
@@ -146,7 +144,7 @@ class Locker
         }
 
         if ($withDevReqs && !empty($lockData['platform-dev'])) {
-            $devRequirements = $versionParser->parseLinks(
+            $devRequirements = $this->loader->parseLinks(
                 '__ROOT__',
                 '1.0.0',
                 'requires',
@@ -238,7 +236,7 @@ class Locker
     {
         $lock = array(
             '_readme' => array('This file locks the dependencies of your project to a known state',
-                               'Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file',
+                               'Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file',
                                'This file is @gener'.'ated automatically'),
             'hash' => $this->hash,
             'packages' => null,

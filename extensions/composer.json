@@ -16,7 +16,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "provide": {
-        "bolt/bolt": "2.0.5"
+        "bolt/bolt": "2.2.8"
     },
     "scripts": {
         "post-package-install": "Bolt\\Composer\\ExtensionInstaller::handle",
@@ -28,7 +28,19 @@
     "autoload": {
         "files": [
             "installer.php"
-        ]
+        ],
+        "psr-4": {
+            "Bolt\\Extension\\Bolt\\RSSAggregator\\": "local/europeana/rssaggregator/",
+            "Bolt\\Extension\\Europeana\\GoogleSearch\\": "local/europeana/google-search/",
+            "Bolt\\Extension\\Europeana\\StructureTree\\": "local/europeana/structure-tree/",
+            "Bolt\\Extension\\Europeana\\FileHelper\\": "local/europeana/file-helper/",
+            "Bolt\\Extension\\Europeana\\FrontendExt\\": "local/europeana/frontendext/",
+            "Bolt\\Composer\\": "",
+            "Bolt\\Extension\\Europeana\\ZohoImport\\": [
+                "local/europeana/zohoimport/",
+                "local/europeana/zohoimport/src"
+            ]
+        }
     },
     "config": {
         "discard-changes": true,

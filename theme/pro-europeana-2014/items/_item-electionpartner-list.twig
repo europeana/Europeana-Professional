@@ -1,0 +1,83 @@
+{% if structure is defined %}
+    {% set listItemLink = structurelink(record, structure) %}
+{% else  %}
+    {% set listItemLink = structurelink(record) %}
+{% endif %}
+
+{% if record %}<div class="l-person block block-thumb">
+    <div class="b-inner">
+        <div class="b-thumb-wide">
+            <a href="{{ structurelink(record) }}">
+                {% if record.image and record.contenttype.slug != 'network' %}
+                    <img src="{{ record.image|image(300,400,"c") }}" alt="{{ record.image|title }}" />
+                {% elseif record.image and record.contenttype.slug == 'network' and record.public_photo == 'true' %}
+                    <img src="{{ record.image|image(300,400,"c") }}" alt="{{ record.image|title }}" />
+                {% else %}
+                     <img src="{{ app.paths.theme }}images/fpo_avatar.png" alt="{{ record.first_name }} {{ record.last_name }}" class="photo missing" />
+                {% endif %}
+            </a>
+        </div>
+        <div class="b-text">
+            {# {{ dump(record) }} #}
+            <h2 class="person-name"><a href="{{ structurelink(record) }}">{{ record.first_name }} {{ record.last_name }}</a></h2>
+            <div class="jobdetails">
+                <div class="job-title">{{ record.job_title }}</div>
+            </div>
+            {% if record.company_url != "" %}
+                <div class="fn">
+                    <a href="{{ record.company_url }}" target="_blank">
+                        <!-- <svg class="icon icon-bookmark">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-bookmark"></use>
+                        </svg> -->
+                        {{ record.company }}
+                        <svg class="icon icon-linkout">
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-linkout"></use>
+                        </svg>
+                    </a>
+                </div>
+            {% else %}
+                <div class="fn">{{ record.company }}</div>
+            {% endif %}
+
+            {% if record.public_email != '' %}
+            <div class="item-sendemail">
+                <a class="email" href="mailto:{{ record.public_email }}">
+                    <svg class="icon icon-sendemail"><use xlink:href="#icon-sendemail"></use></svg>
+                    {{ record.public_email }}
+                </a>
+            </div>
+            {% endif %}
+            
+            {% if record.public_phone != '' %}
+            <div class="item-phone-work">
+                <svg class="icon icon-phone-work">
+                    <use xlink:href="#icon-phone-work"></use>
+                </svg>
+                <span class="tel">{{ record.public_phone }}</span>
+            </div>
+            {% endif %}
+
+            {% if person.twitter != "" %}
+            {% set twittername = person.twitter|split('/')|last %}
+            <div class="item-twitter">
+                <a href="{{ person.twitter }}"><svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>@{{ twittername }}</a>
+            </div>
+            {% endif %}
+
+{# 
+            {% if record.linkedin != '' %}
+            <div class="item-linkedin">
+                <a href="{{ record.linkedin }}"><svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>{{ record.first_name }} {{ record.last_name }}</a>
+            </div>
+            {% endif %} #}
+
+            {% if record.network_participation is not empty and 'MC Election Candidate' in record.network_participation %}
+            <div class="list-teaser">
+                <div class="teaser">{{ record.candidacy_teaser }}</div>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>{% endif %}
