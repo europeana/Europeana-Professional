@@ -9,51 +9,22 @@ tags:
     singular_slug: tag
     behaves_like: tags
     listing_template: listing_tags.twig
-# tree:
-#     slug: tree
-#     singular_slug: tree
-#     behaves_like: grouping
-#     options:
-#         about-us: 'About us'
-#         activities: 'Activities'
-#         advocacy: 'Advocacy'
-#         careers: 'Careers'
-#         case-studies: 'Case studies'
-#         community-resources: 'Community Resources'
-#         copyright-reform: 'Copyright Reform'
-#         data-usage-guidelines: 'Data Usage Guidelines'
-#         dea: 'DEA'
-#         edm-case-studies: 'EDM Case studies'
-#         europeana-cloud-blog: 'Europeana Cloud Blog'
-#         europeana-cloud-events: 'Europeana Cloud events'
-#         europeana-cloud: 'Europeana Cloud'
-#         europeana-creative-blog: 'Europeana Creative Blog'
-#         europeana-creative-events: 'Europeana Creative Events'
-#         europeana-creative: 'Europeana Creative'
-#         europeana-ipr: 'Europeana IPR'
-#         europeana-tech-events: 'Europeana Tech events'
-#         europeana-tech: 'Europeana Tech'
-#         europeanatech-task-forces: 'EuropeanaTech Task forces'
-#         get-involved: 'Get involved'
-#         our-network: 'Our Network'
-#         partners: 'Partners'
-#         pilots: 'Pilots'
-#         policy-positions: 'Policy Positions'
-#         press-releases: 'Press releases'
-#         press: 'Press'
-#         project-list: 'Project list'
-#         projects: 'Projects'
-#         share-your-data: 'Provide your data'
-#         staff: 'Staff'
-#         task-forces: 'Task forces'
-#         technical-requirements: 'Data guidelines'
-#         the-licensing-framework: 'The Licensing Framework'
-#         use-our-data: 'Use our data'
-#     multiple: false
-#     has_sortorder: true
 chapters:
     slug: chapters
     singular_slug: chapter
     behaves_like: grouping
     options: { main: 'The main chapter', sub: 'Meta Chapter', subsub: 'The other stuff' }
     has_sortorder: true
+blogs:
+    # these are needed for the blogpost content type and are filtered in listing.twig
+    slug: blogs
+    singular_slug: blog
+    behaves_like: categories
+    multiple: false
+    has_sortorder: false
+    options:
+        europeana-blog: 'Europeana Blog'
+        europeana-cloud-blog: 'Europeana Cloud Blog'
+        heritage-in-motion-blog: 'Heritage in Motion Blog'
+        #europeana-test-blog: 'Europeana Test Blog'
+        #europeana-creative-blog: 'Europeana Creative Blog'

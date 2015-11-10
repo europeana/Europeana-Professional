@@ -1196,7 +1196,7 @@ blogposts:
       autocomplete: true
       label: "Select structure tree parent"
   # Show on Blog page
-  taxonomy: [ tags ]
+  taxonomy: [ tags, blogs ]
   relations:
     persons:
       label: "Author(s) Contacts"
