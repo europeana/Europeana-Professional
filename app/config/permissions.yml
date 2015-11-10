@@ -8,8 +8,9 @@
 # - 'root', the "superuser" role; Bolt will automatically grant all permissions
 #   to this role. Manually adding it to any permission is pointless, because it
 #   implicitly grants every permission anyway.
-# - 'everyone', the "anonymous" role; every user automatically has this role.
-#   Adding the 'everyone' role to any permission will grant it to all users.
+# - 'everyone', the "base" role; every logged-in user automatically has this
+#   role. Adding the 'everyone' role to any permission will grant it to all
+#   users (but not to unauthenticated users).
 # - 'owner': this role is only valid in the context of an individual content
 #   item, and the user who "owns" the item (usually the person who created it)
 #   will be in the 'owner' role.
@@ -56,19 +57,26 @@ global:
     dbupdate: [ admin, developer ]
     dbupdate_result: [ admin, developer ]
     extensions: [ developer ]
+    extensions:config: [ developer ]
     fileedit: [ admin, developer ]
     files:config: [ developer ]
     files:theme: [ developer ]
     files:uploads: [ admin, developer, chief-editor, blog-editor ]
     files: [ editor, admin, developer, chief-editor, blog-editor ]
     prefill: [ developer ]
+    profile: [ everyone ] # edit own profile
     settings: [ admin, developer, everyone ]
     translation: [ developer ]
     useraction: [ admin, developer ] # enable/disable/delete
     useredit: [ admin, developer ] # user settings
     users: [ admin, developer ] # view user overview
+    roles: [ admin, developer ] # view the roles overview
     maintenance-mode: [ everyone ] # view the frontend when in maintenance mode
     structure-tree: [ admin, developer, chief-editor ]
+    omnisearch: [ everyone ]
+    # Access to the various logs
+    changelog: [ admin, developer, chief-editor ]
+    systemlog: [ admin, developer ]
     # The following permissions are particularly important: login and postLogin
     # determine who may see and use the login form. If you set them to anything
     # but 'anonymous', only users will be able to log in that are logged in
@@ -114,11 +122,26 @@ global:
 # defined with an empty role list, it overrides the role list in
 # contenttype-default; but if the permission is not mentioned, the
 # corresponding entry in contenttype-default applies.
+#
+# The following permissions are available on a per-contenttype basis:
+#
+# - edit: allows updating existing records
+# - create: allows creating new records
+# - publish: allows changing the status of a record to "published", as well as
+#            scheduling a record for future publishing
+# - depublish: allows changing the status of a record from "published"
+# - delete: allows (hard) deletion of records
+# - change-ownership: allows changing a record's owner. Note that ownership may
+#                     grant additional permissions on a record, so this
+#                     permission can indirectly enable users more permissions
+#                     in ways that may not be immediately obvious.
+# - view: allows viewing records in the backend
 contenttype-all:
     edit: [ developer, admin ]
     create: [ developer, admin ]
     publish: [ developer, admin ]
     depublish: [ developer, admin ]
+    delete: [ developer, admin ]
     change-ownership: [ developer, admin ]
 
 contenttype-default:
