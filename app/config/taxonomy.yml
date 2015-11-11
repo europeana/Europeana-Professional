@@ -19,8 +19,7 @@ blogs:
     # these are needed for the blogpost content type and are filtered in listing.twig
     slug: blogs
     singular_slug: blog
-    behaves_like: categories
-    multiple: false
+    behaves_like: grouping
     has_sortorder: false
     options:
         europeana-blog: 'Europeana Blog'
