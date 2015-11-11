@@ -43,11 +43,11 @@ taxonomylink:
   requirements:
     taxonomytype:     'Bolt\Controllers\Routing::getAnyTaxonomyTypeRequirement'
 
-contentlisting:
- path:               /{contenttypeslug}
- defaults:           { _controller: 'Bolt\Controllers\Frontend::listing' }
- requirements:
-   contenttypeslug:  'Bolt\Controllers\Routing::getPluralContentTypeRequirement'
+# contentlisting:
+#   path:               /{contenttypeslug}
+#   defaults:           { _controller: 'Bolt\Controllers\Frontend::listing' }
+#   requirements:
+#     contenttypeslug:  'Bolt\Controllers\Routing::getPluralContentTypeRequirement'
 
 # ------------------------------------------------------------------------------
 # Place your own routes here, that have a LOWER priority than the default routes.
