@@ -123,6 +123,36 @@ class Extension extends \Bolt\BaseExtension
         // Add snippets, since this is a Frontend route.
         $this->app['htmlsnippets'] = true;
 
+        if(strripos($slug, '/')) { // find the last "/"" in the slug
+            //dump($slug);
+            // dump($this->app['config']);
+
+            // dump($this->app['config']->get('data/contenttypes'));
+
+            // dump($this->app['config']->get('general/homepage_template'));
+
+            // dump(strripos($slug, '/') == strlen($slug));
+            // dump(strripos($slug, '/'));
+            // dump(strlen($slug));
+            $slug = rtrim($slug, '/');
+            if(in_array($slug, array('blogs', 'locations', 'structures', 'pages', 'blogposts', 'jobs', 'events', 'persons', 'network', 'publications', 'pressreleases', 'projects', 'taskforces', 'homepage', 'footers'))) {
+                switch($slug) {
+                    case 'blogs':
+                        //dump('redirect blogs');
+                        \Bolt\Library::simpleredirect('/blogposts');
+                        die();
+                        break;
+                    default:
+                        \Bolt\Library::simpleredirect('/' . $slug);
+                        die();
+                        break;
+                }
+
+            }
+
+
+        }
+
         // $slug = \Bolt\Helpers\String::slug($slug, -1);
         $slug = $this->app['slugify']->slugify($slug);
 
