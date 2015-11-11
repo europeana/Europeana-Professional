@@ -113,6 +113,7 @@
                     {% setcontent records = record.content where { limit : amount, order : order, page : page, blogs: "Europeana Blog" } allowpaging %}
 
                 {% elseif record.slug in 'europeana-test-blog' %}
+
                     {# Another blog, add more if needed. #}
                     {# blogposts must have the "Europeana Creative Blog" category to appear here - see #273 #}
                     {% setcontent records = record.content where { limit : amount, order : order, page : page, blogs: "Europeana Creative Blog" } allowpaging %}
@@ -121,7 +122,6 @@
 
                     {# all blog posts. #}
                     {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page } allowpaging %}
-                    {# {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page } allowpaging %} #}
 
                 {% endif %}
             {% endif %}

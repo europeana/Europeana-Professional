@@ -1257,6 +1257,7 @@ blogposts:
   recordsperpage: 100
   icon_many: "fa:quote-left"
   icon_one: "fa:quote-right"
+  sort: -datepublish
 
 #################################
 #
