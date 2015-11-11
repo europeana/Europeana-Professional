@@ -106,17 +106,17 @@
                     {# blogposts must have the "Europeana Cloud Blog" category to appear here - see #273 #}
                     {% setcontent records = record.content where { limit : amount, order : order, page : page, blogs: "Europeana Cloud Blog" } allowpaging %}
 
-                {% elseif record.slug in 'europeana-blog' %}
-
-                    {# Another blog, add more if needed. #}
-                    {# blogposts must have the "Europeana Blog" category to appear here - see #273 #}
-                    {% setcontent records = record.content where { limit : amount, order : order, page : page, blogs: "Europeana Blog" } allowpaging %}
-
                 {% elseif record.slug in 'europeana-test-blog' %}
 
                     {# Another blog, add more if needed. #}
                     {# blogposts must have the "Europeana Creative Blog" category to appear here - see #273 #}
-                    {% setcontent records = record.content where { limit : amount, order : order, page : page, blogs: "Europeana Creative Blog" } allowpaging %}
+                    {% setcontent records = record.content where { limit : amount, order : order, page : page, blogs: "Europeana Test Blog" } allowpaging %}
+
+                {% elseif record.slug is not defined %}
+
+                    {# Another blog, add more if needed. #}
+                    {# blogposts must have the "Europeana Blog" category to appear here - see #273 #}
+                    {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page, blogs: "Europeana Blog" } allowpaging %}
 
                 {% else %}
 
