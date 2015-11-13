@@ -3,6 +3,31 @@
 {# If 'contenttype' is a string, we get the contenttype array from config. #}
 {% if contenttype is not iterable and contenttype == "Blog Posts" %}
     {% set contenttype = "blogposts" %}
+{% elseif contenttype is not iterable %}
+    {# Lodewijk notes: #273
+        fallback to loading the contenttype from the select option in the structure
+        this way - if you set it in the structure it will actually be used here
+        why this was setup this way remains a mystery
+    #}
+    {% if record.content == 'BlogPosts' %}
+        {% set contenttype = getContenttype("blogposts") %}
+    {% elseif record.content == 'Events' %}
+        {% set contenttype = getContenttype("events") %}
+    {% elseif record.content == 'Events' %}
+        {% set contenttype = getContenttype("persons") %}
+    {% elseif record.content == 'PressReleases' %}
+        {% set contenttype = getContenttype("pressreleases") %}
+    {% elseif record.content == 'Projects' %}
+        {% set contenttype = getContenttype("projects") %}
+    {% elseif record.content == 'Publications' %}
+        {% set contenttype = getContenttype("publications") %}
+    {% elseif record.content == 'TaskForces' %}
+        {% set contenttype = getContenttype("taskforces") %}
+    {% elseif record.content == 'Jobs' %}
+        {% set contenttype = getContenttype("Jobs") %}
+    {% else %}
+        {% set contenttype = getContenttype("blogposts") %}
+    {% endif %}
 {% endif %}
 {% if contenttype is not iterable and app.config.get('contenttypes/' ~ contenttype|lower) is defined %}
     {% set contenttype = app.config.get('contenttypes/' ~ contenttype|lower) %}
@@ -101,27 +126,27 @@
                 Just grab the blog-postings again on this page.. #}
             {% if showsortby and taxonomy is not defined and contenttype.slug == "blogposts" %}
                 {% if record.slug in 'europeana-cloud-blog' %}
-
+                    <!-- showing europeana cloud blog -->
                     {# Europeana Cloud blog posts. #}
                     {# blogposts must have the "Europeana Cloud Blog" category to appear here - see #273 #}
-                    {% setcontent records = record.content where { limit : amount, order : order, page : page, blogs: "Europeana Cloud Blog" } allowpaging %}
+                    {% setcontent records = 'blogposts' where { limit : amount, order : order, page : page, blogs: "Europeana Cloud Blog" } allowpaging %}
 
                 {% elseif record.slug in 'europeana-test-blog' %}
-
+                    <!-- showing europeana test blog -->
                     {# Another blog, add more if needed. #}
                     {# blogposts must have the "Europeana Creative Blog" category to appear here - see #273 #}
-                    {% setcontent records = record.content where { limit : amount, order : order, page : page, blogs: "Europeana Test Blog" } allowpaging %}
+                    {% setcontent records = 'blogposts' where { limit : amount, order : order, page : page, blogs: "Europeana Test Blog" } allowpaging %}
 
                 {% elseif record.slug is not defined %}
-
+                    <!-- showing europeana blog because no slug for record -->
                     {# Another blog, add more if needed. #}
                     {# blogposts must have the "Europeana Blog" category to appear here - see #273 #}
-                    {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page, blogs: "Europeana Blog" } allowpaging %}
+                    {% setcontent records = 'blogposts' where { limit : amount, order : order, page : page, blogs: "Europeana Blog" } allowpaging %}
 
                 {% else %}
-
+                    <!-- showing all blog posts -->
                     {# all blog posts. #}
-                    {% setcontent records = 'BlogPosts' where { limit : amount, order : order, page : page } allowpaging %}
+                    {% setcontent records = 'blogposts' where { limit : amount, order : order, page : page } allowpaging %}
 
                 {% endif %}
             {% endif %}
