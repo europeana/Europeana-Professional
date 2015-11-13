@@ -1,9 +1,10 @@
 {% include '_header.twig' %}
 
+<br><br>
 {# If 'contenttype' is a string, we get the contenttype array from config. #}
 {% if contenttype is not iterable and contenttype == "Blog Posts" %}
     {% set contenttype = "blogposts" %}
-{% elseif contenttype is not iterable %}
+{% elseif contenttype is empty or contenttype.slug == 'structures' %}
     {# Lodewijk notes: #273
         fallback to loading the contenttype from the select option in the structure
         this way - if you set it in the structure it will actually be used here
@@ -29,11 +30,11 @@
         {% set contenttype = getContenttype("blogposts") %}
     {% endif %}
 {% endif %}
+
 {% if contenttype is not iterable and app.config.get('contenttypes/' ~ contenttype|lower) is defined %}
     {% set contenttype = app.config.get('contenttypes/' ~ contenttype|lower) %}
-        {# {{ dump(contenttype) }} #}
 {% endif %}
-
+{# {{ dump(contenttype) }} #}
 {% if contenttype['slug'] is defined %}
     {# set order #}
     {% set order = contenttype['sort'] %}
