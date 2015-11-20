@@ -111,23 +111,23 @@
                                 </div>
                                 {% endif %}
 
-                                {% if record.other_number != '' %}
+{#                                 {% if record.other_number != '' %}
                                 <div class="item-phone-mobile">
                                     <svg class="icon icon-phone-mobile">
                                         <use xlink:href="#icon-phone-mobile"></use>
                                     </svg>
                                     <span class="tel">{{ record.other_number }}</span>
                                 </div>
-                                {% endif %}
+                                {% endif %} #}
                             </div>
 
                             <ul class="contact-external">
                                 {% if record.twitter != '' %}
                                 <li><a href="{{ record.twitter }}"><svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>{{ record.twitter|split('/')|last }}</a></li>
                                 {% endif %}
-                                {% if record.skype != '' %}
+{#                                 {% if record.skype != '' %}
                                 <li><a href="skype:{{ record.skype }}"><svg class="icon icon-skype"><use xlink:href="#icon-skype"></use></svg>{{ record.skype }}</a></li>
-                                {% endif %}
+                                {% endif %} #}
                                 {% if record.linkedin != '' %}
                                 <li><a href="{{ record.linkedin }}"><svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>{{ record.first_name }} {{ record.last_name }}</a></li>
                                 {% endif %}

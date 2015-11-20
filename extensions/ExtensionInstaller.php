@@ -1,28 +1,12 @@
 <?php
 namespace Bolt\Composer;
 
-use Composer\EventDispatcher\Event;
-use Composer\Installer\PackageEvent;
-use Composer\Script\Event as ScriptEvent;
-
 class ExtensionInstaller
 {
-    /**
-     * Event handler for composer package events
-     *
-     * @param \Composer\EventDispatcher\Event $event
-     */
     public static function handle($event)
     {
         try {
-            $operation = $event->getOperation();
-            if (method_exists($operation, 'getPackage')) {
-                $installedPackage = $operation->getPackage();
-            } elseif (method_exists($operation, 'getTargetPackage')) {
-                $installedPackage = $operation->getTargetPackage();
-            } else {
-                return;
-            }
+            $installedPackage = $event->getOperation()->getPackage();
         } catch (\Exception $e) {
             return;
         }
@@ -53,13 +37,11 @@ class ExtensionInstaller
             return;
         }
 
-        /** @var $iterator \RecursiveIteratorIterator|\RecursiveDirectoryIterator */
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS),
             \RecursiveIteratorIterator::SELF_FIRST
         );
         foreach ($iterator as $item) {
-            /** @var $item \SplFileInfo */
             if ($item->isDir()) {
                 $new = $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
                 if (!is_dir($new)) {

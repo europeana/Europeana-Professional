@@ -1196,7 +1196,7 @@ blogposts:
       autocomplete: true
       label: "Select structure tree parent"
   # Show on Blog page
-  taxonomy: [ tags ]
+  taxonomy: [ tags, blogs ]
   relations:
     persons:
       label: "Author(s) Contacts"
@@ -1257,6 +1257,7 @@ blogposts:
   recordsperpage: 100
   icon_many: "fa:quote-left"
   icon_one: "fa:quote-right"
+  sort: -datepublish
 
 #################################
 #
