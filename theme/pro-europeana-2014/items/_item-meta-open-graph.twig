@@ -55,7 +55,7 @@
         {#
             image meta information
         #}
-        <meta property="og:image" content="{{ paths.hosturl }}{{ record.image|thumbnail(200, 200) }}" />
+        <meta property="og:image" content="{{ paths.hosturl }}{{ record.image|thumbnail(600, 315) }}" />
         {% if (record.image is defined and record.image|length) %}
         <meta property="og:image:type" content="{{ fileInfo(record.image).mimetype }}" />
         {% endif %}
