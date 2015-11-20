@@ -194,15 +194,16 @@
             example: field "contact_blog" -> main contact of the blogposts
         #}
 
-        {% if contenttype.singular_slug is defined %}
-            {% set contacttype = ('contact_'~(contenttype.singular_slug))  %}
-            {% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
-            {% if( contacts|length and contacts is not iterable) %}
-                {% set contacts = [contacts] %}
+        {% if record.related('persons') is empty and record.related('network') is empty %}
+            {% if contenttype.singular_slug is defined %}
+                {% set contacttype = ('contact_'~(contenttype.singular_slug))  %}
+                {% setcontent contacts = 'persons' where { (contacttype) : 1 } orderby 'last_name'  %}
+                {% if( contacts|length and contacts is not iterable) %}
+                    {% set contacts = [contacts] %}
+                {% endif %}
+                {% include 'items/_item-help.twig' with { records: contacts} %}
             {% endif %}
-            {% include 'items/_item-help.twig' with { records: contacts} %}
         {% else %}
-
             {% set contacts = record.related('persons') %}
             {% if contacts is iterable %}
                 {% set contacts = contacts|merge(record.related('network')) %}
