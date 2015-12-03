@@ -8,7 +8,6 @@ $baseDir = dirname($vendorDir);
 return array(
     'UAParser\\' => array($vendorDir . '/ua-parser/uap-php/src'),
     'Stecman\\Component\\Symfony\\Console\\BashCompletion\\' => array($vendorDir . '/stecman/symfony-console-completion/src'),
-    'Silex\\' => array($vendorDir . '/silex/silex/src/Silex'),
     'Seld\\PharUtils\\' => array($vendorDir . '/seld/phar-utils/src'),
     'Seld\\JsonLint\\' => array($vendorDir . '/seld/jsonlint/src/Seld/JsonLint'),
     'Seld\\CliPrompt\\' => array($vendorDir . '/seld/cli-prompt/src'),

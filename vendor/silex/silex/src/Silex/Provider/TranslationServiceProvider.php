@@ -28,7 +28,7 @@ class TranslationServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['translator'] = $app->share(function ($app) {
-            $translator = new Translator($app, $app['translator.message_selector'], $app['translator.cache_dir'], $app['debug']);
+            $translator = new Translator($app, $app['translator.message_selector']);
 
             // Handle deprecated 'locale_fallback'
             if (isset($app['locale_fallback'])) {
@@ -55,7 +55,6 @@ class TranslationServiceProvider implements ServiceProviderInterface
 
         $app['translator.domains'] = array();
         $app['locale_fallbacks'] = array('en');
-        $app['translator.cache_dir'] = null;
     }
 
     public function boot(Application $app)

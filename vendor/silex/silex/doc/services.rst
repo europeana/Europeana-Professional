@@ -1,9 +1,9 @@
 Services
 ========
 
-Silex is not only a framework, it is also a service container. It does this by
-extending `Pimple <http://pimple.sensiolabs.org>`_ which provides service
-goodness in just 44 NCLOC.
+Silex is not only a microframework. It is also a micro service container. It
+does this by extending `Pimple <http://pimple.sensiolabs.org>`_ which provides
+service goodness in just 44 NCLOC.
 
 Dependency Injection
 --------------------
@@ -43,14 +43,24 @@ passed to the constructor. This means you can create several independent
 instances with different base paths. Of course dependencies do not have to be
 simple strings. More often they are in fact other services.
 
-A service container is responsible for creating and storing services. It can
-recursively create dependencies of the requested services and inject them. It
-does so lazily, which means a service is only created when you actually need it.
+Container
+~~~~~~~~~
+
+A DIC or service container is responsible for creating and storing services.
+It can recursively create dependencies of the requested services and inject
+them. It does so lazily, which means a service is only created when you
+actually need it.
+
+Most containers are quite complex and are configured through XML or YAML
+files.
+
+Pimple is different.
 
 Pimple
 ------
 
-Pimple makes strong use of closures and implements the ArrayAccess interface.
+Pimple is probably the simplest service container out there. It makes strong
+use of closures and implements the ArrayAccess interface.
 
 We will start off by creating a new instance of Pimple -- and because
 ``Silex\Application`` extends ``Pimple`` all of this applies to Silex as
@@ -169,7 +179,8 @@ Note that protected closures do not get access to the container.
 Core services
 -------------
 
-Silex defines a range of services.
+Silex defines a range of services which can be used or replaced. You probably
+don't want to mess with most of them.
 
 * **request**: Contains the current request object, which is an instance of
   `Request
@@ -180,7 +191,7 @@ Silex defines a range of services.
 
     $id = $app['request']->get('id');
 
-  This is only available when a request is being served; you can only access
+  This is only available when a request is being served, you can only access
   it from within a controller, an application before/after middlewares, or an
   error handler.
 
@@ -193,7 +204,7 @@ Silex defines a range of services.
 
 * **dispatcher**: The `EventDispatcher
   <http://api.symfony.com/master/Symfony/Component/EventDispatcher/EventDispatcher.html>`_
-  that is used internally. It is the core of the Symfony system and is used
+  that is used internally. It is the core of the Symfony2 system and is used
   quite a bit by Silex.
 
 * **resolver**: The `ControllerResolver
@@ -203,21 +214,24 @@ Silex defines a range of services.
 
 * **kernel**: The `HttpKernel
   <http://api.symfony.com/master/Symfony/Component/HttpKernel/HttpKernel.html>`_
-  that is used internally. The HttpKernel is the heart of Symfony, it takes a
+  that is used internally. The HttpKernel is the heart of Symfony2, it takes a
   Request as input and returns a Response as output.
 
 * **request_context**: The request context is a simplified representation of
   the request that is used by the Router and the UrlGenerator.
 
 * **exception_handler**: The Exception handler is the default handler that is
-  used when you don't register one via the ``error()`` method or if your
-  handler does not return a Response. Disable it with
-  ``unset($app['exception_handler'])``.
+  used when you don't register one via the ``error()`` method or if your handler
+  does not return a Response. Disable it with
+  ``$app['exception_handler']->disable()``.
 
 * **logger**: A ``Psr\Log\LoggerInterface`` instance. By default, logging is
   disabled as the value is set to ``null``. To enable logging you can either use
   the ``MonologServiceProvider`` or define your own ``logger`` service that
   conforms to the PSR logger interface.
+
+  In versions of Silex before 1.1 this must be a
+  ``Symfony\Component\HttpKernel\Log\LoggerInterface``.
 
 .. note::
 

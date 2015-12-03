@@ -23,11 +23,11 @@ class Translator extends BaseTranslator
 {
     protected $app;
 
-    public function __construct(Application $app, MessageSelector $selector, $cacheDir = null, $debug = false)
+    public function __construct(Application $app, MessageSelector $selector)
     {
         $this->app = $app;
 
-        parent::__construct(null, $selector, $cacheDir, $debug);
+        parent::__construct(null, $selector);
     }
 
     public function getLocale()

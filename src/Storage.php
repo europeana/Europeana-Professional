@@ -1118,7 +1118,7 @@ class Storage
 
         try {
             foreach ($recordIds as $recordId) {
-                $content = $this->getContent("$contenttypeSlug/$recordId", array('hydrate' => false, 'returnsingle' => true));
+                $content = $this->getContent("$contenttypeSlug/".$recordId['id'], array('hydrate' => false, 'returnsingle' => true));
 
                 $event = new StorageEvent($content, array('contenttype' => $contenttypeSlug, 'create' => false));
                 $this->app['dispatcher']->dispatch("timed.$type", $event);
@@ -1646,10 +1646,6 @@ class Storage
                 return false;
             }
 
-            // Check if we need to 'publish' any 'timed' records, or 'depublish' any expired records.
-            $this->publishTimedRecords($contenttype);
-            $this->depublishExpiredRecords($contenttype);
-
             // "mark" this one as checked.
             $checkedcontenttype[$contenttypeslug] = true;
         }
@@ -1847,7 +1843,7 @@ class Storage
             return false;
         }
 
-        // Run checks and some actions (@todo put these somewhere else?)
+        // Run checks and some actions
         if (!$this->runContenttypeChecks($decoded['contenttypes'])) {
             $this->app['stopwatch']->stop('bolt.getcontent');
 
@@ -2780,7 +2776,7 @@ class Storage
     {
         // We only should check each table once.
         if (isset($this->tables[$name])) {
-            return true;
+            return $this->tables[$name];
         }
 
         // See if the table exists.
@@ -2795,14 +2791,11 @@ class Storage
         }
 
         $res = $this->app['db']->fetchColumn($query);
-
         if (empty($res)) {
-            return false;
+            return $this->tables[$name] = false;
         }
 
-        $this->tables[$name] = true;
-
-        return true;
+        return $this->tables[$name] = true;
     }
 
     /**

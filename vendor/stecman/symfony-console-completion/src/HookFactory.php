@@ -64,7 +64,7 @@ function %%function_name%% {
     __ltrim_colon_completions "$cur";
 };
 
-complete -F %%function_name%% %%program_name%%;
+complete -F %%function_name%% "%%program_name%%";
 END
 
         // ZSH Hook
@@ -94,7 +94,7 @@ function %%function_name%% {
     compadd -- $RESULT
 };
 
-compdef %%function_name%% %%program_name%%;
+compdef %%function_name%% "%%program_name%%";
 END
     );
 
@@ -114,9 +114,11 @@ END
      * @param string $type - a key from self::$hooks
      * @param string $programPath
      * @param string $programName
+     * @param bool   $multiple
+     *
      * @return string
      */
-    public function generateHook($type, $programPath, $programName = null)
+    public function generateHook($type, $programPath, $programName = null, $multiple = false)
     {
         if (!isset(self::$hooks[$type])) {
             throw new \RuntimeException(sprintf(
@@ -129,6 +131,12 @@ END
         // Use the program path if an alias/name is not given
         $programName = $programName ?: $programPath;
 
+        if ($multiple) {
+            $completionCommand = '$1 _completion';
+        } else {
+            $completionCommand = $programPath . ' _completion';
+        }
+
         return str_replace(
             array(
                 '%%function_name%%',
@@ -140,7 +148,7 @@ END
                 $this->generateFunctionName($programPath, $programName),
                 $programName,
                 $programPath,
-                "$programPath _completion"
+                $completionCommand
             ),
             $this->stripComments(self::$hooks[$type])
         );
@@ -153,9 +161,22 @@ END
     {
         return sprintf(
             '_%s_%s_complete',
-            basename($programName),
+            $this->sanitiseForFunctionName(basename($programName)),
             substr(md5($programPath), 0, 16)
         );
+    }
+
+
+    /**
+     * Make a string safe for use as a shell function name
+     * 
+     * @param string $name
+     * @return string
+     */
+    protected function sanitiseForFunctionName($name)
+    {
+        $name = str_replace('-', '_', $name);
+        return preg_replace('/[^A-Za-z0-9_]+/', '', $name);
     }
 
     /**
