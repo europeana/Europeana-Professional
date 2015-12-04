@@ -13,7 +13,8 @@ theme: pro-europeana-2014
 
 stylesheet:
   prod: http://styleguide.europeana.eu/v/0.1/css/pro/screen.css
-  dev: http://develop.styleguide.eanadev.org/css/pro/screen.css
+  #dev: http://develop.styleguide.eanadev.org/css/pro/screen.css
+  dev: http://styleguide.europeana.eu/v/0.1/css/pro/screen.css
   beta: http://styleguide.europeana.eu/v/0.1/css/pro/screen.css
 
 # The locale that'll be used by the application. If no locale is set the
