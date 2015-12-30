@@ -24,6 +24,21 @@ options:
 
 redirects:
 
+    # After 'our network' was promoted to Top level. See assembla #440 and #441
+    '/get-involved/our-network': '/our-network'
+    '/get-involved/our-network/sign-up': '/our-network/sign-up'
+    '/get-involved/our-network/management-board-members-council': '/our-network/management-board-members-council'
+    '/get-involved/our-network/network-association-members': '/our-network/network-association-members'
+    '/get-involved/our-network/about-task-forces-and-working-groups': '/our-network/about-task-forces-and-working-groups'
+    '/get-involved/our-network/task-forces': '/our-network/task-forces'
+    '/get-involved/our-network/network-association-newsletters': '/our-network/network-association-newsletters'
+    '/get-involved/our-network/task-forces/public-libraries': '/our-network/task-forces/public-libraries'
+    '/get-involved/our-network/task-forces/brokerage-and-opportunities': '/our-network/task-forces/brokerage-and-opportunities'
+    '/get-involved/our-network/task-forces/europeana-network-communicators-group': '/our-network/task-forces/europeana-network-communicators-group'
+    '/get-involved/our-network/task-forces/local-networks': '/our-network/task-forces/local-networks'
+    '/get-involved/our-network/task-forces/education': '/our-network/task-forces/education'
+
+
     #thoughtlab
     '/web/guest/thoughtlab/linked-open-data': 'http://labs.europeana.eu/apps/Amsterdam%20Museum%20Linked%20Open%20Data'
     '/web/guest/thoughtlab/digitisation': 'http://labs.europeana.eu/apps/BHL%20Scan%20List/'
