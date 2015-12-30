@@ -1,7 +1,7 @@
 primary:
-#  - title: 'Join our Network'
-#    path: /join-the-europeana-network
-#    label: 'Join our Network'
+  - title: 'Join the Europeana Network'
+    path: /our-network
+    label: 'Our Network'
   - title: 'Get involved'
     path: /get-involved
     label: 'Get involved'
