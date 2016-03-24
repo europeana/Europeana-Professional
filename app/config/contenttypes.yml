@@ -333,19 +333,19 @@ persons:
       label: "Team:"
       values:
         "(not set)": "(not set)"
-        "The European Library": "The European Library"
+        "Management": "Management"
+        "People & Business Support": "People & Business Support"
         "Distribution & Engagement": "End User (Collections)"
         "Corporate Communication": "Marketing & Communications"
+        "Re-use Services": "Re-use"
         "Network & Sustainability": "Network & Sustainability"
         "Facilitation": "Programme & Policy"
-        "Re-use Services": "Re-use"
         "Aggregation": "Data Partner Services"
-        "Infrastructure": "Infrastructure"
-        "Technology": "Software Development"
-        "Product Development": "Product Owner & Design"
         "Research & Development": "Research & Development"
-        "People & Business Support": "People & Business Support"
-        "Management": "Management"
+        "Product Development": "Product Owner & Design"
+        "Technology": "Software Development"
+        "Infrastructure": "Infrastructure"
+        "The European Library": "The European Library"
     introduction:
       type: html
       required: false
@@ -646,19 +646,19 @@ network:
       label: "Team:"
       values:
         "(not set)": "(not set)"
-        "The European Library": "The European Library"
+        "Management": "Management"
+        "People & Business Support": "People & Business Support"
         "Distribution & Engagement": "End User (Collections)"
         "Corporate Communication": "Marketing & Communications"
+        "Re-use Services": "Re-use"
         "Network & Sustainability": "Network & Sustainability"
         "Facilitation": "Programme & Policy"
-        "Re-use Services": "Re-use"
         "Aggregation": "Data Partner Services"
-        "Infrastructure": "Infrastructure"
-        "Technology": "Software Development"
-        "Product Development": "Product Owner & Design"
         "Research & Development": "Research & Development"
-        "People & Business Support": "People & Business Support"
-        "Management": "Management"
+        "Product Development": "Product Owner & Design"
+        "Technology": "Software Development"
+        "Infrastructure": "Infrastructure"
+        "The European Library": "The European Library"
     department:
       type: select
       default: 'Our Partner'
