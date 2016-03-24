@@ -96,10 +96,10 @@
 
         {% if app.request.get('slug') in ['partners', 'partners/'] %}
             {% setcontent persons = 'persons' where {department: 'Our Partner'} order 'company' %}
+            {% include 'listing_person.twig' with {records: persons } %}
         {% else %}
-            {% setcontent persons = 'persons' where {department: 'Europeana Staff'} order 'team' %}
+            {% include 'listing_staff.twig' %}
         {% endif %}
-        {% include 'listing_person.twig' with {records: persons } %}
 
     {# for the other content use the default listing #}
     {% else %}
