@@ -98,6 +98,7 @@ cron_hour: 3
 # so it's clear which is the primary address of the site. Don't include the
 # http:// protocol prefix. Enable the following line to define a canonical url.
 #canonical: example.org
+canonical: pro.europeana.eu
 
 # Bolt can insert a <link rel="shortcut icon"> for all pages on the site. Note
 # that the location given is relative to the currently selected theme. If you
