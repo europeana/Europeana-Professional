@@ -21,6 +21,9 @@
 
         <!-- google verification -->
         <meta name="google-site-verification" content="QWAXJTR-3xVfop_J2LUQNmrocsLfTxQtVEAly7f56bU" />
+        {% if app.config.get('general/environment')|default('prod') != 'prod' %}
+            <meta name="google-site-verification" content="0XaTXWYvkHwmr7_eliwcuwdN24kW5gihx7wLq3Jwdro" />
+        {% endif %}
 
         <link rel="Shortcut Icon" href="{{ paths.theme }}images/favicon.ico" />
 {#        <link rel="stylesheet" href="http://develop.styleguide.eanadev.org/css/pro/screen.css"  media="all"/> #}
@@ -37,7 +40,6 @@
         <![endif]-->
         {# LolBolt! Make sure we insert Javascript in the correct. #}
         <script></script>
-
     </head>
 
     {% if record is defined %}
