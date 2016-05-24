@@ -1038,16 +1038,19 @@ Jobs:
       label: "Position will be in this team:"
       #values: [ "(not set)", "Aggregation", "Corporate Communication", "Distribution & Engagement", "Facilitation", "Managment", "Network & Sustainability", "People & Business Support", "Product Development", "Technology" ]
       values:
-        - 'Data Partner Services'
-        - 'Communications'
-        - 'End User Services'
-        - 'Policy, Research, Knowledge & Programme Management'
         - 'Management'
-        - 'Network & Sustainability'
         - 'People & Business Support'
-        - 'Product Development'
-        - 'Re-use Services'
-        - 'Technology'
+        - 'End User (Collections)'
+        - 'Marketing & Communications'
+        - 'Re-use'
+        - 'Network & Sustainability'
+        - 'Programme & Policy'
+        - 'Data Partner Services'
+        - 'Research & Development'
+        - 'Product Owner & Design'
+        - 'Software Development'
+        - 'Infrastructure'
+        - 'The European Library'
     # Show on Job list page, Job page
     postion_type:
       type: select
