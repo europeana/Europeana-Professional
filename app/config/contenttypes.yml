@@ -1813,15 +1813,14 @@ structures:
     teaser:
       type: html
       required: false
-      label: "Intro text:"
+      label: "Teaser:"
       height: 150px
     # Shown on Overview pages, List pages, Teasers
     intro:
       type: text
       required: false
       label: "Introduction:"
-      pattern: "^.{1,120}$"
-      postfix: "(One small sentence for overview pages, maximum 120 characters)"
+      postfix: "(One small sentence for overview pages)"
       height: 150px
     body:
       type: html
