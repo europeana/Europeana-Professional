@@ -608,6 +608,12 @@ network:
         "Representative of Specific Fields of Expertise": "Representative of Specific Fields of Expertise"
         "Representative of Content Holder Associations": "Representative of Content Holder Associations"
         "Not a Network member": "Not a Network member"
+    boardposition:
+      type: text
+      required: false
+      class: narrow
+      variant: inline
+      label: "Europeana Foundation Board position"
     community:
       type: select
       required: false

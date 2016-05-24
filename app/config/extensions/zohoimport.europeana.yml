@@ -112,6 +112,7 @@ remotes:
                                                             # example: "true"
                     sector: "Sector"
                     country: "Country"
+                    boardposition: "Europeana Foundation Board position"
 
                     # fields that can safely be ignored
                     europeana_id: "ID"                      # default: "EL30MC"
