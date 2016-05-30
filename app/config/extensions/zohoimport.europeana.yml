@@ -13,30 +13,46 @@ image_downloads: true
 structure_tree_map:
     governing:
         rank: 1
-        label: "Governing Board"
+        label: "Founding Members"
         id: 58
     management:
         rank: 2
-        label: "Management Board"
-        id: 59
+        label: "Network Association Management Board"
+        id: 57
     council:
         rank: 3
         label: "Members Council"
         id: 59
-    members:
+    contentholders:
         rank: 4
-        label: "Network Association Member"
-        id: 57
-    candidates:
+        label: "Representatives of Content Holder Associations"
+        id: 58
+    experts:
+        rank: 5
+        label: "Representatives of Specific Fields of Expertise"
+        id: 58
+    partners:
         rank: 6
+        label: "Representative of EU Member States"
+        id: 58
+    observers:
+        rank: 7
+        label: "Observers"
+        id: 58
+    candidates:
+        rank: 8
         label: "MC Election Candidate"
         id: 62
-    partners:
+    members:
         rank: 9
-        label: "Partner"
+        label: "Network Association Members"
+        id: 57
+    partners:
+        rank: 10
+        label: "Friends of Europeana"
         id: 29
     default:
-        rank: 10
+        rank: 11
         label: "*"
         id: 29
 
