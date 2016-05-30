@@ -28,6 +28,7 @@
                     </div>
                 {% endif %}
 
+                {# TODO remove this template after the new ZOHO categories are all set the new template that replaces this is listing_zohopartners_structure.twig #}
                 {% if app.request.get('slug') in ['foundation-governing-board', 'foundation-governing-board/'] %}
                     {% set npls = ["Governing Board"] %}
                 {% elseif app.request.get('slug') in ['management-board-members-council', 'management-board-members-council/'] %}
