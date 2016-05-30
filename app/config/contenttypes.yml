@@ -601,7 +601,24 @@ network:
         "MC Election Candidate": "MC Election Candidate"
         "Partner": "Partner"
         "Not a Network member": "Not a Network member"
-    community: 
+        "--": "-- new options --"
+        "Network Association Members": "Network Association Members"
+        "Founding Members": "Founding Members"
+        "Network Association Management Board": "Network Association Management Board"
+        "Members Council": "Members Council"
+        "Representatives of Content Holder Associations": "Representatives of Content Holder Associations"
+        "Representatives of Specific Fields of Expertise": "Representatives of Specific Fields of Expertise"
+        "Representative of EU Member States": "Representative of EU Member States"
+        "Observers": "Observers"
+        "MC Election Candidate": "MC Election Candidate"
+        "Friends of Europeana": "Friends of Europeana"
+    boardposition:
+      type: text
+      required: false
+      class: narrow
+      variant: inline
+      label: "Europeana Foundation Board position"
+    community:
       type: select
       required: false
       multiple: true
@@ -612,8 +629,10 @@ network:
         "Data partner": "Data partner"
         "EuropeanaIPR": "EuropeanaIPR"
         "EuropeanaTech (R&D)": "EuropeanaTech (R&D)"
+        "EuropeanaTech": "EuropeanaTech"
+        "Cultural creative": "Cultural creative"
         "Innovation": "Innovation"
-    community_role: 
+    community_role:
       type: text
       required: false
       class: narrow
@@ -628,13 +647,13 @@ network:
         "(not set)": "(not set)"
         "false": "false"
         "true": "true"
-    sector: 
+    sector:
       type: text
       required: false
       class: narrow
       variant: inline
       label: "Sector"
-    country: 
+    country:
       type: text
       required: false
       class: narrow
@@ -746,15 +765,15 @@ network:
       class: narrow
       variant: inline
       group: "ZOHO"
-    europeana_id: 
+    europeana_id:
       type: text
       class: narrow
       variant: inline
-    author_uid: 
+    author_uid:
       type: text
       class: narrow
       variant: inline
-    author_name: 
+    author_name:
       type: text
       class: narrow
       variant: inline
@@ -770,11 +789,11 @@ network:
       type: text
       class: narrow
       variant: inline
-    account_uid: 
+    account_uid:
       type: text
       class: narrow
       variant: inline
-    account_name: 
+    account_name:
       type: text
       class: narrow
       variant: inline
@@ -1023,16 +1042,19 @@ Jobs:
       label: "Position will be in this team:"
       #values: [ "(not set)", "Aggregation", "Corporate Communication", "Distribution & Engagement", "Facilitation", "Managment", "Network & Sustainability", "People & Business Support", "Product Development", "Technology" ]
       values:
-        - 'Data Partner Services'
-        - 'Communications'
-        - 'End User Services'
-        - 'Policy, Research, Knowledge & Programme Management'
         - 'Management'
-        - 'Network & Sustainability'
         - 'People & Business Support'
-        - 'Product Development'
-        - 'Re-use Services'
-        - 'Technology'
+        - 'End User (Collections)'
+        - 'Marketing & Communications'
+        - 'Re-use'
+        - 'Network & Sustainability'
+        - 'Programme & Policy'
+        - 'Data Partner Services'
+        - 'Research & Development'
+        - 'Product Owner & Design'
+        - 'Software Development'
+        - 'Infrastructure'
+        - 'The European Library'
     # Show on Job list page, Job page
     postion_type:
       type: select
@@ -1795,15 +1817,14 @@ structures:
     teaser:
       type: html
       required: false
-      label: "Intro text:"
+      label: "Teaser:"
       height: 150px
     # Shown on Overview pages, List pages, Teasers
     intro:
       type: text
       required: false
       label: "Introduction:"
-      pattern: "^.{1,120}$"
-      postfix: "(One small sentence for overview pages, maximum 120 characters)"
+      postfix: "(One small sentence for overview pages)"
       height: 150px
     body:
       type: html

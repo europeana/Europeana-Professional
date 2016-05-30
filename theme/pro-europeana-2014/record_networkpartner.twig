@@ -13,7 +13,7 @@
 {# as an author to publications #}
 {% set publications = record.related('publications') %}
 
-{# 
+{#
 <!-- as a contact to pages -->
 {% set pages = record.related('pages') %}
 
@@ -166,6 +166,12 @@
                                         {% if loop.first == false %}{% if loop.last == true %}and{% else %},{% endif %}{% endif %}
                                         {{ npl }}
                                     {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            {% if record.boardposition != '' %}
+                                <div class="network-participation">
+                                   {{ record.boardposition }}
                                 </div>
                             {% endif %}
                         </div>
