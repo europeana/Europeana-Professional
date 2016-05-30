@@ -29,11 +29,17 @@
                 {% endif %}
 
                 {% if app.request.get('slug') in ['foundation-governing-board', 'foundation-governing-board/'] %}
-                    {% set npls = ["Governing Board"] %}
+                    {% set npls = ["Founding Members",
+                        "Network Association Management Board",
+                        "Representatives of Content Holder Associations",
+                        "Representatives of Specific Fields of Expertise",
+                        "Member States Representative",
+                        "Observers"
+                    ] %}
                 {% elseif app.request.get('slug') in ['management-board-members-council', 'management-board-members-council/'] %}
-                    {% set npls = ["Management Board", "Members Council"]  %}
+                    {% set npls = ["Network Association Management Board", "Members Council"]  %}
                 {% elseif app.request.get('slug') in ['network-association-members', 'network-association-members/'] %}
-                    {% set npls = ["Network Association Member"]  %}
+                    {% set npls = ["Network Association Members"]  %}
                 {% elseif app.request.get('slug') in ['network-partners', 'network-partners/', 'partners', 'partners/'] %}
                     {% set npls = ["Partner"] %}
                 {% else %}
