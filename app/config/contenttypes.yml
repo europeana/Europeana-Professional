@@ -601,7 +601,7 @@ network:
         "MC Election Candidate": "MC Election Candidate"
         "Partner": "Partner"
         "Not a Network member": "Not a Network member"
-        "--": "-- new options --"
+        "(not set)": "-- new options --"
         "Network Association Members": "Network Association Members"
         "Founding Members": "Founding Members"
         "Network Association Management Board": "Network Association Management Board"
