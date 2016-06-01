@@ -49,7 +49,7 @@
                     ]  %}
                 {% elseif app.request.get('slug') in ['network-partners', 'network-partners/', 'partners', 'partners/'] %}
                     {% set npls = [
-                        "Partner"
+                        "Friends of Europeana"
                     ] %}
                 {% else %}
                     {% set npls = app.config.get('contenttypes/network/fields/network_participation/values') %}
