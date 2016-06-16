@@ -21,6 +21,20 @@ if ey_db_config['environment'] === nil then
     ey_db_config['environment'] = 'prod'
 end
 
+# turn this on later
+ey_environment = nil
+if ey_environment === nil then
+    File.open("#{config.shared_path}/config/localconfig/environment.yml", "r") do |f|
+        ey_environment = YAML.load(f)
+    end
+    info(YAML.dump(ey_environment))
+    if ey_environment['environment'] === nil then
+        warning("Database configuration file '#{config.shared_path}/config/localconfig/environment.yml' not found or invalid!")
+    else
+        ey_db_config['environment'] = ey_environment['environment']
+    end
+end
+
 # Build Bolt config_local data structure
 my_db_config = {
     "database" => {
@@ -38,6 +52,10 @@ config_filename = "#{config.release_path}/app/config/config_local.yml"
 File.open(config_filename, "w") do |f|
     f.write(YAML.dump(my_db_config))
 end
+
+# copy local configuration overrides to current site
+# run!("cp #{config.shared_path}/app/config/localconfig/*_local.yml #{config.release_path}/app/config/")
+run!("cp #{config.shared_path}/config/localconfig/extensions/*_local.yml #{config.release_path}/app/config/extensions/")
 
 # Make app/cache
 run!("mkdir app/cache")
