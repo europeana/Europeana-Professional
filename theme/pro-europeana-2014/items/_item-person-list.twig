@@ -28,7 +28,7 @@
                 {%- if record.job_title -%}<div class="job-role">{{record.job_title}}</div>{%- endif -%}
             </div>
 
-            {% elseif record.network_participation is not empty %}
+            {% if record.network_participation is not empty %}
                 <div class="eu-position">
                     {{ record.network_participation|first }}
                 </div>
