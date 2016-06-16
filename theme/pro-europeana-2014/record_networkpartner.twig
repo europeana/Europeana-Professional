@@ -72,14 +72,14 @@
 
                             <div class="jobdetails">
                                 {% if network_participation is not empty %}
-                                    <ul class="eu-roles">
+                                    <ul class="eu-roles overrides-552">
                                         {% for npl in network_participation %}
-                                            <li><p>{{ npl }}</p></li>
+                                            <li>{{ npl }}</li>
                                         {% endfor %}
                                     </ul>
                                 {% endif %}
 
-                                <ul class="work-details">
+                                <ul class="work-details overrides-552">
                                     {%- if record.job_title -%}<li><p class="position">{{record.job_title}}</p></li>{%- endif -%}
                                     {%- if record.company -%}<li><p class="institution">{{record.company}}</p></li>{%- endif -%}
                                     {# {%- if record.department -%}<li><p class="department">{{record.department}}</p></li>{%- endif -%} #}
@@ -88,14 +88,14 @@
                                 </ul>
 
                                 {% if record.public_email != '' %}
-                                <div class="item-sendemail">
-                                    <a class="email" href="mailto:{{ record.public_email }}">
-                                        <svg class="icon icon-sendemail">
-                                            <use xlink:href="#icon-sendemail"></use>
-                                        </svg>
-                                        <span>{{ record.public_email }}</span>
-                                    </a>
-                                </div>
+                                    <div class="item-sendemail">
+                                        <a class="email" href="mailto:{{ record.public_email }}">
+                                            <svg class="icon icon-sendemail">
+                                                <use xlink:href="#icon-sendemail"></use>
+                                            </svg>
+                                            <span>{{ record.public_email }}</span>
+                                        </a>
+                                    </div>
                                 {% endif %}
                             </div>
 
@@ -110,19 +110,35 @@
                                     </div>
                                 {% endif %}
 
+                                {% if record.twitter != '' %}
+                                    <div class="item-twitter">
+                                        <a href="{{ record.twitter }}">
+                                            <svg class="icon icon-twitter">
+                                                <use xlink:href="#icon-twitter"></use>
+                                                    
+                                                </svg>
+                                                {{ record.twitter|split('/')|last }}
+                                            </a>
+                                        </div>
+                                {% endif %}
+{#                              
+                                {% if record.skype != '' %}
+                                    <li class="item-skype"><a href="skype:{{ record.skype }}"><svg class="icon icon-skype"><use xlink:href="#icon-skype"></use></svg>{{ record.skype }}</a></li>
+                                {% endif %} 
+                                #}
+                                {% if record.linkedin != '' %}
+                                    <div class="item-linkedin">
+                                        <a href="{{ record.linkedin }}">
+                                            <svg class="icon icon-linkedin">
+                                                <use xlink:href="#icon-linkedin">
+                                                </use>
+                                            </svg>
+                                            {{ fullname }}
+                                        </a>
+                                    </div>
+                                {% endif %}
                             </div>
 
-                            <ul class="contact-external">
-                                {% if record.twitter != '' %}
-                                    <li><a href="{{ record.twitter }}"><svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>{{ record.twitter|split('/')|last }}</a></li>
-                                {% endif %}
-{#                                 {% if record.skype != '' %}
-                                <li><a href="skype:{{ record.skype }}"><svg class="icon icon-skype"><use xlink:href="#icon-skype"></use></svg>{{ record.skype }}</a></li>
-                                {% endif %} #}
-                                {% if record.linkedin != '' %}
-                                    <li><a href="{{ record.linkedin }}"><svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>{{ record.first_name }} {{ record.last_name }}</a></li>
-                                {% endif %}
-                            </ul>
                         </div>
 
                         {% if record.network_participation is not empty and 'MC Election Candidate' in record.network_participation %}

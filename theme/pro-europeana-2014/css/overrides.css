@@ -1,0 +1,31 @@
+/**
+ * Overrides to make the old patternlab styles match the new ones
+ */
+ul.overrides-552 {
+    padding-bottom: 0.5em;
+}
+
+ul.overrides-552 li,
+ul.overrides-552 li p {
+    display: inline;
+}
+
+ul.work-details.overrides-552 {
+    font-size: 95%;
+}
+
+ul.work-details.overrides-552 > li:first-child,
+ul.eu-roles.overrides-552 li {
+    font-weight: bold;
+}
+
+ul.overrides-552 > li:not(:first-child):before {
+    content: " | ";
+}
+
+.eu-position.overrides-552 {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.75em;
+    margin-bottom: 1rem;
+}
