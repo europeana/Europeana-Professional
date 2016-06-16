@@ -60,23 +60,24 @@
                 {% for npl in npls %}
                     {% if npl != "Partner" %}
                         {% setcontent records = 'network' where { network_participation: '%'~npl~'%' } orderby 'last_name' %}
-                        {#    {{ dump(records) }} #}
-                        <div class="team">
-                            {% if npl != "Not a Network member" %}
-                            <h2>{{ npl|default('Default network member') }}</h2>
-                            {% endif %}
-                            {% if records %}
-                            <ul class="results-list"><!--
-                                -->{% for person in records %}<!--
-                                --><li>{% include 'items/_item-networkpartner-list.twig' with { record: person } %}</li><!--
-                                -->{% endfor %}<!--
-                            --></ul>
-                            {% endif %}
-                        </div>
+                        {# {{ dump(records) }} #}
+                        {% if records %}
+                            <div class="team">
+                                {% if npl != "Not a Network member" %}
+                                <h2>{{ npl|default('Default network member') }}</h2>
+                                {% endif %}
+                                <ul class="results-list"><!--
+                                    -->{% for person in records %}<!--
+                                    --><li>{% include 'items/_item-networkpartner-list.twig' with { record: person } %}</li><!--
+                                    -->{% endfor %}<!--
+                                --></ul>
+                            </div>
+                        {% endif %}
                     {% else %}
                         {% set currentCompany = 'empty' %}
                         {% setcontent records = 'network' where { network_participation: '%'~npl~'%' } orderby 'company' %}
-                        <div class="team"><!--
+                        {% if records %}
+                            <div class="team"><!--
                                 -->{% for person in records %}<!--
                                     -->{% if loop.first == false and ( person.company != currentCompany ) %}
                                         --></ul><!--
@@ -90,6 +91,7 @@
                                 -->{% endfor %}<!--
                             --></ul><!--
                         --></div>
+                        {% endif %}
                     {% endif %}
                 {% else %}
                     <div class="textcontent prose">

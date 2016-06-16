@@ -1,4 +1,5 @@
-{% set curtitle = record.first_name ~ ' ' ~ record.last_name %}
+{%- set curtitle = record.first_name ~ ' ' ~ record.last_name -%}
+{%- set fullname = curtitle -%}
 {% include '_header.twig' %}
 
 {# as a speaker on events #}
@@ -26,6 +27,14 @@
 <!-- as a contact to structures ->
 {% set structures = record.related('structures') %}
 #}
+
+{% if record.boardposition != '' %}
+    {% if record.network_participation is iterable %}
+        {% set record.network_participation = record.network_participation|merge(record.boardposition) %}
+    {% else %}
+        {% set record.network_participation = record.boardposition %}
+    {% endif %}
+{% endif %}
 <!-- Start content -->
 <main role="main" class="l-page">
 <div class="lc">
@@ -40,53 +49,41 @@
 
             <div class="maincontent">
                 {% if record.network_participation is not empty and 'MC Election Candidate' in record.network_participation %}
-                     <div class="network-participation">
-                        <h1>MC Election Candidate</h1>
-                     </div>
+                     <h1 class="title">MC Election Candidate</h1>
                 {% elseif record.network_participation is not empty %}
-                     <div class="network-participation">
-                         {% for npl in record.network_participation %}
-                             {% if loop.first == true %}
-                             <h1>{{ npl }}</h1>
-                             {% endif %}
-                         {% endfor %}
-                     </div>
+                    <h1 class="title">{{ record.network_participation|first }}</h1>
                 {% endif %}
-                <h1 class="title fn">{{record.first_name}} {{record.last_name}}</h1>
 
                 <div class="section contact-detail">
                     <div class="l-contact-photo">
                         {% if record.image and record.contenttype.slug != 'network' %}
-                            <img src="{{ record.image|image(300,400,"c") }}" alt="{{ record.image|title }}" />
+                            <img src="{{ record.image|image(300,400,"c") }}" alt="{{ record.image|title|default(fullname) }}" />
                         {% elseif record.image and record.contenttype.slug == 'network' and record.public_photo == 'true' %}
-                            <img src="{{ record.image|image(300,400,"c") }}" alt="{{ record.image|title }}" />
+                            <img src="{{ record.image|image(300,400,"c") }}" alt="{{ record.image|title|default(fullname) }}" />
                         {% else %}
-                             <img src="{{ app.paths.theme }}images/fpo_avatar.png" alt="{{ record.first_name }} {{ record.last_name }}" class="photo missing" />
+                             <img src="{{ app.paths.theme }}images/fpo_avatar.png" alt="{{ fullname }}" class="photo missing" />
                         {% endif %}
                     </div><!--
                     --><div class="l-contact">
                         <div class="contact-methods cf">
+                            <h2 class="fn">{{ fullname }}</h2>
+
                             <div class="jobdetails">
-                                <h2 class="job-title">{{record.job_title}}</h2>
-                                {% if record.company_url != "" %}
-                                    <div class="fn">
-                                        <a href="{{ record.company_url }}" target="_blank">
-                                            <!-- <svg class="icon icon-bookmark">
-                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-bookmark"></use>
-                                            </svg> -->
-                                            {{ record.company }}
-                                            <svg class="icon icon-linkout">
-                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-linkout"></use>
-                                            </svg>
-                                        </a>
-                                    </div>
-                                {% else %}
-                                    <div class="fn">{{ record.company }}</div>
+                                {% if record.network_participation is not empty %}
+                                    <ul class="eu-roles">
+                                        {% for npl in record.network_participation %}
+                                            <li><p>{{ npl }}</p></li>
+                                        {% endfor %}
+                                    </ul>
                                 {% endif %}
 
-                                <div>{{ record.country }}</div>
-
-                                <div>{{ record.sector }}</div>
+                                <ul class="work-details">
+                                    {%- if record.job_title -%}<li><p class="position">{{record.job_title}}</p></li>{%- endif -%}
+                                    {%- if record.company -%}<li><p class="institution">{{record.company}}</p></li>{%- endif -%}
+                                    {# {%- if record.department -%}<li><p class="department">{{record.department}}</p></li>{%- endif -%} #}
+                                    {%- if record.country -%}<li><p class="country">{{record.country}}</p></li>{%- endif -%}
+                                    {%- if record.sector -%}<li><p class="sector">{{record.sector}}</p></li>{%- endif -%}
+                                </ul>
 
                                 {% if record.public_email != '' %}
                                 <div class="item-sendemail">
@@ -103,33 +100,25 @@
                             <div class="contact-internal">
 
                                 {% if record.public_phone != '' %}
-                                <div class="item-phone-work">
-                                    <svg class="icon icon-phone-work">
-                                        <use xlink:href="#icon-phone-work"></use>
-                                    </svg>
-                                    <span class="tel">{{ record.public_phone }}</span>
-                                </div>
+                                    <div class="item-phone-work">
+                                        <svg class="icon icon-phone-work">
+                                            <use xlink:href="#icon-phone-work"></use>
+                                        </svg>
+                                        <span class="tel">{{ record.public_phone }}</span>
+                                    </div>
                                 {% endif %}
 
-{#                                 {% if record.other_number != '' %}
-                                <div class="item-phone-mobile">
-                                    <svg class="icon icon-phone-mobile">
-                                        <use xlink:href="#icon-phone-mobile"></use>
-                                    </svg>
-                                    <span class="tel">{{ record.other_number }}</span>
-                                </div>
-                                {% endif %} #}
                             </div>
 
                             <ul class="contact-external">
                                 {% if record.twitter != '' %}
-                                <li><a href="{{ record.twitter }}"><svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>{{ record.twitter|split('/')|last }}</a></li>
+                                    <li><a href="{{ record.twitter }}"><svg class="icon icon-twitter"><use xlink:href="#icon-twitter"></use></svg>{{ record.twitter|split('/')|last }}</a></li>
                                 {% endif %}
 {#                                 {% if record.skype != '' %}
                                 <li><a href="skype:{{ record.skype }}"><svg class="icon icon-skype"><use xlink:href="#icon-skype"></use></svg>{{ record.skype }}</a></li>
                                 {% endif %} #}
                                 {% if record.linkedin != '' %}
-                                <li><a href="{{ record.linkedin }}"><svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>{{ record.first_name }} {{ record.last_name }}</a></li>
+                                    <li><a href="{{ record.linkedin }}"><svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>{{ record.first_name }} {{ record.last_name }}</a></li>
                                 {% endif %}
                             </ul>
                         </div>
@@ -159,22 +148,23 @@
                             </ul>
                             {% endif %}
 
-                            {% if record.network_participation is not empty %}
-                                <div class="network-participation">
-                                    {% for npl in record.network_participation %}
-                                        {% if loop.first == true %}Also {% endif %}
-                                        {% if loop.first == false %}{% if loop.last == true %}and{% else %},{% endif %}{% endif %}
-                                        {{ npl }}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-
-                            {% if record.boardposition != '' %}
-                                <div class="network-participation">
-                                   {{ record.boardposition }}
-                                </div>
-                            {% endif %}
                         </div>
+
+
+                        {% if record.company_url != "" %}
+                            <ul class="nav">
+                                <li><a href="{{ record.company_url }}" target="_blank">
+                                    <!-- <svg class="icon icon-bookmark">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-bookmark"></use>
+                                    </svg> -->
+                                    {{ record.company }}
+                                    <svg class="icon icon-linkout">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-linkout"></use>
+                                    </svg>
+                                </a></li>
+                            </ul>
+                        {% endif %}
+
                     </div>
                 </div>
 
