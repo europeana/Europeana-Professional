@@ -30,7 +30,7 @@
 
 {% if record.boardposition != '' %}
     {% if record.network_participation is iterable %}
-        {% set record.network_participation = record.network_participation|merge(record.boardposition) %}
+        {% set record.network_participation = record.network_participation|merge([record.boardposition]) %}
     {% else %}
         {% set record.network_participation = record.boardposition %}
     {% endif %}
