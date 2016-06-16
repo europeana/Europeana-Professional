@@ -30,10 +30,12 @@
 
 {% if record.boardposition != '' %}
     {% if record.network_participation is iterable %}
-        {% set record.network_participation = record.network_participation|merge([record.boardposition]) %}
+        {% set network_participation = record.network_participation|merge([record.boardposition]) %}
     {% else %}
-        {% set record.network_participation = record.boardposition %}
+        {% set network_participation = record.boardposition %}
     {% endif %}
+{% else %}
+    {% set network_participation = record.network_participation %}
 {% endif %}
 <!-- Start content -->
 <main role="main" class="l-page">
@@ -48,10 +50,10 @@
             {# {{ dump(record) }} #}
 
             <div class="maincontent">
-                {% if record.network_participation is not empty and 'MC Election Candidate' in record.network_participation %}
+                {% if network_participation is not empty and 'MC Election Candidate' in network_participation %}
                      <h1 class="title">MC Election Candidate</h1>
-                {% elseif record.network_participation is not empty %}
-                    <h1 class="title">{{ record.network_participation|first }}</h1>
+                {% elseif network_participation is not empty %}
+                    <h1 class="title">{{ network_participation|first }}</h1>
                 {% endif %}
 
                 <div class="section contact-detail">
@@ -69,9 +71,9 @@
                             <h2 class="fn">{{ fullname }}</h2>
 
                             <div class="jobdetails">
-                                {% if record.network_participation is not empty %}
+                                {% if network_participation is not empty %}
                                     <ul class="eu-roles">
-                                        {% for npl in record.network_participation %}
+                                        {% for npl in network_participation %}
                                             <li><p>{{ npl }}</p></li>
                                         {% endfor %}
                                     </ul>
