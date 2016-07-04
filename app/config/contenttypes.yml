@@ -302,10 +302,9 @@ persons:
       type: slug
       uses: [ first_name, last_name ]
     introduction:
-      type: text
+      type: html
       required: false
-      label: "Introduction:"
-      postfix: "(One small sentence for overview pages)"
+      label: "Bio:"
     company:
       type: text
       required: false
