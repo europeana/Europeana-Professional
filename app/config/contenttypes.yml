@@ -53,16 +53,15 @@ publications:
     slug:
       type: slug
       uses: title
+    introduction:
+      type: text
+      required: false
+      label: "Introduction:"
+      postfix: "(One small sentence for overview pages)"
     teaser:
       type: html
       required: true
       label: "Teaser:"
-      height: 150px
-    introduction:
-      type: text
-      required: false
-      label: "Introduction (120 chars MAX):"
-      pattern: "^.{1,120}$"
       height: 150px
     body:
       type: html
@@ -181,11 +180,10 @@ pressreleases:
       type: slug
       uses: title
     introduction:
-      type: markdown
+      type: text
       required: false
-      label: "Introduction (120 chars MAX):"
-      pattern: "^.{1,120}$"
-      height: 150px
+      label: "Introduction:"
+      postfix: "(One small sentence for overview pages)"
     body:
       type: html
       required: false
@@ -303,6 +301,11 @@ persons:
     slug:
       type: slug
       uses: [ first_name, last_name ]
+    introduction:
+      type: text
+      required: false
+      label: "Introduction:"
+      postfix: "(One small sentence for overview pages)"
     company:
       type: text
       required: false
@@ -346,12 +349,6 @@ persons:
         "Technology": "Software Development"
         "Infrastructure": "Infrastructure"
         "The European Library": "The European Library"
-    introduction:
-      type: html
-      required: false
-      label: "Introduction (120 chars MAX):"
-      pattern: "^.{1,120}$"
-      height: 150px
     image:
       type: image
       required: false
@@ -514,10 +511,10 @@ network:
       type: slug
       uses: [ first_name, last_name ]
     introduction:
-      type: html
+      type: text
       required: false
-      label: "Bio:"
-      height: 150px
+      label: "Introduction:"
+      postfix: "(One small sentence for overview pages)"
     company:
       type: text
       required: false
@@ -903,6 +900,11 @@ events:
       type: checkbox
       required: false
       label: "Unconfirmed:"
+    introduction:
+      type: text
+      required: false
+      label: "Introduction:"
+      postfix: "(One small sentence for overview pages)"
     teaser:
       type: html
       required: true
@@ -1062,6 +1064,11 @@ Jobs:
       label: "Contract type:"
       values: [ "Full time", "Part time", "Internship", "Full time (Maternity cover)", "Full time (Temp)", "Part time (Temp)" ]
     # Show on Job list page, Job page
+    introduction:
+      type: text
+      required: false
+      label: "Introduction:"
+      postfix: "(One small sentence for overview pages)"
     teaser:
       type: html
       required: true
@@ -1195,6 +1202,11 @@ blogposts:
     slug:
       type: slug
       uses: title
+    introduction:
+      type: text
+      required: false
+      label: "Introduction:"
+      postfix: "(One small sentence for overview pages)"
     # Shown on Blog page
     body:
       type: html
@@ -1335,9 +1347,10 @@ pages:
       type: slug
       uses: title
     intro:
-      type: textarea
-      label: "Intro:"
-      height: 150px
+      type: text
+      required: false
+      label: "Introduction:"
+      postfix: "(One small sentence for overview pages)"
     # Shown on Individual pages, Lists
     teaser:
       type: html
@@ -1547,13 +1560,14 @@ projects:
       required: false
       label: "Project end:"
       variant: inline
+    intro:
+      type: text
+      required: false
+      label: "Introduction:"
+      postfix: "(One small sentence for overview pages)"
     teaser:
       type: html
       label: "Teaser (required):"
-      height: 150px
-    intro:
-      type: textarea
-      label: "Intro:"
       height: 150px
     body:
       type: html
@@ -1687,13 +1701,14 @@ taskforces:
       required: false
       label: "Expected timeframe end:"
       format: "{{d.Y}}"
+    intro:
+      type: text
+      required: false
+      label: "Introduction:"
+      postfix: "(One small sentence for overview pages)"
     teaser:
       type: html
       label: "Teaser (required):"
-      height: 150px
-    intro:
-      type: textarea
-      label: "Intro:"
       height: 150px
     body:
       type: html
@@ -1813,6 +1828,11 @@ structures:
       type: checkbox
       required: false
       label: "Show secondary email instead:"
+    intro:
+      type: text
+      required: false
+      label: "Introduction:"
+      postfix: "(One small sentence for overview pages)"
     # Shown on Overview pages, List pages
     teaser:
       type: html
@@ -1820,12 +1840,6 @@ structures:
       label: "Teaser:"
       height: 150px
     # Shown on Overview pages, List pages, Teasers
-    intro:
-      type: text
-      required: false
-      label: "Introduction:"
-      postfix: "(One small sentence for overview pages)"
-      height: 150px
     body:
       type: html
       required: false
