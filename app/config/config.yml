@@ -12,7 +12,7 @@ payoff: The Europeana Foundation
 theme: pro-europeana-2014
 
 stylesheet:
-  prod: http://styleguide.europeana.eu/v/0.1/css/pro/screen.css
+  prod: https://europeana-styleguide-production.s3.amazonaws.com/v0.1/css/pro/screen.css
   dev: http://develop.styleguide.eanadev.org/v/0.1/css/pro/screen.css
   beta: http://develop.styleguide.eanadev.org/v/0.1/css/pro/screen.css
 
