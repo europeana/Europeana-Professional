@@ -151,6 +151,17 @@ var Site = window.Site || {};
         Site.initMinRead();
         Site.fileHelper();
 
+        // begin layout hack
+        try{
+          $('.textcontent h2[id]').each(function(i, el){
+            var $el = $(el);
+            var id = $el.attr('id');
+            var style = 'position:relative; top:-4.8em;';
+            $el.removeAttr('id');
+            $el.before('<a id="' + id + '" style="' + style + '">&nbsp;</a>');
+          });
+        }
+        catch(e){}
 
     });
 })(jQuery);
