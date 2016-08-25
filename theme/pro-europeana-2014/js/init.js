@@ -25,39 +25,39 @@ var Site = window.Site || {};
     Site.placeholders = function () {
         var colour_focus = "#333",
         colour_blur = "#171207";
-        
+
         $('input[placeholder]').each(function(){
 
             var $this = $(this);
-        
+
             var attrPh = $this.attr('placeholder');
-            
+
             $this.attr('value', attrPh)
             .bind('focus', function() {
 
                 if($this.val() === attrPh){
                     $this.val('').css('color', colour_blur);
                 }
-                
+
             }).bind('blur', function() {
-            
+
                 if($this.val() === ''){
                     $this.val(attrPh).css('color', colour_focus);
                 }
-            
+
             });
 
         });
-        
+
     };
-    
+
     //	init jQuery plugin "minRead"
     // 	https://github.com/heyimjuani/minRead
     Site.initMinRead = function() {
-    	
+
     	//	check for read-time item
     	if ( !$(".read-time").length ) return;
-    	
+
     	var options = {
     		where: ".read-time",				// where the "x min read" will be inserted. Defaults to ".min-read"
     		wordsPerMinute	: 180,				// this is the avg adults can read on a screen, acording to wikipedia
@@ -74,37 +74,37 @@ var Site = window.Site || {};
     	options.archive = 0;
     	$(".textcontent").minRead(options);
     }
-    
-    
+
+
     //	file download handler
     Site.fileHelper = function() {
-    	
+
     	//	prevent event default to force download
     	$('form').on('click', 'a.download', function(e) {
-    		
+
     		e.preventDefault();
     		$link = $(this);
     		$form = $link.parents('form');
-    		
+
     		//	remove input previous download
     		$('input', $form).remove();
-    		
+
     		//	create hidden input with download values
     		$input = $('<input type="hidden" name="downloadfile" value="' + $link.attr('data-downloadFile') + '" >')
 
     		//	insert input + submit
     		$form.append($input);
     		$form[0].submit();
-    		
+
     	});
-    	
+
     }
-    
+
 
 
     //same as $(document).ready();
     $(function() {
-        
+
 
         //Navigation toggle
         $('.nav-toggle-menu').on("click", function(e) {
@@ -119,10 +119,10 @@ var Site = window.Site || {};
             e.preventDefault();
 
         });
-        
+
         //Navigation toggle
         $('.nav-toggle-search').on('click', function(e) {
-            
+
             if( body.hasClass( 'is-open-globalsearch' ) ){
                 Site.resetMenu();
             }else{
@@ -135,7 +135,7 @@ var Site = window.Site || {};
 
         //Our Sites toggle
         $('.nav-toggle-sites').on('click', function(e) {
-            
+
             if( body.hasClass( 'is-open-menu-top' ) ){
                 Site.resetMenu();
             }else{
@@ -151,17 +151,14 @@ var Site = window.Site || {};
         Site.initMinRead();
         Site.fileHelper();
 
-        // begin layout hack
-        try{
-          $('.textcontent h2[id]').each(function(i, el){
+        // begin layout hack for inline heading based anchors
+        $('.main-content h2[id], .main-content h3[id]').each(function(i, el){
             var $el = $(el);
             var id = $el.attr('id');
             var style = 'position:relative; top:-4.8em;';
             $el.removeAttr('id');
-            $el.before('<a id="' + id + '" style="' + style + '">&nbsp;</a>');
-          });
-        }
-        catch(e){}
+            $el.before('<a id="' + id + '" style="' + style + '"></a>');
+        });
 
     });
 })(jQuery);
