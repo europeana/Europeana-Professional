@@ -152,7 +152,7 @@ var Site = window.Site || {};
         Site.fileHelper();
 
         // begin layout hack for inline heading based anchors
-        $('.main-content h2[id], .main-content h3[id]').each(function(i, el){
+        $('.maincontent h2[id], .maincontent h3[id]').each(function(i, el){
             var $el = $(el);
             var id = $el.attr('id');
             var style = 'position:relative; top:-4.8em;';
