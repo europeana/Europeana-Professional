@@ -157,7 +157,7 @@ var Site = window.Site || {};
             var id = $el.attr('id');
             var style = 'position:relative; top:-4.8em;';
             $el.removeAttr('id');
-            $el.before('<a id="' + id + '" style="' + style + '"></a>');
+            $el.before('<a id="' + id + '" style="' + style + '">&nbsp;</a>');
         });
 
     });
