@@ -13,8 +13,8 @@ theme: pro-europeana-2014
 
 stylesheet:
   prod: https://europeana-styleguide-production.s3.amazonaws.com/v0.1/css/pro/screen.css
-  dev: http://develop.styleguide.eanadev.org/v/0.1/css/pro/screen.css
-  beta: http://develop.styleguide.eanadev.org/v/0.1/css/pro/screen.css
+  dev: https://europeana-styleguide-test.s3.amazonaws.com/css/pro/screen.css
+  beta: https://europeana-styleguide-test.s3.amazonaws.com/css/pro/screen.css
 
 # The locale that'll be used by the application. If no locale is set the
 # fallback locale is 'en_GB'. For available options, see: http://docs.bolt.cm/locales
