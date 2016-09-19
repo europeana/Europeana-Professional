@@ -24,6 +24,9 @@ options:
 
 redirects:
 
+    # update for assembla #571
+    '/impact': '/publication/impact-assessment-case-study'
+
     # After 'our network' was promoted to Top level. See assembla #440 and #441
     '/get-involved/our-network': '/our-network'
     '/get-involved/our-network/sign-up': '/our-network/sign-up'
