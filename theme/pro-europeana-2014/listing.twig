@@ -1,6 +1,5 @@
 {% include '_header.twig' %}
 
-<br><br>
 {# If 'contenttype' is a string, we get the contenttype array from config. #}
 {% if contenttype is not iterable and contenttype == "Blog Posts" %}
     {% set contenttype = "blogposts" %}
