@@ -24,6 +24,14 @@ options:
 
 redirects:
 
+    # update for assembla #594
+    '/about-us/how-we-work/governing-board-papers-documents': '/about-us/governing-board-meetings-documents'
+    '/about-us/how-we-work/foundation-governing-board': '/about-us/foundation-governing-board'
+    '/about-us/how-we-work/resources-pr-tools': '/about-us/working-with-the-brand-identity'
+    '/about-us/allezculture': '/get-involved/campaigns/allezculture'
+    '/about-us/how-we-work/who-we-are-1': '/about-us/who-we-are'
+    '/about-us/how-we-work/the-way-we-work-1': '/about-us/who-we-are'
+
     # update for assembla #571
     '/impact': '/publication/impact-assessment-case-study'
 
