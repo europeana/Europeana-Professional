@@ -40,25 +40,25 @@ sitewide:
 blogposts:
     enabled: true
     feed_records: 10
-    feed_template: rss.twig
+    feed_template: feed_custom_rss.twig
     content_length: 0
 
 events:
     enabled: true
     feed_records: 10
-    feed_template: rss.twig
+    feed_template: feed_custom_rss.twig
     content_length: 0
 
 publications:
     enabled: true
     feed_records: 10
-    feed_template: rss.twig
+    feed_template: feed_custom_rss.twig
     content_length: 0
 
 pressreleases:
     enabled: true
     feed_records: 10
-    feed_template: rss.twig
+    feed_template: feed_custom_rss.twig
     content_length: 0
 
 #entries:

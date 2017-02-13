@@ -26,7 +26,7 @@
     {% endif %}
     <span class="author-name">Author:
     {% for person in authors %}
-        <a href="{{ structurelink(person) }}">{{person.first_name}} {{person.last_name}}</a>{% if (not loop.last) %},{% endif %}
+        <a href="{{ structurelink(person) }}">{{person.first_name|default('')}} {{person.last_name|default('')}}</a>{% if (not loop.last) %},{% endif %}
     {% endfor%}
     </span>
 {% endif %}
