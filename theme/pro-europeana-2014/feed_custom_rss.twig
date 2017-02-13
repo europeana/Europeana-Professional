@@ -52,7 +52,7 @@
                 {% endif %}
                 </description>
 {% if record.image is not empty %}
-                <enclosure url="{{ app.paths.hosturl }}{{ thumbnail(record.image, 600, 400) }}" type="image/jpeg" />
+                <enclosure url="{{ app.paths.hosturl }}{{ thumbnail(record.image, 600, 400) }}" length="0" type="image/jpeg" />
 {% endif %}
             </item>
 
