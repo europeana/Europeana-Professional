@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>{{ app.config.get('general/sitename') }}</title>
-        <atom:link href="{{ paths.currenturl }}" rel="self" type="application/rss+xml"/>
+        <atom:link href="{{ app.paths.currenturl }}" rel="self" type="application/rss+xml"/>
         <link>{{ paths.rooturl }}</link>
 {% if app.config.get('general/payoff') is defined %}
         <description>{{ app.config.get('general/payoff') }}</description>
@@ -27,7 +27,7 @@
                 {%- endif -%}
                 {%- if authors is iterable -%}
                     {%- for person in authors -%}
-                       {{ person.first_name }} {{ person.last_name }}{% if (not loop.last) %},{% endif %}
+                        {{ person.public_email|default('noreply@europeana.eu') }} ({{ person.first_name }} {{ person.last_name }}){% if (not loop.last) %}, {% endif %}
                     {%- endfor -%}
                 {%- else -%}
                     {{ record.user.email }} ({{ record.user.displayname }})
