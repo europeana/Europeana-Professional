@@ -21,7 +21,17 @@
                     {{ record.datepublish|date("r") }}
                 </pubDate>
                 <author>
+                {%- set authors = record.related('persons') -%}
+                {%- if authors is iterable and record.related('network') is iterable -%}
+                    {%- set authors = authors|merge(record.related('network')) -%}
+                {%- endif -%}
+                {%- if authors is iterable -%}
+                    {%- for person in authors -%}
+                       {{ person.first_name }} {{ person.last_name }}{% if (not loop.last) %},{% endif %}
+                    {%- endfor -%}
+                {%- else -%}
                     {{ record.user.email }} ({{ record.user.displayname }})
+                {%- endif -%}
                 </author>
                 <guid isPermaLink="false">{{ record.contenttype.singular_slug }}/{{ record.id }}</guid>
 {% if record.taxonomy.tags is defined %}
