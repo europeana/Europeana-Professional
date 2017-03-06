@@ -11,6 +11,8 @@ contenttypes:
         where-clause:
             status: 'published'
     blogposts:
+        list-fields: [ title, slug, introduction, body, image, structure_sortorder, structure_parent, tags, blogs, relations ]
+        item-fields: [ title, slug, introduction, body, image, structure_sortorder, structure_parent, tags, blogs, relations ]
         where-clause:
             status: 'published'
     Jobs:
@@ -18,6 +20,7 @@ contenttypes:
     projects:
     events:
     pages:
+    network:
 
 
 thumbnail:
@@ -31,7 +34,7 @@ headers:
 replacements:
     'src="//': 'src="http://'
     'href="//': 'href="http://'
-    
+
 # The base url where the API is accessible.
 base: '/json'
 
