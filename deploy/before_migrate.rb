@@ -53,7 +53,7 @@ my_db_config = {
         "username" => ey_db_config['username'],
         "password" => ey_db_config['password']
     },
-    "environment" => ey_db_config['environment']
+    "environment" => ey_db_config['environment'],
     "canonical" => ey_db_config['canonical']
 }
 
