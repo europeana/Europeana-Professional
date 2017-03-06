@@ -13,18 +13,25 @@ contenttypes:
     blogposts:
         list-fields: [ title, slug, introduction, body, image, structure_sortorder, structure_parent, tags, blogs, relations ]
         item-fields: [ title, slug, introduction, body, image, structure_sortorder, structure_parent, tags, blogs, relations ]
+        allowed-fields: [ title, slug, introduction, body, image, structure_sortorder, structure_parent, tags, blogs, relations ]
         where-clause:
             status: 'published'
     events:
         list-fields: [ title, slug, start_event, unconfirmed_start, end_event, unconfirmed_end, introduction, body, image, structure_sortorder, structure_parent, tags, blogs, relations ]
         item-fields: [ title, slug, introduction, teaser, body, teaser_image, image, filelist, secondary_mail, structure_sortorder, structure_parent, tags, relations ]
+        allowed-fields: [ title, slug, introduction, teaser, body, teaser_image, image, filelist, secondary_mail, structure_sortorder, structure_parent, tags, relations ]
+        where-clause:
+            status: 'published'
+    network:
+        list-fields: [ first_name, last_name, slug, introduction, company, company_url, job_title, public_phone, public_email, linkedin, twitter, skype, image, network_participation, boardposition, community, community_role, europeana_tech ]
+        item-fields: [ first_name, last_name, slug, introduction, company, company_url, job_title, public_phone, public_email, linkedin, twitter, skype, image, network_participation, boardposition, community, community_role, europeana_tech ]
+        allowed-fields: [ first_name, last_name, slug, introduction, company, company_url, job_title, public_phone, public_email, linkedin, twitter, skype, image, network_participation, boardposition, community, community_role, europeana_tech ]
         where-clause:
             status: 'published'
     Jobs:
     taskforces:
     projects:
     pages:
-    network:
 
 thumbnail:
     width: 400
