@@ -81,7 +81,7 @@
 
                     {# if no related post, get latest posts#}
                     {% if relatedBlogposts|length == 0  %}
-                        {% setcontent relatedBlogposts = "blogposts/latest/3" %}
+                        {% setcontent relatedBlogposts = "blogposts/latest/3" where { blogs: "Europeana Blog" } %}
                     {# if less than 3 related post, merge related with latest posts #}
                     {% elseif relatedBlogposts|length < 3 %}
                         {% set postQuery = '' %}
@@ -92,7 +92,7 @@
                             {% endif %}
                         {% endfor %}
 
-                        {% setcontent latestBlogposts = "blogposts/latest/" ~ (3-relatedBlogposts|length) where {id: postQuery } %}
+                        {% setcontent latestBlogposts = "blogposts/latest/" ~ (3-relatedBlogposts|length) where { id: postQuery, blogs: "Europeana Blog" } %}
                         {% set relatedBlogposts = relatedBlogposts|merge(latestBlogposts ) %}
                     {% endif %}
 
