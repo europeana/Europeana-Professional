@@ -146,9 +146,9 @@
                     {% endif %}
 
                 {% else %}
-                    <!-- showing all blog posts -->
+                    <!-- showing europeana blog because we ar in a generic template -->
                     {# all blog posts. #}
-                    {% setcontent records = 'blogposts' where { limit : amount, order : order, page : page } allowpaging %}
+                    {% setcontent records = 'blogposts' where { limit : amount, order : order, page : page, blogs: "Europeana Blog" } allowpaging %}
 
                 {% endif %}
             {% endif %}
