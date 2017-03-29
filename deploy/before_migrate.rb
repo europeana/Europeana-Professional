@@ -21,6 +21,10 @@ if ey_db_config['environment'] === nil then
     ey_db_config['environment'] = 'prod'
 end
 
+if ey_db_config['canonical'] === nil then
+    ey_db_config['canonical'] = 'pro.europeana.eu'
+end
+
 # turn this on later
 ey_environment = nil
 if ey_environment === nil then
@@ -33,6 +37,11 @@ if ey_environment === nil then
     else
         ey_db_config['environment'] = ey_environment['environment']
     end
+    if ey_environment['canonical'] === nil then
+        warning("Database configuration file '#{config.shared_path}/config/localconfig/environment.yml' not found or invalid!")
+    else
+        ey_db_config['canonical'] = ey_environment['canonical']
+    end
 end
 
 # Build Bolt config_local data structure
@@ -44,7 +53,8 @@ my_db_config = {
         "username" => ey_db_config['username'],
         "password" => ey_db_config['password']
     },
-    "environment" => ey_db_config['environment']
+    "environment" => ey_db_config['environment'],
+    "canonical" => ey_db_config['canonical']
 }
 
 # Write Bolt config_local YAML file

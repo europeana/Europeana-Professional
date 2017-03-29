@@ -62,7 +62,7 @@
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/europeana/filebrowser/zipball/a4b2990f2e9e2d1ebffc845da5a3b2671ca66599",
+            "url": "https://api.github.com/repos/europeana/filebrowser/zipball/0315c05f3e07172e9caa86129e8617ee916adc08",
             "reference": "a4b2990f2e9e2d1ebffc845da5a3b2671ca66599",
             "shasum": ""
         },
@@ -105,12 +105,12 @@
         "version_normalized": "2.0.1.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/GawainLynch/bolt-extension-rssfeed.git",
+            "url": "https://github.com/bolt/bolt-extension-rssfeed.git",
             "reference": "453d40a345a4621a5e8589ec4e85e869cb9bd92d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/GawainLynch/bolt-extension-rssfeed/zipball/453d40a345a4621a5e8589ec4e85e869cb9bd92d",
+            "url": "https://api.github.com/repos/bolt/bolt-extension-rssfeed/zipball/453d40a345a4621a5e8589ec4e85e869cb9bd92d",
             "reference": "453d40a345a4621a5e8589ec4e85e869cb9bd92d",
             "shasum": ""
         },
@@ -252,6 +252,68 @@
         "support": {
             "source": "https://github.com/foundrycode/boltredirector/tree/1.0.1",
             "issues": "https://github.com/foundrycode/boltredirector/issues"
+        }
+    },
+    {
+        "name": "bolt/jsonapi",
+        "version": "v2.2.1",
+        "version_normalized": "2.2.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/xiaohutai/jsonapi.git",
+            "reference": "caf77f0d1e59f4c4f269d441f32824d06935eaba"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/xiaohutai/jsonapi/zipball/caf77f0d1e59f4c4f269d441f32824d06935eaba",
+            "reference": "caf77f0d1e59f4c4f269d441f32824d06935eaba",
+            "shasum": ""
+        },
+        "require": {
+            "bolt/bolt": ">=2.2.0,<3.0.0"
+        },
+        "time": "2016-06-06 15:05:07",
+        "type": "bolt-extension",
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "init.php"
+            ],
+            "psr-4": {
+                "Bolt\\Extension\\Bolt\\JsonApi\\": [
+                    "",
+                    "src"
+                ]
+            }
+        },
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Tobias Dammers",
+                "email": "tobias@twokings.nl"
+            },
+            {
+                "name": "Bob den Otter",
+                "email": "bob@twokings.nl"
+            },
+            {
+                "name": "Xiao-Hu Tai",
+                "email": "xiao@twokings.nl"
+            },
+            {
+                "name": "Dennis Snijder",
+                "email": "Dennissnijder97@gmail.com"
+            }
+        ],
+        "description": "Provides simple JSON access to Bolt's internal data structures.",
+        "keywords": [
+            "json"
+        ],
+        "support": {
+            "source": "https://github.com/xiaohutai/jsonapi/tree/v2.2.1",
+            "issues": "https://github.com/xiaohutai/jsonapi/issues"
         }
     }
 ]

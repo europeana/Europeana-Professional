@@ -1,0 +1,59 @@
+# Default configuration file for the JSON API extension.
+
+# List the contenttypes that are to be served through the JSON extension.
+# Only contenttypes listed here will be served; for any other contenttype,
+# the API will return errors.
+contenttypes:
+    publications:
+        where-clause:
+            status: 'published'
+    pressreleases:
+        where-clause:
+            status: 'published'
+    blogposts:
+        list-fields: [ title, slug, datepublish, introduction, body, image, structure_sortorder, structure_parent, tags, blogs, relations ]
+        item-fields: [ title, slug, datepublish, introduction, body, image, structure_sortorder, structure_parent, tags, blogs, relations ]
+        allowed-fields: [ title, slug, datepublish, introduction, body, image, structure_sortorder, structure_parent, tags, blogs, relations ]
+        where-clause:
+            status: 'published'
+    events:
+        list-fields: [ title, slug, datepublish, start_event, unconfirmed_start, end_event, unconfirmed_end, introduction, teaser, body,  teaser_image, image, structure_sortorder, structure_parent, tags, blogs, relations ]
+        item-fields: [ title, slug, datepublish, introduction, teaser, body, teaser_image, image, filelist, secondary_mail, structure_sortorder, structure_parent, tags, relations ]
+        allowed-fields: [ title, slug, datepublish, introduction, teaser, body, teaser_image, image, filelist, secondary_mail, structure_sortorder, structure_parent, tags, relations ]
+        where-clause:
+            status: 'published'
+    network:
+        list-fields: [ first_name, last_name, slug, introduction, company, company_url, job_title, public_phone, public_email, linkedin, twitter, skype, image, network_participation, boardposition, community, community_role, europeana_tech ]
+        item-fields: [ first_name, last_name, slug, introduction, company, company_url, job_title, public_phone, public_email, linkedin, twitter, skype, image, network_participation, boardposition, community, community_role, europeana_tech ]
+        allowed-fields: [ first_name, last_name, slug, introduction, company, company_url, job_title, public_phone, public_email, linkedin, twitter, skype, image, network_participation, boardposition, community, community_role, europeana_tech ]
+        where-clause:
+            status: 'published'
+    Jobs:
+    taskforces:
+    projects:
+    pages:
+    locations:
+
+thumbnail:
+    width: 400
+    height: 300
+
+headers:
+    'Access-Control-Allow-Origin': '*'
+    'Content-Type': 'application/vnd.api+json'
+
+replacements:
+    'src="//': 'src="http://'
+    'href="//': 'href="http://'
+
+# The base url where the API is accessible.
+base: '/json'
+
+# If you set this to 'true', all datetime fields will be formatted as ISO 8601 dates
+date-iso-8601: true
+
+# See http://php.net/manual/en/json.constants.php
+# Some recommended options:
+# -   0 for no options (recommended for production)
+# - 128 for pretty print (recommended for testing/development)
+jsonoptions: 0

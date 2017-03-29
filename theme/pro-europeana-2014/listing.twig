@@ -138,6 +138,12 @@
                         {# blogposts must have the "Europeana Creative Blog" category to appear here - see #273 #}
                         {% setcontent records = 'blogposts' where { limit : amount, order : order, page : page, blogs: "Europeana Test Blog" } allowpaging %}
 
+                    {% elseif record.slug in 'europeana-fashion-blog' %}
+                        <!-- showing europeana fashion blog -->
+                        {# Another blog, add more if needed. #}
+                        {# blogposts must have the "Europeana Fashion Blog" category to appear here #}
+                        {% setcontent records = 'blogposts' where { limit : amount, order : order, page : page, blogs: "Europeana Fashion Blog" } allowpaging %}
+
                     {% elseif record.slug is not defined %}
                         <!-- showing europeana blog because no slug for record -->
                         {# Another blog, add more if needed. #}
@@ -146,9 +152,9 @@
                     {% endif %}
 
                 {% else %}
-                    <!-- showing all blog posts -->
+                    <!-- showing europeana blog because we ar in a generic template -->
                     {# all blog posts. #}
-                    {% setcontent records = 'blogposts' where { limit : amount, order : order, page : page } allowpaging %}
+                    {% setcontent records = 'blogposts' where { limit : amount, order : order, page : page, blogs: "Europeana Blog" } allowpaging %}
 
                 {% endif %}
             {% endif %}
