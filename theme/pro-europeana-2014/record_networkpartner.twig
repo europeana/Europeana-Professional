@@ -227,7 +227,7 @@
                 <div class="section">
                     <h2>Blog posts</h2>
                     <ul class="results-list">
-                        {% for blogpost in blogposts %}
+                        {% for blogpost in blogposts if "Europeana Fashion Blog" not in blogpost.taxonomy.blogs  %}
                             {# as an author to blogposts #}
                             {% set authors = blogpost.related('network') %}
                             {% include 'items/_item-list.twig' with {record: blogpost, authors: authors} %}
