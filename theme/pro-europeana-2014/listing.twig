@@ -142,7 +142,7 @@
                         <!-- showing europeana fashion blog -->
                         {# Another blog, add more if needed. #}
                         {# blogposts must have the "Europeana Fashion Blog" category to appear here #}
-                        {% setcontent records = 'blogposts' where { limit : amount, order : order, page : page, blogs: "Europeana Fashion Blog" } allowpaging %}
+                        {% setcontent records = 'blogposts' where { limit : amount, order : order, page : page, blogs: "Fashion" } allowpaging %}
 
                     {% elseif record.slug is not defined %}
                         <!-- showing europeana blog because no slug for record -->
