@@ -1233,6 +1233,9 @@ blogposts:
       values: structures/id,title
       autocomplete: true
       label: "Select structure tree parent"
+    original_url:
+        type: text
+        postfix: "The original URL, as imported from Wordpress."      
   # Show on Blog page
   taxonomy: [ tags, blogs ]
   relations:
