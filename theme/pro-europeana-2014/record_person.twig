@@ -106,7 +106,7 @@
                     <h2>Speaking at</h2>
                     <div class="results">
                         <ul class="results-list">
-                            {% for event in events %}
+                            {% for event in events if 'culturelover' not in event.taxonomy.tags %}
                                 {% include 'items/_item-list.twig' with {record: event} %}
                             {% endfor %}
                         </ul>

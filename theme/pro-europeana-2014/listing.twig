@@ -3,7 +3,7 @@
 {# If 'contenttype' is a string, we get the contenttype array from config. #}
 {% if (contenttype is not defined) or (contenttype is not iterable and contenttype == "Blog Posts" ) %}
     {% set contenttype = "blogposts" %}
-{% elseif contenttype is empty or contenttype.slug == 'structures' %}
+{% elseif contenttype is empty or (contenttype.slug is defined and contenttype.slug == 'structures') %}
     {# Lodewijk notes: #273
         fallback to loading the contenttype from the select option in the structure
         this way - if you set it in the structure it will actually be used here
@@ -170,7 +170,7 @@
                     {% set order = 'start_event' %}
                 {% endif %}
 
-                {% setcontent records = 'events' where { limit: 6, order: order, page: page, 'end_event': end_event } allowpaging %}
+                {% setcontent records = 'events' where { limit: 6, order: order, page: page, 'end_event': end_event, 'tags': '!culturelover' } allowpaging %}
             {% endif %}
 
             {% for listItem in records %}
