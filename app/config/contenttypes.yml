@@ -940,6 +940,9 @@ events:
       type: markdown
       label: "Support navigation:"
       group: "Support navigation"
+    original_url:
+        type: text
+        postfix: "The original URL, as imported from Wordpress."      
   taxonomy: [ tags ]
   relations:
     locations:
@@ -1521,6 +1524,9 @@ locations:
       type: checkbox
       required: false
       label: "This is the main Europeana office (appear in footer):"
+    original_url:
+        type: text
+        postfix: "The original URL, as imported from Wordpress."      
   record_template: record_location.twig
   icon_many: "fa:map-marker"
   icon_one: "fa:map-marker"
