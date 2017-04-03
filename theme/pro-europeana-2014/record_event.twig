@@ -110,8 +110,8 @@
                         {% include 'items/_item-date-event.twig' %}
                         <h1 class="title">{{ event.title }}</h1>
                     </div>
-                    {% if (location and contacts) %}
-                    {% include 'items/_item-address.twig' with {location: location} %}
+                    {% if (location and location.geolocation) %}
+                        {% include 'items/_item-address.twig' with {location: location} %}
                     {% endif %}
                 </div>
 
@@ -158,7 +158,7 @@
                     {{ record.support_navigation|raw }}
                 </ul>
                 {% endif %}
-                
+
             </div>
 
         </div>
