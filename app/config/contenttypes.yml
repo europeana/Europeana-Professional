@@ -1238,7 +1238,10 @@ blogposts:
       label: "Select structure tree parent"
     original_url:
         type: text
-        postfix: "The original URL, as imported from Wordpress."      
+        postfix: "The original URL, as imported from Wordpress."
+    original_author:
+        type: text
+        postfix: "The original author, as imported from Wordpress."        
   # Show on Blog page
   taxonomy: [ tags, blogs ]
   relations:
